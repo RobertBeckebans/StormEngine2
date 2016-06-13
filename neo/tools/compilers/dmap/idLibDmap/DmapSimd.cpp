@@ -32,9 +32,9 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "DmapSimd_Generic.h"
 
-idDmapSIMDProcessor	*	dmapProcessor = NULL;			// pointer to SIMD processor
-idDmapSIMDProcessor *	dmapGenericSIMD = NULL;				// pointer to generic SIMD implementation
-idDmapSIMDProcessor *	dmapSIMDProcessor = NULL;
+idDmapSIMDProcessor*		dmapProcessor = NULL;			// pointer to SIMD processor
+idDmapSIMDProcessor* 	dmapGenericSIMD = NULL;				// pointer to generic SIMD implementation
+idDmapSIMDProcessor* 	dmapSIMDProcessor = NULL;
 
 
 /*
@@ -42,7 +42,8 @@ idDmapSIMDProcessor *	dmapSIMDProcessor = NULL;
 idDmapSIMD::Init
 ================
 */
-void idDmapSIMD::Init(void) {
+void idDmapSIMD::Init( void )
+{
 	dmapGenericSIMD = new idDmapSIMD_Generic;
 	dmapGenericSIMD->cpuid = CPUID_GENERIC;
 	dmapProcessor = NULL;
@@ -54,35 +55,41 @@ void idDmapSIMD::Init(void) {
 idDmapSIMD::InitProcessor
 ============
 */
-void idDmapSIMD::InitProcessor(const char *module, bool forceGeneric) {
+void idDmapSIMD::InitProcessor( const char* module, bool forceGeneric )
+{
 	int cpuid;
-	idDmapSIMDProcessor *newProcessor;
-
+	idDmapSIMDProcessor* newProcessor;
+	
 	cpuid = idLib::sys->GetProcessorId();
-
-	if (forceGeneric) {
-
+	
+	if( forceGeneric )
+	{
+	
 		newProcessor = dmapGenericSIMD;
-
+		
 	}
-	else {
-
-		if (!dmapProcessor) {
+	else
+	{
+	
+		if( !dmapProcessor )
+		{
 			dmapProcessor = dmapGenericSIMD;
 			dmapProcessor->cpuid = cpuid;
 		}
-
+		
 		newProcessor = dmapProcessor;
 	}
-
-	if (newProcessor != dmapSIMDProcessor) {
+	
+	if( newProcessor != dmapSIMDProcessor )
+	{
 		dmapSIMDProcessor = newProcessor;
-		idLib::common->Printf("%s using %s for SIMD processing\n", module, dmapSIMDProcessor->GetName());
+		idLib::common->Printf( "%s using %s for SIMD processing\n", module, dmapSIMDProcessor->GetName() );
 	}
-
-	if (cpuid & CPUID_SSE) {
-		idLib::sys->FPU_SetFTZ(true);
-		idLib::sys->FPU_SetDAZ(true);
+	
+	if( cpuid & CPUID_SSE )
+	{
+		idLib::sys->FPU_SetFTZ( true );
+		idLib::sys->FPU_SetDAZ( true );
 	}
 }
 
@@ -91,8 +98,10 @@ void idDmapSIMD::InitProcessor(const char *module, bool forceGeneric) {
 idDmapSIMD::Shutdown
 ================
 */
-void idDmapSIMD::Shutdown(void) {
-	if (dmapProcessor != dmapGenericSIMD) {
+void idDmapSIMD::Shutdown( void )
+{
+	if( dmapProcessor != dmapGenericSIMD )
+	{
 		delete dmapProcessor;
 	}
 	delete dmapGenericSIMD;

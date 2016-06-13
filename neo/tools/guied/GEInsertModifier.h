@@ -38,11 +38,11 @@ class rvGEInsertModifier : public rvGEModifier
 {
 public:
 
-	rvGEInsertModifier ( const char* name, idWindow* window, idWindow* parent, idWindow* before );
-
-	virtual bool		Apply	( void );
-	virtual bool		Undo	( void );
-
+	rvGEInsertModifier( const char* name, idWindow* window, idWindow* parent, idWindow* before );
+	
+	virtual bool		Apply( void );
+	virtual bool		Undo( void );
+	
 protected:
 
 	idWindow*		mUndoParent;

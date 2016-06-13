@@ -222,9 +222,9 @@ public:
 	// DG end
 	
 	virtual void				UpdateLevelLoadPacifier() = 0;
-	virtual void				UpdateLevelLoadPacifier(int mProgress) = 0;
-	virtual void				UpdateLevelLoadPacifier(bool updateSecondary) = 0;
-	virtual void				UpdateLevelLoadPacifier(bool updateSecondary, int Progress) = 0;
+	virtual void				UpdateLevelLoadPacifier( int mProgress ) = 0;
+	virtual void				UpdateLevelLoadPacifier( bool updateSecondary ) = 0;
+	virtual void				UpdateLevelLoadPacifier( bool updateSecondary, int Progress ) = 0;
 	
 	// Checks for and removes command line "+set var arg" constructs.
 	// If match is NULL, all set commands will be executed, otherwise
@@ -306,7 +306,7 @@ public:
 	
 	virtual idDemoFile* 		ReadDemo() = 0;
 	virtual idDemoFile* 		WriteDemo() = 0;
-		
+	
 	virtual idGame* 			Game() = 0;
 	virtual idRenderWorld* 		RW() = 0;
 	virtual idSoundWorld* 		SW() = 0;
@@ -335,15 +335,15 @@ public:
 	virtual bool				JapaneseCensorship() const = 0;
 	
 	virtual void				QueueShowShell() = 0;		// Will activate the shell on the next frame.
-
-								// Initializes a tool with the given dictionary.
-	virtual void				InitTool( const toolFlag_t tool, const idDict *dict ) = 0;
-
-								// Activates or deactivates a tool.
+	
+	// Initializes a tool with the given dictionary.
+	virtual void				InitTool( const toolFlag_t tool, const idDict* dict ) = 0;
+	
+	// Activates or deactivates a tool.
 	virtual void				ActivateTool( bool active ) = 0;
-
-								// Writes cvars with the given flags to a file.
-	virtual void				WriteFlaggedCVarsToFile( const char *filename, int flags, const char *setCmd ) = 0;
+	
+	// Writes cvars with the given flags to a file.
+	virtual void				WriteFlaggedCVarsToFile( const char* filename, int flags, const char* setCmd ) = 0;
 };
 
 extern idCommon* 		common;

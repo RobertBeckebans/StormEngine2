@@ -317,7 +317,7 @@ void idActor::Event_StopAnim( int channel, int frames )
 {
 	switch( channel )
 	{
-		case ANIMCHANNEL_HEAD :		
+		case ANIMCHANNEL_HEAD :
 			headAnim.StopAnim( frames );
 			break;
 			
@@ -328,15 +328,15 @@ void idActor::Event_StopAnim( int channel, int frames )
 		case ANIMCHANNEL_LEGS :
 			legsAnim.StopAnim( frames );
 			break;
-
+			
 		case ANIMCHANNEL_EYELIDS:
 			break;
-		
+			
 		case ANIMCHANNEL_ALL:
-			for ( int i = 1; i < ANIMCHANNEL_COUNT; ++i )
+			for( int i = 1; i < ANIMCHANNEL_COUNT; ++i )
 				Event_StopAnim( i, frames );
 			break;
-
+			
 		default:
 			gameLocal.Error( "Unknown anim group" );
 			break;
@@ -365,15 +365,15 @@ void idActor::Event_PlayAnim( int channel, const char* animname )
 		return;
 	}
 	
-	if ( ANIMCHANNEL_ALL == channel )
+	if( ANIMCHANNEL_ALL == channel )
 	{
 		// start from 1, skip ANIMCHANNEL_ALL
-		for ( int i = 1; i < ANIMCHANNEL_COUNT; ++i )
+		for( int i = 1; i < ANIMCHANNEL_COUNT; ++i )
 			InternalPlayAnim( i, anim );
 	}
 	else
 		InternalPlayAnim( channel, anim );
-
+		
 	idThread::ReturnInt( 1 );
 }
 
@@ -505,17 +505,17 @@ void idActor::Event_IdleAnim( int channel, const char* animname )
 		idThread::ReturnInt( false );
 		return;
 	}
-		
-	if (ANIMCHANNEL_ALL == channel)
+	
+	if( ANIMCHANNEL_ALL == channel )
 	{
 		// start from 1, skip ANIMCHANNEL_ALL
-		for (int i = 1; i < ANIMCHANNEL_COUNT; ++i)
-			InternalIdleAnim(i, anim);
+		for( int i = 1; i < ANIMCHANNEL_COUNT; ++i )
+			InternalIdleAnim( i, anim );
 	}
 	else
-		InternalIdleAnim(channel, anim);
-	
-	idThread::ReturnInt(1);
+		InternalIdleAnim( channel, anim );
+		
+	idThread::ReturnInt( 1 );
 }
 
 /*
@@ -741,12 +741,12 @@ void idActor::Event_AnimDone( int channel, int blendFrames )
 			result = legsAnim.AnimDone( blendFrames );
 			idThread::ReturnInt( result );
 			break;
-
+			
 		case ANIMCHANNEL_ALL:
 			result = headAnim.AnimDone( blendFrames ) &&
-				     torsoAnim.AnimDone( blendFrames ) &&
+					 torsoAnim.AnimDone( blendFrames ) &&
 					 legsAnim.AnimDone( blendFrames );
-			idThread::ReturnInt(result);
+			idThread::ReturnInt( result );
 			break;
 			
 		default:

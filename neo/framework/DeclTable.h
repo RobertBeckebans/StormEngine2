@@ -50,7 +50,7 @@ public:
 	
 	float					TableLookup( float index ) const;
 	
-private:	
+private:
 	idList<float, TAG_IDLIB_LIST_DECL>			values;
 	bool										clamp;
 	bool										snap;
@@ -61,12 +61,12 @@ class idDeclTable2d : public idDecl
 {
 public:
 	idDeclTable2d();
-
+	
 	virtual size_t			Size() const;
 	virtual const char* 	DefaultDefinition() const;
 	virtual bool			Parse( const char* text, const int textLength, bool allowBinaryVersion );
 	virtual void			FreeData();
-
+	
 	float					MinInput() const;
 	float					MinOutput() const;
 	float					MaxInput() const;

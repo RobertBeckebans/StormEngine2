@@ -334,15 +334,17 @@ void idCollisionModelManagerLocal::TranslateTrmEdgeThroughPolygon( cm_traceWork_
 			}
 #elif 0
 			// NagaHuntress from TheDarkMod 08-15-2015: make sure the collision plane faces the same way as the polygon plane
-			if( tw->trace.c.normal * poly->plane.Normal() < 0.0f ) {
+			if( tw->trace.c.normal * poly->plane.Normal() < 0.0f )
+			{
 				tw->trace.c.normal = -tw->trace.c.normal;
-				tw->trace.c.dist = -tw->trace.c.dist;				
+				tw->trace.c.dist = -tw->trace.c.dist;
 			}
 #elif 1
 			// NagaHuntress from TheDarkMod 08-15-2015: make sure the collision plane faces the direction of the trace
-			if( tw->trace.c.normal * -tw->dir < 0.0f ) {
+			if( tw->trace.c.normal * -tw->dir < 0.0f )
+			{
 				tw->trace.c.normal = -tw->trace.c.normal;
-				tw->trace.c.dist = -tw->trace.c.dist;				
+				tw->trace.c.dist = -tw->trace.c.dist;
 			}
 #endif
 			tw->trace.c.contents = poly->contents;

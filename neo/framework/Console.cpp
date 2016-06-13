@@ -913,12 +913,13 @@ void idConsoleLocal::Print( const char* txt )
 	int		y;
 	int		c, l;
 	int		color;
-
+	
 #ifdef ID_ALLOW_TOOLS
 	RadiantPrint( txt );
-
-	if( com_editors & EDITOR_MATERIAL ) {
-		MaterialEditorPrintConsole(txt);
+	
+	if( com_editors & EDITOR_MATERIAL )
+	{
+		MaterialEditorPrintConsole( txt );
 	}
 #endif
 	

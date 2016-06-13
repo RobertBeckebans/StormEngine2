@@ -119,7 +119,7 @@ void idRenderProgManager::Init()
 		{ BUILTIN_BINK_GUI, "bink_gui.vfp" },
 		{ BUILTIN_STEREO_INTERLACE, "stereoInterlace.vfp" },
 		{ BUILTIN_MOTION_BLUR, "motionBlur.vfp" },
-
+		
 		// foresthale 2014-02-20: added HDRDither shader
 		{ BUILTIN_HDRDITHER, "hdrDither.vfp" },
 		// foresthale 2014-04-08: r_glow
@@ -157,7 +157,7 @@ void idRenderProgManager::Init()
 	
 	glslUniforms.SetNum( RENDERPARM_USER + MAX_GLSL_USER_PARMS, vec4_zero );
 	
-	// motorsep 10-26-2014; any new skinned built-in shader has to have .usesJoints set to true in the section below; 
+	// motorsep 10-26-2014; any new skinned built-in shader has to have .usesJoints set to true in the section below;
 	// non-built-in skinned shaders are taken care of in idRenderProgManager::FindVertexShader
 	vertexShaders[builtinShaders[BUILTIN_TEXTURE_VERTEXCOLOR_SKINNED]].usesJoints = true;
 	vertexShaders[builtinShaders[BUILTIN_INTERACTION_SKINNED]].usesJoints = true;
@@ -274,13 +274,13 @@ int idRenderProgManager::FindVertexShader( const char* name )
 	
 	// Steel Storm 2 fix for inkEffect on animated skeletal models
 	// begins
-	if( idStr::FindText( name, "_skinned.glsl" ) > -1 ) 
+	if( idStr::FindText( name, "_skinned.glsl" ) > -1 )
 	{
-        vertexShaders[index].usesJoints = true;
-        vertexShaders[index].optionalSkinning = true;
-    }
+		vertexShaders[index].usesJoints = true;
+		vertexShaders[index].optionalSkinning = true;
+	}
 	// ends
-
+	
 	return index;
 }
 

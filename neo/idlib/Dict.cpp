@@ -574,7 +574,7 @@ const idKeyValue* idDict::FindKey( const char* key ) const
 	}
 	
 	int hash = argHash.GenerateKey( key, false );
-	for ( int i = argHash.First( hash ); i != -1; i = argHash.Next( i ) )
+	for( int i = argHash.First( hash ); i != -1; i = argHash.Next( i ) )
 	{
 		if( args[i].GetKey().Icmp( key ) == 0 )
 		{

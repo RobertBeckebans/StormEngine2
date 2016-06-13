@@ -32,23 +32,23 @@ If you have questions concerning this license or the applicable additional terms
 
 void idTokenParser::LoadFromParser( idParser& parser, const char* guiName )
 {
-	// does it already exist?	
-	idTokenIndexes * tokIdxs = NULL;
-	for ( int i = 0; i < guiTokenIndexes.Num(); ++i )
+	// does it already exist?
+	idTokenIndexes* tokIdxs = NULL;
+	for( int i = 0; i < guiTokenIndexes.Num(); ++i )
 	{
-		if ( idStr::Icmp( guiName, guiTokenIndexes[ i ].GetName() ) == 0 )
+		if( idStr::Icmp( guiName, guiTokenIndexes[ i ].GetName() ) == 0 )
 		{
 			tokIdxs = &guiTokenIndexes[ i ];
 			break;
 		}
 	}
-
-	if ( tokIdxs == NULL )
+	
+	if( tokIdxs == NULL )
 	{
 		tokIdxs = &guiTokenIndexes.Alloc();
 		tokIdxs->SetName( guiName );
-	}	
-
+	}
+	
 	idToken tok;
 	while( parser.ReadToken( &tok ) )
 	{

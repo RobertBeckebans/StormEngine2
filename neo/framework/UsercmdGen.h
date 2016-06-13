@@ -192,7 +192,7 @@ typedef enum
 	UB_IMPULSE29,
 	UB_IMPULSE30,
 	UB_IMPULSE31,
-	UB_IMPULSE40,	
+	UB_IMPULSE40,
 	
 	UB_MAX_BUTTONS
 } usercmdButton_t;

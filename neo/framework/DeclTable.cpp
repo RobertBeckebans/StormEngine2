@@ -216,7 +216,7 @@ idDeclTable2d::MinInput
 */
 float idDeclTable2d::MinInput() const
 {
-	if ( values.Size() > 0 )
+	if( values.Size() > 0 )
 		return values.First().mInput;
 	return 0.0f;
 }
@@ -228,7 +228,7 @@ idDeclTable2d::MinOutput
 */
 float idDeclTable2d::MinOutput() const
 {
-	if ( values.Size() > 0 )
+	if( values.Size() > 0 )
 		return values.First().mOutput;
 	return 0.0f;
 }
@@ -240,7 +240,7 @@ idDeclTable2d::MaxInput
 */
 float idDeclTable2d::MaxInput() const
 {
-	if ( values.Size() > 0 )
+	if( values.Size() > 0 )
 		return values.Last().mInput;
 	return 0.0f;
 }
@@ -252,7 +252,7 @@ idDeclTable2d::MaxOutput
 */
 float idDeclTable2d::MaxOutput() const
 {
-	if ( values.Size() > 0 )
+	if( values.Size() > 0 )
 		return values.Last().mOutput;
 	return 0.0f;
 }
@@ -264,22 +264,22 @@ idDeclTable2d::TableLookup
 */
 float idDeclTable2d::TableLookup( float value ) const
 {
-	if ( values.Size() > 0 )
+	if( values.Size() > 0 )
 	{
-		if ( value < values.First().mInput )
+		if( value < values.First().mInput )
 		{
 			return values.First().mOutput;
 		}
-		else if ( value > values.Last().mInput )
+		else if( value > values.Last().mInput )
 		{
 			return values.Last().mOutput;
 		}
 		else
 		{
 			// look for where this value falls in the table
-			for ( int i = 1; i < values.Num(); ++i )
+			for( int i = 1; i < values.Num(); ++i )
 			{
-				if ( value <= values[ i ].mInput )
+				if( value <= values[ i ].mInput )
 				{
 					const float range = values[ i ].mInput - values[ i - 1 ].mInput;
 					const float diff = value - values[ i - 1 ].mInput;
@@ -335,58 +335,58 @@ bool idDeclTable2d::Parse( const char* text, const int textLength, bool allowBin
 	src.LoadMemory( text, textLength, GetFileName(), GetLineNum() );
 	src.SetFlags( DECL_LEXER_FLAGS );
 	src.SkipUntilString( "{" );
-
+	
 	values.Clear();
-
-	while ( 1 )
+	
+	while( 1 )
 	{
-		if ( !src.ReadToken( &token ) )
+		if( !src.ReadToken( &token ) )
 		{
 			break;
 		}
-
-		if ( token == "}" )
+		
+		if( token == "}" )
 		{
 			break;
 		}
-
-		if ( token.Icmp( "[" ) == 0 )
+		
+		if( token.Icmp( "[" ) == 0 )
 		{
 			tableEntry entry;
-
+			
 			bool errorFlag;
 			entry.mInput = src.ParseFloat( &errorFlag );
-			if ( errorFlag )
+			if( errorFlag )
 			{
 				// we got something non-numeric
 				MakeDefault();
 				return false;
 			}
-
+			
 			src.ReadToken( &token );
-			if ( token != "," )
+			if( token != "," )
 			{
 				// we got something non-numeric
 				MakeDefault();
 				return false;
 			}
-
+			
 			entry.mOutput = src.ParseFloat( &errorFlag );
-			if ( errorFlag )
+			if( errorFlag )
 			{
 				// we got something non-numeric
 				MakeDefault();
 				return false;
 			}
-
+			
 			src.ReadToken( &token );
-			if ( token != "]" )
+			if( token != "]" )
 			{
 				// we got something non-numeric
 				MakeDefault();
 				return false;
 			}
-
+			
 			values.Append( entry );
 		}
 		else
@@ -396,6 +396,6 @@ bool idDeclTable2d::Parse( const char* text, const int textLength, bool allowBin
 			return false;
 		}
 	}
-
+	
 	return true;
 }

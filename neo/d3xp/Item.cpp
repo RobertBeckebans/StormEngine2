@@ -143,13 +143,16 @@ void idItem::Restore( idRestoreGame* savefile )
 idItem::RunScriptFunc
 ================
 */
-void idItem::RunScriptFunc( const char *name ) {
-	const function_t *func;
-
-	if ( scriptObject.HasObject() ) {
+void idItem::RunScriptFunc( const char* name )
+{
+	const function_t* func;
+	
+	if( scriptObject.HasObject() )
+	{
 		func = scriptObject.GetFunction( name );
-		if ( func ) {
-			idThread *thread = new idThread( va( "%s_%s", GetName(), func->Name() ) );
+		if( func )
+		{
+			idThread* thread = new idThread( va( "%s_%s", GetName(), func->Name() ) );
 			thread->CallFunction( this, func, true );
 			thread->DelayedStart( 0 );
 		}
@@ -1603,7 +1606,7 @@ idObjective::Spawn
 void idObjective::Spawn()
 {
 	Hide();
-
+	
 	// ############## SR
 	
 	idStr shotName;
@@ -1615,9 +1618,10 @@ void idObjective::Spawn()
 	screenshot = declManager->FindMaterial( shotName );
 	
 	
-	if ( cvarSystem->GetCVarBool( "com_makingBuild") ) {
+	if( cvarSystem->GetCVarBool( "com_makingBuild" ) )
+	{
 		PostEventMS( &EV_CamShot, 250 );
-	}	
+	}
 	// ############### END SR
 }
 
@@ -1629,58 +1633,65 @@ void idObjective::Spawn()
 idObjective::Event_Screenshot
 ================
 */
-void idObjective::Event_CamShot( ) {
-	const char *camName;
+void idObjective::Event_CamShot( )
+{
+	const char* camName;
 	idStr shotName = gameLocal.GetMapName();
 	shotName.StripFileExtension();
 	shotName += "/";
 	shotName += spawnArgs.GetString( "screenshot" );
 	shotName.SetFileExtension( ".tga" );
-	if ( spawnArgs.GetString( "camShot", "", &camName ) ) {
-		idEntity *ent = gameLocal.FindEntity( camName );
-		if ( ent && ent->cameraTarget ) {
-			const renderView_t *view = ent->cameraTarget->GetRenderView();
+	if( spawnArgs.GetString( "camShot", "", &camName ) )
+	{
+		idEntity* ent = gameLocal.FindEntity( camName );
+		if( ent && ent->cameraTarget )
+		{
+			const renderView_t* view = ent->cameraTarget->GetRenderView();
 			renderView_t fullView = *view;
 			fullView.width = SCREEN_WIDTH;
 			fullView.height = SCREEN_HEIGHT;
-
+			
 #ifdef _D3XP
 			// HACK : always draw sky-portal view if there is one in the map, this isn't real-time
-			if ( gameLocal.portalSkyEnt.GetEntity() && g_enablePortalSky.GetBool() ) {
+			if( gameLocal.portalSkyEnt.GetEntity() && g_enablePortalSky.GetBool() )
+			{
 				renderView_t	portalView = fullView;
 				portalView.vieworg = gameLocal.portalSkyEnt.GetEntity()->GetPhysics()->GetOrigin();
-
+				
 				// setup global fixup projection vars
-				if ( 1 ) {
+				if( 1 )
+				{
 					int vidWidth, vidHeight;
 					idVec2 shiftScale;
-
+					
 					renderSystem->GetGLSettings( vidWidth, vidHeight );
-
+					
 					float pot;
 					int temp;
-
+					
 					int	 w = vidWidth;
-					for (temp = 1 ; temp < w ; temp<<=1) {
+					for( temp = 1 ; temp < w ; temp <<= 1 )
+					{
 					}
-					pot = (float)temp;
-					shiftScale.x = (float)w / pot;
-
+					pot = ( float )temp;
+					shiftScale.x = ( float )w / pot;
+					
 					int	 h = vidHeight;
-					for (temp = 1 ; temp < h ; temp<<=1) {
+					for( temp = 1 ; temp < h ; temp <<= 1 )
+					{
 					}
-					pot = (float)temp;
-					shiftScale.y = (float)h / pot;
-
+					pot = ( float )temp;
+					shiftScale.y = ( float )h / pot;
+					
 					fullView.shaderParms[4] = shiftScale.x;
 					fullView.shaderParms[5] = shiftScale.y;
 				}
-
+				
 				gameRenderWorld->RenderScene( &portalView );
 				renderSystem->CaptureRenderToImage( "_currentRender" );
 			}
 #endif
-
+			
 			// draw a view to a texture
 			tr.TakeScreenshot( 256, 256, shotName, 1, &fullView );
 			//renderSystem->CropRenderSize( 256, 256 );
@@ -1727,7 +1738,7 @@ void idObjective::Event_Trigger( idEntity* activator )
 					}
 				}
 				player->GiveObjective( spawnArgs.GetString( "objectivetitle" ), spawnArgs.GetString( "objectivetext" ), screenshot, target ); // ## SR + target
-								
+				
 				PostEventMS( &EV_GetPlayerPos, 2000 );
 			}
 		}
@@ -2072,9 +2083,9 @@ bool idMoveableItem::Collide( const trace_t& collision, const idVec3& velocity )
 			// which causes footsteps on ai's to not honor their shader parms
 			SetSoundVolume( f );
 		}
-
+		
 		// ################## SR
-
+		
 		idStr	fxCollide;
 		float	fx_collide_interval;
 		fxCollide = spawnArgs.GetString( "fx_collide" );
@@ -2083,11 +2094,11 @@ bool idMoveableItem::Collide( const trace_t& collision, const idVec3& velocity )
 		idEntityFx::StartFx( fxCollide, &collision.c.point, NULL, this, false, &collision.c.normal );
 		
 		fx_collide_interval = spawnArgs.GetFloat( "fx_collide_interval" );
-
+		
 		// ################## END SR
 		
 		nextSoundTime = gameLocal.time + fx_collide_interval;
-
+		
 	}
 	
 	return false;
@@ -2470,27 +2481,32 @@ void idObjectiveComplete::Event_Trigger( idEntity* activator )
 {
 	if( !spawnArgs.GetBool( "objEnabled" ) )
 		return;
-
+		
 	idPlayer* player = gameLocal.GetLocalPlayer();
 	if( player )
 	{
 		RemoveItem( player );
-				
+		
 		if( spawnArgs.GetString( "inv_objective", NULL ) )
-		{		
+		{
 			// ###################################################### SR
 			
 			// remove from compass
-			if ( this->name == player->compassObjective_1 ) {
+			if( this->name == player->compassObjective_1 )
+			{
 				player->compassObjective_1 = "";
-			} else if ( this->name == player->compassObjective_2 ) {
+			}
+			else if( this->name == player->compassObjective_2 )
+			{
 				player->compassObjective_2 = "";
-			} else if ( this->name == player->compassObjective_3 ) {
+			}
+			else if( this->name == player->compassObjective_3 )
+			{
 				player->compassObjective_3 = "";
-			}	
+			}
 			
 			// ############################################ END
-
+			
 			player->CompleteObjective( spawnArgs.GetString( "objectivetitle" ) );
 			PostEventMS( &EV_GetPlayerPos, 2000 );
 		}

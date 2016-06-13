@@ -30,8 +30,8 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef SPINBUTTON_H_
 #define SPINBUTTON_H_
 
-void SpinButton_SetIncrement ( HWND hWnd, float inc );
-void SpinButton_HandleNotify ( NMHDR* hdr );
-void SpinButton_SetRange	 ( HWND hWnd, float min, float max );
+void SpinButton_SetIncrement( HWND hWnd, float inc );
+void SpinButton_HandleNotify( NMHDR* hdr );
+void SpinButton_SetRange( HWND hWnd, float min, float max );
 
 #endif // SPINBUTOTN_H_

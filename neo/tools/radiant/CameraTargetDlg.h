@@ -43,23 +43,23 @@ class CCameraTargetDlg : public CDialog
 {
 // Construction
 public:
-	CCameraTargetDlg(CWnd* pParent = NULL);   // standard constructor
-
+	CCameraTargetDlg( CWnd* pParent = NULL ); // standard constructor
+	
 // Dialog Data
 	//{{AFX_DATA(CCameraTargetDlg)
 	enum { IDD = IDD_DLG_CAMERATARGET };
 	int		m_nType;
 	CString	m_strName;
 	//}}AFX_DATA
-
-
+	
+	
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CCameraTargetDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+protected:
+	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	//}}AFX_VIRTUAL
-
+	
 // Implementation
 protected:
 

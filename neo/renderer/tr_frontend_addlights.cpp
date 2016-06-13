@@ -350,11 +350,11 @@ static void R_AddSingleLight( viewLight_t* vLight )
 	
 	// this bool array will be set true whenever the entity will visibly interact with the light
 	vLight->entityInteractionState = ( byte* )R_ClearedFrameAlloc( light->world->entityDefs.Num() * sizeof( vLight->entityInteractionState[0] ), FRAME_ALLOC_INTERACTION_STATE );
-
+	
 	// foresthale 2014-05-10: don't crash if the interaction table hasn't been created yet
-	if (!light->world->interactionTable)
+	if( !light->world->interactionTable )
 		light->world->ResizeInteractionTable();
-
+		
 	idInteraction * * const interactionTableRow = light->world->interactionTable + light->index * light->world->interactionTableWidth;
 	
 	for( areaReference_t* lref = light->references; lref != NULL; lref = lref->ownerNext )

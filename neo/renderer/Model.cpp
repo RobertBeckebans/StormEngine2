@@ -63,7 +63,7 @@ idRenderModelStatic::idRenderModelStatic()
 	fastLoad = false;
 	reloadable = true;
 	levelLoadReferenced = false;
-	isDynamicallyGenerated = false; 
+	isDynamicallyGenerated = false;
 	hasDrawingSurfaces = true;
 	hasInteractingSurfaces = true;
 	hasShadowCastingSurfaces = true;
@@ -368,12 +368,12 @@ bool idRenderModelStatic::LoadBinaryModel( idFile* file, const ID_TIME_T sourceT
 	
 	file->ReadBig( timeStamp );
 	
-	if( !fileSystem->InProductionMode() && sourceTimeStamp != timeStamp && sourceTimeStamp>0 )
+	if( !fileSystem->InProductionMode() && sourceTimeStamp != timeStamp && sourceTimeStamp > 0 )
 	{
 		return false;
 	}
 	
-	common->UpdateLevelLoadPacifier(true);
+	common->UpdateLevelLoadPacifier( true );
 	
 	int numSurfaces;
 	file->ReadBig( numSurfaces );
@@ -2727,7 +2727,7 @@ idRenderModelStatic::WriteToDemoFile
 ================
 */
 void idRenderModelStatic::WriteToDemoFile( class idDemoFile* f )
-{	
+{
 	// note that it has been updated
 	lastArchivedFrame = tr.frameCount;
 	

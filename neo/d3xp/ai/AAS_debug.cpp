@@ -575,9 +575,9 @@ void idAASLocal::Test( const idVec3& origin )
 	{
 		ShowArea( origin );
 	}
-	if ( aas_showAll.GetBool() )
+	if( aas_showAll.GetBool() )
 	{
-		for ( int i = 0; i < file->GetNumAreas(); ++i )
+		for( int i = 0; i < file->GetNumAreas(); ++i )
 			DrawArea( i );
 	}
 	if( aas_showWallEdges.GetBool() )

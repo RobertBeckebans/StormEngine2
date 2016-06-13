@@ -43,48 +43,48 @@ class idDmapSurface_Patch : public idDmapSurface
 
 public:
 	idDmapSurface_Patch();
-	idDmapSurface_Patch(int maxPatchWidth, int maxPatchHeight);
-	idDmapSurface_Patch(const idDmapSurface_Patch& patch);
+	idDmapSurface_Patch( int maxPatchWidth, int maxPatchHeight );
+	idDmapSurface_Patch( const idDmapSurface_Patch& patch );
 	~idDmapSurface_Patch();
-
-	void				SetSize(int patchWidth, int patchHeight);
+	
+	void				SetSize( int patchWidth, int patchHeight );
 	int					GetWidth() const;
 	int					GetHeight() const;
-
+	
 	// subdivide the patch mesh based on error
-	void				Subdivide(float maxHorizontalError, float maxVerticalError, float maxLength, bool genNormals = false);
+	void				Subdivide( float maxHorizontalError, float maxVerticalError, float maxLength, bool genNormals = false );
 	// subdivide the patch up to an explicit number of horizontal and vertical subdivisions
-	void				SubdivideExplicit(int horzSubdivisions, int vertSubdivisions, bool genNormals, bool removeLinear = false);
-
+	void				SubdivideExplicit( int horzSubdivisions, int vertSubdivisions, bool genNormals, bool removeLinear = false );
+	
 protected:
 	int					width;			// width of patch
 	int					height;			// height of patch
 	int					maxWidth;		// maximum width allocated for
 	int					maxHeight;		// maximum height allocated for
 	bool				expanded;		// true if vertices are spaced out
-
+	
 private:
 	// put the approximation points on the curve
 	void				PutOnCurve();
 	// remove columns and rows with all points on one line
 	void				RemoveLinearColumnsRows();
 	// resize verts buffer
-	void				ResizeExpanded(int height, int width);
+	void				ResizeExpanded( int height, int width );
 	// space points out over maxWidth * maxHeight buffer
 	void				Expand();
 	// move all points to the start of the verts buffer
 	void				Collapse();
 	// project a point onto a vector to calculate maximum curve error
-	void				ProjectPointOntoVector(const idVec3& point, const idVec3& vStart, const idVec3& vEnd, idVec3& vProj);
+	void				ProjectPointOntoVector( const idVec3& point, const idVec3& vStart, const idVec3& vEnd, idVec3& vProj );
 	// generate normals
 	void				GenerateNormals();
 	// generate triangle indexes
 	void				GenerateIndexes();
 	// lerp point from two patch point
-	void				LerpVert(const idDmapDrawVert& a, const idDmapDrawVert& b, idDmapDrawVert& out) const;
+	void				LerpVert( const idDmapDrawVert& a, const idDmapDrawVert& b, idDmapDrawVert& out ) const;
 	// sample a single 3x3 patch
-	void				SampleSinglePatchPoint(const idDmapDrawVert ctrl[3][3], float u, float v, idDmapDrawVert* out) const;
-	void				SampleSinglePatch(const idDmapDrawVert ctrl[3][3], int baseCol, int baseRow, int width, int horzSub, int vertSub, idDmapDrawVert* outVerts) const;
+	void				SampleSinglePatchPoint( const idDmapDrawVert ctrl[3][3], float u, float v, idDmapDrawVert* out ) const;
+	void				SampleSinglePatch( const idDmapDrawVert ctrl[3][3], int baseCol, int baseRow, int width, int horzSub, int vertSub, idDmapDrawVert* outVerts ) const;
 };
 
 /*
@@ -103,12 +103,12 @@ ID_INLINE idDmapSurface_Patch::idDmapSurface_Patch()
 idDmapSurface_Patch::idDmapSurface_Patch
 =================
 */
-ID_INLINE idDmapSurface_Patch::idDmapSurface_Patch(int maxPatchWidth, int maxPatchHeight)
+ID_INLINE idDmapSurface_Patch::idDmapSurface_Patch( int maxPatchWidth, int maxPatchHeight )
 {
 	width = height = 0;
 	maxWidth = maxPatchWidth;
 	maxHeight = maxPatchHeight;
-	verts.SetNum(maxWidth * maxHeight);
+	verts.SetNum( maxWidth * maxHeight );
 	expanded = false;
 }
 
@@ -117,9 +117,9 @@ ID_INLINE idDmapSurface_Patch::idDmapSurface_Patch(int maxPatchWidth, int maxPat
 idDmapSurface_Patch::idDmapSurface_Patch
 =================
 */
-ID_INLINE idDmapSurface_Patch::idDmapSurface_Patch(const idDmapSurface_Patch& patch)
+ID_INLINE idDmapSurface_Patch::idDmapSurface_Patch( const idDmapSurface_Patch& patch )
 {
-	(*this) = patch;
+	( *this ) = patch;
 }
 
 /*

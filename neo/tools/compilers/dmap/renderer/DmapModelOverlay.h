@@ -40,55 +40,59 @@ Render model overlay for adding decals on top of dynamic models.
 
 const int MAX_OVERLAY_SURFACES = 16;
 
-typedef struct dmapOverlayVertex_s {
+typedef struct dmapOverlayVertex_s
+{
 	int							vertexNum;
 	float						st[2];
 } dmapOverlayVertex_t;
 
-typedef struct dmapOverlaySurface_s {
+typedef struct dmapOverlaySurface_s
+{
 	int							surfaceNum;
 	int							surfaceId;
 	int							numIndexes;
-	uint *						indexes;
+	uint* 						indexes;
 	int							numVerts;
-	dmapOverlayVertex_t *			verts;
+	dmapOverlayVertex_t* 			verts;
 } dmapOverlaySurface_t;
 
-typedef struct dmapOverlayMaterial_s {
-	const idMaterial *			material;
-	idList<dmapOverlaySurface_t *>	surfaces;
+typedef struct dmapOverlayMaterial_s
+{
+	const idMaterial* 			material;
+	idList<dmapOverlaySurface_t*>	surfaces;
 } dmapOverlayMaterial_t;
 
 
-class idDmapRenderModelOverlay {
+class idDmapRenderModelOverlay
+{
 public:
 	idDmapRenderModelOverlay();
 	~idDmapRenderModelOverlay();
-
-	static idDmapRenderModelOverlay *Alloc(void);
-	static void					Free(idDmapRenderModelOverlay *overlay);
-
+	
+	static idDmapRenderModelOverlay* Alloc( void );
+	static void					Free( idDmapRenderModelOverlay* overlay );
+	
 	// Projects an overlay onto deformable geometry and can be added to
 	// a render entity to allow decals on top of dynamic models.
 	// This does not generate tangent vectors, so it can't be used with
 	// light interaction shaders. Materials for overlays should always
 	// be clamped, because the projected texcoords can run well off the
 	// texture since no new clip vertexes are generated.
-	void						CreateOverlay(const idDmapRenderModel *model, const idPlane localTextureAxis[2], const idMaterial *material);
-
+	void						CreateOverlay( const idDmapRenderModel* model, const idPlane localTextureAxis[2], const idMaterial* material );
+	
 	// Creates new model surfaces for baseModel, which should be a static instantiation of a dynamic model.
-	void						AddOverlaySurfacesToModel(idDmapRenderModel *baseModel);
-
+	void						AddOverlaySurfacesToModel( idDmapRenderModel* baseModel );
+	
 	// Removes overlay surfaces from the model.
-	static void					RemoveOverlaySurfacesFromModel(idDmapRenderModel *baseModel);
-
-	void						ReadFromDemoFile(class idDemoFile *f);
-	void						WriteToDemoFile(class idDemoFile *f) const;
-
+	static void					RemoveOverlaySurfacesFromModel( idDmapRenderModel* baseModel );
+	
+	void						ReadFromDemoFile( class idDemoFile* f );
+	void						WriteToDemoFile( class idDemoFile* f ) const;
+	
 private:
-	idList<dmapOverlayMaterial_t *>	materials;
-
-	void						FreeSurface(dmapOverlaySurface_t *surface);
+	idList<dmapOverlayMaterial_t*>	materials;
+	
+	void						FreeSurface( dmapOverlaySurface_t* surface );
 };
 
 #endif /* !__DMAPMODELOVERLAY_H__ */

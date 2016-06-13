@@ -208,7 +208,7 @@ ResizeInteractionTable
 void idRenderWorldLocal::ResizeInteractionTable()
 {
 	// foresthale 2014-05-10: added a case for when there is no interaction table (this happens in the editor on the first R_AddSingleLight)
-	if (!interactionTable)
+	if( !interactionTable )
 	{
 		interactionTableWidth = entityDefs.Num() + 1000; // motorsep 11-27-2014; was 100
 		interactionTableHeight = lightDefs.Num() + 1000; // motorsep 11-27-2014; was 100
@@ -216,7 +216,7 @@ void idRenderWorldLocal::ResizeInteractionTable()
 		interactionTable = ( idInteraction** )R_ClearedStaticAlloc( size );
 		return;
 	}
-
+	
 	// we overflowed the interaction table, so make it larger
 	common->Printf( "idRenderWorldLocal::ResizeInteractionTable: overflowed interactionTable, resizing\n" );
 	
@@ -362,13 +362,13 @@ void idRenderWorldLocal::UpdateEntityDef( qhandle_t entityHandle, const renderEn
 	/*if( common->WriteDemo() && def->archived )
 	{
 	WriteFreeEntity( entityHandle );
-
+	
 	if(def->decals)
 	WriteFreeDecal( common->WriteDemo(), def->decals->index );
-
+	
 	if ( def->overlays )
 	WriteFreeOverlay( common->WriteDemo(), def->overlays->index );
-
+	
 	def->archived = false;
 	}*/
 	def->archived = false;
@@ -828,7 +828,7 @@ idRenderModelDecal* idRenderWorldLocal::AllocDecal( qhandle_t newEntityHandle, i
 	decals[oldest].decals->ReUse();
 	if( common->WriteDemo() )
 	{
-		WriteFreeDecal(common->WriteDemo(), oldest);
+		WriteFreeDecal( common->WriteDemo(), oldest );
 	}
 	return decals[oldest].decals;
 }
@@ -1841,9 +1841,9 @@ void idRenderWorldLocal::GenerateAllInteractions()
 				// the interaction may create geometry
 				inter->CreateStaticInteraction();
 			}
-		}		
-		lightDefUpdate = 69 + ((i * 30)/lightDefCount);
-		common->UpdateLevelLoadPacifier(false,lightDefUpdate);
+		}
+		lightDefUpdate = 69 + ( ( i * 30 ) / lightDefCount );
+		common->UpdateLevelLoadPacifier( false, lightDefUpdate );
 		//session->Pump();
 	}
 	
@@ -1995,140 +1995,180 @@ to prevent double checking areas.
 We might alternatively choose to do this with an area flow.
 ==================
 */
-void idRenderWorldLocal::PushVolumeIntoTree_r( idRenderEntityLocal *def, idRenderLightLocal *light, const idSphere *sphere, int numPoints, const idVec3 (*points),
-								 int nodeNum ) {
+void idRenderWorldLocal::PushVolumeIntoTree_r( idRenderEntityLocal* def, idRenderLightLocal* light, const idSphere* sphere, int numPoints, const idVec3( *points ),
+		int nodeNum )
+{
 	int			i;
-	areaNode_t	*node;
+	areaNode_t*	node;
 	bool	front, back;
-
-	if ( nodeNum < 0 ) {
-		portalArea_t	*area;
+	
+	if( nodeNum < 0 )
+	{
+		portalArea_t*	area;
 		int		areaNum = -1 - nodeNum;
-
+		
 		area = &portalAreas[ areaNum ];
-		if ( area->viewCount == tr.viewCount ) {
+		if( area->viewCount == tr.viewCount )
+		{
 			return;	// already added a reference here
 		}
 		area->viewCount = tr.viewCount;
-
-		if ( def ) {
+		
+		if( def )
+		{
 			AddEntityRefToArea( def, area );
 		}
-		if ( light ) {
+		if( light )
+		{
 			AddLightRefToArea( light, area );
 		}
-
+		
 		return;
 	}
-
+	
 	node = areaNodes + nodeNum;
-
+	
 	// if we know that all possible children nodes only touch an area
 	// we have already marked, we can early out
-	if ( r_useNodeCommonChildren.GetBool() &&
-		node->commonChildrenArea != CHILDREN_HAVE_MULTIPLE_AREAS ) {
+	if( r_useNodeCommonChildren.GetBool() &&
+			node->commonChildrenArea != CHILDREN_HAVE_MULTIPLE_AREAS )
+	{
 		// note that we do NOT try to set a reference in this area
 		// yet, because the test volume may yet wind up being in the
 		// solid part, which would cause bounds slightly poked into
 		// a wall to show up in the next room
-		if ( portalAreas[ node->commonChildrenArea ].viewCount == tr.viewCount ) {
+		if( portalAreas[ node->commonChildrenArea ].viewCount == tr.viewCount )
+		{
 			return;
 		}
 	}
-
+	
 	// if the bounding sphere is completely on one side, don't
 	// bother checking the individual points
 	float sd = node->plane.Distance( sphere->GetOrigin() );
-	if ( sd >= sphere->GetRadius() ) {
+	if( sd >= sphere->GetRadius() )
+	{
 		nodeNum = node->children[0];
-		if ( nodeNum ) {	// 0 = solid
+		if( nodeNum )  	// 0 = solid
+		{
 			PushVolumeIntoTree_r( def, light, sphere, numPoints, points, nodeNum );
 		}
 		return;
 	}
-	if ( sd <= -sphere->GetRadius() ) {
+	if( sd <= -sphere->GetRadius() )
+	{
 		nodeNum = node->children[1];
-		if ( nodeNum ) {	// 0 = solid
+		if( nodeNum )  	// 0 = solid
+		{
 			PushVolumeIntoTree_r( def, light, sphere, numPoints, points, nodeNum );
 		}
 		return;
 	}
-
+	
 	// exact check all the points against the node plane
 	front = back = false;
 #ifdef MACOS_X	//loop unrolling & pre-fetching for performance
 	const idVec3 norm = node->plane.Normal();
 	const float plane3 = node->plane[3];
 	float D0, D1, D2, D3;
-
-	for ( i = 0 ; i < numPoints - 4; i+=4 ) {
-		D0 = points[i+0] * norm + plane3;
-		D1 = points[i+1] * norm + plane3;
-		if ( !front && D0 >= 0.0f ) {
+	
+	for( i = 0 ; i < numPoints - 4; i += 4 )
+	{
+		D0 = points[i + 0] * norm + plane3;
+		D1 = points[i + 1] * norm + plane3;
+		if( !front && D0 >= 0.0f )
+		{
 			front = true;
-		} else if ( !back && D0 <= 0.0f ) {
+		}
+		else if( !back && D0 <= 0.0f )
+		{
 			back = true;
 		}
-		D2 = points[i+1] * norm + plane3;
-		if ( !front && D1 >= 0.0f ) {
+		D2 = points[i + 1] * norm + plane3;
+		if( !front && D1 >= 0.0f )
+		{
 			front = true;
-		} else if ( !back && D1 <= 0.0f ) {
+		}
+		else if( !back && D1 <= 0.0f )
+		{
 			back = true;
 		}
-		D3 = points[i+1] * norm + plane3;
-		if ( !front && D2 >= 0.0f ) {
+		D3 = points[i + 1] * norm + plane3;
+		if( !front && D2 >= 0.0f )
+		{
 			front = true;
-		} else if ( !back && D2 <= 0.0f ) {
+		}
+		else if( !back && D2 <= 0.0f )
+		{
 			back = true;
 		}
-
-		if ( !front && D3 >= 0.0f ) {
+		
+		if( !front && D3 >= 0.0f )
+		{
 			front = true;
-		} else if ( !back && D3 <= 0.0f ) {
+		}
+		else if( !back && D3 <= 0.0f )
+		{
 			back = true;
 		}
-		if ( back && front ) {
+		if( back && front )
+		{
 			break;
 		}
 	}
-	if(!(back && front)) {
-		for (; i < numPoints ; i++ ) {
+	if( !( back && front ) )
+	{
+		for( ; i < numPoints ; i++ )
+		{
 			float d;
 			d = points[i] * node->plane.Normal() + node->plane[3];
-			if ( d >= 0.0f ) {
+			if( d >= 0.0f )
+			{
 				front = true;
-			} else if ( d <= 0.0f ) {
+			}
+			else if( d <= 0.0f )
+			{
 				back = true;
 			}
-			if ( back && front ) {
+			if( back && front )
+			{
 				break;
 			}
 		}
 	}
 #else
-	for ( i = 0 ; i < numPoints ; i++ ) {
+	for( i = 0 ; i < numPoints ; i++ )
+	{
 		float d;
-
+	
 		d = points[i] * node->plane.Normal() + node->plane[3];
-		if ( d >= 0.0f ) {
+		if( d >= 0.0f )
+		{
 			front = true;
-		} else if ( d <= 0.0f ) {
+		}
+		else if( d <= 0.0f )
+		{
 			back = true;
 		}
-		if ( back && front ) {
+		if( back && front )
+		{
 			break;
 		}
 	}
 #endif
-	if ( front ) {
+	if( front )
+	{
 		nodeNum = node->children[0];
-		if ( nodeNum ) {	// 0 = solid
+		if( nodeNum )  	// 0 = solid
+		{
 			PushVolumeIntoTree_r( def, light, sphere, numPoints, points, nodeNum );
 		}
 	}
-	if ( back ) {
+	if( back )
+	{
 		nodeNum = node->children[1];
-		if ( nodeNum ) {	// 0 = solid
+		if( nodeNum )  	// 0 = solid
+		{
 			PushVolumeIntoTree_r( def, light, sphere, numPoints, points, nodeNum );
 		}
 	}
@@ -2139,34 +2179,39 @@ void idRenderWorldLocal::PushVolumeIntoTree_r( idRenderEntityLocal *def, idRende
 PushVolumeIntoTree
 ==============
 */
-void idRenderWorldLocal::PushVolumeIntoTree( idRenderEntityLocal *def, idRenderLightLocal *light, int numPoints, const idVec3 (*points) ) {
+void idRenderWorldLocal::PushVolumeIntoTree( idRenderEntityLocal* def, idRenderLightLocal* light, int numPoints, const idVec3( *points ) )
+{
 	int i;
 	float radSquared, lr;
 	idVec3 mid, dir;
-
-	if ( areaNodes == NULL ) {
+	
+	if( areaNodes == NULL )
+	{
 		return;
 	}
-
+	
 	// calculate a bounding sphere for the points
 	mid.Zero();
-	for ( i = 0; i < numPoints; i++ ) {
+	for( i = 0; i < numPoints; i++ )
+	{
 		mid += points[i];
 	}
 	mid *= ( 1.0f / numPoints );
-
+	
 	radSquared = 0;
-
-	for ( i = 0; i < numPoints; i++ ) {
+	
+	for( i = 0; i < numPoints; i++ )
+	{
 		dir = points[i] - mid;
 		lr = dir * dir;
-		if ( lr > radSquared ) {
+		if( lr > radSquared )
+		{
 			radSquared = lr;
 		}
 	}
-
+	
 	idSphere sphere( mid, sqrt( radSquared ) );
-
+	
 	PushVolumeIntoTree_r( def, light, &sphere, numPoints, points, 0 );
 }
 

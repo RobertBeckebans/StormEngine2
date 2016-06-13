@@ -222,7 +222,7 @@ idLight::idLight():
 	fadeStart			= 0;
 	fadeEnd				= 0;
 	soundWasPlaying		= false;
-
+	
 	fl.networkSync = true;
 }
 
@@ -961,9 +961,12 @@ idLight::ShowEditingDialog
 */
 void idLight::ShowEditingDialog()
 {
-	if ( g_editEntityMode.GetInteger() == 1 ) {
+	if( g_editEntityMode.GetInteger() == 1 )
+	{
 		common->InitTool( EDITOR_LIGHT, &spawnArgs );
-	} else {
+	}
+	else
+	{
 		common->InitTool( EDITOR_SOUND, &spawnArgs );
 	}
 }

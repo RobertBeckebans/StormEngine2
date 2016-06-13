@@ -79,7 +79,7 @@ void idMenuScreen_HUD::ShowScreen( const mainMenuTransition_t transitionType )
 	// ###### SR
 	// Grapple
 	grappleCursor = root.GetNestedSprite( "_center", "crosshairGrapple" );
-
+	
 	// ####### END
 	
 	// Security Update
@@ -136,13 +136,13 @@ void idMenuScreen_HUD::ShowScreen( const mainMenuTransition_t transitionType )
 	// Cursors
 	// The way crosshairs are set up is this:
 	// a movie clip with instance name "_center" in the Scene (on a separate layer), contains 4 other movie clips with instance names written below. Each movie clip contains frames with
-	// different images that depict appropriate shape of crosshair. Those images can be raw images from the Library or graphic symbols. 
-	// Each static frame has to have stop(); AS2 code on it (in a separate layer named "as" for clarity). Animated frames usually have a label on the first frame 
+	// different images that depict appropriate shape of crosshair. Those images can be raw images from the Library or graphic symbols.
+	// Each static frame has to have stop(); AS2 code on it (in a separate layer named "as" for clarity). Animated frames usually have a label on the first frame
 	// (use separate layer named "labels") and gotoAndStop(frame#); AS code right after the last frame. This is relevant to Combat Crosshair, specifically for animation of flashing cursor
 	// when enemy is hit by player's shot (sorta a visual feedback)
-	talkCursor = root.GetNestedSprite( "_center", "crosshairTalk" ); // this one has only one image - talking crosshair 
+	talkCursor = root.GetNestedSprite( "_center", "crosshairTalk" ); // this one has only one image - talking crosshair
 	combatCursor = root.GetNestedSprite( "_center", "crosshairCombat" ); // this one has 2 images so far - normal crosshair and "hit" crosshair (when damaging living thing).
-																		// "hit" state is animated using motion tween between several frames of "hit" state image.
+	// "hit" state is animated using motion tween between several frames of "hit" state image.
 	grabberCursor = root.GetNestedSprite( "_center", "crosshairGrabber" );
 	respawnMessage = root.GetNestedSprite( "_center", "respawnMessage" );
 	itemCursor = root.GetNestedSprite( "_center", "crosshairItem" ); // this one to indicate that item can be picked up
@@ -239,7 +239,7 @@ void idMenuScreen_HUD::UpdateHealthArmor( idPlayer* player )
 	{
 		return;
 	}
-
+	
 	
 	if( common->IsMultiplayer() )
 	{
@@ -468,11 +468,12 @@ void idMenuScreen_HUD::UpdateWeaponInfo( idPlayer* player )
 			idSWFSpriteInstance* ammoEmptySprite = ammoInfo->GetScriptObject()->GetNestedSprite( "info", "noAmmo" );
 			idSWFSpriteInstance* txtAmmoSprite = ammoInfo->GetScriptObject()->GetNestedSprite( "info", "ammoCount" );
 			
-			idSWFTextInstance* txtClip = ammoInfo->GetScriptObject()->GetNestedText( "info", "clip", "clipCount", "txtVal" );			
+			idSWFTextInstance* txtClip = ammoInfo->GetScriptObject()->GetNestedText( "info", "clip", "clipCount", "txtVal" );
 			idSWFTextInstance* txtAmmo = ammoInfo->GetScriptObject()->GetNestedText( "info", "ammoCount", "txtVal" );
 			
 			// motorsep 03-28-2015; for testing purposes clip ammo counter code (see comment-label below) is out if the following if() block since I don't have other SWF elements
-			if( txtClip != NULL ) {
+			if( txtClip != NULL )
+			{
 				txtClip->SetText( playerAmmo );
 				txtClip->SetStrokeInfo( true, 0.75f, 1.5f );
 			}
@@ -499,7 +500,7 @@ void idMenuScreen_HUD::UpdateWeaponInfo( idPlayer* player )
 					clipEmptySprite->SetVisible( false );
 					txtClipSprite->StopFrame( 1 );
 				}
-
+			
 				if( txtClip != NULL )
 				{
 					txtClip->SetText( playerAmmo );
@@ -733,11 +734,11 @@ void idMenuScreen_HUD::CombatCursorFlash()
 	// when killable entity (the one that has life amount set I presume) gets hit with a weapons' attack, crosshair should flash with whatever animation you want
 	if( cursorInCombat ) // while in combat (that is not talking, not grabbing stuff with Grabber)
 	{
-		if( cursorState == CURSOR_IN_COMBAT ) // and cursor's state is actually "in combat" as shooting/attacking 
+		if( cursorState == CURSOR_IN_COMBAT ) // and cursor's state is actually "in combat" as shooting/attacking
 		{
 			if( combatCursor ) // and if "combatCursor" exists (if we have movie clip in Flash file with instance name _root._center.crosshairCombat ; see line 129 of this file)
 			{
-				// play motion tween starting with frame labeled "hit"; the frame next to the final tween frame should have AS2 gotoAndStop(2); 
+				// play motion tween starting with frame labeled "hit"; the frame next to the final tween frame should have AS2 gotoAndStop(2);
 				// where 2 is a frame number with default combat cursor (frame 2 is where BFG had it)
 				combatCursor->PlayFrame( "hit" );
 			}
@@ -778,7 +779,7 @@ void idMenuScreen_HUD::UpdateCursorState()
 			grabberCursor->StopFrame( 1 );
 			grabberCursor->SetVisible( false );
 		}
-
+		
 		if( itemCursor )
 		{
 			itemCursor->StopFrame( 1 );
@@ -853,7 +854,7 @@ void idMenuScreen_HUD::UpdateCursorState()
 								actionText.Append( "]" );
 							}
 							
-							txtAction->SetText( actionText );							
+							txtAction->SetText( actionText );
 						}
 						else
 						{
@@ -997,51 +998,62 @@ void idMenuScreen_HUD::UpdateCursorState()
 idMenuScreen_HUD::Show/Hide GrappleCursor/Text
 ========================
 */
-void idMenuScreen_HUD::ShowGrappleCursor() {
-	if ( grappleCursor ) {
+void idMenuScreen_HUD::ShowGrappleCursor()
+{
+	if( grappleCursor )
+	{
 		idSWFSpriteInstance*  grappleCrosshair = grappleCursor->GetScriptObject()->GetNestedSprite( "grapple_reticle" );
-		if( grappleCrosshair != NULL && !grappleCrosshair->IsPlaying() ) {
+		if( grappleCrosshair != NULL && !grappleCrosshair->IsPlaying() )
+		{
 			grappleCrosshair->PlayFrame( "rollOn" );
 		}
 	}
-}	
-void idMenuScreen_HUD::HideGrappleCursor() {
-	if ( grappleCursor ) {
+}
+void idMenuScreen_HUD::HideGrappleCursor()
+{
+	if( grappleCursor )
+	{
 		idSWFSpriteInstance*  grappleCrosshair = grappleCursor->GetScriptObject()->GetNestedSprite( "grapple_reticle" );
-		if( grappleCrosshair != NULL ) {
+		if( grappleCrosshair != NULL )
+		{
 			grappleCrosshair->StopFrame( 1 );
 		}
 	}
-}	
-void idMenuScreen_HUD::ShowGrappleText() {
-	if ( grappleCursor ) {
+}
+void idMenuScreen_HUD::ShowGrappleText()
+{
+	if( grappleCursor )
+	{
 		idSWFTextInstance* grappleHint = grappleCursor->GetScriptObject()->GetNestedText( "info", "txtNoTarget" );
-		if( grappleHint != NULL && !grappleCursor->IsPlaying() ) {
+		if( grappleHint != NULL && !grappleCursor->IsPlaying() )
+		{
 			grappleHint->SetStrokeInfo( true, 0.85f, 1.5f, 0.0f, 0.0f, 0.0f );
 			grappleHint->SetText( idLocalization::GetString( "#str_crosshair_grapple_notarget" ) );
 			grappleCursor->PlayFrame( "rollOn" );
 		}
 	}
-}	
-void idMenuScreen_HUD::HideGrappleText() {
-	if ( grappleCursor ) {
+}
+void idMenuScreen_HUD::HideGrappleText()
+{
+	if( grappleCursor )
+	{
 		grappleCursor->StopFrame( 1 );
 	}
-}	
-			/*
-			keyBindings_t bind = idKeyInput::KeyBindingsFromBinding( "_moveUP", true );
-			if( !bind.mouse.IsEmpty() ) {
-				hintText.Append( " [" );
-				hintText.Append( bind.mouse );
-				hintText.Append( "] " );
-			} else if( !bind.keyboard.IsEmpty() ) {
-				hintText.Append( " [" );
-				hintText.Append( bind.keyboard );
-				hintText.Append( "] " );
-			}
-			idStr tmptxt  = idLocalization::GetString( "#str_to_skip" );
-			hintText.Append( tmptxt );
-			*/
+}
+/*
+keyBindings_t bind = idKeyInput::KeyBindingsFromBinding( "_moveUP", true );
+if( !bind.mouse.IsEmpty() ) {
+	hintText.Append( " [" );
+	hintText.Append( bind.mouse );
+	hintText.Append( "] " );
+} else if( !bind.keyboard.IsEmpty() ) {
+	hintText.Append( " [" );
+	hintText.Append( bind.keyboard );
+	hintText.Append( "] " );
+}
+idStr tmptxt  = idLocalization::GetString( "#str_to_skip" );
+hintText.Append( tmptxt );
+*/
 
 // ############################## END SR
 
@@ -1411,7 +1423,7 @@ void idMenuScreen_HUD::ShowTip( const char* title, const char* tip )
 		return;
 	}
 	/*
-	idSWFSpriteInstance* tipSprite = tipInfo->GetSprite();	
+	idSWFSpriteInstance* tipSprite = tipInfo->GetSprite();
 	
 	if( !tipSprite )
 	{
@@ -1419,11 +1431,11 @@ void idMenuScreen_HUD::ShowTip( const char* title, const char* tip )
 	}
 	
 	tipSprite->SetVisible( true );
-	tipSprite->PlayFrame( "rollOn" ); 
+	tipSprite->PlayFrame( "rollOn" );
 	
 	idSWFTextInstance* txtTitle = tipInfo->GetNestedText( "info", "txtTitle" );
 	idSWFTextInstance* txtTip = tipInfo->GetNestedText( "info", "txtTip" ); */
-
+	
 	tipInfo->SetVisible( true );
 	tipInfo->PlayFrame( "rollOn" );
 	
@@ -1441,7 +1453,7 @@ void idMenuScreen_HUD::ShowTip( const char* title, const char* tip )
 		txtTip->SetText( tip );
 		txtTip->tooltip = true;
 		txtTip->SetStrokeInfo( true, 0.75f, 1.5f );
-		int numLines = txtTip->CalcNumLines();			
+		int numLines = txtTip->CalcNumLines();
 		if( numLines == 0 )
 		{
 			numLines = 1;
@@ -1469,7 +1481,7 @@ void idMenuScreen_HUD::HideTip()
 	
 	tipInfo->SetVisible( true );
 	tipInfo->PlayFrame( "rollOff" );
-
+	
 	/*
 	idSWFSpriteInstance* tipSprite = tipInfo->GetSprite();
 	

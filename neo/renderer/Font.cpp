@@ -83,8 +83,8 @@ idFont* idFont::RemapFont( const char* baseName )
 	
 	// motorsep 01-16-2015; only print that debug warning when "developer" cvar is set to 1
 	if( com_developer.GetBool() )
-		idLib::Warning( "THE REMAPPED FONT NAME IS " + cleanName ); 
-
+		idLib::Warning( "THE REMAPPED FONT NAME IS " + cleanName );
+		
 	return NULL;
 }
 
@@ -200,9 +200,10 @@ bool idFont::LoadFont()
 	idFile* fd = fileSystem->OpenFileRead( fontName );
 	
 	// motorsep 01-16-2015; only print that debug warning when "developer" cvar is set to 1
-	if( com_developer.GetBool() ) {
-		idLib::Warning( "THE FONT NAME IS " + name );  // SS2 debug print 
-		idLib::Warning( "THE FONT FULL NAME and PATH ARE " + fontName );  // SS2 debug print 
+	if( com_developer.GetBool() )
+	{
+		idLib::Warning( "THE FONT NAME IS " + name );  // SS2 debug print
+		idLib::Warning( "THE FONT FULL NAME and PATH ARE " + fontName );  // SS2 debug print
 	}
 	
 	if( fd == NULL )

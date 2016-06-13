@@ -139,7 +139,7 @@ public:
 	void				Spawn();
 	
 	static void			DrawDebugInfo();
-
+	
 	static idPathCorner* RandomPath( const idEntity* source, const idEntity* ignore );
 };
 
@@ -305,14 +305,14 @@ private:
 	void					Event_LaunchMissilesUpdate( int launchjoint, int targetjoint, int numshots, int framedelay );
 	void					Event_SetAnimation( const char* animName );
 	void					Event_GetAnimationLength();
-
-	// ################################# SR	
 	
-	int						num_cycleanims;	
-	void					Event_StartAnim( const char *startanim );
-	void					Event_GetAName( void );	
-
-	// ############################### END SR		
+	// ################################# SR
+	
+	int						num_cycleanims;
+	void					Event_StartAnim( const char* startanim );
+	void					Event_GetAName( void );
+	
+	// ############################### END SR
 	
 };
 

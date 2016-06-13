@@ -184,14 +184,14 @@ static float DotProduct_SIMD( const float* src0, const float* src1, const int co
 	return dot;
 	
 #else
-
+	
 // RB: the old loop caused completely broken rigid body physics and NaN errors
-#if 1	
+#if 1
 	float s0 = 0.0f;
 	float s1 = 0.0f;
 	float s2 = 0.0f;
 	float s3 = 0.0f;
-
+	
 	int i = 0;
 	//for( ; i < count - 3; i += 4 )
 	for( ; i + 4 <= count; i += 4 )
@@ -201,15 +201,15 @@ static float DotProduct_SIMD( const float* src0, const float* src1, const int co
 		//s2 += src0[i + 6] * src1[i + 6];
 		//s3 += src0[i + 7] * src1[i + 7];
 		s0 += src0[i + 0] * src1[i + 0];
-	    s1 += src0[i + 1] * src1[i + 1];
-	    s2 += src0[i + 2] * src1[i + 2];
-	    s3 += src0[i + 3] * src1[i + 3];
+		s1 += src0[i + 1] * src1[i + 1];
+		s2 += src0[i + 2] * src1[i + 2];
+		s3 += src0[i + 3] * src1[i + 3];
 	}
-
+	
 	switch( count - i )
 	{
 			NODEFAULT;
-
+	
 		case 4:
 			s3 += src0[i + 3] * src1[i + 3];
 		case 3:
@@ -225,17 +225,17 @@ static float DotProduct_SIMD( const float* src0, const float* src1, const int co
 	}
 	return s0 + s1 + s2 + s3;
 #else
-  
+	
 	float s = 0;
 	for( int i = 0; i < count; i++ )
 	{
 		s += src0[i] * src1[i];
 	}
-  
+	
 	return s;
 #endif
 // RB end
-
+	
 #endif
 }
 
@@ -1510,7 +1510,7 @@ static void GetMaxStep_SIMD( const float* f, const float* a, const float* delta_
 	_mm_store_ss( & maxStep, vMaxStep );
 	limit = _mm_cvtsi128_si32( vLimit );
 	limitSide = _mm_cvtsi128_si32( vLimitSide );
-
+	
 #else
 	// default to a full step for the current variable
 	{
@@ -1522,7 +1522,7 @@ static void GetMaxStep_SIMD( const float* f, const float* a, const float* delta_
 		limit = d;
 		limitSide = 0;
 	}
-
+	
 	// test the current variable
 	{
 		float deltaForce = dir;
@@ -1537,7 +1537,7 @@ static void GetMaxStep_SIMD( const float* f, const float* a, const float* delta_
 		limit = m3 ? d : limit;
 		limitSide = m3 ? setSide : limitSide;
 	}
-
+	
 	// test the clamped bounded variables
 	for( int i = numUnbounded; i < numClamped; i++ )
 	{
@@ -1553,7 +1553,7 @@ static void GetMaxStep_SIMD( const float* f, const float* a, const float* delta_
 		limit = m3 ? i : limit;
 		limitSide = m3 ? setSide : limitSide;
 	}
-
+	
 	// test the not clamped bounded variables
 	for( int i = numClamped; i < d; i++ )
 	{
@@ -1567,8 +1567,8 @@ static void GetMaxStep_SIMD( const float* f, const float* a, const float* delta_
 		maxStep = m3 ? step : maxStep;
 		limit = m3 ? i : limit;
 		limitSide = m3 ? 0 : limitSide;
-   }
-   
+	}
+	
 #endif
 }
 
@@ -2226,7 +2226,7 @@ bool idLCP_Square::Solve( const idMatX& o_m, idVecX& o_x, const idVecX& o_b, con
 {
 
 	// true when the matrix rows are 16 byte padded
-	padded = ( ( o_m.GetNumRows() + 3 )&~3 ) == o_m.GetNumColumns();
+	padded = ( ( o_m.GetNumRows() + 3 ) & ~3 ) == o_m.GetNumColumns();
 	
 	assert( padded || o_m.GetNumRows() == o_m.GetNumColumns() );
 	assert( o_x.GetSize() == o_m.GetNumRows() );
@@ -3006,7 +3006,7 @@ bool idLCP_Symmetric::Solve( const idMatX& o_m, idVecX& o_x, const idVecX& o_b, 
 {
 
 	// true when the matrix rows are 16 byte padded
-	padded = ( ( o_m.GetNumRows() + 3 )&~3 ) == o_m.GetNumColumns();
+	padded = ( ( o_m.GetNumRows() + 3 ) & ~3 ) == o_m.GetNumColumns();
 	
 	assert( padded || o_m.GetNumRows() == o_m.GetNumColumns() );
 	assert( o_x.GetSize() == o_m.GetNumRows() );

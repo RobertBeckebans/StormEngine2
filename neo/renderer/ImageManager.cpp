@@ -384,8 +384,8 @@ idImage*	idImageManager::GetImageWithParameters( const char* _name, textureFilte
 		usage = TD_HIGHQUALITY;
 		filter = TF_LINEAR;	 // no mipmaps for Savegame previews textures
 	}
-
-
+	
+	
 	// strip any .tga file extensions from anywhere in the _name, including image program parameters
 	idStrStatic< MAX_OSPATH > name = _name;
 	name.Replace( ".tga", "" );
@@ -452,7 +452,7 @@ idImage*	idImageManager::ImageFromFile( const char* _name, textureFilter_t filte
 		usage = TD_HIGHQUALITY;
 		filter = TF_LINEAR;	 // no mipmaps for Savegame previews textures
 	}
-		
+	
 	// strip any .tga file extensions from anywhere in the _name, including image program parameters
 	idStrStatic< MAX_OSPATH > name = _name;
 	name.Replace( ".tga", "" );
@@ -518,7 +518,7 @@ idImage*	idImageManager::ImageFromFile( const char* _name, textureFilter_t filte
 	if( !insideLevelLoad || preloadingMapImages )
 	{
 		image->referencedOutsideLevelLoad = ( !insideLevelLoad && !preloadingMapImages );
-		if ( !(com_editors & EDITOR_DMAP) )
+		if( !( com_editors & EDITOR_DMAP ) )
 		{
 			image->ActuallyLoadImage( false );	// load is from front end
 		}
@@ -786,11 +786,11 @@ void idImageManager::BindNull()
 	RENDERLOG_PRINTF( "BindNull()\n" );
 	
 	// foresthale 2014-05-10: when using the tools code (which does not use shaders) we have to manage the texture unit enables
-	if (com_editors)
+	if( com_editors )
 	{
 		//qglActiveTexture(GL_TEXTURE0_ARB + backEnd.glState.currenttmu);
-		qglDisable(GL_TEXTURE_2D);
-		qglDisable(GL_TEXTURE_CUBE_MAP);
+		qglDisable( GL_TEXTURE_2D );
+		qglDisable( GL_TEXTURE_CUBE_MAP );
 	}
 }
 
@@ -835,11 +835,11 @@ Frees all images used by the previous level
 void idImageManager::BeginLevelLoad()
 {
 	insideLevelLoad = true;
-
+	
 	// foresthale 2014-05-28: Brian Harris suggested the editors should never purge assets, because of potential for crashes on improperly refcounted assets
-	if ( com_editors )
+	if( com_editors )
 		return;
-
+		
 	for( int i = 0 ; i < images.Num() ; i++ )
 	{
 		idImage*	image = images[ i ];
@@ -936,8 +936,8 @@ int idImageManager::LoadLevelImages( bool pacifier )
 	{
 		if( pacifier )
 		{
-			pProgress  = (100 * i ) / imageCount;
-			common->UpdateLevelLoadPacifier(true,pProgress);
+			pProgress  = ( 100 * i ) / imageCount;
+			common->UpdateLevelLoadPacifier( true, pProgress );
 			
 		}
 		

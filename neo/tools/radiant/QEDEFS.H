@@ -142,7 +142,8 @@ If you have questions concerning this license or the applicable additional terms
 #define	W_ALL			0xFFFFFFFF
 */
 
-enum {
+enum
+{
 	COLOR_TEXTUREBACK,
 	COLOR_GRIDBACK,
 	COLOR_GRIDMINOR,

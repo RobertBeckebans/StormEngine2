@@ -35,7 +35,7 @@ If you have questions concerning this license or the applicable additional terms
 #ifdef __GNUC__
 #define id_attribute(x) __attribute__(x)
 #else
-#define id_attribute(x)  
+#define id_attribute(x)
 #endif
 
 /*
@@ -442,7 +442,7 @@ const char* 	Sys_GetCmdLine();
 //void			Sys_ReLaunch();
 // DG end
 // motorsep 12-28-2014; reverted back to the original Sys_ReLaunch; guys from RBDoom 3 BFG team made it impossible to pass any cmds on restart
-void			Sys_ReLaunch(void * launchData, unsigned int launchDataSize);
+void			Sys_ReLaunch( void* launchData, unsigned int launchDataSize );
 void			Sys_Launch( const char* path, idCmdArgs& args,  void* launchData, unsigned int launchDataSize );
 void			Sys_SetLanguageFromSystem();
 const char* 	Sys_DefaultLanguage();
@@ -547,7 +547,7 @@ void			Sys_ClearEvents();
 void			Sys_InitInput();
 void			Sys_ShutdownInput();
 void			Sys_InitScanTable( void );
-const unsigned char *Sys_GetScanTable( void );
+const unsigned char* Sys_GetScanTable( void );
 
 // keyboard input polling
 int				Sys_PollKeyboardInputEvents();
@@ -707,37 +707,43 @@ private:
 
 struct msg_t
 {
-	msg_t(int bufferSize = 32767, bool compressed = true);
+	msg_t( int bufferSize = 32767, bool compressed = true );
 	~msg_t();
-
-	void ResetReadOffset();
-
-	bool ReadBytes(char * bytes, int numBytes);
-
-	template<typename T>
-	bool Read(T & output)
-	{
-		return ReadBytes((char*)&output, sizeof(T));
-	}
-	bool ReadString(char * buffer, int maxlength);
-
-	bool WriteBytes(const char * bytes, int numBytes);
-
-	template<typename T>
-	bool Write(const T & output)
-	{
-		return WriteBytes((const char *)&output, sizeof(T));
-	}
-
-	bool WriteString(const char * output);
-
-	bool ReadPacket(idUDP & socket, netadr_t & addrFrom);
-	void SendPacket(idUDP & socket, const netadr_t & addr);
 	
-	const char * Data () const{ return mData; }
-	int Size() const { return mDataOffset; }
+	void ResetReadOffset();
+	
+	bool ReadBytes( char* bytes, int numBytes );
+	
+	template<typename T>
+	bool Read( T& output )
+	{
+		return ReadBytes( ( char* )&output, sizeof( T ) );
+	}
+	bool ReadString( char* buffer, int maxlength );
+	
+	bool WriteBytes( const char* bytes, int numBytes );
+	
+	template<typename T>
+	bool Write( const T& output )
+	{
+		return WriteBytes( ( const char* )&output, sizeof( T ) );
+	}
+	
+	bool WriteString( const char* output );
+	
+	bool ReadPacket( idUDP& socket, netadr_t& addrFrom );
+	void SendPacket( idUDP& socket, const netadr_t& addr );
+	
+	const char* Data() const
+	{
+		return mData;
+	}
+	int Size() const
+	{
+		return mDataOffset;
+	}
 private:
-	char *			mData;
+	char* 			mData;
 	int				mDataSize;
 	int				mDataOffset;
 	const int		mDataMaxSize;

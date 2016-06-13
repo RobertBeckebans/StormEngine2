@@ -32,10 +32,11 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "Dmap_tr_local.h"
 
-idDmapRenderEntityLocal::idDmapRenderEntityLocal() {
-	memset(&parms, 0, sizeof(parms));
-	memset(modelMatrix, 0, sizeof(modelMatrix));
-
+idDmapRenderEntityLocal::idDmapRenderEntityLocal()
+{
+	memset( &parms, 0, sizeof( parms ) );
+	memset( modelMatrix, 0, sizeof( modelMatrix ) );
+	
 	world = NULL;
 	index = 0;
 	lastModifiedFrameNum = 0;
@@ -55,37 +56,45 @@ idDmapRenderEntityLocal::idDmapRenderEntityLocal() {
 	needsPortalSky = false;
 }
 
-void idDmapRenderEntityLocal::FreeRenderEntity() {
+void idDmapRenderEntityLocal::FreeRenderEntity()
+{
 }
 
-void idDmapRenderEntityLocal::UpdateRenderEntity(const renderEntity_t *re, bool forceUpdate) {
+void idDmapRenderEntityLocal::UpdateRenderEntity( const renderEntity_t* re, bool forceUpdate )
+{
 }
 
-void idDmapRenderEntityLocal::GetRenderEntity(renderEntity_t *re) {
+void idDmapRenderEntityLocal::GetRenderEntity( renderEntity_t* re )
+{
 }
 
-void idDmapRenderEntityLocal::ForceUpdate() {
+void idDmapRenderEntityLocal::ForceUpdate()
+{
 }
 
-int idDmapRenderEntityLocal::GetIndex() {
+int idDmapRenderEntityLocal::GetIndex()
+{
 	return index;
 }
 
-void idDmapRenderEntityLocal::ProjectOverlay(const idPlane localTextureAxis[2], const idMaterial *material) {
+void idDmapRenderEntityLocal::ProjectOverlay( const idPlane localTextureAxis[2], const idMaterial* material )
+{
 }
-void idDmapRenderEntityLocal::RemoveDecals() {
+void idDmapRenderEntityLocal::RemoveDecals()
+{
 }
 
 //======================================================================
 
-idDmapRenderLightLocal::idDmapRenderLightLocal() {
-	memset(&parms, 0, sizeof(parms));
-	memset(modelMatrix, 0, sizeof(modelMatrix));
-	memset(shadowFrustums, 0, sizeof(shadowFrustums));
-	memset(lightProject, 0, sizeof(lightProject));
-	memset(frustum, 0, sizeof(frustum));
-	memset(frustumWindings, 0, sizeof(frustumWindings));
-
+idDmapRenderLightLocal::idDmapRenderLightLocal()
+{
+	memset( &parms, 0, sizeof( parms ) );
+	memset( modelMatrix, 0, sizeof( modelMatrix ) );
+	memset( shadowFrustums, 0, sizeof( shadowFrustums ) );
+	memset( lightProject, 0, sizeof( lightProject ) );
+	memset( frustum, 0, sizeof( frustum ) );
+	memset( frustumWindings, 0, sizeof( frustumWindings ) );
+	
 	lightHasMoved = false;
 	world = NULL;
 	index = 0;
@@ -105,14 +114,19 @@ idDmapRenderLightLocal::idDmapRenderLightLocal() {
 	lastInteraction = NULL;
 }
 
-void idDmapRenderLightLocal::FreeRenderLight() {
+void idDmapRenderLightLocal::FreeRenderLight()
+{
 }
-void idDmapRenderLightLocal::UpdateRenderLight(const renderLight_t *re, bool forceUpdate) {
+void idDmapRenderLightLocal::UpdateRenderLight( const renderLight_t* re, bool forceUpdate )
+{
 }
-void idDmapRenderLightLocal::GetRenderLight(renderLight_t *re) {
+void idDmapRenderLightLocal::GetRenderLight( renderLight_t* re )
+{
 }
-void idDmapRenderLightLocal::ForceUpdate() {
+void idDmapRenderLightLocal::ForceUpdate()
+{
 }
-int idDmapRenderLightLocal::GetIndex() {
+int idDmapRenderLightLocal::GetIndex()
+{
 	return index;
 }

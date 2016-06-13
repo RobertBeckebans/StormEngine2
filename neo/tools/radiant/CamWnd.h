@@ -46,14 +46,14 @@ typedef enum
 typedef struct
 {
 	int			width, height;
-
+	
 	idVec3		origin;
 	idAngles	angles;
-
+	
 	camera_draw_mode	draw_mode;
-
-	idVec3		color;			// background 
-
+	
+	idVec3		color;			// background
+	
 	idVec3		forward, right, up;	// move matrix
 	idVec3		vup, vpn, vright;	// view matrix
 } camera_t;
@@ -65,11 +65,11 @@ class CXYWnd;
 
 class CCamWnd : public CWnd
 {
-  DECLARE_DYNCREATE(CCamWnd);
+	DECLARE_DYNCREATE( CCamWnd );
 // Construction
 public:
 	CCamWnd();
-
+	
 // Attributes
 public:
 
@@ -79,19 +79,22 @@ public:
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CCamWnd)
-	protected:
-	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+protected:
+	virtual BOOL PreCreateWindow( CREATESTRUCT& cs );
 	//}}AFX_VIRTUAL
-
+	
 // Implementation
 public:
-	void ShiftTexture_BrushPrimit(face_t *f, int x, int y);
+	void ShiftTexture_BrushPrimit( face_t* f, int x, int y );
 	CXYWnd* m_pXYFriend;
-	void SetXYFriend(CXYWnd* pWnd);
+	void SetXYFriend( CXYWnd* pWnd );
 	virtual ~CCamWnd();
-	camera_t& Camera(){return m_Camera;};
-	void Cam_MouseControl(float dtime);
-	void Cam_ChangeFloor(bool up);
+	camera_t& Camera()
+	{
+		return m_Camera;
+	};
+	void Cam_MouseControl( float dtime );
+	void Cam_ChangeFloor( bool up );
 	void BuildRendererState();
 	void ToggleRenderMode();
 	void ToggleRebuildMode();
@@ -101,52 +104,59 @@ public:
 	void ToggleSoundMode();
 	void SetProjectionMatrix();
 	void UpdateCameraView();
-
-	void BuildEntityRenderState( entity_t *ent, bool update );
-	bool GetRenderMode() {
+	
+	void BuildEntityRenderState( entity_t* ent, bool update );
+	bool GetRenderMode()
+	{
 		return renderMode;
 	}
-	bool GetRebuildMode() {
+	bool GetRebuildMode()
+	{
 		return rebuildMode;
 	}
-	bool GetEntityMode() {
+	bool GetEntityMode()
+	{
 		return entityMode;
 	}
-	bool GetAnimationMode() {
+	bool GetAnimationMode()
+	{
 		return animationMode;
 	}
-	bool GetSelectMode() {
+	bool GetSelectMode()
+	{
 		return selectMode;
 	}
-	bool GetSoundMode() {
+	bool GetSoundMode()
+	{
 		return soundMode;
 	}
-
-
+	
+	
 	bool UpdateRenderEntities();
 	void MarkWorldDirty();
-
-	void SetView( const idVec3 &origin, const idAngles &angles ) {
+	
+	void SetView( const idVec3& origin, const idAngles& angles )
+	{
 		m_Camera.origin = origin;
 		m_Camera.angles = angles;
 	}
-
+	
 protected:
 	void Cam_Init();
 	void Cam_BuildMatrix();
 	void Cam_PositionDrag();
 	void Cam_MouseLook();
-	void Cam_MouseDown(int x, int y, int buttons);
-	void Cam_MouseUp (int x, int y, int buttons);
-	void Cam_MouseMoved (int x, int y, int buttons);
+	void Cam_MouseDown( int x, int y, int buttons );
+	void Cam_MouseUp( int x, int y, int buttons );
+	void Cam_MouseMoved( int x, int y, int buttons );
 	void InitCull();
-	bool CullBrush (brush_t *b, bool cubicOnly);
+	bool CullBrush( brush_t* b, bool cubicOnly );
 	void Cam_Draw();
 	void Cam_Render();
-
+	
 	// game renderer interaction
 	qhandle_t	worldModelDef;
-	idRenderModel	*worldModel;		// createRawModel of the brush and patch geometry
+	idRenderModel*	worldModel;		// createRawModel of the brush and patch geometry
 	bool	worldDirty;
 	bool	renderMode;
 	bool	rebuildMode;
@@ -156,10 +166,10 @@ protected:
 	bool	soundMode;
 	void	FreeRendererState();
 	void	UpdateCaption();
-	bool	BuildBrushRenderData(brush_t *brush);
+	bool	BuildBrushRenderData( brush_t* brush );
 	void	DrawEntityData();
-
-
+	
+	
 	camera_t m_Camera;
 	int	m_nCambuttonstate;
 	CPoint m_ptButton;
@@ -174,26 +184,26 @@ protected:
 	idVec3 saveOrg;
 	idAngles saveAng;
 	bool saveValid;
-
+	
 	// Generated message map functions
 protected:
-	void OriginalMouseDown(UINT nFlags, CPoint point);
-	void OriginalMouseUp(UINT nFlags, CPoint point);
+	void OriginalMouseDown( UINT nFlags, CPoint point );
+	void OriginalMouseUp( UINT nFlags, CPoint point );
 	//{{AFX_MSG(CCamWnd)
-	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg void OnKeyDown( UINT nChar, UINT nRepCnt, UINT nFlags );
 	afx_msg void OnPaint();
 	afx_msg void OnDestroy();
 	afx_msg void OnClose();
-	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-	afx_msg void OnMButtonDown(UINT nFlags, CPoint point);
-	afx_msg void OnMButtonUp(UINT nFlags, CPoint point);
-	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
-	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg void OnSize(UINT nType, int cx, int cy);
-	afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg void OnMouseMove( UINT nFlags, CPoint point );
+	afx_msg void OnLButtonDown( UINT nFlags, CPoint point );
+	afx_msg void OnLButtonUp( UINT nFlags, CPoint point );
+	afx_msg void OnMButtonDown( UINT nFlags, CPoint point );
+	afx_msg void OnMButtonUp( UINT nFlags, CPoint point );
+	afx_msg void OnRButtonDown( UINT nFlags, CPoint point );
+	afx_msg void OnRButtonUp( UINT nFlags, CPoint point );
+	afx_msg int OnCreate( LPCREATESTRUCT lpCreateStruct );
+	afx_msg void OnSize( UINT nType, int cx, int cy );
+	afx_msg void OnKeyUp( UINT nChar, UINT nRepCnt, UINT nFlags );
 	afx_msg void OnTimer( UINT_PTR nIDEvent );
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()

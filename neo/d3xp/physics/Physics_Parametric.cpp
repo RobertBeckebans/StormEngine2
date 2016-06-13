@@ -1115,16 +1115,16 @@ void idPhysics_Parametric::SetMaster( idEntity* master, BindFlags flags )
 				current.localAngles = current.axis.ToAngles();
 			}
 			
-			if ( (flags&BFL_SNAPXFORM)!= 0 )
+			if( ( flags & BFL_SNAPXFORM ) != 0 )
 			{
 				current.localOrigin.Zero();
 				current.localAngles.Zero();
 			}
-
+			
 			current.linearExtrapolation.SetStartValue( current.localOrigin );
 			current.angularExtrapolation.SetStartValue( current.localAngles );
 			hasMaster = true;
-			isOrientated = (flags & BFL_ORIENTED);
+			isOrientated = ( flags & BFL_ORIENTED );
 		}
 	}
 	else

@@ -34,15 +34,15 @@ class idDmapMapPatch : public idMapPrimitive, public idDmapSurface_Patch
 {
 public:
 	idDmapMapPatch();
-	idDmapMapPatch(int maxPatchWidth, int maxPatchHeight);
+	idDmapMapPatch( int maxPatchWidth, int maxPatchHeight );
 	~idDmapMapPatch() { }
-	static idDmapMapPatch* 	Parse(idLexer& src, const idVec3& origin, bool patchDef3 = true, float version = CURRENT_MAP_VERSION);
-	bool					Write(idFile* fp, int primitiveNum, const idVec3& origin) const;
+	static idDmapMapPatch* 	Parse( idLexer& src, const idVec3& origin, bool patchDef3 = true, float version = CURRENT_MAP_VERSION );
+	bool					Write( idFile* fp, int primitiveNum, const idVec3& origin ) const;
 	const char* 			GetMaterial() const
 	{
 		return material;
 	}
-	void					SetMaterial(const char* p)
+	void					SetMaterial( const char* p )
 	{
 		material = p;
 	}
@@ -58,20 +58,20 @@ public:
 	{
 		return explicitSubdivisions;
 	}
-	void					SetHorzSubdivisions(int n)
+	void					SetHorzSubdivisions( int n )
 	{
 		horzSubdivisions = n;
 	}
-	void					SetVertSubdivisions(int n)
+	void					SetVertSubdivisions( int n )
 	{
 		vertSubdivisions = n;
 	}
-	void					SetExplicitlySubdivided(bool b)
+	void					SetExplicitlySubdivided( bool b )
 	{
 		explicitSubdivisions = b;
 	}
-	void					GetGeometryCRC( unsigned int & crc ) const;
-
+	void					GetGeometryCRC( unsigned int& crc ) const;
+	
 protected:
 	idStr					material;
 	int						horzSubdivisions;
@@ -89,7 +89,7 @@ ID_INLINE idDmapMapPatch::idDmapMapPatch()
 	expanded = false;
 }
 
-ID_INLINE idDmapMapPatch::idDmapMapPatch(int maxPatchWidth, int maxPatchHeight)
+ID_INLINE idDmapMapPatch::idDmapMapPatch( int maxPatchWidth, int maxPatchHeight )
 {
 	type = TYPE_PATCH;
 	horzSubdivisions = vertSubdivisions = 0;
@@ -97,83 +97,122 @@ ID_INLINE idDmapMapPatch::idDmapMapPatch(int maxPatchWidth, int maxPatchHeight)
 	width = height = 0;
 	maxWidth = maxPatchWidth;
 	maxHeight = maxPatchHeight;
-	verts.SetNum(maxWidth * maxHeight);
+	verts.SetNum( maxWidth * maxHeight );
 	expanded = false;
 }
 
 
-class idDmapMapEntity {
+class idDmapMapEntity
+{
 	friend class			idDmapMapFile;
-
+	
 public:
 	idDict					epairs;
-
+	
 public:
-	idDmapMapEntity(void) { epairs.SetHashSize(64); }
-	~idDmapMapEntity(void) { primitives.DeleteContents(true); }
-	static idDmapMapEntity *	Parse(idLexer &src, bool worldSpawn = false, float version = CURRENT_MAP_VERSION);
-	bool					Write(idFile *fp, int entityNum) const;
-	int						GetNumPrimitives(void) const { return primitives.Num(); }
-	idMapPrimitive *		GetPrimitive(int i) const { return primitives[i]; }
-	void					AddPrimitive(idMapPrimitive *p) { primitives.Append(p); }
-	void					GetGeometryCRC( unsigned int & crc ) const;
+	idDmapMapEntity( void )
+	{
+		epairs.SetHashSize( 64 );
+	}
+	~idDmapMapEntity( void )
+	{
+		primitives.DeleteContents( true );
+	}
+	static idDmapMapEntity* 	Parse( idLexer& src, bool worldSpawn = false, float version = CURRENT_MAP_VERSION );
+	bool					Write( idFile* fp, int entityNum ) const;
+	int						GetNumPrimitives( void ) const
+	{
+		return primitives.Num();
+	}
+	idMapPrimitive* 		GetPrimitive( int i ) const
+	{
+		return primitives[i];
+	}
+	void					AddPrimitive( idMapPrimitive* p )
+	{
+		primitives.Append( p );
+	}
+	void					GetGeometryCRC( unsigned int& crc ) const;
 	void					RemovePrimitiveData();
-
+	
 protected:
 	idList<idMapPrimitive*>	primitives;
 };
 
-class idDmapMapFile {
+class idDmapMapFile
+{
 public:
-	idDmapMapFile(void);
-	~idDmapMapFile(void) { entities.DeleteContents(true); }
-
+	idDmapMapFile( void );
+	~idDmapMapFile( void )
+	{
+		entities.DeleteContents( true );
+	}
+	
 	// filename does not require an extension
 	// normally this will use a .reg file instead of a .map file if it exists,
 	// which is what the game and dmap want, but the editor will want to always
 	// load a .map file
-	bool					Parse(const char *filename, bool ignoreRegion = false, bool osPath = false);
-	bool					Write(const char *fileName, const char *ext, bool fromBasePath = true);
+	bool					Parse( const char* filename, bool ignoreRegion = false, bool osPath = false );
+	bool					Write( const char* fileName, const char* ext, bool fromBasePath = true );
 	// get the number of entities in the map
-	int						GetNumEntities(void) const { return entities.Num(); }
+	int						GetNumEntities( void ) const
+	{
+		return entities.Num();
+	}
 	// get the specified entity
-	idDmapMapEntity *			GetEntity(int i) const { return entities[i]; }
+	idDmapMapEntity* 			GetEntity( int i ) const
+	{
+		return entities[i];
+	}
 	// get the name without file extension
-	const char *			GetName(void) const { return name; }
+	const char* 			GetName( void ) const
+	{
+		return name;
+	}
 	// get the file time
-	ID_TIME_T					GetFileTime(void) const { return fileTime; }
+	ID_TIME_T					GetFileTime( void ) const
+	{
+		return fileTime;
+	}
 	// get CRC for the map geometry
 	// texture coordinates and entity key/value pairs are not taken into account
-	unsigned int			GetGeometryCRC(void) const { return geometryCRC; }
+	unsigned int			GetGeometryCRC( void ) const
+	{
+		return geometryCRC;
+	}
 	// returns true if the file on disk changed
 	bool					NeedsReload();
-
-	int						AddEntity(idDmapMapEntity *mapentity);
-	idDmapMapEntity *		FindEntity(const char *name);
-	idDmapMapEntity *		FindEntityByClassName( const char *name );
-	void					RemoveEntity(idDmapMapEntity *mapEnt);
-	void					RemoveEntities(const char *classname);
+	
+	int						AddEntity( idDmapMapEntity* mapentity );
+	idDmapMapEntity* 		FindEntity( const char* name );
+	idDmapMapEntity* 		FindEntityByClassName( const char* name );
+	void					RemoveEntity( idDmapMapEntity* mapEnt );
+	void					RemoveEntities( const char* classname );
 	void					RemoveAllEntities();
 	void					RemovePrimitiveData();
-	bool					HasPrimitiveData() { return hasPrimitiveData; }
-
+	bool					HasPrimitiveData()
+	{
+		return hasPrimitiveData;
+	}
+	
 protected:
 	float					version;
 	ID_TIME_T					fileTime;
 	unsigned int			geometryCRC;
-	idList<idDmapMapEntity *>	entities;
+	idList<idDmapMapEntity*>	entities;
 	idStr					name;
 	bool					hasPrimitiveData;
-
+	
 private:
-	void					SetGeometryCRC(void);
+	void					SetGeometryCRC( void );
 };
 
-ID_INLINE idDmapMapFile::idDmapMapFile(void) {
+ID_INLINE idDmapMapFile::idDmapMapFile( void )
+{
 	version = CURRENT_MAP_VERSION;
 	fileTime = 0;
 	geometryCRC = 0;
-	entities.Resize(1024, 256);
+	entities.Resize( 1024, 256 );
 	hasPrimitiveData = false;
 }
 

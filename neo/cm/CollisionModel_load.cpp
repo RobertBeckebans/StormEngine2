@@ -966,7 +966,7 @@ cmHandle_t idCollisionModelManagerLocal::SetupTrmModel( const idTraceModel& trm,
 		trmBrushes[0]->next = model->node->brushes;
 		trmBrushes[0]->b->material = material;
 		trmBrushes[0]->b->contents = material->GetContentFlags();
-
+		
 		model->node->brushes = trmBrushes[0];
 	}
 	// model bounds
@@ -2399,7 +2399,7 @@ cm_node_t* idCollisionModelManagerLocal::R_CreateAxialBSPTree( cm_model_t* model
 	node->planeDist = planeDist;
 	node->children[0] = frontNode;
 	node->children[1] = backNode;
-	common->UpdateLevelLoadPacifier(true);
+	common->UpdateLevelLoadPacifier( true );
 	// filter polygons and brushes down the tree if necesary
 	for( n = node; n; n = n->parent )
 	{
@@ -3065,7 +3065,7 @@ static void CM_EstimateVertsAndEdges( const idMapEntity* mapEnt, int* numVerts, 
 	int j, width, height;
 	
 	*numVerts = *numEdges = 0;
-	common->UpdateLevelLoadPacifier(true);
+	common->UpdateLevelLoadPacifier( true );
 	for( j = 0; j < mapEnt->GetNumPrimitives(); j++ )
 	{
 		const idMapPrimitive* mapPrim;
@@ -3099,7 +3099,7 @@ static void CM_EstimateVertsAndEdgesDmap( const idDmapMapEntity* mapEnt, int* nu
 	int j, width, height;
 	
 	*numVerts = *numEdges = 0;
-	common->UpdateLevelLoadPacifier(true);
+	common->UpdateLevelLoadPacifier( true );
 	for( j = 0; j < mapEnt->GetNumPrimitives(); j++ )
 	{
 		const idMapPrimitive* mapPrim;
@@ -3302,7 +3302,7 @@ void idCollisionModelManagerLocal::ConvertBrush( cm_model_t* model, const idMapB
 	{
 		brush->planes[i] = planes[i];
 	}
-	common->UpdateLevelLoadPacifier(true);
+	common->UpdateLevelLoadPacifier( true );
 	AddBrushToNode( model, model->node, brush );
 }
 
@@ -3583,7 +3583,7 @@ cm_model_t* idCollisionModelManagerLocal::LoadBinaryModelFromFile( idFile* file,
 	}
 	ID_TIME_T storedTimeStamp = FILE_NOT_FOUND_TIMESTAMP;
 	file->ReadBig( storedTimeStamp );
-	if( !fileSystem->InProductionMode() && storedTimeStamp != sourceTimeStamp && sourceTimeStamp>0 )
+	if( !fileSystem->InProductionMode() && storedTimeStamp != sourceTimeStamp && sourceTimeStamp > 0 )
 	{
 		return NULL;
 	}
@@ -3953,7 +3953,7 @@ cm_model_t* idCollisionModelManagerLocal::LoadRenderModel( const char* fileName 
 		return model;
 	}
 	idLib::Printf( "Writing %s\n", generatedFileName.c_str() );
-
+	
 	model = AllocModel();
 	model->name = fileName;
 	node = AllocNode( model, NODE_BLOCK_SIZE_SMALL );
@@ -4031,7 +4031,7 @@ cm_model_t* idCollisionModelManagerLocal::LoadRenderModel( const char* fileName 
 			PolygonFromWinding( model, &w, plane, surf->shader, 1 );
 		}
 	}
-	common->UpdateLevelLoadPacifier(true);
+	common->UpdateLevelLoadPacifier( true );
 	// create a BSP tree for the model
 	model->node = CreateAxialBSPTree( model, model->node );
 	
@@ -4587,7 +4587,7 @@ void idCollisionModelManagerLocal::LoadMap( const idMapFile* mapFile )
 	
 	// clear the collision map
 	Clear();
-	common->UpdateLevelLoadPacifier(true,0);	
+	common->UpdateLevelLoadPacifier( true, 0 );
 	// models
 	maxModels = MAX_SUBMODELS;
 	numModels = 0;
@@ -4596,23 +4596,23 @@ void idCollisionModelManagerLocal::LoadMap( const idMapFile* mapFile )
 	// setup hash to speed up finding shared vertices and edges
 	SetupHash();
 	
-	common->UpdateLevelLoadPacifier(true,25);
+	common->UpdateLevelLoadPacifier( true, 25 );
 	
 	// setup trace model structure
 	SetupTrmModelStructure();
 	
-	common->UpdateLevelLoadPacifier(true,50);
+	common->UpdateLevelLoadPacifier( true, 50 );
 	
 	// build collision models
 	BuildModels( mapFile );
 	
-	common->UpdateLevelLoadPacifier(true,75);
+	common->UpdateLevelLoadPacifier( true, 75 );
 	
 	// save name and time stamp
 	mapName = mapFile->GetName();
 	mapFileTime = mapFile->GetFileTime();
 	loaded = true;
-	common->UpdateLevelLoadPacifier(true,100);	
+	common->UpdateLevelLoadPacifier( true, 100 );
 	// shutdown the hash
 	ShutdownHash();
 }
@@ -4648,7 +4648,7 @@ void idCollisionModelManagerLocal::LoadMapDmap( const idDmapMapFile* mapFile )
 	
 	// clear the collision map
 	Clear();
-	common->UpdateLevelLoadPacifier(true,0);	
+	common->UpdateLevelLoadPacifier( true, 0 );
 	// models
 	maxModels = MAX_SUBMODELS;
 	numModels = 0;
@@ -4657,23 +4657,23 @@ void idCollisionModelManagerLocal::LoadMapDmap( const idDmapMapFile* mapFile )
 	// setup hash to speed up finding shared vertices and edges
 	SetupHash();
 	
-	common->UpdateLevelLoadPacifier(true,25);
+	common->UpdateLevelLoadPacifier( true, 25 );
 	
 	// setup trace model structure
 	SetupTrmModelStructure();
 	
-	common->UpdateLevelLoadPacifier(true,50);
+	common->UpdateLevelLoadPacifier( true, 50 );
 	
 	// build collision models
 	BuildModelsDmap( mapFile );
 	
-	common->UpdateLevelLoadPacifier(true,75);
+	common->UpdateLevelLoadPacifier( true, 75 );
 	
 	// save name and time stamp
 	mapName = mapFile->GetName();
 	mapFileTime = mapFile->GetFileTime();
 	loaded = true;
-	common->UpdateLevelLoadPacifier(true,100);	
+	common->UpdateLevelLoadPacifier( true, 100 );
 	// shutdown the hash
 	ShutdownHash();
 }

@@ -33,16 +33,16 @@ If you have questions concerning this license or the applicable additional terms
 typedef struct
 {
 	int		width, height;
-
+	
 	idVec3	origin;			// at center of window
 	float	scale;
 } z_t;
 
 extern z_t z;
 
-void Z_Init (void);
-void Z_MouseDown (int x, int y, int buttons);
-void Z_MouseUp (int x, int y, int buttons);
-void Z_MouseMoved (int x, int y, int buttons);
-void Z_Draw (void);
+void Z_Init( void );
+void Z_MouseDown( int x, int y, int buttons );
+void Z_MouseUp( int x, int y, int buttons );
+void Z_MouseMoved( int x, int y, int buttons );
+void Z_Draw( void );
 

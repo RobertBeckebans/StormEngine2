@@ -60,20 +60,20 @@ void idInventory::Clear()
 	deplete_rate	= 0.0f;
 	deplete_ammount	= 0;
 	nextArmorDepleteTime = 0;
-
+	
 	for( int i = 0; i < ammo.Num(); ++i )
 	{
 		ammo[i].Set( 0 );
 	}
-
+	
 	ClearPowerUps();
-
+	
 	// set to -1 so that the gun knows to have a full clip the first time we get it and at the start of the level
 	for( int i = 0; i < clip.Num(); ++i )
 	{
 		clip[i].Set( -1 );
 	}
-
+	
 	items.DeleteContents( true );
 	memset( pdasViewed, 0, 4 * sizeof( pdasViewed[0] ) );
 	pdas.Clear();
@@ -84,17 +84,17 @@ void idInventory::Clear()
 	selPDA = 0;
 	selAudio = 0;
 	pdaOpened = false;
-
+	
 	levelTriggers.Clear();
-
+	
 	nextItemPickup = 0;
 	nextItemNum = 1;
 	onePickupTime = 0;
 	pickupItemNames.Clear();
 	objectiveNames.Clear();
-
+	
 	lastGiveTime = 0;
-
+	
 	ammoPulse	= false;
 	weaponPulse	= false;
 	armorPulse	= false;
@@ -139,12 +139,12 @@ void idInventory::GetPersistantData( idDict& dict )
 	idStr	key;
 	const idKeyValue* kv;
 	const char* name;
-
+	
 	// armor
 	dict.SetInt( "armor", armor );
-
+	
 	// don't bother with powerups, maxhealth, maxarmor, or the clip
-
+	
 	// ammo
 	for( i = 0; i < AMMO_NUMTYPES; i++ )
 	{
@@ -154,19 +154,19 @@ void idInventory::GetPersistantData( idDict& dict )
 			dict.SetInt( name, ammo[ i ].Get() );
 		}
 	}
-
+	
 	//Save the clip data
 	for( i = 0; i < MAX_WEAPONS; i++ )
 	{
 		dict.SetInt( va( "clip%i", i ), clip[ i ].Get() );
 	}
-
+	
 	// items
 	num = 0;
 	for( i = 0; i < items.Num(); i++ )
 	{
 		item = items[ i ];
-
+		
 		// copy all keys with "inv_"
 		kv = item->MatchPrefix( "inv_" );
 		if( kv )
@@ -181,19 +181,19 @@ void idInventory::GetPersistantData( idDict& dict )
 		}
 	}
 	dict.SetInt( "items", num );
-
+	
 	// pdas viewed
 	for( i = 0; i < 4; i++ )
 	{
 		dict.SetInt( va( "pdasViewed_%i", i ), pdasViewed[i] );
 	}
-
+	
 	dict.SetInt( "selPDA", selPDA );
 	dict.SetInt( "selVideo", selVideo );
 	dict.SetInt( "selEmail", selEMail );
 	dict.SetInt( "selAudio", selAudio );
 	dict.SetInt( "pdaOpened", pdaOpened );
-
+	
 	// pdas
 	for( i = 0; i < pdas.Num(); i++ )
 	{
@@ -201,7 +201,7 @@ void idInventory::GetPersistantData( idDict& dict )
 		dict.Set( key, pdas[ i ]->GetName() );
 	}
 	dict.SetInt( "pdas", pdas.Num() );
-
+	
 	// video cds
 	for( i = 0; i < videos.Num(); i++ )
 	{
@@ -209,7 +209,7 @@ void idInventory::GetPersistantData( idDict& dict )
 		dict.Set( key, videos[ i ]->GetName() );
 	}
 	dict.SetInt( "videos", videos.Num() );
-
+	
 	// emails
 	for( i = 0; i < emails.Num(); i++ )
 	{
@@ -217,10 +217,10 @@ void idInventory::GetPersistantData( idDict& dict )
 		dict.Set( key, emails[ i ]->GetName() );
 	}
 	dict.SetInt( "emails", emails.Num() );
-
+	
 	// weapons
 	dict.SetInt( "weapon_bits", weapons );
-
+	
 	dict.SetInt( "levelTriggers", levelTriggers.Num() );
 	for( i = 0; i < levelTriggers.Num(); i++ )
 	{
@@ -245,9 +245,9 @@ void idInventory::RestoreInventory( idPlayer* owner, const idDict& dict )
 	idStr		itemname;
 	const idKeyValue* kv;
 	const char*	name;
-
+	
 	Clear();
-
+	
 	// health/armor
 	maxHealth		= dict.GetInt( "maxhealth", "100" );
 	armor			= dict.GetInt( "armor", "50" );
@@ -255,9 +255,9 @@ void idInventory::RestoreInventory( idPlayer* owner, const idDict& dict )
 	deplete_armor	= dict.GetInt( "deplete_armor", "0" );
 	deplete_rate	= dict.GetFloat( "deplete_rate", "2.0" );
 	deplete_ammount	= dict.GetInt( "deplete_ammount", "1" );
-
+	
 	// the clip and powerups aren't restored
-
+	
 	// ammo
 	for( i = 0; i < AMMO_NUMTYPES; i++ )
 	{
@@ -267,13 +267,13 @@ void idInventory::RestoreInventory( idPlayer* owner, const idDict& dict )
 			ammo[ i ] = dict.GetInt( name );
 		}
 	}
-
+	
 	//Restore the clip data
 	for( i = 0; i < MAX_WEAPONS; i++ )
 	{
 		clip[i] = dict.GetInt( va( "clip%i", i ), "-1" );
 	}
-
+	
 	// items
 	num = dict.GetInt( "items" );
 	items.SetNum( num );
@@ -291,19 +291,19 @@ void idInventory::RestoreInventory( idPlayer* owner, const idDict& dict )
 			kv = dict.MatchPrefix( itemname, kv );
 		}
 	}
-
+	
 	// pdas viewed
 	for( i = 0; i < 4; i++ )
 	{
 		pdasViewed[i] = dict.GetInt( va( "pdasViewed_%i", i ) );
 	}
-
+	
 	selPDA = dict.GetInt( "selPDA" );
 	selEMail = dict.GetInt( "selEmail" );
 	selVideo = dict.GetInt( "selVideo" );
 	selAudio = dict.GetInt( "selAudio" );
 	pdaOpened = dict.GetBool( "pdaOpened" );
-
+	
 	// pdas
 	num = dict.GetInt( "pdas" );
 	pdas.SetNum( num );
@@ -312,7 +312,7 @@ void idInventory::RestoreInventory( idPlayer* owner, const idDict& dict )
 		sprintf( itemname, "pda_%i", i );
 		pdas[i] = static_cast<const idDeclPDA*>( declManager->FindType( DECL_PDA, dict.GetString( itemname, "default" ) ) );
 	}
-
+	
 	// videos
 	num = dict.GetInt( "videos" );
 	videos.SetNum( num );
@@ -321,7 +321,7 @@ void idInventory::RestoreInventory( idPlayer* owner, const idDict& dict )
 		sprintf( itemname, "video_%i", i );
 		videos[i] = static_cast<const idDeclVideo*>( declManager->FindType( DECL_VIDEO, dict.GetString( itemname, "default" ) ) );
 	}
-
+	
 	// emails
 	num = dict.GetInt( "emails" );
 	emails.SetNum( num );
@@ -330,10 +330,10 @@ void idInventory::RestoreInventory( idPlayer* owner, const idDict& dict )
 		sprintf( itemname, "email_%i", i );
 		emails[i] = static_cast<const idDeclEmail*>( declManager->FindType( DECL_EMAIL, dict.GetString( itemname, "default" ) ) );
 	}
-
+	
 	// weapons are stored as a number for persistant data, but as strings in the entityDef
 	weapons	= dict.GetInt( "weapon_bits", "0" );
-
+	
 	if( g_skill.GetInteger() >= 3 || cvarSystem->GetCVarBool( "fs_buildresources" ) )
 	{
 		Give( owner, dict, "weapon", dict.GetString( "weapon_nightmare" ), NULL, false, ITEM_GIVE_FEEDBACK | ITEM_GIVE_UPDATE_STATE );
@@ -342,7 +342,7 @@ void idInventory::RestoreInventory( idPlayer* owner, const idDict& dict )
 	{
 		Give( owner, dict, "weapon", dict.GetString( "weapon" ), NULL, false, ITEM_GIVE_FEEDBACK | ITEM_GIVE_UPDATE_STATE );
 	}
-
+	
 	num = dict.GetInt( "levelTriggers" );
 	for( i = 0; i < num; i++ )
 	{
@@ -353,7 +353,7 @@ void idInventory::RestoreInventory( idPlayer* owner, const idDict& dict )
 		lti.triggerName = dict.GetString( itemname );
 		levelTriggers.Append( lti );
 	}
-
+	
 }
 
 /*
@@ -364,7 +364,7 @@ idInventory::Save
 void idInventory::Save( idSaveGame* savefile ) const
 {
 	int i;
-
+	
 	savefile->WriteInt( maxHealth );
 	savefile->WriteInt( weapons );
 	savefile->WriteInt( powerups );
@@ -374,7 +374,7 @@ void idInventory::Save( idSaveGame* savefile ) const
 	savefile->WriteFloat( deplete_rate );
 	savefile->WriteInt( deplete_ammount );
 	savefile->WriteInt( nextArmorDepleteTime );
-
+	
 	for( i = 0; i < AMMO_NUMTYPES; i++ )
 	{
 		savefile->WriteInt( ammo[ i ].Get() );
@@ -387,58 +387,58 @@ void idInventory::Save( idSaveGame* savefile ) const
 	{
 		savefile->WriteInt( powerupEndTime[ i ] );
 	}
-
+	
 	savefile->WriteInt( items.Num() );
 	for( i = 0; i < items.Num(); i++ )
 	{
 		savefile->WriteDict( items[ i ] );
 	}
-
+	
 	savefile->WriteInt( pdasViewed[0] );
 	savefile->WriteInt( pdasViewed[1] );
 	savefile->WriteInt( pdasViewed[2] );
 	savefile->WriteInt( pdasViewed[3] );
-
+	
 	savefile->WriteInt( selPDA );
 	savefile->WriteInt( selVideo );
 	savefile->WriteInt( selEMail );
 	savefile->WriteInt( selAudio );
 	savefile->WriteBool( pdaOpened );
-
+	
 	savefile->WriteInt( pdas.Num() );
 	for( i = 0; i < pdas.Num(); i++ )
 	{
 		savefile->WriteString( pdas[ i ]->GetName() );
 	}
-
+	
 	savefile->WriteInt( pdaSecurity.Num() );
 	for( i = 0; i < pdaSecurity.Num(); i++ )
 	{
 		savefile->WriteString( pdaSecurity[ i ] );
 	}
-
+	
 	savefile->WriteInt( videos.Num() );
 	for( i = 0; i < videos.Num(); i++ )
 	{
 		savefile->WriteString( videos[ i ]->GetName() );
 	}
-
+	
 	savefile->WriteInt( emails.Num() );
 	for( i = 0; i < emails.Num(); i++ )
 	{
 		savefile->WriteString( emails[ i ]->GetName() );
 	}
-
+	
 	savefile->WriteInt( nextItemPickup );
 	savefile->WriteInt( nextItemNum );
 	savefile->WriteInt( onePickupTime );
-
+	
 	savefile->WriteInt( pickupItemNames.Num() );
 	for( i = 0; i < pickupItemNames.Num(); i++ )
 	{
 		savefile->WriteString( pickupItemNames[i] );
 	}
-
+	
 	savefile->WriteInt( objectiveNames.Num() );
 	for( i = 0; i < objectiveNames.Num(); i++ )
 	{
@@ -446,20 +446,20 @@ void idInventory::Save( idSaveGame* savefile ) const
 		savefile->WriteString( objectiveNames[i].text );
 		savefile->WriteString( objectiveNames[i].title );
 	}
-
+	
 	savefile->WriteInt( levelTriggers.Num() );
 	for( i = 0; i < levelTriggers.Num(); i++ )
 	{
 		savefile->WriteString( levelTriggers[i].levelName );
 		savefile->WriteString( levelTriggers[i].triggerName );
 	}
-
+	
 	savefile->WriteBool( ammoPulse );
 	savefile->WriteBool( weaponPulse );
 	savefile->WriteBool( armorPulse );
-
+	
 	savefile->WriteInt( lastGiveTime );
-
+	
 	for( i = 0; i < AMMO_NUMTYPES; i++ )
 	{
 		savefile->WriteInt( rechargeAmmo[i].ammo );
@@ -474,9 +474,9 @@ idInventory::Restore
 ==============
 */
 void idInventory::Restore( idRestoreGame* savefile )
-{	
+{
 	int num;
-
+	
 	savefile->ReadInt( maxHealth );
 	savefile->ReadInt( weapons );
 	savefile->ReadInt( powerups );
@@ -486,7 +486,7 @@ void idInventory::Restore( idRestoreGame* savefile )
 	savefile->ReadFloat( deplete_rate );
 	savefile->ReadInt( deplete_ammount );
 	savefile->ReadInt( nextArmorDepleteTime );
-
+	
 	for( int i = 0; i < AMMO_NUMTYPES; i++ )
 	{
 		int savedAmmo = 0;
@@ -503,28 +503,28 @@ void idInventory::Restore( idRestoreGame* savefile )
 	{
 		savefile->ReadInt( powerupEndTime[ i ] );
 	}
-
+	
 	savefile->ReadInt( num );
 	for( int i = 0; i < num; i++ )
 	{
 		idDict* itemdict = new( TAG_ENTITY ) idDict;
-
+		
 		savefile->ReadDict( itemdict );
 		items.Append( itemdict );
 	}
-
+	
 	// pdas
 	savefile->ReadInt( pdasViewed[0] );
 	savefile->ReadInt( pdasViewed[1] );
 	savefile->ReadInt( pdasViewed[2] );
 	savefile->ReadInt( pdasViewed[3] );
-
+	
 	savefile->ReadInt( selPDA );
 	savefile->ReadInt( selVideo );
 	savefile->ReadInt( selEMail );
 	savefile->ReadInt( selAudio );
 	savefile->ReadBool( pdaOpened );
-
+	
 	savefile->ReadInt( num );
 	for( int i = 0; i < num; i++ )
 	{
@@ -532,7 +532,7 @@ void idInventory::Restore( idRestoreGame* savefile )
 		savefile->ReadString( strPda );
 		pdas.Append( static_cast<const idDeclPDA*>( declManager->FindType( DECL_PDA, strPda ) ) );
 	}
-
+	
 	// pda security clearances
 	savefile->ReadInt( num );
 	for( int i = 0; i < num; i++ )
@@ -541,7 +541,7 @@ void idInventory::Restore( idRestoreGame* savefile )
 		savefile->ReadString( invName );
 		pdaSecurity.Append( invName );
 	}
-
+	
 	// videos
 	savefile->ReadInt( num );
 	for( int i = 0; i < num; i++ )
@@ -550,7 +550,7 @@ void idInventory::Restore( idRestoreGame* savefile )
 		savefile->ReadString( strVideo );
 		videos.Append( static_cast<const idDeclVideo*>( declManager->FindType( DECL_VIDEO, strVideo ) ) );
 	}
-
+	
 	// email
 	savefile->ReadInt( num );
 	for( int i = 0; i < num; i++ )
@@ -559,7 +559,7 @@ void idInventory::Restore( idRestoreGame* savefile )
 		savefile->ReadString( strEmail );
 		emails.Append( static_cast<const idDeclEmail*>( declManager->FindType( DECL_EMAIL, strEmail ) ) );
 	}
-
+	
 	savefile->ReadInt( nextItemPickup );
 	savefile->ReadInt( nextItemNum );
 	savefile->ReadInt( onePickupTime );
@@ -570,19 +570,19 @@ void idInventory::Restore( idRestoreGame* savefile )
 		savefile->ReadString( itemName );
 		pickupItemNames.Append( itemName );
 	}
-
+	
 	savefile->ReadInt( num );
 	for( int i = 0; i < num; i++ )
 	{
 		idObjectiveInfo obj;
-
+		
 		savefile->ReadMaterial( obj.screenshot );
 		savefile->ReadString( obj.text );
 		savefile->ReadString( obj.title );
-
+		
 		objectiveNames.Append( obj );
 	}
-
+	
 	savefile->ReadInt( num );
 	for( int i = 0; i < num; i++ )
 	{
@@ -591,18 +591,18 @@ void idInventory::Restore( idRestoreGame* savefile )
 		savefile->ReadString( lti.triggerName );
 		levelTriggers.Append( lti );
 	}
-
+	
 	savefile->ReadBool( ammoPulse );
 	savefile->ReadBool( weaponPulse );
 	savefile->ReadBool( armorPulse );
-
+	
 	savefile->ReadInt( lastGiveTime );
-
+	
 	for( int i = 0; i < AMMO_NUMTYPES; i++ )
 	{
 		savefile->ReadInt( rechargeAmmo[i].ammo );
 		savefile->ReadInt( rechargeAmmo[i].rechargeTime );
-
+		
 		idStr name;
 		savefile->ReadString( name );
 		strcpy( rechargeAmmo[i].ammoName, name );
@@ -717,7 +717,7 @@ idInventory::Give
 ==============
 */
 bool idInventory::Give( idPlayer* owner, const idDict& spawnArgs, const char* statname, const char* value,
-					   idPredictedValue< int >* idealWeapon, bool updateHud, unsigned int giveFlags )
+						idPredictedValue< int >* idealWeapon, bool updateHud, unsigned int giveFlags )
 {
 	int						i;
 	const char*				pos;
@@ -729,12 +729,12 @@ bool idInventory::Give( idPlayer* owner, const idDict& spawnArgs, const char* st
 	bool					tookWeapon;
 	int						amount;
 	const char*				name;
-
+	
 	if( !idStr::Icmp( statname, "ammo_bloodstone" ) )
 	{
 		i = AmmoIndexForAmmoClass( statname );
 		max = MaxAmmoForAmmoClass( owner, statname );
-
+		
 		if( max <= 0 )
 		{
 			if( giveFlags & ITEM_GIVE_UPDATE_STATE )
@@ -788,7 +788,7 @@ bool idInventory::Give( idPlayer* owner, const idDict& spawnArgs, const char* st
 				}
 				ammoPulse = true;
 			}
-
+			
 			name = AmmoPickupNameForIndex( i );
 			if( idStr::Length( name ) )
 			{
@@ -878,9 +878,9 @@ bool idInventory::Give( idPlayer* owner, const idDict& spawnArgs, const char* st
 			{
 				len = strlen( pos );
 			}
-
+			
 			idStr weaponName( pos, 0, len );
-
+			
 			// find the number of the matching weapon name
 			for( i = 0; i < MAX_WEAPONS; i++ )
 			{
@@ -889,16 +889,16 @@ bool idInventory::Give( idPlayer* owner, const idDict& spawnArgs, const char* st
 					break;
 				}
 			}
-
+			
 			if( i >= MAX_WEAPONS )
 			{
 				gameLocal.Warning( "Unknown weapon '%s'", weaponName.c_str() );
 				continue;
 			}
-
+			
 			// cache the media for this weapon
 			weaponDecl = gameLocal.FindEntityDef( weaponName, false );
-
+			
 			// don't pickup "no ammo" weapon types twice
 			// not for D3 SP .. there is only one case in the game where you can get a no ammo
 			// weapon when you might already have it, in that case it is more conistent to pick it up
@@ -906,13 +906,13 @@ bool idInventory::Give( idPlayer* owner, const idDict& spawnArgs, const char* st
 			{
 				continue;
 			}
-
+			
 			if( !gameLocal.world->spawnArgs.GetBool( "no_Weapons" ) || ( weaponName == "weapon_fists" ) || ( weaponName == "weapon_soulcube" ) )
 			{
 				if( ( weapons & ( 1 << i ) ) == 0 || common->IsMultiplayer() )
 				{
 					tookWeapon = true;
-
+					
 					// This is done during "feedback" so that clients can predict the ideal weapon.
 					if( giveFlags & ITEM_GIVE_FEEDBACK )
 					{
@@ -923,7 +923,7 @@ bool idInventory::Give( idPlayer* owner, const idDict& spawnArgs, const char* st
 							idealWeapon->Set( i );
 						}
 					}
-
+					
 					if( giveFlags & ITEM_GIVE_UPDATE_STATE )
 					{
 						if( updateHud && lastGiveTime + 1000 < gameLocal.time )
@@ -934,11 +934,11 @@ bool idInventory::Give( idPlayer* owner, const idDict& spawnArgs, const char* st
 							}
 							lastGiveTime = gameLocal.time;
 						}
-
+						
 						weaponPulse = true;
 						weapons |= ( 1 << i );
-
-
+						
+						
 						if( weaponName != "weapon_pda" )
 						{
 							for( int index = 0; index < NUM_QUICK_SLOTS; ++index )
@@ -967,7 +967,7 @@ bool idInventory::Give( idPlayer* owner, const idDict& spawnArgs, const char* st
 		gameLocal.Warning( "Unknown stat '%s' added to player's inventory", statname );
 		return false;
 	}
-
+	
 	return true;
 }
 
@@ -1020,16 +1020,16 @@ int idInventory::HasAmmo( ammo_t type, int amount )
 		// always allow weapons that don't use ammo to fire
 		return -1;
 	}
-
+	
 	// check if we have infinite ammo
 	if( ammo[ type ].Get() < 0 )
 	{
 		return -1;
 	}
-
+	
 	// return how many shots we can fire
 	return ammo[ type ].Get() / amount;
-
+	
 }
 
 /*
@@ -1041,14 +1041,14 @@ int idInventory::HasAmmo( const char* weapon_classname, bool includeClip, idPlay
 {
 	int ammoRequired;
 	ammo_t ammo_i = AmmoIndexForWeaponClass( weapon_classname, &ammoRequired );
-
+	
 	int ammoCount = HasAmmo( ammo_i, ammoRequired );
 	if( includeClip && owner )
 	{
 		ammoCount += Max( 0, clip[owner->SlotForWeapon( weapon_classname )].Get() );
 	}
 	return ammoCount;
-
+	
 }
 
 /*
@@ -1064,7 +1064,7 @@ bool idInventory::HasEmptyClipCannotRefill( const char* weapon_classname, idPlay
 	{
 		return false;
 	}
-
+	
 	const idDeclEntityDef* decl = gameLocal.FindEntityDef( weapon_classname, false );
 	if( decl == NULL )
 	{
@@ -1076,7 +1076,7 @@ bool idInventory::HasEmptyClipCannotRefill( const char* weapon_classname, idPlay
 	{
 		return false;
 	}
-
+	
 	ammo_t ammo_i = AmmoIndexForAmmoClass( decl->dict.GetString( "ammoType" ) );
 	int ammoRequired = decl->dict.GetInt( "ammoRequired" );
 	int ammoCount = HasAmmo( ammo_i, ammoRequired );
@@ -1098,19 +1098,19 @@ bool idInventory::UseAmmo( ammo_t type, int amount )
 	{
 		return true;
 	}
-
+	
 	if( !HasAmmo( type, amount ) )
 	{
 		return false;
 	}
-
+	
 	// take an ammo away if not infinite
 	if( ammo[ type ].Get() >= 0 )
 	{
 		const int currentAmmo = GetInventoryAmmoForType( type );
 		SetInventoryAmmoForType( type, currentAmmo - amount );
 	}
-
+	
 	return true;
 }
 
@@ -1149,7 +1149,7 @@ void idInventory::InitRechargeAmmo( idPlayer* owner )
 {
 
 	memset( rechargeAmmo, 0, sizeof( rechargeAmmo ) );
-
+	
 	const idKeyValue* kv = owner->spawnArgs.MatchPrefix( "ammorecharge_" );
 	while( kv )
 	{
@@ -1185,7 +1185,7 @@ void idInventory::RechargeAmmo( idPlayer* owner )
 			{
 				int intervals = ( gameLocal.time - rechargeAmmo[i].rechargeTime ) / rechargeAmmo[i].ammo;
 				ammo[i] += intervals;
-
+				
 				int max = MaxAmmoForAmmoClass( owner, rechargeAmmo[i].ammoName );
 				if( max > 0 )
 				{
@@ -1212,7 +1212,7 @@ bool idInventory::CanGive( idPlayer* owner, const idDict& spawnArgs, const char*
 	{
 		int max = MaxAmmoForAmmoClass( owner, statname );
 		int i = AmmoIndexForAmmoClass( statname );
-
+		
 		if( max <= 0 )
 		{
 			//No Max

@@ -35,34 +35,34 @@ If you have questions concerning this license or the applicable additional terms
 
 class CConsoleDlg : public CDialog
 {
-	DECLARE_DYNCREATE(CConsoleDlg)
-
+	DECLARE_DYNCREATE( CConsoleDlg )
+	
 public:
-	CConsoleDlg(CWnd* pParent = NULL);   // standard constructor
+	CConsoleDlg( CWnd* pParent = NULL ); // standard constructor
 	virtual ~CConsoleDlg();
-
+	
 // Dialog Data
 	enum { IDD = IDD_DIALOG_CONSOLE };
-
+	
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-
+	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
+	
 	DECLARE_MESSAGE_MAP()
 public:
 	CEdit editConsole;
 	CEdit editInput;
-	void AddText(const char *msg);
-	void SetConsoleText ( const idStr& text );
-	void ExecuteCommand ( const idStr& cmd = "" );
+	void AddText( const char* msg );
+	void SetConsoleText( const idStr& text );
+	void ExecuteCommand( const idStr& cmd = "" );
 	
 	idStr consoleStr;
-    idStrList consoleHistory;
-    idStr currentCommand;
-    int currentHistoryPosition;
+	idStrList consoleHistory;
+	idStr currentCommand;
+	int currentHistoryPosition;
 	bool saveCurrentCommand;
-
-	afx_msg void OnSize(UINT nType, int cx, int cy);
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	afx_msg void OnSetFocus(CWnd* pOldWnd);
-	afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);
+	
+	afx_msg void OnSize( UINT nType, int cx, int cy );
+	virtual BOOL PreTranslateMessage( MSG* pMsg );
+	afx_msg void OnSetFocus( CWnd* pOldWnd );
+	afx_msg void OnActivate( UINT nState, CWnd* pWndOther, BOOL bMinimized );
 };

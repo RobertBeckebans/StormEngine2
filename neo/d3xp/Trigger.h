@@ -292,7 +292,7 @@ public:
 private:
 	idClipModel* 		clipModel;
 	int					contentMask;
-
+	
 	bool				touchPlayer;
 	bool				touchAI;
 	

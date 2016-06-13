@@ -112,7 +112,7 @@ public:
 	virtual bool				ModelDynamicallyGenerated() const
 	{
 		return isDynamicallyGenerated;
-	};	
+	};
 	
 	void						MakeDefaultModel();
 	

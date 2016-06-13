@@ -1078,7 +1078,7 @@ void idRenderModelMD5::LoadModel()
 	// set the timestamp for reloadmodels
 	fileSystem->ReadFile( name, NULL, &timeStamp );
 	
-	common->UpdateLevelLoadPacifier(true);
+	common->UpdateLevelLoadPacifier( true );
 }
 
 /*

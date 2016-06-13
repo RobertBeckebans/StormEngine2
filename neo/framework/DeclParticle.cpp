@@ -599,7 +599,7 @@ bool idDeclParticle::Parse( const char* text, const int textLength, bool allowBi
 		MakeDefault();
 		return false;
 	}
-
+	
 	//
 	// calculate the bounds
 	//
@@ -614,7 +614,7 @@ bool idDeclParticle::Parse( const char* text, const int textLength, bool allowBi
 	{
 		bounds = idBounds( vec3_origin ).Expand( 8.0f );
 	}
-
+	
 	if( allowBinaryVersion && binaryLoadParticles.GetBool() )
 	{
 		idLib::Printf( "Writing %s\n", generatedFileName.c_str() );

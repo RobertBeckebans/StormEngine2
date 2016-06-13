@@ -149,16 +149,16 @@ EVENT( EV_Weapon_StopWeaponLight,			idWeapon::Event_StopWeaponLight )
 // ######################### SR
 
 EVENT( EV_Weapon_EjectReloadBrass,			idWeapon::Event_EjectReloadBrass )
-EVENT( EV_Weapon_Start_Attack, 				idWeapon::Event_Start_Attack )	
+EVENT( EV_Weapon_Start_Attack, 				idWeapon::Event_Start_Attack )
 EVENT( EV_Weapon_Stop_Attack, 				idWeapon::Event_Stop_Attack )
 EVENT( EV_Weapon_NumProjectiles, 			idWeapon::Event_NumProjectiles )
 EVENT( EV_Weapon_Spread, 					idWeapon::Event_Spread )
-EVENT( EV_Weapon_MeleeAttackLeft, 			idWeapon::Event_MeleeAttackLeft )	
+EVENT( EV_Weapon_MeleeAttackLeft, 			idWeapon::Event_MeleeAttackLeft )
 EVENT( EV_Weapon_MeleeAttackRight, 			idWeapon::Event_MeleeAttackRight )
 EVENT( EV_Weapon_GetBarrelJoint,			idWeapon::Event_GetBarrelJoint )
 
 
-// ######################### 
+// #########################
 
 END_CLASS
 
@@ -211,16 +211,17 @@ idWeapon::idWeapon()
 	
 	// ##################### SR
 	
-	for ( int i = 0; i < 5; i++ ) {
+	for( int i = 0; i < 5; i++ )
+	{
 		ent_hitlist[i] = 0;
-	}	
+	}
 	ents_hit				= 0;
-	ATTACKING 				= false;	
+	ATTACKING 				= false;
 	SWORD_ATTACKING 		= false;
-	ATTACK_LEFT 			= false;	
+	ATTACK_LEFT 			= false;
 	decAngle				= 0;
 	
-	// #####################		
+	// #####################
 	
 	
 	fraccos = 0.0f;
@@ -299,7 +300,7 @@ void idWeapon::SetFlashlightOwner( idPlayer* _owner )
 	assert( !owner );
 	owner = _owner;
 	SetName( va( "%s_weapon_flashlight", owner->name.c_str() ) );
-	
+
 	if( worldModel.GetEntity() )
 	{
 		worldModel.GetEntity()->SetName( va( "%s_weapon_flashlight_worldmodel", owner->name.c_str() ) );
@@ -370,7 +371,7 @@ idWeapon::Save
 void idWeapon::Save( idSaveGame* savefile ) const
 {
 	owner.Save( savefile );
-
+	
 	savefile->WriteInt( status );
 	savefile->WriteObject( weaponThread );
 	savefile->WriteString( state );
@@ -439,12 +440,12 @@ void idWeapon::Save( idSaveGame* savefile ) const
 	savefile->WriteInt( clipSize );
 	savefile->WriteInt( lowAmmo );
 	savefile->WriteBool( powerAmmo );
-
-	savefile->WriteInt(numProjectiles);
-	savefile->WriteInt(spread);
-
-	savefile->WriteInt(ammoClip.Get());
-
+	
+	savefile->WriteInt( numProjectiles );
+	savefile->WriteInt( spread );
+	
+	savefile->WriteInt( ammoClip.Get() );
+	
 	// savegames <= 17
 	savefile->WriteInt( 0 );
 	
@@ -533,7 +534,7 @@ void idWeapon::Save( idSaveGame* savefile ) const
 	
 	savefile->WriteJoint( ejectReloadJointView );
 	
-	// ############################################# END SR	
+	// ############################################# END SR
 	
 	
 }
@@ -546,7 +547,7 @@ idWeapon::Restore
 void idWeapon::Restore( idRestoreGame* savefile )
 {
 	owner.Restore( savefile );
-
+	
 	savefile->ReadInt( ( int& )status );
 	savefile->ReadObject( reinterpret_cast<idClass*&>( weaponThread ) );
 	savefile->ReadString( state );
@@ -604,7 +605,7 @@ void idWeapon::Restore( idRestoreGame* savefile )
 	{
 		projectileDict.Clear();
 	}
-
+	
 	const idDeclEntityDef* brassDef = gameLocal.FindEntityDef( weaponDef->dict.GetString( "def_ejectBrass" ), false );
 	if( brassDef )
 	{
@@ -658,21 +659,21 @@ void idWeapon::Restore( idRestoreGame* savefile )
 	savefile->ReadAngles( muzzle_kick_angles );
 	savefile->ReadVec3( muzzle_kick_offset );
 	
-	savefile->ReadInt((int&)ammoType);
+	savefile->ReadInt( ( int& )ammoType );
 	savefile->ReadInt( ammoRequired );
 	savefile->ReadInt( clipSize );
 	
 	int savedAmmoClip = 0;
 	savefile->ReadInt( savedAmmoClip );
 	ammoClip = savedAmmoClip;
-
+	
 	savefile->ReadInt( lowAmmo );
 	savefile->ReadBool( powerAmmo );
 	
-	savefile->ReadInt(numProjectiles);
-
-	savefile->ReadInt(spread);
-
+	savefile->ReadInt( numProjectiles );
+	
+	savefile->ReadInt( spread );
+	
 	// savegame versions <= 17
 	int foo;
 	savefile->ReadInt( foo );
@@ -832,18 +833,19 @@ void idWeapon::Clear()
 	spread		= 0;
 	
 	ejectReloadJointView = INVALID_JOINT;
-
-	for ( int i = 0; i < 5; i++ ) {
+	
+	for( int i = 0; i < 5; i++ )
+	{
 		ent_hitlist[i] = 0;
 	}
 	ents_hit				= 0;
-	ATTACKING 				= false;	
-	SWORD_ATTACKING 		= false;	
+	ATTACKING 				= false;
+	SWORD_ATTACKING 		= false;
 	ATTACK_LEFT 			= false;
 	decAngle				= 0;
 	
 	// ############################# END SR
-		
+	
 	if( muzzleFlashHandle != -1 )
 	{
 		gameRenderWorld->FreeLightDef( muzzleFlashHandle );
@@ -946,7 +948,7 @@ void idWeapon::Clear()
 	meleeDef		= NULL;
 	
 	meleeDefL		= NULL;	// ############ SR
-
+	
 	
 	meleeDefName	= "";
 	meleeDistance	= 0.0f;
@@ -1041,40 +1043,42 @@ void idWeapon::Clear()
 }
 
 
-/*				
+/*
 ==================
-idWeapon::Event_MeleeAttackLeft	
+idWeapon::Event_MeleeAttackLeft
 ==================
 */
-void idWeapon::Event_MeleeAttackLeft( float angle ) 
+void idWeapon::Event_MeleeAttackLeft( float angle )
 {
 	decAngle = angle;
-
-	for ( int i = 0; i < 5; i++ ) {
+	
+	for( int i = 0; i < 5; i++ )
+	{
 		ent_hitlist[i] = 0;
 	}
 	ents_hit	= 0;
-
+	
 	ATTACK_LEFT = true;
 	ATTACKING 	= true;
-}	
-/*				
+}
+/*
 ==================
-idWeapon::Event_MeleeAttackRight	
+idWeapon::Event_MeleeAttackRight
 ==================
 */
 void idWeapon::Event_MeleeAttackRight( float angle )
 {
 	decAngle = angle;
-
-	for ( int i = 0; i < 5; i++ ) {
+	
+	for( int i = 0; i < 5; i++ )
+	{
 		ent_hitlist[i] = 0;
 	}
 	ents_hit	= 0;
-
+	
 	ATTACK_LEFT = false;
 	ATTACKING 	= true;
-}	
+}
 
 /*
 ==================
@@ -1086,57 +1090,66 @@ void idWeapon::Event_GetBarrelJoint( void )
 	idThread::ReturnInt( barrelJointWorld );
 }
 
-/*				
+/*
 ==================
-idWeapon::Event_Start_Attack	
+idWeapon::Event_Start_Attack
 ==================
 */
-void idWeapon::Event_Start_Attack( int leftright) {
-	for ( int i = 0; i < 5; i++ ) {
+void idWeapon::Event_Start_Attack( int leftright )
+{
+	for( int i = 0; i < 5; i++ )
+	{
 		ent_hitlist[i] = 0;
 	}
 	ents_hit	= 0;
 	ATTACK_LEFT = false;
 	
-	if ( leftright ) {
+	if( leftright )
+	{
 		ATTACK_LEFT = true;
 	}
 	SWORD_ATTACKING	= true;
-}	
-/*				
+}
+/*
 ==================
-idWeapon::Event_StopAttack	
+idWeapon::Event_StopAttack
 ==================
 */
-void idWeapon::Event_Stop_Attack() {
+void idWeapon::Event_Stop_Attack()
+{
 	ATTACKING 		= false;
 	SWORD_ATTACKING = false;
-}	
-/*				
+}
+/*
 ==================
-idWeapon::Event_NumProjectiles	
+idWeapon::Event_NumProjectiles
 ==================
 */
-void idWeapon::Event_NumProjectiles( void ) {
+void idWeapon::Event_NumProjectiles( void )
+{
 	idThread::ReturnFloat( numProjectiles );
-}	
-/*				
+}
+/*
 ==================
-idWeapon::Event_Spread	
+idWeapon::Event_Spread
 ==================
 */
-void idWeapon::Event_Spread( void ) {
+void idWeapon::Event_Spread( void )
+{
 	idThread::ReturnFloat( spread );
-}	
+}
 
 /*
 =====================
 idWeapon::EntHit
 =====================
 */
-bool idWeapon::EntHit( int entNum ) {
-	for ( int i = 0; i < 5; i++ ) {
-		if ( ent_hitlist[ i ] == entNum ) {
+bool idWeapon::EntHit( int entNum )
+{
+	for( int i = 0; i < 5; i++ )
+	{
+		if( ent_hitlist[ i ] == entNum )
+		{
 			return true;
 		}
 	}
@@ -1149,10 +1162,11 @@ bool idWeapon::EntHit( int entNum ) {
 idWeapon::Melee_Attack
 =====================
 */
-void idWeapon::Melee_Attack( void ) {
+void idWeapon::Melee_Attack( void )
+{
 	idVec3 			start, end, tmp;
 	idMat3 			axis, axisLocal;
-	idEntity		*ent;
+	idEntity*		ent;
 	trace_t			tr;
 	
 	idStr			bone_start;
@@ -1160,36 +1174,47 @@ void idWeapon::Melee_Attack( void ) {
 	idStr			meleeDefName2;
 	const idDeclEntityDef* 	meleeDef2;
 	
-	if ( !meleeDef || !meleeDefL ) {
+	if( !meleeDef || !meleeDefL )
+	{
 		gameLocal.Error( "No meleeDefL or meleeDefR on '%s'", weaponDef->dict.GetString( "classname" ) );
 	}
 	
-	if ( !common->IsClient() ) {
-		if ( ATTACK_LEFT ) {
+	if( !common->IsClient() )
+	{
+		if( ATTACK_LEFT )
+		{
 			meleeDef2 = meleeDefL;
 			meleeDefName2 = meleeDefLName;
-		} else {
+		}
+		else
+		{
 			meleeDef2 = meleeDef;
 			meleeDefName2 = meleeDefName;
 		}
-
+		
 		start = playerViewOrigin;
 		end = start + playerViewAxis[0] * meleeDistance;
 		gameLocal.clip.TracePoint( tr, start, end, MASK_SHOT_RENDERMODEL, owner );
-		if ( tr.fraction < 1.0f ) {
+		if( tr.fraction < 1.0f )
+		{
 			ent = gameLocal.GetTraceEntity( tr );
-		} else {
+		}
+		else
+		{
 			ent = NULL;
 		}
-
-		const char *hitSound = "";	//meleeDef2->dict.GetString( "snd_miss" );
-		if ( ent ) {
+		
+		const char* hitSound = "";	//meleeDef2->dict.GetString( "snd_miss" );
+		if( ent )
+		{
 			float push = meleeDef2->dict.GetFloat( "push" );
 			idVec3 impulse = -push * tr.c.normal;
-
-			if ( !EntHit( ent->entityNumber ) ) {
+			
+			if( !EntHit( ent->entityNumber ) )
+			{
 				ent->ApplyImpulse( this, tr.c.id, tr.c.point, impulse );
-				if ( ent->fl.takedamage ) {
+				if( ent->fl.takedamage )
+				{
 					gameLocal.Printf( "HITTING ENT : %d\n", ent->entityNumber );
 					idVec3 kickDir, globalKickDir;
 					meleeDef2->dict.GetVector( "kickDir", "0 0 0", kickDir );
@@ -1198,81 +1223,104 @@ void idWeapon::Melee_Attack( void ) {
 					ent->AddDamageEffect( tr, impulse, meleeDef2->dict.GetString( "classname" ) );
 					ent_hitlist[ ents_hit ] = ent->entityNumber;
 					ents_hit++;
-					if ( ents_hit > 4 ) {
+					if( ents_hit > 4 )
+					{
 						ents_hit = 0;	// if more than 5 is hit, allow 2nd hits
-					}	
-				} else if ( weaponDef->dict.GetBool( "impact_damage_effect" ) ) {
-					if ( ent->spawnArgs.GetBool( "bleed" ) ) {
+					}
+				}
+				else if( weaponDef->dict.GetBool( "impact_damage_effect" ) )
+				{
+					if( ent->spawnArgs.GetBool( "bleed" ) )
+					{
 						hitSound = meleeDef2->dict.GetString( "snd_hit" );
 						ent->AddDamageEffect( tr, impulse, meleeDef2->dict.GetString( "classname" ) );
-					} else {
+					}
+					else
+					{
 						int type = tr.c.material->GetSurfaceType();
-						if ( type == SURFTYPE_NONE ) {
+						if( type == SURFTYPE_NONE )
+						{
 							type = GetDefaultSurfaceType();
 						}
-						const char *materialType = gameLocal.sufaceTypeNames[ type ];
+						const char* materialType = gameLocal.sufaceTypeNames[ type ];
 						idVec3 decpos;
 						// start impact sound based on material type
 						hitSound = meleeDef2->dict.GetString( va( "snd_%s", materialType ) );
-						if ( *hitSound == '\0' ) {
+						if( *hitSound == '\0' )
+						{
 							hitSound = meleeDef2->dict.GetString( "snd_metal" );
 						}
-						if ( gameLocal.time > nextStrikeFx ) {
-							const char 	*decal;
+						if( gameLocal.time > nextStrikeFx )
+						{
+							const char*	 decal;
 							float 		ang, ang_tmp, ang_rnd;
-						
+							
 							ang_tmp = decAngle;
 							ang_rnd = meleeDef2->dict.GetFloat( "decal_rnd_angle", "10.0" );
 							ang_tmp = ang_tmp + ( gameLocal.random.RandomFloat() * ( ang_rnd * 2.0f ) ) - ang_rnd ;
-							if ( ang_tmp > 360.0f ) {
+							if( ang_tmp > 360.0f )
+							{
 								ang_tmp = 360.0f;
-							} else if ( ang_tmp < 0.0f ) {
+							}
+							else if( ang_tmp < 0.0f )
+							{
 								ang_tmp = 0.0f;
-							}		
+							}
 							ang = DEG2RAD( ang_tmp );
 							idVec3 offset = playerViewAxis.ToAngles().ToRight() * ( meleeDef2->dict.GetFloat( "decal_offset", "4.0" ) + ( gameLocal.random.RandomFloat() * meleeDef2->dict.GetFloat( "decal_rnd_offset", "2.0" ) ) );
 							decpos = tr.c.point;
-							if ( ATTACK_LEFT ) {
+							if( ATTACK_LEFT )
+							{
 								decpos = decpos - offset;
-							} else {
+							}
+							else
+							{
 								decpos = decpos + offset;
-							}	
-						
+							}
+							
 							// project decal
 							decal = meleeDef2->dict.GetString( va( "mtr_wound_%s", materialType ) );	//weaponDef->dict.GetString( "mtr_strike" );
-							if ( decal && *decal ) {
+							if( decal && *decal )
+							{
 								gameLocal.ProjectDecal( decpos, playerViewAxis[0], 8.0f, true, meleeDef2->dict.GetFloat( "decal_size", "6.0" ), decal, ang );	//-tr.c.normal
 							}
-							const char *smokeName;
+							const char* smokeName;
 							smokeName = meleeDef2->dict.GetString( va( "smoke_wound_%s", materialType ) );	//weaponDef->dict.GetString( "smoke_strike" );
-							if ( *smokeName != '\0' ) {
-								strikeSmoke = static_cast<const idDeclParticle *>( declManager->FindType( DECL_PARTICLE, smokeName ) );
-							} else {
+							if( *smokeName != '\0' )
+							{
+								strikeSmoke = static_cast<const idDeclParticle*>( declManager->FindType( DECL_PARTICLE, smokeName ) );
+							}
+							else
+							{
 								strikeSmoke = NULL;
 							}
 							start = playerViewOrigin;
 							end = start + ( decpos - start ) * 48.0f;
 							gameLocal.clip.TracePoint( tr, start, end, MASK_SHOT_RENDERMODEL, owner );
-							if ( tr.fraction < 1.0f ) {
+							if( tr.fraction < 1.0f )
+							{
 								decpos = tr.c.point;
 							}
 							strikeSmokeStartTime = gameLocal.time;
-							strikePos = tr.c.point;	
+							strikePos = tr.c.point;
 							strikeAxis = -tr.endAxis;
 							nextStrikeFx = gameLocal.time + 500;
-						} else {
+						}
+						else
+						{
 							hitSound = "";
 						}
 					}
 				}
 			}
 		}
-		if ( *hitSound != '\0' ) {
-			const idSoundShader *snd = declManager->FindSound( hitSound );
+		if( *hitSound != '\0' )
+		{
+			const idSoundShader* snd = declManager->FindSound( hitSound );
 			StartSoundShader( snd, SND_CHANNEL_BODY2, 0, true, NULL );
 		}
 	}
-
+	
 	owner->WeaponFireFeedback( &weaponDef->dict );
 }
 
@@ -1281,10 +1329,11 @@ void idWeapon::Melee_Attack( void ) {
 idWeapon::Sword_Attack
 =====================
 */
-void idWeapon::Sword_Attack( void ) {
+void idWeapon::Sword_Attack( void )
+{
 	idVec3 			start, end, tmp;
 	idMat3 			axis, axisLocal;
-	idEntity		*ent;
+	idEntity*		ent;
 	trace_t			tr;
 	jointHandle_t 	joint, joint2;
 	
@@ -1293,39 +1342,50 @@ void idWeapon::Sword_Attack( void ) {
 	idStr			meleeDefName2;
 	const idDeclEntityDef* 	meleeDef2;
 	
-	if ( !meleeDef && !meleeDefL ) {
+	if( !meleeDef && !meleeDefL )
+	{
 		gameLocal.Error( "No meleeDef or meleeDefL on '%s'", weaponDef->dict.GetString( "classname" ) );
 	}
-	if ( !common->IsClient() ) {
-		if ( ATTACK_LEFT ) {
-			joint  = animator.GetJointHandle( "trail_start_L" ); // a bone with name "trail_start" has to be placed at the guard	
+	if( !common->IsClient() )
+	{
+		if( ATTACK_LEFT )
+		{
+			joint  = animator.GetJointHandle( "trail_start_L" ); // a bone with name "trail_start" has to be placed at the guard
 			joint2 = animator.GetJointHandle( "trail_end_L" ); // a bone with name "trail_end" has to be placed at the tip of the blade
 			meleeDef2 = meleeDefL;
 			meleeDefName2 = meleeDefLName;
-		} else {
-			joint  = animator.GetJointHandle( "trail_start_R" ); // a bone with name "trail_start" has to be placed at the guard	
+		}
+		else
+		{
+			joint  = animator.GetJointHandle( "trail_start_R" ); // a bone with name "trail_start" has to be placed at the guard
 			joint2 = animator.GetJointHandle( "trail_end_R" ); // a bone with name "trail_end" has to be placed at the tip of the blade
 			meleeDef2 = meleeDef;
 			meleeDefName2 = meleeDefName;
 		}
 		GetGlobalJointTransform( true, joint, start, axis );
-		GetGlobalJointTransform( true, joint2, end, axis );		
-
+		GetGlobalJointTransform( true, joint2, end, axis );
+		
 		gameLocal.clip.TracePoint( tr, start, end, MASK_SHOT_RENDERMODEL, owner );
-		if ( tr.fraction < 1.0f ) {
+		if( tr.fraction < 1.0f )
+		{
 			ent = gameLocal.GetTraceEntity( tr );
-		} else {
+		}
+		else
+		{
 			ent = NULL;
 		}
-
-		const char *hitSound = "";	//meleeDef2->dict.GetString( "snd_miss" );
-		if ( ent ) {
+		
+		const char* hitSound = "";	//meleeDef2->dict.GetString( "snd_miss" );
+		if( ent )
+		{
 			float push = meleeDef2->dict.GetFloat( "push" );
 			idVec3 impulse = -push * owner->PowerUpModifier( SPEED ) * tr.c.normal;
-
-			if ( !EntHit( ent->entityNumber ) ) {
+			
+			if( !EntHit( ent->entityNumber ) )
+			{
 				ent->ApplyImpulse( this, tr.c.id, tr.c.point, impulse );
-				if ( ent->fl.takedamage ) {
+				if( ent->fl.takedamage )
+				{
 					gameLocal.Printf( "HITTING ENT : %d\n", ent->entityNumber );
 					idVec3 kickDir, globalKickDir;
 					meleeDef2->dict.GetVector( "kickDir", "0 0 0", kickDir );
@@ -1334,29 +1394,38 @@ void idWeapon::Sword_Attack( void ) {
 					ent->AddDamageEffect( tr, impulse, meleeDef2->dict.GetString( "classname" ) );
 					ent_hitlist[ ents_hit ] = ent->entityNumber;
 					ents_hit++;
-					if ( ents_hit > 4 ) {
+					if( ents_hit > 4 )
+					{
 						ents_hit = 0;	// if more than 5 is hit, allow 2nd hits
-					}	
-				} else if ( weaponDef->dict.GetBool( "impact_damage_effect" ) ) {
-					if ( ent->spawnArgs.GetBool( "bleed" ) ) {
+					}
+				}
+				else if( weaponDef->dict.GetBool( "impact_damage_effect" ) )
+				{
+					if( ent->spawnArgs.GetBool( "bleed" ) )
+					{
 						hitSound = meleeDef2->dict.GetString( "snd_hit" );
 						ent->AddDamageEffect( tr, impulse, meleeDef2->dict.GetString( "classname" ) );
-					} else {
+					}
+					else
+					{
 						int type = tr.c.material->GetSurfaceType();
-						if ( type == SURFTYPE_NONE ) {
+						if( type == SURFTYPE_NONE )
+						{
 							type = GetDefaultSurfaceType();
 						}
-						const char *materialType = gameLocal.sufaceTypeNames[ type ];
+						const char* materialType = gameLocal.sufaceTypeNames[ type ];
 						idVec3 decpos;
 						// start impact sound based on material type
 						hitSound = meleeDef2->dict.GetString( va( "snd_%s", materialType ) );
-						if ( *hitSound == '\0' ) {
+						if( *hitSound == '\0' )
+						{
 							hitSound = meleeDef2->dict.GetString( "snd_metal" );
 						}
-						if ( gameLocal.time > nextStrikeFx ) {
-							const char 	*decal;
+						if( gameLocal.time > nextStrikeFx )
+						{
+							const char*	 decal;
 							float 		ang;
-					
+							
 							animator.GetJointTransform( joint2, gameLocal.time, start, axis );
 							idAngles angles = axis.ToAngles();
 							ang = angles[2];
@@ -1364,29 +1433,36 @@ void idWeapon::Sword_Attack( void ) {
 							
 							// project decal
 							decal = meleeDef2->dict.GetString( va( "mtr_wound_%s", materialType ) );	//weaponDef->dict.GetString( "mtr_strike" );
-							if ( decal && *decal ) {
+							if( decal && *decal )
+							{
 								gameLocal.ProjectDecal( decpos, playerViewAxis[0], 8.0f, true, meleeDef2->dict.GetFloat( "decal_size", "6.0" ), decal, ang );	//-tr.c.normal
 							}
-							const char *smokeName;
+							const char* smokeName;
 							smokeName = meleeDef2->dict.GetString( va( "smoke_wound_%s", materialType ) );	//weaponDef->dict.GetString( "smoke_strike" );
-							if ( *smokeName != '\0' ) {
-								strikeSmoke = static_cast<const idDeclParticle *>( declManager->FindType( DECL_PARTICLE, smokeName ) );
-							} else {
+							if( *smokeName != '\0' )
+							{
+								strikeSmoke = static_cast<const idDeclParticle*>( declManager->FindType( DECL_PARTICLE, smokeName ) );
+							}
+							else
+							{
 								strikeSmoke = NULL;
 							}
 							strikeSmokeStartTime = gameLocal.time;
-							strikePos = tr.c.point;	
+							strikePos = tr.c.point;
 							strikeAxis = -tr.endAxis;
 							nextStrikeFx = gameLocal.time + 500;
-						} else {
+						}
+						else
+						{
 							hitSound = "";
 						}
 					}
 				}
 			}
 		}
-		if ( *hitSound != '\0' ) {
-			const idSoundShader *snd = declManager->FindSound( hitSound );
+		if( *hitSound != '\0' )
+		{
+			const idSoundShader* snd = declManager->FindSound( hitSound );
 			StartSoundShader( snd, SND_CHANNEL_BODY2, 0, true, NULL );
 		}
 	}
@@ -1460,7 +1536,8 @@ void idWeapon::InitWorldModel( const idDeclEntityDef* def )
 idWeapon::GetWeaponDef
 ================
 */
-void idWeapon::GetWeaponDef(const char* objectname, int ammoinclip) {
+void idWeapon::GetWeaponDef( const char* objectname, int ammoinclip )
+{
 	const char* shader;
 	const char* objectType;
 	const char* vmodel;
@@ -1480,14 +1557,14 @@ void idWeapon::GetWeaponDef(const char* objectname, int ammoinclip) {
 	assert( owner );
 	
 	weaponDef			= gameLocal.FindEntityDef( objectname );
-
-	ammoType			= GetAmmoNumForName(weaponDef->dict.GetString("ammoType"));
+	
+	ammoType			= GetAmmoNumForName( weaponDef->dict.GetString( "ammoType" ) );
 	
 	ammoRequired		= weaponDef->dict.GetInt( "ammoRequired" );
 	lowAmmo				= weaponDef->dict.GetInt( "lowAmmo" );
-	numProjectiles		= weaponDef->dict.GetInt("num_projectiles");
-	clipSize			= weaponDef->dict.GetInt("clipSize");
-
+	numProjectiles		= weaponDef->dict.GetInt( "num_projectiles" );
+	clipSize			= weaponDef->dict.GetInt( "clipSize" );
+	
 	icon				= weaponDef->dict.GetString( "icon" );
 	pdaIcon				= weaponDef->dict.GetString( "pdaIcon" );
 	displayName			= weaponDef->dict.GetString( "display_name" );
@@ -1564,7 +1641,7 @@ void idWeapon::GetWeaponDef(const char* objectname, int ammoinclip) {
 	ventLightJointView = animator.GetJointHandle( "ventLight" );
 	
 	ejectReloadJointView = animator.GetJointHandle( "eject" );	// #################### SR
-
+	
 	idStr smokeJoint = weaponDef->dict.GetString( "smoke_joint" );
 	if( smokeJoint.Length() > 0 )
 	{
@@ -1579,11 +1656,11 @@ void idWeapon::GetWeaponDef(const char* objectname, int ammoinclip) {
 	projectileDict.Clear();
 	
 	projectileName = weaponDef->dict.GetString( "def_projectile" );
-
+	
 	if( projectileName[0] != '\0' )
 	{
 		const idDeclEntityDef* projectileDef = gameLocal.FindEntityDef( projectileName, false );
-
+		
 		if( !projectileDef )
 		{
 			gameLocal.Warning( "Unknown projectile '%s' in weapon '%s'", projectileName, objectname );
@@ -1602,7 +1679,7 @@ void idWeapon::GetWeaponDef(const char* objectname, int ammoinclip) {
 			}
 		}
 	}
-		
+	
 	// set up muzzleflash render light
 	const idMaterial* flashShader;
 	idVec3			flashTarget;
@@ -1712,43 +1789,47 @@ void idWeapon::GetWeaponDef(const char* objectname, int ammoinclip) {
 	// reload brass
 	brassReloadDict.Clear();
 	brassDefName = weaponDef->dict.GetString( "def_ejectReloadBrass" );
-
-	if ( brassDefName[0] ) {
-		const idDeclEntityDef *brassDef = gameLocal.FindEntityDef( brassDefName, false );
-		if ( !brassDef ) {
+	
+	if( brassDefName[0] )
+	{
+		const idDeclEntityDef* brassDef = gameLocal.FindEntityDef( brassDefName, false );
+		if( !brassDef )
+		{
 			gameLocal.Warning( "Unknown brass '%s'", brassDefName );
-		} else {
+		}
+		else
+		{
 			brassReloadDict = brassDef->dict;
 		}
 	}
 	
-	// ################################################### END SR	
-
+	// ################################################### END SR
+	
 	if( ( ammoType < 0 ) || ( ammoType >= AMMO_NUMTYPES ) )
 	{
 		gameLocal.Warning( "Unknown ammotype in object '%s'", objectname );
 	}
-
+	
 	ammoClip = ammoinclip;
-	if ((ammoClip.Get() < 0) || (ammoClip.Get() > clipSize))
+	if( ( ammoClip.Get() < 0 ) || ( ammoClip.Get() > clipSize ) )
 	{
 		// first time using this weapon so have it fully loaded to start
 		ammoClip = clipSize;
-
-		if ( owner->GetInventory() != NULL )
-			ammoAvail = owner->GetInventory()->HasAmmo(ammoType, ammoRequired);
-		else 
-			ammoAvail = 999; // if no inventory we have unlimited ammo
 		
-		if (ammoClip.Get() > ammoAvail)
+		if( owner->GetInventory() != NULL )
+			ammoAvail = owner->GetInventory()->HasAmmo( ammoType, ammoRequired );
+		else
+			ammoAvail = 999; // if no inventory we have unlimited ammo
+			
+		if( ammoClip.Get() > ammoAvail )
 		{
 			ammoClip = ammoAvail;
 		}
 		//In D3XP we use ammo as soon as it is moved into the clip. This allows for weapons that share ammo
-		if ( owner->GetInventory() != NULL )
-			owner->GetInventory()->UseAmmo(ammoType, ammoClip.Get());
+		if( owner->GetInventory() != NULL )
+			owner->GetInventory()->UseAmmo( ammoType, ammoClip.Get() );
 	}
-
+	
 	renderEntity.gui[ 0 ] = NULL;
 	guiName = weaponDef->dict.GetString( "gui" );
 	if( guiName[0] )
@@ -1784,7 +1865,7 @@ void idWeapon::GetWeaponDef(const char* objectname, int ammoinclip) {
 	WEAPON_NETFIRING.LinkTo(	scriptObject, "WEAPON_NETFIRING" );
 	WEAPON_RAISEWEAPON.LinkTo(	scriptObject, "WEAPON_RAISEWEAPON" );
 	WEAPON_LOWERWEAPON.LinkTo(	scriptObject, "WEAPON_LOWERWEAPON" );
-		
+	
 	spawnArgs = weaponDef->dict;
 	
 	shader = spawnArgs.GetString( "snd_hum" );
@@ -1955,7 +2036,7 @@ void idWeapon::UpdateGUI()
 	{
 		return;
 	}
-		
+	
 	if( !owner->IsLocallyControlled() )
 	{
 		// if updating the hud for a followed client
@@ -2131,23 +2212,23 @@ idWeapon::FlashlightOn
 void idWeapon::FlashlightOn()
 {
 	const function_t* func;
-	
+
 	if( !isLinked )
 	{
 		return;
 	}
-	
+
 	func = scriptObject.GetFunction( "TurnOn" );
 	if( !func )
 	{
 		common->Warning( "Can't find function 'TurnOn' in object '%s'", scriptObject.GetTypeName() );
 		return;
 	}
-	
+
 	// use the frameCommandThread since it's safe to use outside of framecommands
 	gameLocal.frameCommandThread->CallFunction( this, func, true );
 	gameLocal.frameCommandThread->Execute();
-	
+
 	return;
 }
 */
@@ -2161,23 +2242,23 @@ idWeapon::FlashlightOff
 void idWeapon::FlashlightOff()
 {
 	const function_t* func;
-	
+
 	if( !isLinked )
 	{
 		return;
 	}
-	
+
 	func = scriptObject.GetFunction( "TurnOff" );
 	if( !func )
 	{
 		common->Warning( "Can't find function 'TurnOff' in object '%s'", scriptObject.GetTypeName() );
 		return;
 	}
-	
+
 	// use the frameCommandThread since it's safe to use outside of framecommands
 	gameLocal.frameCommandThread->CallFunction( this, func, true );
 	gameLocal.frameCommandThread->Execute();
-	
+
 	return;
 }
 */
@@ -2386,7 +2467,8 @@ idWeapon::ShowWeapon
 void idWeapon::ShowWeapon()
 {
 	Show();
-	if( worldModel.GetEntity() ) {
+	if( worldModel.GetEntity() )
+	{
 		worldModel.GetEntity()->Show();
 	}
 	if( lightOn )
@@ -3096,7 +3178,7 @@ void idWeapon::PresentWeapon( bool showViewModel )
 	idVec3 viewPos;
 	idMat3 viewAxis;
 	owner->GetViewPos( viewPos, viewAxis );
-
+	
 	playerViewOrigin = viewPos;
 	playerViewAxis = viewAxis;
 	
@@ -3243,7 +3325,7 @@ void idWeapon::PresentWeapon( bool showViewModel )
 	}
 	
 	if( showViewModel && !hide )
-	{	
+	{
 		for( int i = 0; i < weaponParticles.Num(); i++ )
 		{
 			WeaponParticle_t* part = weaponParticles.GetIndex( i );
@@ -3374,13 +3456,15 @@ void idWeapon::PresentWeapon( bool showViewModel )
 	}
 	
 	// ##################### SR
-	if ( ATTACKING ) {
+	if( ATTACKING )
+	{
 		Melee_Attack();
 	}
-	if ( SWORD_ATTACKING ) {
+	if( SWORD_ATTACKING )
+	{
 		Sword_Attack();
 	}
-	// #####################		
+	// #####################
 	
 }
 
@@ -3623,7 +3707,7 @@ int idWeapon::AmmoAvailable() const
 {
 	if( owner )
 	{
-		if ( owner->GetInventory() != NULL )
+		if( owner->GetInventory() != NULL )
 			return owner->GetInventory()->HasAmmo( ammoType, ammoRequired );
 		return 1000;
 	}
@@ -4025,9 +4109,9 @@ void idWeapon::Event_UseAmmo( int amount )
 		return;
 	}
 	
-	if ( owner->GetInventory() )
+	if( owner->GetInventory() )
 		owner->GetInventory()->UseAmmo( ammoType, ( powerAmmo ) ? amount : ( amount * ammoRequired ) );
-
+		
 	if( clipSize && ammoRequired )
 	{
 		ammoClip -= powerAmmo ? amount : ( amount * ammoRequired );
@@ -4044,7 +4128,7 @@ idWeapon::Event_AddToClip
 ===============
 */
 void idWeapon::Event_AddToClip( int amount )
-{	
+{
 	if( owner == NULL || ( common->IsClient() && !owner->IsLocallyControlled() ) )
 	{
 		return;
@@ -4052,14 +4136,14 @@ void idWeapon::Event_AddToClip( int amount )
 	
 	int ammoAvail = 1000;
 	int oldAmmo = ammoClip.Get();
-	if ( owner->GetInventory() != NULL )
+	if( owner->GetInventory() != NULL )
 		ammoAvail = owner->GetInventory()->HasAmmo( ammoType, ammoRequired ) + AmmoInClip();
-	
+		
 	ammoClip += amount;
 	if( ammoClip.Get() > clipSize )
 	{
 		ammoClip = clipSize;
-	}	
+	}
 	
 	if( ammoClip.Get() > ammoAvail )
 	{
@@ -4068,8 +4152,8 @@ void idWeapon::Event_AddToClip( int amount )
 	
 	// for shared ammo we need to use the ammo when it is moved into the clip
 	int usedAmmo = ammoClip.Get() - oldAmmo;
-	if ( owner->GetInventory() != NULL )
-		 owner->GetInventory()->UseAmmo( ammoType, usedAmmo );
+	if( owner->GetInventory() != NULL )
+		owner->GetInventory()->UseAmmo( ammoType, usedAmmo );
 }
 
 /*
@@ -4091,8 +4175,8 @@ idWeapon::Event_AmmoAvailable
 void idWeapon::Event_AmmoAvailable()
 {
 	int ammoAvail = 1000;
-	if ( owner->GetInventory() != NULL )
-		 owner->GetInventory()->HasAmmo( ammoType, ammoRequired );
+	if( owner->GetInventory() != NULL )
+		owner->GetInventory()->HasAmmo( ammoType, ammoRequired );
 	ammoAvail += AmmoInClip();
 	
 	idThread::ReturnFloat( ammoAvail );
@@ -4106,7 +4190,7 @@ idWeapon::Event_TotalAmmoCount
 void idWeapon::Event_TotalAmmoCount()
 {
 	int ammoAvail = 1000;
-	if ( owner->GetInventory() != NULL )
+	if( owner->GetInventory() != NULL )
 		ammoAvail = owner->GetInventory()->HasAmmo( ammoType, 1 );
 	idThread::ReturnFloat( ammoAvail );
 }
@@ -4501,8 +4585,8 @@ void idWeapon::Event_LaunchProjectiles( int num_projectiles, float spread, float
 	idVec3			muzzle_pos;
 	idBounds		ownerBounds, projBounds;
 	
-	idEntity		*hitEnt = NULL;	
-	idVec3			hitPos = vec3_zero;	
+	idEntity*		hitEnt = NULL;
+	idVec3			hitPos = vec3_zero;
 	
 	assert( owner != NULL );
 	
@@ -4594,7 +4678,7 @@ void idWeapon::Event_LaunchProjectiles( int num_projectiles, float spread, float
 	const bool actuallySpawnProjectile = common->IsServer() || attackerIsLocal || isHitscan;
 	
 	if( actuallySpawnProjectile )
-	{	
+	{
 		ownerBounds = owner->GetPhysics()->GetAbsBounds();
 		
 		owner->AddProjectilesFired( num_projectiles );
@@ -4650,9 +4734,9 @@ void idWeapon::Event_LaunchProjectiles( int num_projectiles, float spread, float
 				{
 					owner->IncrementClientFireCount();
 				}
-
-				if ( owner->IsType( idPlayer::Type ) )
-					predictedKey = gameLocal.GeneratePredictionKey( this, static_cast<idPlayer*>(owner.GetEntity()), -1 );
+				
+				if( owner->IsType( idPlayer::Type ) )
+					predictedKey = gameLocal.GeneratePredictionKey( this, static_cast<idPlayer*>( owner.GetEntity() ), -1 );
 				ent->SetPredictedKey( predictedKey );
 			}
 			
@@ -4676,10 +4760,11 @@ void idWeapon::Event_LaunchProjectiles( int num_projectiles, float spread, float
 				}
 				gameLocal.clip.Translation( tr, start, muzzle_pos, proj->GetPhysics()->GetClipModel(), proj->GetPhysics()->GetClipModel()->GetAxis(), MASK_SHOT_RENDERMODEL, owner );
 				muzzle_pos = tr.endpos;
-
+				
 				// if projectile is 'on target', give target a chance to react
 				gameLocal.clip.Translation( tr, muzzle_pos, muzzle_pos + dir * 4096.0f, NULL, mat3_identity, MASK_SHOT_RENDERMODEL, owner );
-				if ( tr.fraction < 1.0f ) {
+				if( tr.fraction < 1.0f )
+				{
 					hitEnt = gameLocal.GetTraceEntity( tr );
 					hitPos = tr.endpos;
 				}
@@ -4727,10 +4812,10 @@ void idWeapon::Event_LaunchProjectiles( int num_projectiles, float spread, float
 	}
 	
 	owner->WeaponFireFeedback( &weaponDef->dict );
-
-	if ( hitEnt != NULL )
+	
+	if( hitEnt != NULL )
 		hitEnt->IncomingFireFeedback( owner, this, muzzle_pos, dir, hitPos );
-
+		
 	// reset muzzle smoke
 	weaponSmokeStartTime = gameLocal.realClientTime;
 }
@@ -5088,7 +5173,7 @@ void idWeapon::Event_Melee()
 					&& !owner->PowerUpActive( BERSERK )
 					&& ( ( gameLocal.gameType != GAME_TDM ) || gameLocal.serverInfo.GetBool( "si_teamDamage" ) || ( owner->GetTeam() != static_cast< idPlayer* >( ent )->team ) )
 			  )
-			{			
+			{
 				if( !gameLocal.mpGame.IsGametypeFlagBased() )
 				{
 					//owner->StealWeapon( static_cast< idPlayer* >( ent ) );
@@ -5114,9 +5199,9 @@ void idWeapon::Event_Melee()
 			if( weaponDef->dict.GetBool( "impact_damage_effect" ) )
 			{
 				// SS2 fix to honor mtr_wound_X for various surfaces in the damage def of melee weapons
-				const char* key; 
+				const char* key;
 				const char* decal;
-			
+				
 				if( ent->spawnArgs.GetBool( "bleed" ) )
 				{
 				
@@ -5143,7 +5228,7 @@ void idWeapon::Event_Melee()
 						key = va( "mtr_wound_%s", materialType );
 						decal = spawnArgs.RandomPrefix( key, gameLocal.random );
 						if( *decal == '\0' )
-						{							
+						{
 							decal = meleeDefL->dict.RandomPrefix( key, gameLocal.random );
 						}
 						if( *decal != '\0' )
@@ -5152,7 +5237,7 @@ void idWeapon::Event_Melee()
 						}
 					}
 					// ====== SS2 fix ends
-
+					
 					// start impact sound based on material type
 					hitSound = meleeDef->dict.GetString( va( "snd_%s", materialType ) );
 					if( *hitSound == '\0' )
@@ -5232,38 +5317,44 @@ idWeapon::Event_EjectBrass
 Toss a shell model out from the breach if the bone is present
 ================
 */
-void idWeapon::Event_EjectBrass() {
-	if ( !g_showBrass.GetBool() || !owner->CanShowWeaponViewmodel() ) {
+void idWeapon::Event_EjectBrass()
+{
+	if( !g_showBrass.GetBool() || !owner->CanShowWeaponViewmodel() )
+	{
 		return;
 	}
-
-	if ( ejectJointView == INVALID_JOINT || !brassDict.GetNumKeyVals() ) 	{
+	
+	if( ejectJointView == INVALID_JOINT || !brassDict.GetNumKeyVals() )
+	{
 		return;
 	}
-
-	if ( common->IsClient() ) {
+	
+	if( common->IsClient() )
+	{
 		return;
 	}
-
+	
 	idMat3 axis;
 	idVec3 origin, linear_velocity, angular_velocity;
 	idEntity* ent;
-
-	if ( !GetGlobalJointTransform(true, ejectJointView, origin, axis) ) {
+	
+	if( !GetGlobalJointTransform( true, ejectJointView, origin, axis ) )
+	{
 		return;
 	}
-
-	gameLocal.SpawnEntityDef(brassDict, &ent, false);
-	if ( !ent || !ent->IsType(idDebris::Type) )	{
-		gameLocal.Error( "'%s' is not an idDebris", weaponDef ? weaponDef->dict.GetString("def_ejectBrass") : "def_ejectBrass" );
+	
+	gameLocal.SpawnEntityDef( brassDict, &ent, false );
+	if( !ent || !ent->IsType( idDebris::Type ) )
+	{
+		gameLocal.Error( "'%s' is not an idDebris", weaponDef ? weaponDef->dict.GetString( "def_ejectBrass" ) : "def_ejectBrass" );
 	}
 	idDebris* debris = static_cast<idDebris*>( ent );
-	debris->Create(owner, origin, axis);
+	debris->Create( owner, origin, axis );
 	debris->Launch();
-
-	linear_velocity = 40 * (playerViewAxis[0] + playerViewAxis[1] + playerViewAxis[2]);
-	angular_velocity.Set(10 * gameLocal.random.CRandomFloat(), 10 * gameLocal.random.CRandomFloat(), 10 * gameLocal.random.CRandomFloat());
-
+	
+	linear_velocity = 40 * ( playerViewAxis[0] + playerViewAxis[1] + playerViewAxis[2] );
+	angular_velocity.Set( 10 * gameLocal.random.CRandomFloat(), 10 * gameLocal.random.CRandomFloat(), 10 * gameLocal.random.CRandomFloat() );
+	
 	debris->GetPhysics()->SetLinearVelocity( linear_velocity );
 	debris->GetPhysics()->SetAngularVelocity( angular_velocity );
 }
@@ -5277,41 +5368,47 @@ idWeapon::Event_EjectReloadBrass
 Toss a shell model out from the breach if the bone is present
 ================
 */
-void idWeapon::Event_EjectReloadBrass( void ) {
-	if ( !g_showBrass.GetBool() || !owner->CanShowWeaponViewmodel() ) {
+void idWeapon::Event_EjectReloadBrass( void )
+{
+	if( !g_showBrass.GetBool() || !owner->CanShowWeaponViewmodel() )
+	{
 		return;
 	}
-
-	if ( ejectReloadJointView == INVALID_JOINT || !brassReloadDict.GetNumKeyVals() ) {
+	
+	if( ejectReloadJointView == INVALID_JOINT || !brassReloadDict.GetNumKeyVals() )
+	{
 		return;
 	}
-		
-	if ( common->IsClient() ) {
+	
+	if( common->IsClient() )
+	{
 		return;
 	}
 	
 	idMat3 axis;
 	idVec3 origin, linear_velocity, angular_velocity;
-	idEntity *ent;
-
-	if ( !GetGlobalJointTransform( true, ejectReloadJointView, origin, axis ) ) {
+	idEntity* ent;
+	
+	if( !GetGlobalJointTransform( true, ejectReloadJointView, origin, axis ) )
+	{
 		return;
 	}
 	//origin = playerViewOrigin + origin * playerViewAxis;
 	origin.z -= 30;
-
+	
 	gameLocal.SpawnEntityDef( brassReloadDict, &ent, false );
-	if ( !ent || !ent->IsType( idDebris::Type ) ) {
+	if( !ent || !ent->IsType( idDebris::Type ) )
+	{
 		gameLocal.Error( "'%s' is not an idDebris", weaponDef ? weaponDef->dict.GetString( "def_ejectReloadBrass" ) : "def_ejectReloadBrass" );
 	}
-	idDebris *debris = static_cast<idDebris *>(ent);
+	idDebris* debris = static_cast<idDebris*>( ent );
 	debris->Create( owner, origin, axis );
 	debris->Launch();
-
+	
 	int shell_velocity = weaponDef->dict.GetInt( "reloadBrass_velocity", "200" );
 	//linear_velocity = 140 * ( playerViewAxis[0] + playerViewAxis[1] + playerViewAxis[2] );
 	angular_velocity.Set( 10 * gameLocal.random.CRandomFloat(), 10 * gameLocal.random.CRandomFloat(), 10 * gameLocal.random.CRandomFloat() );
-
+	
 	idVec3 dir = playerViewAxis.ToAngles().ToForward();
 	idVec3 dirup = playerViewAxis.ToAngles().ToUp();
 	linear_velocity = ( dir * shell_velocity + dirup * 160 );

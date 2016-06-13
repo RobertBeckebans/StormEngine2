@@ -262,7 +262,7 @@ bool GLimp_Init( glimpParms_t parms )
 		// RB end
 		
 		break;
-
+		
 	}
 	
 	if( !window )
@@ -613,5 +613,5 @@ bool R_GetModeListForDisplay( const int requestedDisplayNum, idList<vidMode_t>& 
 	}
 	
 	return true;
-	// DG end	
+	// DG end
 }

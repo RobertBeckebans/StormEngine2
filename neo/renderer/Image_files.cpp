@@ -815,7 +815,7 @@ void R_WritePNG( const char* filename, const byte* data, int bytesPerPixel, int 
 		common->Error( "R_WritePNG( %s ): bytesPerPixel = %i not supported", filename, bytesPerPixel );
 	}
 	int png_Quality = 9 - r_screenshot_png_quality.GetInteger();
-	png_set_compression_level(pngPtr, png_Quality);
+	png_set_compression_level( pngPtr, png_Quality );
 	// write header
 	png_write_info( pngPtr, infoPtr );
 	
@@ -852,7 +852,7 @@ void R_WritePNG( const char* filename, const byte* data, int bytesPerPixel, int 
 
 void R_WritePNG( const char* filename, const byte* data, int width, int height, bool flipVertical, const char* basePath )
 {
-	R_WritePNG(filename, data, 3, width, height, flipVertical, basePath );
+	R_WritePNG( filename, data, 3, width, height, flipVertical, basePath );
 }
 
 /*
@@ -924,7 +924,8 @@ void R_LoadImage( const char* cname, byte** pic, int* width, int* height, ID_TIM
 	else if( ext == "jpg" )
 	{
 		LoadJPG( name.c_str(), pic, width, height, timestamp );
-	} else if( ext == "png" )
+	}
+	else if( ext == "png" )
 	{
 		LoadPNG( name.c_str(), pic, width, height, timestamp );
 	}
@@ -983,8 +984,8 @@ bool R_LoadCubeImages( const char* imgName, cubeFiles_t extensions, byte* pics[6
 	
 	// motorsep 05-20-2015; correct order is "_right.tga", "_left.tga", "_forward.tga", "_back.tga","_up.tga", "_down.tga"
 	const char*	cameraSides[6] = { "_right.tga", "_left.tga", "_forward.tga", "_back.tga",
-									"_up.tga", "_down.tga"
-								};
+								   "_up.tga", "_down.tga"
+								 };
 	const char*	axisSides[6] =  { "_px.tga", "_nx.tga", "_py.tga", "_ny.tga",
 								  "_pz.tga", "_nz.tga"
 								};

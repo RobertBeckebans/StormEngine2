@@ -148,9 +148,9 @@ typedef enum
 	FC_FOOTSTEP,
 	FC_LEFTFOOT,
 	FC_RIGHTFOOT,
-	FX_SET_EYE_FOCUS,	
+	FX_SET_EYE_FOCUS,
 	FC_FX,
-	FC_SET_GRAVITY,	
+	FC_SET_GRAVITY,
 	FC_JUMP,
 	FC_SET_CLIP,
 	FC_SET_WALKIK,
@@ -174,13 +174,13 @@ struct frameCommand_t
 {
 	frameCommandType_t		type;
 	idStr*					string;
-
+	
 	union
-	{		
+	{
 		struct
 		{
 			const idEventDef*		eventDef;
-			idList<idEventArg> *	args;
+			idList<idEventArg>* 	args;
 		} event;
 		
 		struct
@@ -192,19 +192,19 @@ struct frameCommand_t
 		const function_t*		function;
 		const idDeclEntityDef*	declEntity;
 		const idDeclSkin*		declSkin;
-		const idDeclFX*			declFx;	
+		const idDeclFX*			declFx;
 		const idDeclParticle*	declParticle;
 		jointHandle_t			jointHandle;
 		int						number;
 		float					numberf;
 		
 	} variant;
-
+	
 	frameCommand_t()
 		: type( FC_NONE )
 		, string( NULL )
 	{
-		memset( &variant, 0, sizeof(variant) );
+		memset( &variant, 0, sizeof( variant ) );
 	}
 };
 

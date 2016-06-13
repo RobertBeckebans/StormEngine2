@@ -50,23 +50,23 @@ struct prstack_t;
 class rvDebuggerServer
 {
 public:
-	rvDebuggerServer ( );
-	~rvDebuggerServer ( );
-
-	bool		Initialize			( void );
-	void		Shutdown			( void );
+	rvDebuggerServer( );
+	~rvDebuggerServer( );
 	
-	bool		ProcessMessages		( void );
+	bool		Initialize( void );
+	void		Shutdown( void );
 	
-	bool		IsConnected			( void );
-	bool		IsSuspended			( void );
+	bool		ProcessMessages( void );
 	
-	void		CheckBreakpoints	( idInterpreter* interpreter, idProgram* program, int instructionPointer );
+	bool		IsConnected( void );
+	bool		IsSuspended( void );
 	
-	void		Print				( const char* text );
-
-	void		OSPathToRelativePath( const char *osPath, idStr &qpath );
-		
+	void		CheckBreakpoints( idInterpreter* interpreter, idProgram* program, int instructionPointer );
+	
+	void		Print( const char* text );
+	
+	void		OSPathToRelativePath( const char* osPath, idStr& qpath );
+	
 protected:
 
 	// protected member variables
@@ -74,7 +74,7 @@ protected:
 	netadr_t						mClientAdr;
 	idUDP							mPort;
 	idList<rvDebuggerBreakpoint*>	mBreakpoints;
-	CRITICAL_SECTION				mCriticalSection;	
+	CRITICAL_SECTION				mCriticalSection;
 	HANDLE							mGameThread;
 	bool							mInitialized;
 	
@@ -90,30 +90,30 @@ protected:
 	idInterpreter*					mBreakInterpreter;
 	
 	idStr							mLastStatementFile;
-	int								mLastStatementLine;	
-
+	int								mLastStatementLine;
+	
 	int								mLastThreadSyncTime;
 private:
 
-	void		ClearBreakpoints				( void );
-
-	void		Break							( idInterpreter* interpreter, idProgram* program, int instructionPointer );
-	void		Resume							( void );
-
-	void		SendMessage						( EDebuggerMessage dbmsg );
-
+	void		ClearBreakpoints( void );
+	
+	void		Break( idInterpreter* interpreter, idProgram* program, int instructionPointer );
+	void		Resume( void );
+	
+	void		SendMessage( EDebuggerMessage dbmsg );
+	
 	// Message handlers
-	void		HandleAddBreakpoint				( msg_t& msg );
-	void		HandleRemoveBreakpoint			( msg_t& msg );
-	void		HandleResume					( msg_t& msg );
-	void		HandleInspectVariable			( msg_t& msg );
-	void		HandleInspectCallstack			( msg_t& msg );
-	void		HandleInspectThreads			( msg_t& msg );
-	void		HandleCheckPort					( msg_t& msg );
-	void		HandlePortInUse					( msg_t& msg );
+	void		HandleAddBreakpoint( msg_t& msg );
+	void		HandleRemoveBreakpoint( msg_t& msg );
+	void		HandleResume( msg_t& msg );
+	void		HandleInspectVariable( msg_t& msg );
+	void		HandleInspectCallstack( msg_t& msg );
+	void		HandleInspectThreads( msg_t& msg );
+	void		HandleCheckPort( msg_t& msg );
+	void		HandlePortInUse( msg_t& msg );
 	
 	// MSG helper routines
-	void		MSG_WriteCallstackFunc			( msg_t& msg, const prstack_t* stack );
+	void		MSG_WriteCallstackFunc( msg_t& msg, const prstack_t* stack );
 };
 
 /*
@@ -121,7 +121,7 @@ private:
 rvDebuggerServer::IsConnected
 ================
 */
-ID_INLINE bool rvDebuggerServer::IsConnected ( void )
+ID_INLINE bool rvDebuggerServer::IsConnected( void )
 {
 	return mConnected;
 }

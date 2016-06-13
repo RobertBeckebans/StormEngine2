@@ -367,11 +367,11 @@ idAI::idAI()
 	ideal_yaw			= 0.0f;
 	
 	// ### SR
-	current_pitch		= 0.0f;	
-	ideal_pitch			= 0.0f;	
-	dodgeSpeed			= 0.0f; 
-	dodgeDelay		 	= 0.0f;		
-	dodgeTime		 	= 0.0f;	
+	current_pitch		= 0.0f;
+	ideal_pitch			= 0.0f;
+	dodgeSpeed			= 0.0f;
+	dodgeDelay		 	= 0.0f;
+	dodgeTime		 	= 0.0f;
 	strafeTime			= 0.0f;
 	strafeSpeed			= 0.0f;
 	// ### END SR
@@ -412,7 +412,7 @@ idAI::idAI()
 	eyeFocusRate		= 0.0f;
 	headFocusRate		= 0.0f;
 	focusAlignTime		= 0;
-
+	
 	fl.networkSync = true;
 }
 
@@ -459,17 +459,17 @@ void idAI::Save( idSaveGame* savefile ) const
 	savefile->WriteFloat( ideal_yaw );
 	savefile->WriteFloat( current_yaw );
 	// ### SR
-	savefile->WriteFloat( ideal_pitch );	
-	savefile->WriteFloat( current_pitch );	
-	savefile->WriteFloat( dodgeSpeed );	
-	savefile->WriteFloat( dodgeTime );	
-	savefile->WriteFloat( dodgeDelay );	
-	savefile->WriteFloat( strafeTime );	
-	savefile->WriteFloat( strafeTimeMin );	
-	savefile->WriteFloat( strafeTimeMax );	
-	savefile->WriteFloat( strafeSpeed );	
-	savefile->WriteFloat( strafeSpeedMin );	
-	savefile->WriteFloat( strafeSpeedMax );	
+	savefile->WriteFloat( ideal_pitch );
+	savefile->WriteFloat( current_pitch );
+	savefile->WriteFloat( dodgeSpeed );
+	savefile->WriteFloat( dodgeTime );
+	savefile->WriteFloat( dodgeDelay );
+	savefile->WriteFloat( strafeTime );
+	savefile->WriteFloat( strafeTimeMin );
+	savefile->WriteFloat( strafeTimeMax );
+	savefile->WriteFloat( strafeSpeed );
+	savefile->WriteFloat( strafeSpeedMin );
+	savefile->WriteFloat( strafeSpeedMax );
 	// ### END
 	
 	savefile->WriteFloat( turnRate );
@@ -622,17 +622,17 @@ void idAI::Restore( idRestoreGame* savefile )
 	savefile->ReadFloat( current_yaw );
 	
 	// ### SR
-	savefile->ReadFloat( ideal_pitch );		
-	savefile->ReadFloat( current_pitch );	
-	savefile->ReadFloat( dodgeSpeed );	
-	savefile->ReadFloat( dodgeTime );	
-	savefile->ReadFloat( dodgeDelay );		
-	savefile->ReadFloat( strafeTime );	
-	savefile->ReadFloat( strafeTimeMin );	
-	savefile->ReadFloat( strafeTimeMax );	
-	savefile->ReadFloat( strafeSpeed );	
-	savefile->ReadFloat( strafeSpeedMin );	
-	savefile->ReadFloat( strafeSpeedMax );	
+	savefile->ReadFloat( ideal_pitch );
+	savefile->ReadFloat( current_pitch );
+	savefile->ReadFloat( dodgeSpeed );
+	savefile->ReadFloat( dodgeTime );
+	savefile->ReadFloat( dodgeDelay );
+	savefile->ReadFloat( strafeTime );
+	savefile->ReadFloat( strafeTimeMin );
+	savefile->ReadFloat( strafeTimeMax );
+	savefile->ReadFloat( strafeSpeed );
+	savefile->ReadFloat( strafeSpeedMin );
+	savefile->ReadFloat( strafeSpeedMax );
 	// ### END SR
 	
 	savefile->ReadFloat( turnRate );
@@ -888,9 +888,9 @@ void idAI::Spawn()
 	spawnArgs.GetInt( "blockedAttackTime",		"750",		blockedAttackTime );
 	
 	// ### SR
-	spawnArgs.GetFloat( "dodge_speed",			"300",		dodgeSpeed );	
-	spawnArgs.GetFloat( "dodge_delay",			"2",		dodgeDelay );	
-	spawnArgs.GetFloat( "strafe_time_min",		"1",		strafeTimeMin );	
+	spawnArgs.GetFloat( "dodge_speed",			"300",		dodgeSpeed );
+	spawnArgs.GetFloat( "dodge_delay",			"2",		dodgeDelay );
+	spawnArgs.GetFloat( "strafe_time_min",		"1",		strafeTimeMin );
 	spawnArgs.GetFloat( "strafe_time_max",		"3",		strafeTimeMax );
 	spawnArgs.GetFloat( "strafe_speed_min",		"250",		strafeSpeedMin );
 	spawnArgs.GetFloat( "strafe_speed_max",		"450",		strafeSpeedMax );
@@ -957,21 +957,25 @@ void idAI::Spawn()
 	
 	
 	// ################################################# SR
-
+	
 	ejectReloadJoint 	= animator.GetJointHandle( "eject" );
 	
 	dodgeTime = gameLocal.time + dodgeDelay;
-		
+	
 	// reload brass
-	const char *brassDefName;
+	const char* brassDefName;
 	brassReloadDict.Clear();
-
+	
 	brassDefName = spawnArgs.GetString( "def_ejectReloadBrass" );
-	if ( brassDefName[0] ) {
-		const idDeclEntityDef *brassDef = gameLocal.FindEntityDef( brassDefName, false );
-		if ( !brassDef ) {
+	if( brassDefName[0] )
+	{
+		const idDeclEntityDef* brassDef = gameLocal.FindEntityDef( brassDefName, false );
+		if( !brassDef )
+		{
 			gameLocal.Warning( "Unknown brass '%s'", brassDefName );
-		} else {
+		}
+		else
+		{
 			brassReloadDict = brassDef->dict;
 		}
 	}
@@ -982,9 +986,9 @@ void idAI::Spawn()
 	
 	// ################################################### END SR
 	
-	const char * flashJoint = spawnArgs.GetString("flashJoint","flash");
+	const char* flashJoint = spawnArgs.GetString( "flashJoint", "flash" );
 	
-	flashJointWorld = animator.GetJointHandle(flashJoint);
+	flashJointWorld = animator.GetJointHandle( flashJoint );
 	
 	if( head.GetEntity() )
 	{
@@ -1309,11 +1313,11 @@ void idAI::Think()
 			}
 		}
 		
-		for ( int i = 0; i < turretControllers.Num(); ++i )
+		for( int i = 0; i < turretControllers.Num(); ++i )
 		{
 			turretControllers[ i ].Update( this );
 		}
-
+		
 		current_yaw += deltaViewAngles.yaw;
 		ideal_yaw = idMath::AngleNormalize180( ideal_yaw + deltaViewAngles.yaw );
 		current_pitch += deltaViewAngles.pitch;											// ### SR
@@ -1456,7 +1460,7 @@ void idAI::LinkScriptVariables()
 	AI_ENEMY_IN_FOV.LinkTo(	scriptObject, "AI_ENEMY_IN_FOV" );
 	AI_ENEMY_DEAD.LinkTo(	scriptObject, "AI_ENEMY_DEAD" );
 	AI_MOVE_DONE.LinkTo(	scriptObject, "AI_MOVE_DONE" );
-	AI_ONGROUND.LinkTo(	scriptObject, "AI_ONGROUND" );	
+	AI_ONGROUND.LinkTo(	scriptObject, "AI_ONGROUND" );
 	AI_FORWARD.LinkTo(	scriptObject, "AI_FORWARD" );
 	AI_JUMP.LinkTo(	scriptObject, "AI_JUMP" );
 	AI_BLOCKED.LinkTo(	scriptObject, "AI_BLOCKED" );
@@ -1465,9 +1469,9 @@ void idAI::LinkScriptVariables()
 	AI_OBSTACLE_IN_PATH.LinkTo(	scriptObject, "AI_OBSTACLE_IN_PATH" );
 	AI_PUSHED.LinkTo(	scriptObject, "AI_PUSHED" );
 	AI_ACTIVATED.LinkTo(	scriptObject, "AI_ACTIVATED" );
-	AI_INCOMING.LinkTo(			scriptObject, "AI_INCOMING" );
-	AI_HEADSHOT.LinkTo(			scriptObject, "AI_HEADSHOT" );	
-	AI_STRAFING.LinkTo(			scriptObject, "AI_STRAFING" );	
+	AI_INCOMING.LinkTo(	scriptObject, "AI_INCOMING" );
+	AI_HEADSHOT.LinkTo(	scriptObject, "AI_HEADSHOT" );
+	AI_STRAFING.LinkTo(	scriptObject, "AI_STRAFING" );
 }
 
 /*
@@ -1627,7 +1631,7 @@ void idAI::DrawRoute() const
 {
 	if( aas && move.toAreaNum && move.moveCommand != MOVE_NONE && move.moveCommand != MOVE_WANDER && move.moveCommand != MOVE_FACE_ENEMY && move.moveCommand != MOVE_FACE_ENTITY && move.moveCommand != MOVE_TO_POSITION_DIRECT )
 	{
-		if( move.moveType == MOVETYPE_FLY  || move.moveType == MOVETYPE_DRONE)
+		if( move.moveType == MOVETYPE_FLY  || move.moveType == MOVETYPE_DRONE )
 		{
 			aas->ShowFlyPath( physicsObj.GetOrigin(), move.toAreaNum, move.moveDest );
 		}
@@ -1720,7 +1724,7 @@ bool idAI::PathToGoal( aasPath_t& path, int areaNum, const idVec3& origin, int g
 	idVec3 goal;
 	
 	if( !aas )
-	{	
+	{
 		return false;
 	}
 	
@@ -1875,7 +1879,7 @@ bool idAI::FaceEnemy()
 	if( move.moveType == MOVETYPE_DRONE )
 	{
 		PointToward( lastVisibleEnemyPos );
-	}	
+	}
 	// ### END SR
 	move.goalEntity		= enemyEnt;
 	move.moveDest		= physicsObj.GetOrigin();
@@ -1911,7 +1915,7 @@ bool idAI::FaceEntity( idEntity* ent )
 	if( move.moveType == MOVETYPE_DRONE )
 	{
 		PointToward( entityOrg );
-	}	
+	}
 	// ### END SR
 	move.goalEntity		= ent;
 	move.moveDest		= physicsObj.GetOrigin();
@@ -2338,36 +2342,36 @@ bool idAI::MoveToPositionFaceEntity( const idVec3& pos, idEntity* ent )
 	idVec3		org;
 	int			areaNum;
 	aasPath_t	path;
-
-	if ( ReachedPos( pos, move.moveCommand ) )
+	
+	if( ReachedPos( pos, move.moveCommand ) )
 	{
 		StopMove( MOVE_STATUS_DONE );
 		return true;
 	}
-
+	
 	org = pos;
 	move.toAreaNum = 0;
-	if ( aas )
+	if( aas )
 	{
 		move.toAreaNum = PointReachableAreaNum( org );
 		aas->PushPointIntoAreaNum( move.toAreaNum, org );
-
+		
 		areaNum = PointReachableAreaNum( physicsObj.GetOrigin() );
-		if ( !PathToGoal( path, areaNum, physicsObj.GetOrigin(), move.toAreaNum, org ) )
+		if( !PathToGoal( path, areaNum, physicsObj.GetOrigin(), move.toAreaNum, org ) )
 		{
 			StopMove( MOVE_STATUS_DEST_UNREACHABLE );
 			AI_DEST_UNREACHABLE = true;
 			return false;
 		}
 	}
-
-	if ( !move.toAreaNum && !NewWanderDir( org ) )
+	
+	if( !move.toAreaNum && !NewWanderDir( org ) )
 	{
 		StopMove( MOVE_STATUS_DEST_UNREACHABLE );
 		AI_DEST_UNREACHABLE = true;
 		return false;
 	}
-
+	
 	move.moveDest = org;
 	move.goalEntity = ent;
 	move.moveCommand = MOVE_TO_POSITION_FACE_ENTITY;
@@ -2377,7 +2381,7 @@ bool idAI::MoveToPositionFaceEntity( const idVec3& pos, idEntity* ent )
 	AI_MOVE_DONE = false;
 	AI_DEST_UNREACHABLE = false;
 	AI_FORWARD = true;
-
+	
 	return true;
 }
 
@@ -2974,8 +2978,8 @@ void idAI::Turn()
 	// ##### SR
 	if( move.moveType == MOVETYPE_DRONE )
 	{
-		current_pitch = ideal_pitch; 
-	}	
+		current_pitch = ideal_pitch;
+	}
 	// ##### END SR
 	
 	viewAxis = idAngles( current_pitch, current_yaw, 0 ).ToMat3();
@@ -2995,7 +2999,7 @@ idAI::FacingIdeal
 =====================
 */
 bool idAI::FacingIdeal()
-{	
+{
 	if( !turnRate )
 	{
 		return true;
@@ -3056,7 +3060,7 @@ idAI::PointingIdeal
 =====================
 */
 bool idAI::PointingIdeal()
-{	
+{
 	float diff = idMath::AngleNormalize180( current_pitch - ideal_pitch );
 	if( idMath::Fabs( diff ) < 0.01f )
 	{
@@ -3372,7 +3376,7 @@ void idAI::AnimMove()
 		delta.Zero();
 	}
 	
-	if ( move.moveCommand == MOVE_TO_POSITION || move.moveCommand == MOVE_TO_POSITION_FACE_ENTITY )
+	if( move.moveCommand == MOVE_TO_POSITION || move.moveCommand == MOVE_TO_POSITION_FACE_ENTITY )
 	{
 		goalDelta = move.moveDest - oldorigin;
 		goalDist = goalDelta.LengthFast();
@@ -3476,12 +3480,12 @@ void idAI::SlideMove()
 		TurnToward( lastVisibleEnemyPos );
 		goalPos = move.moveDest;
 	}
-	else if ( ( move.moveCommand == MOVE_FACE_ENTITY ) && move.goalEntity.GetEntity() )
+	else if( ( move.moveCommand == MOVE_FACE_ENTITY ) && move.goalEntity.GetEntity() )
 	{
 		TurnToward( move.goalEntity.GetEntity()->GetPhysics()->GetOrigin() );
 		goalPos = move.moveDest;
 	}
-	else if ( ( move.moveCommand == MOVE_TO_POSITION_FACE_ENTITY ) && move.goalEntity.GetEntity() && GetMovePos( goalPos ) )
+	else if( ( move.moveCommand == MOVE_TO_POSITION_FACE_ENTITY ) && move.goalEntity.GetEntity() && GetMovePos( goalPos ) )
 	{
 		CheckObstacleAvoidance( goalPos, newDest );
 		TurnToward( move.goalEntity.GetEntity()->GetPhysics()->GetOrigin() );
@@ -3507,7 +3511,7 @@ void idAI::SlideMove()
 		}
 	}
 	
-	if ( move.moveCommand == MOVE_TO_POSITION || move.moveCommand == MOVE_TO_POSITION_FACE_ENTITY )
+	if( move.moveCommand == MOVE_TO_POSITION || move.moveCommand == MOVE_TO_POSITION_FACE_ENTITY )
 	{
 		goalDelta = move.moveDest - oldorigin;
 		goalDist = goalDelta.LengthFast();
@@ -3537,7 +3541,7 @@ void idAI::SlideMove()
 	{
 		TurnToward( lastVisibleEnemyPos );
 	}
-	else if ( ( move.moveCommand == MOVE_FACE_ENTITY || move.moveCommand == MOVE_TO_POSITION_FACE_ENTITY ) && move.goalEntity.GetEntity() )
+	else if( ( move.moveCommand == MOVE_FACE_ENTITY || move.moveCommand == MOVE_TO_POSITION_FACE_ENTITY ) && move.goalEntity.GetEntity() )
 	{
 		TurnToward( move.goalEntity.GetEntity()->GetPhysics()->GetOrigin() );
 	}
@@ -3632,10 +3636,10 @@ void idAI::AdjustFlyingAngles()
 				pitch = -fly_pitch_max;
 			}
 		}
-		else	
+		else
 		{
 			pitch = 0.0f;
-		}	
+		}
 	}
 	
 	fly_roll = fly_roll * 0.95f + roll * 0.05f;
@@ -3694,7 +3698,7 @@ void idAI::AdjustFlyHeight( idVec3& vel, const idVec3& goalPos )
 	//end.z += 67.0f;
 	//gameLocal.clip.Translation( trace, origin, end, physicsObj.GetClipModel(), mat3_identity, MASK_MONSTERSOLID, this );
 	//if ( obstacle.fraction < 1.0f ) {
-		
+	
 	
 	// make sure we're not flying too high to get through doors
 	goLower = false;
@@ -3709,7 +3713,7 @@ void idAI::AdjustFlyHeight( idVec3& vel, const idVec3& goalPos )
 			vel.z += addVel.z;
 			goLower = true;
 		}
-	
+		
 		if( ai_debugMove.GetBool() )
 		{
 			gameRenderWorld->DebugBounds( goLower ? colorRed : colorGreen, physicsObj.GetBounds(), path.endPos, 1 );
@@ -3966,11 +3970,11 @@ void idAI::DroneMove()
 	monsterMoveResult_t	moveResult;
 	idVec3				newDest;
 	
-
+	
 	// min height
 	idVec3 oldorigin = physicsObj.GetOrigin();
 	idMat3 oldaxis = viewAxis;
-	if( oldorigin.z < 56.0f ) 
+	if( oldorigin.z < 56.0f )
 	{
 		oldorigin.z = 56.0f;
 		physicsObj.SetOrigin( oldorigin );
@@ -3991,13 +3995,13 @@ void idAI::DroneMove()
 		PointToward( lastVisibleEnemyPos );
 		goalPos = move.moveDest;
 	}
-	else if ( ( move.moveCommand == MOVE_FACE_ENTITY ) && move.goalEntity.GetEntity() )
+	else if( ( move.moveCommand == MOVE_FACE_ENTITY ) && move.goalEntity.GetEntity() )
 	{
 		TurnToward( move.goalEntity.GetEntity()->GetPhysics()->GetOrigin() );
 		PointToward( move.goalEntity.GetEntity()->GetPhysics()->GetOrigin() );
 		goalPos = move.moveDest;
 	}
-	else if ( ( move.moveCommand == MOVE_TO_POSITION_FACE_ENTITY ) && move.goalEntity.GetEntity() && GetMovePos( goalPos ) )
+	else if( ( move.moveCommand == MOVE_TO_POSITION_FACE_ENTITY ) && move.goalEntity.GetEntity() && GetMovePos( goalPos ) )
 	{
 		CheckObstacleAvoidance( goalPos, newDest );
 		TurnToward( move.goalEntity.GetEntity()->GetPhysics()->GetOrigin() );
@@ -4025,7 +4029,7 @@ void idAI::DroneMove()
 		}
 	}
 	
-	if ( move.moveCommand == MOVE_TO_POSITION || move.moveCommand == MOVE_TO_POSITION_FACE_ENTITY )
+	if( move.moveCommand == MOVE_TO_POSITION || move.moveCommand == MOVE_TO_POSITION_FACE_ENTITY )
 	{
 		goalDelta = move.moveDest - oldorigin;
 		goalDist = goalDelta.LengthFast();
@@ -4057,7 +4061,7 @@ void idAI::DroneMove()
 	{
 		AdjustFlyHeight( vel, goalPos );
 	}
-		
+	
 	
 	// reactions
 	
@@ -4068,7 +4072,7 @@ void idAI::DroneMove()
 		idVec3 org = physicsObj.GetOrigin();
 		const idBounds& myBounds = physicsObj.GetBounds();
 		idBounds bounds;
-	
+		
 		bounds[0][0] = -melee_range;
 		bounds[0][1] = -melee_range;
 		bounds[0][2] = myBounds[0][2] - 124.0f;
@@ -4076,16 +4080,16 @@ void idAI::DroneMove()
 		bounds[1][1] = melee_range;
 		bounds[1][2] = myBounds[1][2] + 4.0f;
 		bounds.TranslateSelf( org );
-	
+		
 		idVec3 enemyOrg = enemyEnt->GetPhysics()->GetOrigin();
 		idBounds enemyBounds = enemyEnt->GetPhysics()->GetBounds();
 		enemyBounds.TranslateSelf( enemyOrg );
-	
+		
 		if( ai_debugMove.GetBool() )
 		{
 			gameRenderWorld->DebugBounds( colorGreen, bounds, vec3_zero, 1 );
 		}
-	
+		
 		if( bounds.IntersectsBounds( enemyBounds ) )
 		{
 			if( gameLocal.random.RandomFloat() > 0.66f )
@@ -4093,19 +4097,19 @@ void idAI::DroneMove()
 				vel += viewAxis[ 0 ] * -dodgeSpeed;
 			}
 			else
-			{	
+			{
 				AI_STRAFING = true;
-				strafeTime = gameLocal.time + strafeTimeMin + ( gameLocal.random.RandomFloat() * ( strafeTimeMax - strafeTimeMin ) ); 
-				strafeSpeed = strafeSpeedMin + ( gameLocal.random.RandomFloat() * ( strafeSpeedMax - strafeSpeedMin ) ); 
+				strafeTime = gameLocal.time + strafeTimeMin + ( gameLocal.random.RandomFloat() * ( strafeTimeMax - strafeTimeMin ) );
+				strafeSpeed = strafeSpeedMin + ( gameLocal.random.RandomFloat() * ( strafeSpeedMax - strafeSpeedMin ) );
 				if( gameLocal.random.RandomFloat() > 0.5f )	//( vel * viewAxis )[ 1 ] > 0.0f )
 				{
 					strafeSpeed = -strafeSpeed;
 				}
 				StopMove( MOVE_STATUS_DONE );
-			}	
+			}
 		}
-	
-	}	
+		
+	}
 	
 	if( enemyEnt && AI_STRAFING )
 	{
@@ -4113,17 +4117,17 @@ void idAI::DroneMove()
 		{
 			vel = ( viewAxis.ToAngles().ToRight() * strafeSpeed );
 			TurnToward( enemyEnt->GetPhysics()->GetOrigin() );
-			PointToward( enemyEnt->GetPhysics()->GetOrigin() );	
+			PointToward( enemyEnt->GetPhysics()->GetOrigin() );
 		}
 		else
 		{
 			AI_STRAFING = false;
 		}
-	}		
+	}
 	
 	// dodges
 	
-	if( AI_INCOMING && dodgeTime < gameLocal.time ) 
+	if( AI_INCOMING && dodgeTime < gameLocal.time )
 	{
 		idVec3 		dodgeVec, vecRight, start, end;
 		idVec2		delta;
@@ -4140,17 +4144,23 @@ void idAI::DroneMove()
 		vecRight = viewAxis.ToAngles().ToRight();
 		
 		gameLocal.clip.TracePoint( trace, ( oldorigin + vecRight * 100.0f ), oldorigin + vecRight * 300.0f, MASK_SOLID, this );
-		if( trace.fraction == 1.0f ) { right = true; }	
+		if( trace.fraction == 1.0f )
+		{
+			right = true;
+		}
 		//gameRenderWorld->DebugLine( colorRed, ( oldorigin + vecRight * 100.0f ), oldorigin + vecRight * 300.0f, 5000 );	// ### !!!!!
 		
 		gameLocal.clip.TracePoint( trace, ( oldorigin + vecRight * -100.0f ), oldorigin + vecRight * -300.0f, MASK_SOLID, this );
-		if( trace.fraction == 1.0f ) { left = true;	}
+		if( trace.fraction == 1.0f )
+		{
+			left = true;
+		}
 		
 		//gameRenderWorld->DebugLine( colorGreen, ( oldorigin + vecRight * -100.0f ), oldorigin + vecRight * -300.0f, 5000 );		// ### !!!!!
 		
 		if( enemyEnt )
 		{
-			end = enemyEnt->GetPhysics()->GetOrigin(); 
+			end = enemyEnt->GetPhysics()->GetOrigin();
 			start = physicsObj.GetOrigin();
 			delta = end.ToVec2() - start.ToVec2();
 			dist = delta.LengthFast();
@@ -4161,7 +4171,7 @@ void idAI::DroneMove()
 			dodgeVec.y = dodgeSpeed;
 		}
 		else if( right )
-		{	
+		{
 			SetState( ( dist > 600.0f ) ? "Anim_Roll_Right" : "Anim_Dodge_Right" );	// #### !!!!!!!!
 			dodgeVec.y = -dodgeSpeed;
 		}
@@ -4181,9 +4191,9 @@ void idAI::DroneMove()
 	if( ( move.moveCommand == MOVE_FACE_ENEMY ) && enemy.GetEntity() )
 	{
 		TurnToward( lastVisibleEnemyPos );
-		PointToward( lastVisibleEnemyPos );	
+		PointToward( lastVisibleEnemyPos );
 	}
-	else if ( ( move.moveCommand == MOVE_FACE_ENTITY || move.moveCommand == MOVE_TO_POSITION_FACE_ENTITY ) && move.goalEntity.GetEntity() )
+	else if( ( move.moveCommand == MOVE_FACE_ENTITY || move.moveCommand == MOVE_TO_POSITION_FACE_ENTITY ) && move.goalEntity.GetEntity() )
 	{
 		TurnToward( move.goalEntity.GetEntity()->GetPhysics()->GetOrigin() );
 		PointToward( move.goalEntity.GetEntity()->GetPhysics()->GetOrigin() );
@@ -4198,7 +4208,7 @@ void idAI::DroneMove()
 	}
 	
 	Turn();
-		
+	
 	
 	
 	if( ai_debugMove.GetBool() )
@@ -4260,30 +4270,30 @@ AttackPref idAI::ReactionTo( const idEntity* ent ) const
 		// ignore hidden entities
 		return ATTACK_IGNORE;
 	}
-
+	
 	if( !ent->IsType( idActor::Type ) )
 	{
 		return ATTACK_IGNORE;
 	}
-
+	
 	const idActor* actor = static_cast<const idActor*>( ent );
 	if( actor->IsType( idPlayer::Type ) && static_cast<const idPlayer*>( actor )->noclip )
 	{
 		// ignore players in noclip mode
 		return ATTACK_IGNORE;
 	}
-
+	
 	// actors on different teams will always fight each other
 	if( actor->GetTeam() != GetTeam() )
 	{
 		if( actor->fl.notarget )
 		{
 			// don't attack on sight when attacker is notargeted
-			return (AttackPref)(ATTACK_ON_DAMAGE | ATTACK_ON_ACTIVATE);
+			return ( AttackPref )( ATTACK_ON_DAMAGE | ATTACK_ON_ACTIVATE );
 		}
-		return (AttackPref)(ATTACK_ON_SIGHT | ATTACK_ON_DAMAGE | ATTACK_ON_ACTIVATE);
+		return ( AttackPref )( ATTACK_ON_SIGHT | ATTACK_ON_DAMAGE | ATTACK_ON_ACTIVATE );
 	}
-
+	
 	// don't fight back
 	return ATTACK_IGNORE;
 }
@@ -4384,7 +4394,7 @@ void idAI::SpawnDamageParticles( const char* keyName )
 					particleEmitter_t pe;
 					SpawnParticlesOnJoint( pe, particleName, jointName );
 					particles.Append( pe );
-				}	
+				}
 				jv = spawnArgs.MatchPrefix( "damageJoint", jv );
 			}
 			
@@ -4525,7 +4535,7 @@ void idAI::Killed( idEntity* inflictor, idEntity* attacker, int damage, const id
 	
 	Unbind();
 	
-	// handled in script 
+	// handled in script
 	/*if( StartRagdoll() )
 	{
 		StartSound( "snd_death", SND_CHANNEL_VOICE, 0, false, NULL );
@@ -4546,12 +4556,12 @@ void idAI::Killed( idEntity* inflictor, idEntity* attacker, int damage, const id
 	
 	restartParticles = false;
 	
-	const char * killStates[] = 
+	const char* killStates[] =
 	{
 		"state_Killed",
 		"Behavior_Killed",
 	};
-	state = GetFirstScriptFunction( killStates, sizeof(killStates) /  sizeof(killStates[0]) );
+	state = GetFirstScriptFunction( killStates, sizeof( killStates ) /  sizeof( killStates[0] ) );
 	SetState( state );
 	SetWaitState( "" );
 	
@@ -4578,7 +4588,7 @@ void idAI::Killed( idEntity* inflictor, idEntity* attacker, int damage, const id
 		{
 			idEntity* temp;
 			gameLocal.SpawnEntityDef( *harvestDef, &temp, false );
-			harvestEnt = static_cast<idHarvestable*>( temp );			
+			harvestEnt = static_cast<idHarvestable*>( temp );
 		}
 		
 		if( harvestEnt.GetEntity() )
@@ -4905,8 +4915,8 @@ void idAI::SetEnemyPosition()
 	lastVisibleReachableEnemyPos = lastReachableEnemyPos;
 	lastVisibleEnemyEyeOffset = enemyEnt->EyeOffset();
 	lastVisibleEnemyPos = enemyEnt->GetPhysics()->GetOrigin();
-
-
+	
+	
 	if( move.moveType == MOVETYPE_FLY || move.moveType == MOVETYPE_DRONE )
 	{
 		pos = lastVisibleEnemyPos;
@@ -5551,7 +5561,7 @@ idProjectile* idAI::LaunchProjectile( const char* jointname, idEntity* target, b
 		lastProjectile = projectile.GetEntity();
 		lastProjectile->Launch( muzzle, dir, vec3_origin );
 		projectile = NULL;
-
+		
 		//gameRenderWorld->DebugLine(colorBlue, muzzle, muzzle + dir * 256, 5000);
 	}
 	
@@ -5591,9 +5601,9 @@ void idAI::DamageFeedback( idEntity* victim, idEntity* inflictor, int& damage )
 idAI::IncomingFireFeedback
 ================
 */
-void idAI::IncomingFireFeedback( idEntity * attacker, idWeapon * weapon, const idVec3 & firePos, const idVec3 & fireDir, const idVec3 & hitPos )
-{	
-	
+void idAI::IncomingFireFeedback( idEntity* attacker, idWeapon* weapon, const idVec3& firePos, const idVec3& fireDir, const idVec3& hitPos )
+{
+
 	if( gameLocal.time >= dodgeTime && gameLocal.random.RandomFloat() <= 0.7f ) // ########## !!!!!!!!!
 	{
 		dodgeTime = gameLocal.time + dodgeDelay;
@@ -5605,7 +5615,7 @@ void idAI::IncomingFireFeedback( idEntity * attacker, idWeapon * weapon, const i
 		headshot = true;
 	}
 	dodge_time = gameLocal.time + weapon->GetprojectilDict().GetInt( "dodge_time", "0" );
-
+	
 	if ( headshot ) {
 		AI_HEADSHOT = true;
 	}
@@ -5984,8 +5994,8 @@ void idAI::Hide()
 	AI_ENEMY_IN_FOV		= false;
 	AI_ENEMY_VISIBLE	= false;
 	StopMove( MOVE_STATUS_DONE );
-
-	BecomeInactive(TH_ALL);
+	
+	BecomeInactive( TH_ALL );
 }
 
 /*
@@ -6012,8 +6022,8 @@ void idAI::Show()
 	fl.takedamage = !spawnArgs.GetBool( "noDamage" );
 	SetChatSound();
 	StartSound( "snd_ambient", SND_CHANNEL_AMBIENT, 0, false, NULL );
-
-	BecomeActive(TH_ALL);
+	
+	BecomeActive( TH_ALL );
 }
 
 /*
@@ -6807,24 +6817,24 @@ bool idAI::CanBecomeSolid()
 	idEntity* 	hit;
 	idClipModel* cm;
 	idClipModel* clipModels[ MAX_GENTITIES ];
-
+	
 	num = gameLocal.clip.ClipModelsTouchingBounds( physicsObj.GetAbsBounds(), MASK_MONSTERSOLID, clipModels, MAX_GENTITIES );
 	for( i = 0; i < num; i++ )
 	{
 		cm = clipModels[ i ];
-
+		
 		// don't check render entities
 		if( cm->IsRenderModel() )
 		{
 			continue;
 		}
-
+		
 		hit = cm->GetEntity();
 		if( ( hit == this ) || !hit->fl.takedamage )
 		{
 			continue;
 		}
-
+		
 		// DG: add parenthesis to make precedence obvious and to appease compiler
 		if( ( spawnClearMoveables && hit->IsType( idMoveable::Type ) ) || hit->IsType( idBarrel::Type ) || hit->IsType( idExplodingBarrel::Type ) )
 		{
@@ -6842,13 +6852,13 @@ bool idAI::CanBecomeSolid()
 			push *= 300.f;
 			hit->GetPhysics()->SetLinearVelocity( push );
 		}
-
+		
 		if( physicsObj.ClipContents( cm ) )
 		{
 			returnValue = false;
 		}
 	}
-
+	
 	return returnValue;
 }
 

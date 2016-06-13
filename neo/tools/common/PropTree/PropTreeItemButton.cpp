@@ -49,11 +49,13 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CPropTreeItemButton
 
-CPropTreeItemButton::CPropTreeItemButton() {
+CPropTreeItemButton::CPropTreeItemButton()
+{
 	mouseDown = false;
 }
 
-CPropTreeItemButton::~CPropTreeItemButton() {
+CPropTreeItemButton::~CPropTreeItemButton()
+{
 }
 
 
@@ -65,54 +67,62 @@ LONG CPropTreeItemButton::DrawItem( CDC* pDC, const RECT& rc, LONG x, LONG y )
 	CSize	textSize;
 	CRect	textRect;
 	LONG	nTotal = 0;
-
+	
 	nTotal = CPropTreeItem::DrawItem( pDC, rc, x, y );
-
+	
 	textSize = pDC->GetOutputTextExtent( buttonText );
-
-	buttonRect.left = m_rc.right - ( textSize.cx + 12 + 4);
-	buttonRect.top = m_rc.top + ((m_rc.bottom - m_rc.top)/2)-BUTTON_SIZE/2;
+	
+	buttonRect.left = m_rc.right - ( textSize.cx + 12 + 4 );
+	buttonRect.top = m_rc.top + ( ( m_rc.bottom - m_rc.top ) / 2 ) - BUTTON_SIZE / 2;
 	buttonRect.right = buttonRect.left + textSize.cx + 12;
 	buttonRect.bottom = buttonRect.top + BUTTON_SIZE;
-
+	
 	UINT buttonStyle;
-
-	if ( (m_dwState & TreeItemChecked) ) {
+	
+	if( ( m_dwState & TreeItemChecked ) )
+	{
 		buttonStyle = DFCS_BUTTONPUSH | DFCS_PUSHED;
-	} else {
+	}
+	else
+	{
 		buttonStyle = DFCS_BUTTONPUSH;
 	}
-	pDC->DrawFrameControl(&buttonRect, DFC_BUTTON, buttonStyle );
-
+	pDC->DrawFrameControl( &buttonRect, DFC_BUTTON, buttonStyle );
+	
 	textRect = buttonRect;
 	textRect.left += 4;
 	textRect.right -= 8;
-	pDC->DrawText( buttonText, textRect, DT_SINGLELINE|DT_VCENTER );
-
+	pDC->DrawText( buttonText, textRect, DT_SINGLELINE | DT_VCENTER );
+	
 	//Adjust hit test rect to acount for window scrolling
 	hitTestRect = buttonRect;
-	hitTestRect.OffsetRect(0, m_pProp->GetOrigin().y);
-
+	hitTestRect.OffsetRect( 0, m_pProp->GetOrigin().y );
+	
 	return nTotal;
 }
 
-void CPropTreeItemButton::DrawAttribute(CDC* pDC, const RECT& rc) {
+void CPropTreeItemButton::DrawAttribute( CDC* pDC, const RECT& rc )
+{
 }
 
 
-LPARAM CPropTreeItemButton::GetItemValue() {
-	return (LPARAM)0;
+LPARAM CPropTreeItemButton::GetItemValue()
+{
+	return ( LPARAM )0;
 }
 
 
-void CPropTreeItemButton::SetItemValue(LPARAM lParam) {
+void CPropTreeItemButton::SetItemValue( LPARAM lParam )
+{
 }
 
 
-BOOL CPropTreeItemButton::HitButton( const POINT& pt ) {
+BOOL CPropTreeItemButton::HitButton( const POINT& pt )
+{
 	return hitTestRect.PtInRect( pt );
 }
 
-void CPropTreeItemButton::SetButtonText( LPCSTR text ) {
+void CPropTreeItemButton::SetButtonText( LPCSTR text )
+{
 	buttonText = text;
 }

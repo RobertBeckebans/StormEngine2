@@ -973,17 +973,17 @@ bool idAF::Load( idEntity* ent, const char* fileName )
 	}
 	
 	baseAfJoint = file->baseAfJoint;
-	if ( baseAfJoint.IsEmpty() )
+	if( baseAfJoint.IsEmpty() )
 	{
 		baseAfJoint = animator->GetJointName( animator->GetFirstChild( "origin" ) );
 	}
-
-	if ( baseAfJoint.IsEmpty() )
+	
+	if( baseAfJoint.IsEmpty() )
 	{
 		gameLocal.Warning( "idAF::Load: articulated figure '%s' for entity '%s' has no base AF joint", name.c_str(), ent->name.c_str() );
 		return false;
 	}
-
+	
 	// create the animation frame used to setup the articulated figure
 	numJoints = animator->NumJoints();
 	joints = ( idJointMat* )_alloca16( numJoints * sizeof( joints[0] ) );

@@ -62,32 +62,32 @@ void idMenuScreen_Shell_SystemOptions::Initialize( idMenuHandler* data )
 	options->SetNumVisibleOptions( NUM_SYSTEM_OPTIONS_OPTIONS );
 	options->SetSpritePath( GetSpritePath(), "info", "options" );
 	options->SetWrappingAllowed( true );
-	while (options->GetChildren().Num() < NUM_SYSTEM_OPTIONS_OPTIONS)
+	while( options->GetChildren().Num() < NUM_SYSTEM_OPTIONS_OPTIONS )
 	{
 		idMenuWidget_ControlButton* buttonWidget = new idMenuWidget_ControlButton;
-		options->AddChild(buttonWidget);
+		options->AddChild( buttonWidget );
 	}
-	options->Initialize(data);
-	options->AddTextSlider("#str_02154", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_FULLSCREEN, DEFAULT_REPEAT_TIME);
-	options->AddTextSlider("#str_swf_framerate", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_FRAMERATE, DEFAULT_REPEAT_TIME);
-	options->AddTextSlider("#str_swf_vsync", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_VSYNC, DEFAULT_REPEAT_TIME);
-	options->AddTextSlider("#str_swf_aa", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_ANTIALIASING, DEFAULT_REPEAT_TIME);
-	options->AddTextSlider("#str_swf_motionblur", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_MOTIONBLUR, DEFAULT_REPEAT_TIME);
-	options->AddSliderBar("#str_swf_lodbias", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_LODBIAS, DEFAULT_REPEAT_TIME);
-	options->AddSliderBar("#str_swf_brightness", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_BRIGHTNESS, 2);
-	options->AddSliderBar("#str_swf_volume", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_VOLUME, 2);
-	options->AddSliderToggle("#str_swf_shadowmap_enable", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_SHADOWMAPPING, DEFAULT_REPEAT_TIME);
-	options->AddTextSlider("#str_swf_shadowmap_samples", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_SHADOWMAPSAMPLES, DEFAULT_REPEAT_TIME);
+	options->Initialize( data );
+	options->AddTextSlider( "#str_02154", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_FULLSCREEN, DEFAULT_REPEAT_TIME );
+	options->AddTextSlider( "#str_swf_framerate", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_FRAMERATE, DEFAULT_REPEAT_TIME );
+	options->AddTextSlider( "#str_swf_vsync", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_VSYNC, DEFAULT_REPEAT_TIME );
+	options->AddTextSlider( "#str_swf_aa", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_ANTIALIASING, DEFAULT_REPEAT_TIME );
+	options->AddTextSlider( "#str_swf_motionblur", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_MOTIONBLUR, DEFAULT_REPEAT_TIME );
+	options->AddSliderBar( "#str_swf_lodbias", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_LODBIAS, DEFAULT_REPEAT_TIME );
+	options->AddSliderBar( "#str_swf_brightness", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_BRIGHTNESS, 2 );
+	options->AddSliderBar( "#str_swf_volume", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_VOLUME, 2 );
+	options->AddSliderToggle( "#str_swf_shadowmap_enable", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_SHADOWMAPPING, DEFAULT_REPEAT_TIME );
+	options->AddTextSlider( "#str_swf_shadowmap_samples", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_SHADOWMAPSAMPLES, DEFAULT_REPEAT_TIME );
 	//options->AddTextSlider("#str_swf_shadowmap_imagesize", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_SHADOWMAPIMAGESIZE, DEFAULT_REPEAT_TIME);
-	options->AddTextSlider("#str_swf_shadowmap_quality", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_SHADOWMAPQUALITY, DEFAULT_REPEAT_TIME);
-	options->AddSliderBar("#str_swf_shadowmap_distance", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_SHADOWMAPDISTANCE, 2);
-	options->AddSliderToggle("#str_swf_png_enable", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_PNG, DEFAULT_REPEAT_TIME);
-	options->AddTextSlider("#str_swf_png_quality", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_PNG_QUALITY, DEFAULT_REPEAT_TIME);
-	options->AddSliderToggle("#str_swf_glow_enable", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_GLOW_ENABLE, DEFAULT_REPEAT_TIME);
-	options->AddSliderToggle("#str_swf_hdr_enable", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_HDR_ENABLE, DEFAULT_REPEAT_TIME);
-	options->AddSliderToggle("#str_swf_hq_sky_enable", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_HIGH_QUALITY_SKY, DEFAULT_REPEAT_TIME);
+	options->AddTextSlider( "#str_swf_shadowmap_quality", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_SHADOWMAPQUALITY, DEFAULT_REPEAT_TIME );
+	options->AddSliderBar( "#str_swf_shadowmap_distance", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_SHADOWMAPDISTANCE, 2 );
+	options->AddSliderToggle( "#str_swf_png_enable", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_PNG, DEFAULT_REPEAT_TIME );
+	options->AddTextSlider( "#str_swf_png_quality", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_PNG_QUALITY, DEFAULT_REPEAT_TIME );
+	options->AddSliderToggle( "#str_swf_glow_enable", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_GLOW_ENABLE, DEFAULT_REPEAT_TIME );
+	options->AddSliderToggle( "#str_swf_hdr_enable", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_HDR_ENABLE, DEFAULT_REPEAT_TIME );
+	options->AddSliderToggle( "#str_swf_hq_sky_enable", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_HIGH_QUALITY_SKY, DEFAULT_REPEAT_TIME );
 	
-
+	
 	btnBack = new( TAG_SWF ) idMenuWidget_Button();
 	btnBack->Initialize( data );
 	btnBack->SetLabel( "#str_swf_settings" );
@@ -199,14 +199,15 @@ void idMenuScreen_Shell_SystemOptions::HideScreen( const mainMenuTransition_t tr
 					//     (the old way would have been unnecessarily painful on POSIX systems)
 					//Sys_ReLaunch();
 					// DG end
-
+					
 					// motorsep 12-28-2014; reverted back to the original Sys_ReLaunch; guys from RBDoom 3 BFG team made it impossible to pass any cmds on restart
-
+					
 					idStr cmdLine = Sys_GetCmdLine();
-					if (cmdLine.Find("com_skipIntroVideos") < 0) {
-						cmdLine.Append(" +set com_skipIntroVideos 1");
+					if( cmdLine.Find( "com_skipIntroVideos" ) < 0 )
+					{
+						cmdLine.Append( " +set com_skipIntroVideos 1" );
 					}
-					Sys_ReLaunch( (void*)cmdLine.c_str(), cmdLine.Length() );
+					Sys_ReLaunch( ( void* )cmdLine.c_str(), cmdLine.Length() );
 				}
 				return idSWFScriptVar();
 			}
@@ -254,7 +255,7 @@ bool idMenuScreen_Shell_SystemOptions::HandleAction( idWidgetAction& action, con
 	
 	switch( actionType )
 	{
-
+	
 		case WIDGET_ACTION_GO_BACK:
 		{
 			if( menuData != NULL )
@@ -302,8 +303,8 @@ bool idMenuScreen_Shell_SystemOptions::HandleAction( idWidgetAction& action, con
 		}
 		case WIDGET_ACTION_START_REPEATER:
 		{
-
-			if (options == NULL)
+		
+			if( options == NULL )
 			{
 				return true;
 			}
@@ -347,13 +348,13 @@ void idMenuScreen_Shell_SystemOptions::idMenuDataSource_SystemSettings::LoadData
 	originalShadowMapQuality = r_shadowMapQuality.GetInteger();
 	originalShadowMapSampleCount = r_shadowMapSamples.GetInteger();
 	originalShadowMapDistance = r_shadowMapMaxDistance.GetFloat();
-
+	
 	originalUsePNG = r_screenshot_png.GetBool();
 	originalPNGQuality = r_screenshot_png_quality.GetInteger();
 	originalGlowEnable = r_glowEnable.GetBool();
 	originalHDREnable = r_useHDR.GetBool();
 	originalHQSky = r_useHightQualitySky.GetBool();
-
+	
 	const int fullscreen = r_fullscreen.GetInteger();
 	if( fullscreen > 0 )
 	{
@@ -385,11 +386,11 @@ bool idMenuScreen_Shell_SystemOptions::idMenuDataSource_SystemSettings::IsRestar
 	//{
 	//	return true;
 	//}
-	if (originalShadowMapQuality != r_shadowMapQuality.GetInteger())
+	if( originalShadowMapQuality != r_shadowMapQuality.GetInteger() )
 	{
 		return true;
 	}
-	if (originalHQSky != r_useHightQualitySky.GetBool())
+	if( originalHQSky != r_useHightQualitySky.GetBool() )
 	{
 		return true;
 	}
@@ -506,20 +507,20 @@ void idMenuScreen_Shell_SystemOptions::idMenuDataSource_SystemSettings::AdjustFi
 		}
 		case SYSTEM_FIELD_SHADOWMAPDISTANCE:
 		{
-			const float percent = LinearAdjust(r_shadowMapMaxDistance.GetFloat(), 512.0f, 16384.0f, 0.0f, 100.0f);
-			const float adjusted = percent + (float)adjustAmount * 5.0f;
-			const float clamped = idMath::ClampFloat(0.0f, 100.0f, adjusted);
-			r_shadowMapMaxDistance.SetFloat(LinearAdjust(clamped, 0.0f, 100.0f, 512.0f, 16384.0f));
+			const float percent = LinearAdjust( r_shadowMapMaxDistance.GetFloat(), 512.0f, 16384.0f, 0.0f, 100.0f );
+			const float adjusted = percent + ( float )adjustAmount * 5.0f;
+			const float clamped = idMath::ClampFloat( 0.0f, 100.0f, adjusted );
+			r_shadowMapMaxDistance.SetFloat( LinearAdjust( clamped, 0.0f, 100.0f, 512.0f, 16384.0f ) );
 			break;
 		}
 		case SYSTEM_FIELD_SHADOWMAPPING:
 		{
-			r_useShadowMapping.SetBool(!r_useShadowMapping.GetBool());
+			r_useShadowMapping.SetBool( !r_useShadowMapping.GetBool() );
 			break;
 		}
 		/*case SYSTEM_FIELD_SHADOWMAPIMAGESIZE:
 		{
-
+	
 			static const int numValues = 2;
 			static const int values[numValues] = { 0, 1 }; //  0 is LOW (??) and 1 is HIGH (2048)
 			r_shadowMapLodScale.SetInteger( AdjustOption( r_shadowMapLodScale.GetInteger(), values, numValues, adjustAmount ) );
@@ -529,7 +530,7 @@ void idMenuScreen_Shell_SystemOptions::idMenuDataSource_SystemSettings::AdjustFi
 		{
 			static const int numValues = 5;
 			static const int values[numValues] = { 0, 1, 2, 3, 4 };
-			r_shadowMapQuality.SetInteger(AdjustOption(r_shadowMapQuality.GetInteger(), values, numValues, adjustAmount));
+			r_shadowMapQuality.SetInteger( AdjustOption( r_shadowMapQuality.GetInteger(), values, numValues, adjustAmount ) );
 			break;
 		}
 		case SYSTEM_FIELD_SHADOWMAPSAMPLES:
@@ -537,59 +538,59 @@ void idMenuScreen_Shell_SystemOptions::idMenuDataSource_SystemSettings::AdjustFi
 			static const int numValues = 4;
 			// Why is this 0, 1, 4, or 16. I would expect this to be 0, 1, 2, 4, 8, or 16.
 			static const int values[numValues] = { 0, 1, 4, 16 };
-			r_shadowMapSamples.SetInteger(AdjustOption(r_shadowMapSamples.GetInteger(), values, numValues, adjustAmount));
+			r_shadowMapSamples.SetInteger( AdjustOption( r_shadowMapSamples.GetInteger(), values, numValues, adjustAmount ) );
 			break;
 		}
 		case SYSTEM_FIELD_HIGH_QUALITY_SKY:
 		{
-			r_useHightQualitySky.SetBool(!r_useHightQualitySky.GetBool());
+			r_useHightQualitySky.SetBool( !r_useHightQualitySky.GetBool() );
 			break;
 		}
 		case SYSTEM_FIELD_HDR_ENABLE:
 		{
-			r_useHDR.SetBool(!r_useHDR.GetBool());
+			r_useHDR.SetBool( !r_useHDR.GetBool() );
 			break;
 		}
 		case SYSTEM_FIELD_GLOW_ENABLE:
 		{
-			r_glowEnable.SetBool(!r_glowEnable.GetBool());
+			r_glowEnable.SetBool( !r_glowEnable.GetBool() );
 			break;
 		}
 		case SYSTEM_FIELD_PNG:
 		{
-			r_screenshot_png.SetBool(!r_screenshot_png.GetBool());
+			r_screenshot_png.SetBool( !r_screenshot_png.GetBool() );
 			break;
 		}
 		case SYSTEM_FIELD_PNG_QUALITY:
 		{
-
+		
 			static const int numValues = 5;
 			// Why is this 0, 1, 4, or 16. I would expect this to be 0, 1, 2, 4, 8, or 16.
 			static const int values[numValues] = { 0, 3, 5, 7, 8 };
-			r_screenshot_png_quality.SetInteger(AdjustOption(r_screenshot_png_quality.GetInteger(), values, numValues, adjustAmount));
+			r_screenshot_png_quality.SetInteger( AdjustOption( r_screenshot_png_quality.GetInteger(), values, numValues, adjustAmount ) );
 			break;
 			
 			break;
 		}
-
+		
 	}
 	cvarSystem->ClearModifiedFlags( CVAR_ARCHIVE );
 }
 
-const char* valueToQuality(int qualityIndex)
+const char* valueToQuality( int qualityIndex )
 {
-	switch (qualityIndex)
+	switch( qualityIndex )
 	{
-	case 0:
-		return "#str_low_quality"; /* Low */
-	case 1:
-		return "#str_medium_quality"; // medium
-	case 2:
-		return "#str_high_quality"; // high
-	case 3:
-		return "#str_ultra_quality";
-	case 4:
-		return "#str_absurd_quality";
+		case 0:
+			return "#str_low_quality"; /* Low */
+		case 1:
+			return "#str_medium_quality"; // medium
+		case 2:
+			return "#str_high_quality"; // high
+		case 3:
+			return "#str_ultra_quality";
+		case 4:
+			return "#str_absurd_quality";
 	}
 	return "";
 }
@@ -604,24 +605,24 @@ const char* valueToQuality(int qualityIndex)
 	return "";
 } */
 
-const char* png_valueToQuality(int qualityIndex)
+const char* png_valueToQuality( int qualityIndex )
 {
-	switch (qualityIndex)
+	switch( qualityIndex )
 	{
-	case 0:
-	case 1:
-		return "#str_low_quality"; /* Low */
-	case 2:
-	case 3:
-		return "#str_medium_quality"; // medium
-	case 4:
-	case 5:
-		return "#str_high_quality"; // high
-	case 6:
-	case 7:
-		return "#str_ultra_quality";
-	case 8:
-		return "#str_absurd_quality";
+		case 0:
+		case 1:
+			return "#str_low_quality"; /* Low */
+		case 2:
+		case 3:
+			return "#str_medium_quality"; // medium
+		case 4:
+		case 5:
+			return "#str_high_quality"; // high
+		case 6:
+		case 7:
+			return "#str_ultra_quality";
+		case 8:
+			return "#str_absurd_quality";
 	}
 	return "";
 }
@@ -686,7 +687,7 @@ idSWFScriptVar idMenuScreen_Shell_SystemOptions::idMenuDataSource_SystemSettings
 		case SYSTEM_FIELD_LODBIAS:
 			return LinearAdjust( r_lodBias.GetFloat(), -1.0f, 1.0f, 0.0f, 100.0f );
 		case SYSTEM_FIELD_BRIGHTNESS:
-			return LinearAdjust(r_lightScale.GetFloat(), 2.0f, 4.0f, 0.0f, 100.0f);
+			return LinearAdjust( r_lightScale.GetFloat(), 2.0f, 4.0f, 0.0f, 100.0f );
 		case SYSTEM_FIELD_VOLUME:
 		{
 			return 100.0f * Square( 1.0f - ( s_volume_dB.GetFloat() / DB_SILENCE ) );
@@ -696,10 +697,10 @@ idSWFScriptVar idMenuScreen_Shell_SystemOptions::idMenuDataSource_SystemSettings
 		case SYSTEM_FIELD_SHADOWMAPQUALITY:
 		{
 			int shadowmapQuality = r_shadowMapQuality.GetInteger();
-			return valueToQuality(shadowmapQuality);
+			return valueToQuality( shadowmapQuality );
 		}
 		case SYSTEM_FIELD_SHADOWMAPDISTANCE:
-			return LinearAdjust(r_shadowMapMaxDistance.GetFloat(), 512.0f, 16384.0f, 0.0f, 100.0f);
+			return LinearAdjust( r_shadowMapMaxDistance.GetFloat(), 512.0f, 16384.0f, 0.0f, 100.0f );
 		case SYSTEM_FIELD_HIGH_QUALITY_SKY:
 			return r_useHightQualitySky.GetBool();
 		case SYSTEM_FIELD_HDR_ENABLE:
@@ -709,19 +710,19 @@ idSWFScriptVar idMenuScreen_Shell_SystemOptions::idMenuDataSource_SystemSettings
 		case SYSTEM_FIELD_PNG:
 			return r_screenshot_png.GetBool();
 		case SYSTEM_FIELD_PNG_QUALITY:
-			return png_valueToQuality(r_screenshot_png_quality.GetInteger());
+			return png_valueToQuality( r_screenshot_png_quality.GetInteger() );
 		/*case SYSTEM_FIELD_SHADOWMAPIMAGESIZE:
 		{
 			int shadowmapImageSizeRes = r_shadowMapLodScale.GetInteger();
 			return imageSize_valueToQuality( shadowmapImageSizeRes );
 		}*/
-			//return va( "%4i x %4i", r_shadowMapLodScale.GetInteger(), r_shadowMapLodScale.GetInteger() );
+		//return va( "%4i x %4i", r_shadowMapLodScale.GetInteger(), r_shadowMapLodScale.GetInteger() );
 		case SYSTEM_FIELD_SHADOWMAPSAMPLES:
-			if (r_shadowMapSamples.GetInteger() == 0)
+			if( r_shadowMapSamples.GetInteger() == 0 )
 			{
 				return "#str_swf_disabled";
 			}
-			return va("%dx", r_shadowMapSamples.GetInteger());
+			return va( "%dx", r_shadowMapSamples.GetInteger() );
 	}
 	return false;
 }
@@ -757,7 +758,7 @@ bool idMenuScreen_Shell_SystemOptions::idMenuDataSource_SystemSettings::IsDataCh
 	{
 		return true;
 	}
-	if (originalShadowMapEnable != r_useShadowMapping.GetBool())
+	if( originalShadowMapEnable != r_useShadowMapping.GetBool() )
 	{
 		return true;
 	}
@@ -765,33 +766,33 @@ bool idMenuScreen_Shell_SystemOptions::idMenuDataSource_SystemSettings::IsDataCh
 	{
 		return true;
 	}*/
-	if (originalShadowMapQuality != r_shadowMapQuality.GetInteger())
+	if( originalShadowMapQuality != r_shadowMapQuality.GetInteger() )
 	{
 		return true;
 	}
-	if (originalShadowMapSampleCount != r_shadowMapSamples.GetInteger())
+	if( originalShadowMapSampleCount != r_shadowMapSamples.GetInteger() )
 	{
 		return true;
 	}
-	if (originalShadowMapDistance != r_shadowMapMaxDistance.GetFloat())
+	if( originalShadowMapDistance != r_shadowMapMaxDistance.GetFloat() )
 	{
 		return true;
 	}
-	if (originalUsePNG != r_screenshot_png.GetBool())
+	if( originalUsePNG != r_screenshot_png.GetBool() )
 	{
 		return true;
 	}
-	if (originalPNGQuality != r_screenshot_png_quality.GetInteger())
+	if( originalPNGQuality != r_screenshot_png_quality.GetInteger() )
 	{
 		return true;
 	}
-	if (r_glowEnable.GetBool() != originalGlowEnable)
+	if( r_glowEnable.GetBool() != originalGlowEnable )
 	{
 		return true;
 	}
-	if (originalHDREnable != r_useHDR.GetBool())
+	if( originalHDREnable != r_useHDR.GetBool() )
 		return true;
-	if (originalHQSky != r_useHightQualitySky.GetBool())
+	if( originalHQSky != r_useHightQualitySky.GetBool() )
 		return true;
 	return false;
 }

@@ -243,7 +243,7 @@ static idEvent EventPool[ MAX_EVENTS ];
 
 bool idEvent::initialized = false;
 
-idDynamicBlockAlloc<byte, 16* 1024, 256>	idEvent::eventDataAllocator;
+idDynamicBlockAlloc<byte, 16 * 1024, 256>	idEvent::eventDataAllocator;
 
 /*
 ================
@@ -534,7 +534,7 @@ idEvent::ClearEventList
 ================
 */
 void idEvent::ClearEventList()
-{	
+{
 	//
 	// initialize lists
 	//
@@ -559,10 +559,10 @@ idEvent::ServiceRemoveEntities
 */
 void idEvent::ServiceRemoveEntities()
 {
-	idClass * ent = RemoveEntities.Next();
-	while (ent != NULL)
+	idClass* ent = RemoveEntities.Next();
+	while( ent != NULL )
 	{
-		idClass * deleteEnt = ent;
+		idClass* deleteEnt = ent;
 		delete deleteEnt;
 		ent = ent->removeNode.Next();
 	}
@@ -590,7 +590,7 @@ void idEvent::ServiceEvents()
 	const char*  materialName;
 	
 	ServiceRemoveEntities();
-
+	
 	num = 0;
 	while( !EventQueue.IsListEmpty() )
 	{
@@ -602,7 +602,7 @@ void idEvent::ServiceEvents()
 			break;
 		}
 		
-		common->UpdateLevelLoadPacifier(true);
+		common->UpdateLevelLoadPacifier( true );
 		
 		// copy the data into the local args array and set up pointers
 		ev = event->eventdef;
@@ -706,7 +706,7 @@ void idEvent::ServiceFastEvents()
 	const char*  materialName;
 	
 	ServiceRemoveEntities();
-
+	
 	num = 0;
 	while( !FastEventQueue.IsListEmpty() )
 	{
@@ -902,7 +902,7 @@ void idEvent::Save( idSaveGame* savefile )
 					savefile->WriteInt( *reinterpret_cast<int*>( dataPtr ) );
 					size += sizeof( intptr_t );
 					break;
-					// RB end
+				// RB end
 				case D_EVENT_ENTITY :
 				case D_EVENT_ENTITY_NULL :
 					// RB: 64 bit fix, changed alignment to sizeof( intptr_t )
@@ -917,7 +917,7 @@ void idEvent::Save( idSaveGame* savefile )
 					// RB end
 					break;
 #if 1
-					// RB: added missing D_EVENT_STRING case
+				// RB: added missing D_EVENT_STRING case
 				case D_EVENT_STRING :
 					s.Clear();
 					s.Append( reinterpret_cast<char*>( dataPtr ) );
@@ -967,11 +967,11 @@ void idEvent::Save( idSaveGame* savefile )
 		
 		event = event->eventNode.Next();
 	}
-
-	savefile->WriteInt(RemoveEntities.Num());
-	for (idClass * ent = RemoveEntities.Next(); ent != NULL; ent = ent->removeNode.Next())
+	
+	savefile->WriteInt( RemoveEntities.Num() );
+	for( idClass* ent = RemoveEntities.Next(); ent != NULL; ent = ent->removeNode.Next() )
 	{
-		savefile->WriteObject(ent);
+		savefile->WriteObject( ent );
 	}
 }
 
@@ -1033,7 +1033,7 @@ void idEvent::Restore( idRestoreGame* savefile )
 		{
 			// RB: fixed wrong formatting
 			// foresthale 2014-05-19: use %d (as it originally did) rather than %zd (glibc specific), to deal with size_t being 64bit we just cast to int, these numbers aren't THAT big.
-			savefile->Error( "idEvent::Restore: arg size (%d) doesn't match saved arg size(%d) on event '%s'", (int)event->eventdef->GetArgSize(), (int)argsize, event->eventdef->GetName() );
+			savefile->Error( "idEvent::Restore: arg size (%d) doesn't match saved arg size(%d) on event '%s'", ( int )event->eventdef->GetArgSize(), ( int )argsize, event->eventdef->GetName() );
 			// RB end
 		}
 		if( argsize )
@@ -1057,7 +1057,7 @@ void idEvent::Restore( idRestoreGame* savefile )
 						savefile->ReadInt( *reinterpret_cast<int*>( dataPtr ) );
 						size += sizeof( intptr_t );
 						break;
-						// RB end
+					// RB end
 					case D_EVENT_ENTITY :
 					case D_EVENT_ENTITY_NULL :
 						// RB: 64 bit fix, changed alignment to sizeof( intptr_t )
@@ -1072,7 +1072,7 @@ void idEvent::Restore( idRestoreGame* savefile )
 						// RB end
 						break;
 #if 1
-						// RB: added missing D_EVENT_STRING case
+					// RB: added missing D_EVENT_STRING case
 					case D_EVENT_STRING :
 						savefile->ReadString( s );
 						//idStr::Copynz(reinterpret_cast<char *>( dataPtr ), s, s.Length() );
@@ -1162,16 +1162,16 @@ void idEvent::Restore( idRestoreGame* savefile )
 			event->data = NULL;
 		}
 	}
-
-	savefile->ReadInt(num);
-	for (i = 0; i < num; i++)
+	
+	savefile->ReadInt( num );
+	for( i = 0; i < num; i++ )
 	{
-		idEntity * ent = NULL;
-		savefile->ReadObject(reinterpret_cast<idClass*&>(ent));
-		assert(ent);
-		if (ent)
+		idEntity* ent = NULL;
+		savefile->ReadObject( reinterpret_cast<idClass*&>( ent ) );
+		assert( ent );
+		if( ent )
 		{
-			ent->removeNode.AddToEnd(RemoveEntities);
+			ent->removeNode.AddToEnd( RemoveEntities );
 		}
 	}
 }

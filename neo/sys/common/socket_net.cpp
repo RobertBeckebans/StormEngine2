@@ -1280,80 +1280,80 @@ const char* Sys_GetLocalIP( int i )
 }
 
 
-msg_t::msg_t(int bufferSize, bool compressed)
-	: mData(0)
-	, mDataOffset(0)
-	, mDataSize(0)
-	, mDataMaxSize(bufferSize)
-	, mCompressed(compressed)
+msg_t::msg_t( int bufferSize, bool compressed )
+	: mData( 0 )
+	, mDataOffset( 0 )
+	, mDataSize( 0 )
+	, mDataMaxSize( bufferSize )
+	, mCompressed( compressed )
 {
 	mData = new char[mDataMaxSize];
-	memset(mData, 0, sizeof(mData));
+	memset( mData, 0, sizeof( mData ) );
 }
 msg_t::~msg_t()
 {
 	delete[] mData;
 }
 
-void msg_t::ResetReadOffset() 
-{
-	mDataOffset = 0; 
-}
-
-bool msg_t::ReadBytes(char * bytes, int numBytes)
-{
-	assert(!(mDataOffset + numBytes > mDataSize));
-	if (mDataOffset + numBytes > mDataSize)
-		return false;
-
-	char * ptr = mData + mDataOffset;
-	mDataOffset += numBytes;
-	memcpy(bytes, ptr, numBytes);
-	return true;
-}
-
-bool msg_t::ReadString(char * buffer, int maxlength)
-{
-	unsigned short length = 0;
-	return Read(length) && ReadBytes(buffer, length);
-}
-
-bool msg_t::WriteBytes(const char * bytes, int numBytes)
-{
-	assert(!(mDataOffset + numBytes > mDataMaxSize));
-	if (mDataOffset + numBytes > mDataMaxSize)
-		return false;
-
-	char * ptr = mData + mDataOffset;
-	mDataOffset += numBytes;
-	memcpy(ptr, bytes, numBytes);
-	return true;
-}
-
-bool msg_t::WriteString(const char * output)
-{
-	const unsigned short length = (unsigned short)strlen(output) + 1;
-	return Write(length) && WriteBytes(output, length);
-}
-
-bool msg_t::ReadPacket(idUDP & socket, netadr_t & addrFrom)
+void msg_t::ResetReadOffset()
 {
 	mDataOffset = 0;
-	if (mCompressed)
-	{
-		void * tmpBuffer = _alloca(mDataMaxSize);
+}
 
+bool msg_t::ReadBytes( char* bytes, int numBytes )
+{
+	assert( !( mDataOffset + numBytes > mDataSize ) );
+	if( mDataOffset + numBytes > mDataSize )
+		return false;
+		
+	char* ptr = mData + mDataOffset;
+	mDataOffset += numBytes;
+	memcpy( bytes, ptr, numBytes );
+	return true;
+}
+
+bool msg_t::ReadString( char* buffer, int maxlength )
+{
+	unsigned short length = 0;
+	return Read( length ) && ReadBytes( buffer, length );
+}
+
+bool msg_t::WriteBytes( const char* bytes, int numBytes )
+{
+	assert( !( mDataOffset + numBytes > mDataMaxSize ) );
+	if( mDataOffset + numBytes > mDataMaxSize )
+		return false;
+		
+	char* ptr = mData + mDataOffset;
+	mDataOffset += numBytes;
+	memcpy( ptr, bytes, numBytes );
+	return true;
+}
+
+bool msg_t::WriteString( const char* output )
+{
+	const unsigned short length = ( unsigned short )strlen( output ) + 1;
+	return Write( length ) && WriteBytes( output, length );
+}
+
+bool msg_t::ReadPacket( idUDP& socket, netadr_t& addrFrom )
+{
+	mDataOffset = 0;
+	if( mCompressed )
+	{
+		void* tmpBuffer = _alloca( mDataMaxSize );
+		
 		int packetSize = 0;
-		if (socket.GetPacket(addrFrom, tmpBuffer, packetSize, mDataMaxSize))
+		if( socket.GetPacket( addrFrom, tmpBuffer, packetSize, mDataMaxSize ) )
 		{
-			idFile_Memory fmem("compressed", (const char*)tmpBuffer, packetSize);
+			idFile_Memory fmem( "compressed", ( const char* )tmpBuffer, packetSize );
 			
 			mDataSize = 0;
-			if (fmem.ReadInt(mDataSize) && packetSize <= mDataMaxSize)
+			if( fmem.ReadInt( mDataSize ) && packetSize <= mDataMaxSize )
 			{
-				std::auto_ptr<idCompressor> compressor(idCompressor::AllocLZSS());
-				compressor->Init(&fmem, false, 8);
-				if (compressor->Read(mData, mDataSize))
+				std::auto_ptr<idCompressor> compressor( idCompressor::AllocLZSS() );
+				compressor->Init( &fmem, false, 8 );
+				if( compressor->Read( mData, mDataSize ) )
 					return true;
 			}
 		}
@@ -1361,29 +1361,29 @@ bool msg_t::ReadPacket(idUDP & socket, netadr_t & addrFrom)
 	}
 	else
 	{
-		return socket.GetPacket(addrFrom, mData, mDataSize, mDataMaxSize);
+		return socket.GetPacket( addrFrom, mData, mDataSize, mDataMaxSize );
 	}
 }
 
-void msg_t::SendPacket(idUDP & socket, const netadr_t & addr)
+void msg_t::SendPacket( idUDP& socket, const netadr_t& addr )
 {
-	if (mCompressed)
+	if( mCompressed )
 	{
-		idFile_Memory fmem("compressed");
-
+		idFile_Memory fmem( "compressed" );
+		
 		// write the uncompressed size
-		fmem.WriteInt(Size());
-
-		std::auto_ptr<idCompressor> compressor(idCompressor::AllocLZSS());
-		compressor->Init(&fmem, true, 8);
-		compressor->Write(Data(), Size());
+		fmem.WriteInt( Size() );
+		
+		std::auto_ptr<idCompressor> compressor( idCompressor::AllocLZSS() );
+		compressor->Init( &fmem, true, 8 );
+		compressor->Write( Data(), Size() );
 		compressor->FinishCompress();
-
-		socket.SendPacket(addr, fmem.GetDataPtr(), fmem.Length());
+		
+		socket.SendPacket( addr, fmem.GetDataPtr(), fmem.Length() );
 	}
 	else
 	{
-		socket.SendPacket(addr, mData, mDataOffset);
+		socket.SendPacket( addr, mData, mDataOffset );
 	}
 }
 

@@ -124,7 +124,7 @@ void idMaterial::CommonInit()
 	fastPathSpecularImage = NULL;
 	fastPathGlossImage = NULL;
 	deformDecl = NULL;
-
+	
 	decalInfo.stayTime = 10000;
 	decalInfo.fadeTime = 4000;
 	decalInfo.start[0] = 1;
@@ -748,7 +748,7 @@ int idMaterial::ParseTerm( idLexer& src )
 	if( !token.Icmp( "fragmentPrograms" ) )
 	{
 		return 1.0f;
-	}	
+	}
 	if( !token.Icmp( "sound" ) )
 	{
 		pd->registersAreConstant = false;
@@ -779,27 +779,27 @@ int idMaterial::ParseTerm( idLexer& src )
 	{
 		// parse a table expression
 		MatchToken( src, "[" );
-
+		
 		b = ParseExpression( src );
-
+		
 		MatchToken( src, "]" );
-
+		
 		return EmitOp( table->Index(), b, OP_TYPE_TABLE );
 	}
-
+	
 	const idDeclTable2d* table2d = static_cast<const idDeclTable2d*>( declManager->FindType( DECL_TABLE2D, token.c_str(), false ) );
-	if ( table2d )
+	if( table2d )
 	{
 		// parse a table expression
 		MatchToken( src, "[" );
-
+		
 		b = ParseExpression( src );
-
+		
 		MatchToken( src, "]" );
-
+		
 		return EmitOp( table2d->Index(), b, OP_TYPE_TABLE2D );
-	}	
-
+	}
+	
 	src.Warning( "Bad term '%s'", token.c_str() );
 	SetMaterialFlag( MF_DEFAULTED );
 	return 0;
@@ -1230,7 +1230,7 @@ void idMaterial::ParseFragmentMap( idLexer& src, newShaderStage_t* newStage )
 	{
 		src.ReadTokenOnLine( &token );
 		
-		if( !token.Icmp( "normalMap" ))
+		if( !token.Icmp( "normalMap" ) )
 		{
 			td = TD_BUMP;
 			continue;
@@ -1289,7 +1289,7 @@ void idMaterial::ParseFragmentMap( idLexer& src, newShaderStage_t* newStage )
 		{
 			td = TD_HIGHQUALITY;	// sikk - Added - High Quality Texture Depth (full RGBA)
 			continue;
-		}		
+		}
 		if( !token.Icmp( "nopicmip" ) )
 		{
 			continue;
@@ -1300,7 +1300,7 @@ void idMaterial::ParseFragmentMap( idLexer& src, newShaderStage_t* newStage )
 		break;
 	}
 	str = R_ParsePastImageProgram( src );
-
+	
 	// foresthale 2014-05-17: don't binarize when in the editors - we just run uncompressed from the source assets
 	td = CheckEditorUsage( td );
 	
@@ -1442,12 +1442,12 @@ void idMaterial::ParseStage( idLexer& src, const textureRepeat_t trpDefault )
 		}
 		
 		// foresthale 20140403: r_glow
-		if ( !token.Icmp( "glow" ) )
+		if( !token.Icmp( "glow" ) )
 		{
 			ss->glowStage = true;
 			continue;
 		}
-
+		
 		if( !token.Icmp( "map" ) )
 		{
 			str = R_ParsePastImageProgram( src );
@@ -1598,11 +1598,14 @@ void idMaterial::ParseStage( idLexer& src, const textureRepeat_t trpDefault )
 			td = TD_HIGHQUALITY;	// sikk - Added - High Quality Texture Depth (full RGBA)
 			continue;
 		}
-		if( !token.Icmp( "uncompressedCubeMap" ) ) {			
-			if( r_useHightQualitySky.GetBool() ) {
-				td = TD_HIGHQUALITY_CUBE;	// motorsep 05-17-2015; token to mark cumebap/skybox to be uncompressed texture									
+		if( !token.Icmp( "uncompressedCubeMap" ) )
+		{
+			if( r_useHightQualitySky.GetBool() )
+			{
+				td = TD_HIGHQUALITY_CUBE;	// motorsep 05-17-2015; token to mark cumebap/skybox to be uncompressed texture
 			}
-			if( !r_useHightQualitySky.GetBool() ) {
+			if( !r_useHightQualitySky.GetBool() )
+			{
 				td = TD_LOWQUALITY_CUBE;
 			}
 			continue;
@@ -1659,7 +1662,7 @@ void idMaterial::ParseStage( idLexer& src, const textureRepeat_t trpDefault )
 				texGenRegisters[1] = ParseExpression( src );
 				texGenRegisters[2] = ParseExpression( src );
 			}
-			else if ( !token.Icmp( "scriptsky" ) )
+			else if( !token.Icmp( "scriptsky" ) )
 			{
 				ts->texgen = TG_SCRIPTSKY_CUBE;
 			}
@@ -1869,15 +1872,16 @@ void idMaterial::ParseStage( idLexer& src, const textureRepeat_t trpDefault )
 										 ss->color.registers[2] = ss->color.registers[3] = ParseExpression( src );
 			continue;
 		}
-
+		
 // ---> sikk - Added - No Motionblur Material Stage Flag
-		if ( !token.Icmp( "noBlur" ) ) {
+		if( !token.Icmp( "noBlur" ) )
+		{
 			ss->noMotionBlur = true;
 			continue;
 		}
 // <--- sikk - Added - No Motionblur Material Stage Flag
 
-		
+
 		if( !token.Icmp( "if" ) )
 		{
 			ss->conditionRegister = ParseExpression( src );
@@ -1998,10 +2002,10 @@ void idMaterial::ParseStage( idLexer& src, const textureRepeat_t trpDefault )
 			coverageTS->image = globalImages->defaultImage;
 		}
 	}
-
+	
 	// foresthale 2014-05-17: don't binarize when in the editors - we just run uncompressed from the source assets
 	td = CheckEditorUsage( td );
-		
+	
 	// now load the image with all the parms we parsed
 	if( imageName[0] )
 	{
@@ -2416,7 +2420,7 @@ void idMaterial::ParseMaterial( idLexer& src )
 			// volume would be coplanar with the surface, giving depth fighting
 			// we could make this no-self-shadows, but it may be more important
 			// to receive shadows from no-self-shadow monsters
-			if( !r_useShadowMapping.GetBool() ) // motorsep 11-08-2014; when shadow mapping is on, we allow two-sided surfaces to cast shadows 
+			if( !r_useShadowMapping.GetBool() ) // motorsep 11-08-2014; when shadow mapping is on, we allow two-sided surfaces to cast shadows
 				SetMaterialFlag( MF_NOSHADOWS );
 		}
 		// backSided
@@ -2598,7 +2602,7 @@ void idMaterial::ParseMaterial( idLexer& src )
 			SetMaterialFlag( MF_NOSHADOWS );
 			continue;
 		}
-
+		
 		// motorsep 11-23-2014; material LOD keys that define what LOD iteration the surface falls into
 		else if( !token.Icmp( "lod1" ) )
 		{
@@ -2996,7 +3000,7 @@ void idMaterial::Print() const
 	for( i = 0 ; i < numOps ; i++ )
 	{
 		const expOp_t* op = &ops[i];
-		if ( op->opType == OP_TYPE_TABLE || op->opType == OP_TYPE_TABLE2D )
+		if( op->opType == OP_TYPE_TABLE || op->opType == OP_TYPE_TABLE2D )
 		{
 			common->Printf( "%i = %s[ %i ]\n", op->c, declManager->DeclByIndex( DECL_TABLE, op->a )->GetName(), op->b );
 		}

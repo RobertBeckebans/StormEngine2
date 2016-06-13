@@ -44,24 +44,24 @@ class CEntityListDlg : public CDialog
 {
 // Construction
 public:
-	CEntityListDlg(CWnd* pParent = NULL);   // standard constructor
+	CEntityListDlg( CWnd* pParent = NULL ); // standard constructor
 	void UpdateList();
 	static void ShowDialog();
-
+	
 // Dialog Data
 	//{{AFX_DATA(CEntityListDlg)
 	enum { IDD = IDD_DLG_ENTITYLIST };
 	CListCtrl	m_lstEntity;
 	//}}AFX_DATA
-
-
+	
+	
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CEntityListDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+protected:
+	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	//}}AFX_VIRTUAL
-
+	
 // Implementation
 protected:
 
@@ -71,8 +71,8 @@ protected:
 	afx_msg void OnClose();
 	virtual void OnCancel();
 	virtual BOOL OnInitDialog();
-	afx_msg void OnSysCommand(UINT nID,  LPARAM lParam);
-
+	afx_msg void OnSysCommand( UINT nID,  LPARAM lParam );
+	
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 public:

@@ -40,14 +40,15 @@ two points that faces the view, like a dynamic deform tube.
 
 */
 
-static const char *beam_SnapshotName = "_beam_Snapshot_";
+static const char* beam_SnapshotName = "_beam_Snapshot_";
 
 /*
 ===============
 idDmapRenderModelBeam::IsDynamicModel
 ===============
 */
-dynamicModel_t idDmapRenderModelBeam::IsDynamicModel() const {
+dynamicModel_t idDmapRenderModelBeam::IsDynamicModel() const
+{
 	return DM_CONTINUOUS;	// regenerate for every view
 }
 
@@ -56,7 +57,8 @@ dynamicModel_t idDmapRenderModelBeam::IsDynamicModel() const {
 idDmapRenderModelBeam::IsLoaded
 ===============
 */
-bool idDmapRenderModelBeam::IsLoaded() const {
+bool idDmapRenderModelBeam::IsLoaded() const
+{
 	return true;	// don't ever need to load
 }
 
@@ -65,126 +67,132 @@ bool idDmapRenderModelBeam::IsLoaded() const {
 idDmapRenderModelBeam::InstantiateDynamicModel
 ===============
 */
-idDmapRenderModel *idDmapRenderModelBeam::InstantiateDynamicModel(const struct dmapRenderEntity_s *renderEntity, const struct dmapViewDef_s *viewDef, idDmapRenderModel *cachedModel) {
-	idDmapRenderModelStatic *staticModel;
-	srfDmapTriangles_t *tri;
+idDmapRenderModel* idDmapRenderModelBeam::InstantiateDynamicModel( const struct dmapRenderEntity_s* renderEntity, const struct dmapViewDef_s* viewDef, idDmapRenderModel* cachedModel )
+{
+	idDmapRenderModelStatic* staticModel;
+	srfDmapTriangles_t* tri;
 	dmapModelSurface_t surf;
-
-	if (cachedModel) {
+	
+	if( cachedModel )
+	{
 		delete cachedModel;
 		cachedModel = NULL;
 	}
-
-	if (renderEntity == NULL || viewDef == NULL) {
+	
+	if( renderEntity == NULL || viewDef == NULL )
+	{
 		delete cachedModel;
 		return NULL;
 	}
-
-	if (cachedModel != NULL) {
-
-		assert(dynamic_cast<idDmapRenderModelStatic *>(cachedModel) != NULL);
-		assert(idStr::Icmp(cachedModel->Name(), beam_SnapshotName) == 0);
-
-		staticModel = static_cast<idDmapRenderModelStatic *>(cachedModel);
-		surf = *staticModel->Surface(0);
+	
+	if( cachedModel != NULL )
+	{
+	
+		assert( dynamic_cast<idDmapRenderModelStatic*>( cachedModel ) != NULL );
+		assert( idStr::Icmp( cachedModel->Name(), beam_SnapshotName ) == 0 );
+		
+		staticModel = static_cast<idDmapRenderModelStatic*>( cachedModel );
+		surf = *staticModel->Surface( 0 );
 		tri = surf.geometry;
-
+		
 	}
-	else {
-
+	else
+	{
+	
 		staticModel = new idDmapRenderModelStatic;
-		staticModel->InitEmpty(beam_SnapshotName);
-
+		staticModel->InitEmpty( beam_SnapshotName );
+		
 		tri = R_AllocStaticTriSurfDmap();
-		R_AllocStaticTriSurfVertsDmap(tri, 4);
-		R_AllocStaticTriSurfIndexesDmap(tri, 6);
-
+		R_AllocStaticTriSurfVertsDmap( tri, 4 );
+		R_AllocStaticTriSurfIndexesDmap( tri, 6 );
+		
 		tri->verts[0].Clear();
 		tri->verts[0].st[0] = 0;
 		tri->verts[0].st[1] = 0;
-
+		
 		tri->verts[1].Clear();
 		tri->verts[1].st[0] = 0;
 		tri->verts[1].st[1] = 1;
-
+		
 		tri->verts[2].Clear();
 		tri->verts[2].st[0] = 1;
 		tri->verts[2].st[1] = 0;
-
+		
 		tri->verts[3].Clear();
 		tri->verts[3].st[0] = 1;
 		tri->verts[3].st[1] = 1;
-
+		
 		tri->indexes[0] = 0;
 		tri->indexes[1] = 2;
 		tri->indexes[2] = 1;
 		tri->indexes[3] = 2;
 		tri->indexes[4] = 3;
 		tri->indexes[5] = 1;
-
+		
 		tri->numVerts = 4;
 		tri->numIndexes = 6;
-
+		
 		surf.geometry = tri;
 		surf.id = 0;
 		surf.shader = dmap_tr.defaultMaterial;
-		staticModel->AddSurface(surf);
+		staticModel->AddSurface( surf );
 	}
-
-	idVec3	target = *reinterpret_cast<const idVec3 *>(&renderEntity->shaderParms[SHADERPARM_BEAM_END_X]);
-
+	
+	idVec3	target = *reinterpret_cast<const idVec3*>( &renderEntity->shaderParms[SHADERPARM_BEAM_END_X] );
+	
 	// we need the view direction to project the minor axis of the tube
 	// as the view changes
 	idVec3	localView, localTarget;
 	float	modelMatrix[16];
-	R_AxisToModelMatrix(renderEntity->axis, renderEntity->origin, modelMatrix);
-	R_GlobalPointToLocal(modelMatrix, viewDef->renderView.vieworg, localView);
-	R_GlobalPointToLocal(modelMatrix, target, localTarget);
-
+	R_AxisToModelMatrix( renderEntity->axis, renderEntity->origin, modelMatrix );
+	R_GlobalPointToLocal( modelMatrix, viewDef->renderView.vieworg, localView );
+	R_GlobalPointToLocal( modelMatrix, target, localTarget );
+	
 	idVec3	major = localTarget;
 	idVec3	minor;
-
+	
 	idVec3	mid = 0.5f * localTarget;
 	idVec3	dir = mid - localView;
-	minor.Cross(major, dir);
+	minor.Cross( major, dir );
 	minor.Normalize();
-	if (renderEntity->shaderParms[SHADERPARM_BEAM_WIDTH] != 0.0f) {
+	if( renderEntity->shaderParms[SHADERPARM_BEAM_WIDTH] != 0.0f )
+	{
 		minor *= renderEntity->shaderParms[SHADERPARM_BEAM_WIDTH] * 0.5f;
 	}
-
-	int red = idMath::Ftoi(renderEntity->shaderParms[SHADERPARM_RED] * 255.0f);
-	int green = idMath::Ftoi(renderEntity->shaderParms[SHADERPARM_GREEN] * 255.0f);
-	int blue = idMath::Ftoi(renderEntity->shaderParms[SHADERPARM_BLUE] * 255.0f);
-	int alpha = idMath::Ftoi(renderEntity->shaderParms[SHADERPARM_ALPHA] * 255.0f);
-
+	
+	int red = idMath::Ftoi( renderEntity->shaderParms[SHADERPARM_RED] * 255.0f );
+	int green = idMath::Ftoi( renderEntity->shaderParms[SHADERPARM_GREEN] * 255.0f );
+	int blue = idMath::Ftoi( renderEntity->shaderParms[SHADERPARM_BLUE] * 255.0f );
+	int alpha = idMath::Ftoi( renderEntity->shaderParms[SHADERPARM_ALPHA] * 255.0f );
+	
 	tri->verts[0].xyz = minor;
 	tri->verts[0].color[0] = red;
 	tri->verts[0].color[1] = green;
 	tri->verts[0].color[2] = blue;
 	tri->verts[0].color[3] = alpha;
-
+	
 	tri->verts[1].xyz = -minor;
 	tri->verts[1].color[0] = red;
 	tri->verts[1].color[1] = green;
 	tri->verts[1].color[2] = blue;
 	tri->verts[1].color[3] = alpha;
-
+	
 	tri->verts[2].xyz = localTarget + minor;
 	tri->verts[2].color[0] = red;
 	tri->verts[2].color[1] = green;
 	tri->verts[2].color[2] = blue;
 	tri->verts[2].color[3] = alpha;
-
+	
 	tri->verts[3].xyz = localTarget - minor;
 	tri->verts[3].color[0] = red;
 	tri->verts[3].color[1] = green;
 	tri->verts[3].color[2] = blue;
 	tri->verts[3].color[3] = alpha;
-
-	R_BoundTriSurfDmap(tri);
-
+	
+	R_BoundTriSurfDmap( tri );
+	
 	staticModel->bounds = tri->bounds;
-
+	
 	return staticModel;
 }
 
@@ -193,23 +201,27 @@ idDmapRenderModel *idDmapRenderModelBeam::InstantiateDynamicModel(const struct d
 idDmapRenderModelBeam::Bounds
 ===============
 */
-idBounds idDmapRenderModelBeam::Bounds(const struct dmapRenderEntity_s *renderEntity) const {
+idBounds idDmapRenderModelBeam::Bounds( const struct dmapRenderEntity_s* renderEntity ) const
+{
 	idBounds	b;
-
+	
 	b.Zero();
-	if (!renderEntity) {
-		b.ExpandSelf(8.0f);
+	if( !renderEntity )
+	{
+		b.ExpandSelf( 8.0f );
 	}
-	else {
-		idVec3	target = *reinterpret_cast<const idVec3 *>(&renderEntity->shaderParms[SHADERPARM_BEAM_END_X]);
+	else
+	{
+		idVec3	target = *reinterpret_cast<const idVec3*>( &renderEntity->shaderParms[SHADERPARM_BEAM_END_X] );
 		idVec3	localTarget;
 		float	modelMatrix[16];
-		R_AxisToModelMatrix(renderEntity->axis, renderEntity->origin, modelMatrix);
-		R_GlobalPointToLocal(modelMatrix, target, localTarget);
-
-		b.AddPoint(localTarget);
-		if (renderEntity->shaderParms[SHADERPARM_BEAM_WIDTH] != 0.0f) {
-			b.ExpandSelf(renderEntity->shaderParms[SHADERPARM_BEAM_WIDTH] * 0.5f);
+		R_AxisToModelMatrix( renderEntity->axis, renderEntity->origin, modelMatrix );
+		R_GlobalPointToLocal( modelMatrix, target, localTarget );
+		
+		b.AddPoint( localTarget );
+		if( renderEntity->shaderParms[SHADERPARM_BEAM_WIDTH] != 0.0f )
+		{
+			b.ExpandSelf( renderEntity->shaderParms[SHADERPARM_BEAM_WIDTH] * 0.5f );
 		}
 	}
 	return b;

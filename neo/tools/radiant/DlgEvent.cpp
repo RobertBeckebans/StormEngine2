@@ -46,29 +46,29 @@ static char THIS_FILE[] = __FILE__;
 // CDlgEvent dialog
 
 
-CDlgEvent::CDlgEvent(CWnd* pParent /*=NULL*/)
-	: CDialog(CDlgEvent::IDD, pParent)
+CDlgEvent::CDlgEvent( CWnd* pParent /*=NULL*/ )
+	: CDialog( CDlgEvent::IDD, pParent )
 {
 	//{{AFX_DATA_INIT(CDlgEvent)
-	m_strParm = _T("");
+	m_strParm = _T( "" );
 	m_event = 0;
 	//}}AFX_DATA_INIT
 }
 
 
-void CDlgEvent::DoDataExchange(CDataExchange* pDX)
+void CDlgEvent::DoDataExchange( CDataExchange* pDX )
 {
-	CDialog::DoDataExchange(pDX);
+	CDialog::DoDataExchange( pDX );
 	//{{AFX_DATA_MAP(CDlgEvent)
-	DDX_Text(pDX, IDC_EDIT_PARAM, m_strParm);
-	DDX_Radio(pDX, IDC_RADIO_EVENT, m_event);
+	DDX_Text( pDX, IDC_EDIT_PARAM, m_strParm );
+	DDX_Radio( pDX, IDC_RADIO_EVENT, m_event );
 	//}}AFX_DATA_MAP
 }
 
 
-BEGIN_MESSAGE_MAP(CDlgEvent, CDialog)
+BEGIN_MESSAGE_MAP( CDlgEvent, CDialog )
 	//{{AFX_MSG_MAP(CDlgEvent)
-		// NOTE: the ClassWizard will add message map macros here
+	// NOTE: the ClassWizard will add message map macros here
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 

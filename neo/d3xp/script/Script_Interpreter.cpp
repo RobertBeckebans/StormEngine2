@@ -211,64 +211,64 @@ used primarily for the debugger and debugging
 ================
 */
 bool idInterpreter::GetRegisterValue( const char* name, idStr& out, int scopeDepth )
-{	
+{
 	out.Empty();
 	
 	if( scopeDepth == -1 )
 		scopeDepth = callStackDepth;
-	
-	idVarDef * searchscope = NULL;
-	if ( currentFunction != NULL )
+		
+	idVarDef* searchscope = NULL;
+	if( currentFunction != NULL )
 		searchscope = currentFunction->def;
-	else if ( callStack[ scopeDepth ].f )
+	else if( callStack[ scopeDepth ].f )
 		searchscope = callStack[ scopeDepth ].f->def;
 		
-	idVarDef * d = NULL;
+	idVarDef* d = NULL;
 	
 	// Walk the scope chain up and look for the variable
-	const idVarDef * scope = searchscope;
-	while ( scope != NULL )
+	const idVarDef* scope = searchscope;
+	while( scope != NULL )
 	{
 		if( scope == &def_namespace )
 			break;
-
+			
 		d = gameLocal.program.GetDef( NULL, name, scope, true );
-		if ( d != NULL )
+		if( d != NULL )
 			break;
-
+			
 		scope = scope->scope;
 	}
-
-	if ( !d )
+	
+	if( !d )
 	{
 		d = gameLocal.program.GetDef( NULL, name, &def_namespace );
 		if( !d )
 			return false;
 	}
-
-	if ( !d || d->initialized == idVarDef::uninitialized )
+	
+	if( !d || d->initialized == idVarDef::uninitialized )
 	{
 		out = "<uninitialized>";
 		return true;
 	}
-
-	idVarDef * selfDef = NULL;
-	idTypeDef * field = NULL;
-
+	
+	idVarDef* selfDef = NULL;
+	idTypeDef* field = NULL;
+	
 	const idScriptObject* obj = NULL;
-	idEntity * objEntity = NULL;
-
+	idEntity* objEntity = NULL;
+	
 	varEval_t reg = GetVariable( d );
 	switch( d->Type() )
 	{
 		case ev_void:
 			out = "<void>";
 			return true;
-
+			
 		case ev_scriptevent:
 		case ev_namespace:
 			return false;
-
+			
 		case ev_string:
 			if( reg.stringPtr )
 			{
@@ -281,7 +281,7 @@ bool idInterpreter::GetRegisterValue( const char* name, idStr& out, int scopeDep
 				out = "\"\"";
 			}
 			return true;
-
+			
 		case ev_float:
 			if( reg.floatPtr )
 			{
@@ -307,10 +307,10 @@ bool idInterpreter::GetRegisterValue( const char* name, idStr& out, int scopeDep
 			break;
 			
 		case ev_entity:
-			if ( reg.entityNumberPtr )
+			if( reg.entityNumberPtr )
 			{
-				idEntity * ent = GetEntity( *reg.entityNumberPtr );
-				if ( ent )
+				idEntity* ent = GetEntity( *reg.entityNumberPtr );
+				if( ent )
 					out = va( "%s(%d)", ent->GetName(), ent->GetEntityNumber() );
 				else
 					out = "<unknown>";
@@ -326,89 +326,89 @@ bool idInterpreter::GetRegisterValue( const char* name, idStr& out, int scopeDep
 			}
 			
 			selfDef = gameLocal.program.GetDef( scope->scope->TypeDef(), "self", scope );
-
+			
 			field = d->TypeDef()->FieldType();
-			obj = GetScriptObject( *(int*)&localstack[ callStack[ callStackDepth ].stackbase ] );	
+			obj = GetScriptObject( *( int* )&localstack[ callStack[ callStackDepth ].stackbase ] );
 			
 			if( !field || !obj )
 				return false;
-			
+				
 			switch( field->Type() )
 			{
-			case ev_scriptevent:
-				out = "<scriptevent>";
-				return true;
-			case ev_namespace:
-				out = "<namespace>";
-				return true;
-			case ev_string:				
-				out = va( "\"%s\"", ( reinterpret_cast<const char*>( &obj->data[ reg.ptrOffset ] ) ) );
-				return true;
-			case ev_float:
-				out = va( "%g", *( reinterpret_cast<float*>( &obj->data[ reg.ptrOffset ] ) ) );
-				return true;
-			case ev_vector: 
-				out = va( "(%g, %g, %g)", reg.vectorPtr->x, reg.vectorPtr->y, reg.vectorPtr->z );
-				return true;
-			case ev_entity:
-				objEntity = GetEntity( *(int*)&obj->data[ reg.ptrOffset ] );
-				if ( objEntity )
-					out = va( "%s(%d)", objEntity->GetName(), objEntity->GetEntityNumber() );
-				else
-					out = "<unknown>";
-				return true;
-			case ev_field:
-				out = "<field>";
-				return true;
-			case ev_function:
-				out = reg.functionPtr ? reg.functionPtr->Name() : "<unknown func>";
-				return true;
-			case ev_virtualfunction:
+				case ev_scriptevent:
+					out = "<scriptevent>";
+					return true;
+				case ev_namespace:
+					out = "<namespace>";
+					return true;
+				case ev_string:
+					out = va( "\"%s\"", ( reinterpret_cast<const char*>( &obj->data[ reg.ptrOffset ] ) ) );
+					return true;
+				case ev_float:
+					out = va( "%g", *( reinterpret_cast<float*>( &obj->data[ reg.ptrOffset ] ) ) );
+					return true;
+				case ev_vector:
+					out = va( "(%g, %g, %g)", reg.vectorPtr->x, reg.vectorPtr->y, reg.vectorPtr->z );
+					return true;
+				case ev_entity:
+					objEntity = GetEntity( *( int* )&obj->data[ reg.ptrOffset ] );
+					if( objEntity )
+						out = va( "%s(%d)", objEntity->GetName(), objEntity->GetEntityNumber() );
+					else
+						out = "<unknown>";
+					return true;
+				case ev_field:
+					out = "<field>";
+					return true;
+				case ev_function:
+					out = reg.functionPtr ? reg.functionPtr->Name() : "<unknown func>";
+					return true;
+				case ev_virtualfunction:
 				{
-					const function_t * vfunc = field->GetFunction( reg.virtualFunction );
+					const function_t* vfunc = field->GetFunction( reg.virtualFunction );
 					out = vfunc ? vfunc->Name() : "<unknown vfunc>";
 					return true;
 				}
-			case ev_pointer:
-				out = va( "%d", *( reinterpret_cast<int*>( &obj->data[ reg.ptrOffset ] ) ) );
-				return true;
-			case ev_object:
-				out = "<object>";
-				return true;
-			case ev_jumpoffset:
-				out = "<jumpoffset>";
-				return true;
-			case ev_argsize:
-				out = "<argsize>";
-				return true;			
-			case ev_boolean:
-				out = va( "%s", ( *reinterpret_cast<int*>( &obj->data[ reg.ptrOffset ] ) != 0) ? "true" : "false" );
-				return true;				
-			default:
-				return false;
+				case ev_pointer:
+					out = va( "%d", *( reinterpret_cast<int*>( &obj->data[ reg.ptrOffset ] ) ) );
+					return true;
+				case ev_object:
+					out = "<object>";
+					return true;
+				case ev_jumpoffset:
+					out = "<jumpoffset>";
+					return true;
+				case ev_argsize:
+					out = "<argsize>";
+					return true;
+				case ev_boolean:
+					out = va( "%s", ( *reinterpret_cast<int*>( &obj->data[ reg.ptrOffset ] ) != 0 ) ? "true" : "false" );
+					return true;
+				default:
+					return false;
 			}
 			break;
-
+			
 		case ev_function:
-			if ( reg.functionPtr )
+			if( reg.functionPtr )
 			{
 				//gameLocal.program.GetFilename( reg.functionPtr->filenum );
 				out = va( "%s", reg.functionPtr->Name() );
 				return true;
 			}
 			return false;
-
+			
 		case ev_virtualfunction:
 		case ev_pointer:
 		case ev_object:
 		case ev_jumpoffset:
 		case ev_argsize:
 			return false;
-
+			
 		case ev_boolean:
 			if( reg.intPtr )
 			{
-				out = va( "%s", (*reg.intPtr)!=0 ? "true" : "false" );
+				out = va( "%s", ( *reg.intPtr ) != 0 ? "true" : "false" );
 			}
 			else
 			{
@@ -731,11 +731,11 @@ void idInterpreter::EnterFunction( const function_t* func, bool clearStack )
 	{
 		idStr indent;
 		indent.Fill( ' ', callStackDepth*2 );
-		gameLocal.Printf( "%s%s(line %d)\n", indent.c_str(), 
+		gameLocal.Printf( "%s%s(line %d)\n", indent.c_str(),
 			currentFunction ? currentFunction->Name() : "<UNKNOWN>",
 			gameLocal.program.GetStatement( callStack[ callStackDepth ].s ).linenumber );
 	}*/
-
+	
 	stack = &callStack[ callStackDepth ];
 	
 	stack->s			= instructionPointer + 1;	// point to the next instruction to execute
@@ -753,7 +753,7 @@ void idInterpreter::EnterFunction( const function_t* func, bool clearStack )
 		Error( "NULL function" );
 		return;
 	}
-		
+	
 	currentFunction = func;
 	assert( !func->eventdef );
 	NextInstruction( func->firstStatement );
@@ -761,12 +761,12 @@ void idInterpreter::EnterFunction( const function_t* func, bool clearStack )
 	if( debug )
 	{
 		idStr indent;
-		indent.Fill( ' ', callStackDepth*2 );
-		gameLocal.Printf( "%s%s(line %d)\n", indent.c_str(), 
-			currentFunction ? currentFunction->Name() : "<UNKNOWN>",
-			gameLocal.program.GetStatement( func->firstStatement ).linenumber );
+		indent.Fill( ' ', callStackDepth * 2 );
+		gameLocal.Printf( "%s%s(line %d)\n", indent.c_str(),
+						  currentFunction ? currentFunction->Name() : "<UNKNOWN>",
+						  gameLocal.program.GetStatement( func->firstStatement ).linenumber );
 	}
-
+	
 	// allocate space on the stack for locals
 	// parms are already on stack
 	c = func->locals - func->parmTotal;
@@ -831,13 +831,13 @@ void idInterpreter::LeaveFunction( idVarDef* returnDef )
 	if( debug )
 	{
 		idStr indent;
-		indent.Fill( ' ', (callStackDepth)*2 );
-
+		indent.Fill( ' ', ( callStackDepth ) * 2 );
+		
 		statement_t& line = gameLocal.program.GetStatement( instructionPointer );
 		gameLocal.Printf( "%s%s(%d): exit %s", indent.c_str(), gameLocal.program.GetFilename( line.file ), line.linenumber, currentFunction->Name() );
 		if( callStackDepth > 1 )
 		{
-			indent.Fill( ' ', (callStackDepth-1)*2 );
+			indent.Fill( ' ', ( callStackDepth - 1 ) * 2 );
 			gameLocal.Printf( "%s'%s'(line %d)\n", indent.c_str(), callStack[ callStackDepth - 1 ].f->Name(), gameLocal.program.GetStatement( callStack[ callStackDepth - 1 ].s ).linenumber );
 		}
 		else
@@ -1177,23 +1177,23 @@ bool idInterpreter::Execute()
 		// move to previous instruction and call it again
 		instructionPointer--;
 	}
-
+	
 	if( debug )
 	{
 		// so we can show the line number we're resuming from
 		st = &gameLocal.program.GetStatement( instructionPointer );
-
-		gameLocal.Printf( "resuming thread(%d): (%d) '%s'(line %d)\n", 
-			thread->GetThreadNum(), gameLocal.time, thread ? thread->GetThreadName() : "UNKNOWN", st->linenumber );
 		
+		gameLocal.Printf( "resuming thread(%d): (%d) '%s'(line %d)\n",
+						  thread->GetThreadNum(), gameLocal.time, thread ? thread->GetThreadName() : "UNKNOWN", st->linenumber );
+						  
 		idStr indent;
 		for( int i = 1; i <= callStackDepth; i++ )
 		{
-			indent.Fill( ' ', i*2 );
-			gameLocal.Printf( "%s%s(line %d)\n", indent.c_str(), 
-				callStack[ i ].f ? callStack[ i ].f->Name() : "<UNKNOWN>",
-				gameLocal.program.GetStatement( callStack[ i ].s ).linenumber );
-			
+			indent.Fill( ' ', i * 2 );
+			gameLocal.Printf( "%s%s(line %d)\n", indent.c_str(),
+							  callStack[ i ].f ? callStack[ i ].f->Name() : "<UNKNOWN>",
+							  gameLocal.program.GetStatement( callStack[ i ].s ).linenumber );
+							  
 		}
 	}
 	
@@ -1214,7 +1214,7 @@ bool idInterpreter::Execute()
 		st = &gameLocal.program.GetStatement( instructionPointer );
 		
 		DebuggerServerCheckBreakpoint( this, &gameLocal.program, instructionPointer );
-
+		
 		switch( st->op )
 		{
 			case OP_RETURN:
@@ -2164,8 +2164,8 @@ bool idInterpreter::Execute()
 				Error( "Bad opcode %i", st->op );
 				break;
 		}
-
-		if ( DebuggerServerIsSuspended() )
+		
+		if( DebuggerServerIsSuspended() )
 			doneProcessing = true;
 	}
 	

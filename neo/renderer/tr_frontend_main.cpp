@@ -467,11 +467,11 @@ void R_RenderView( viewDef_t* parms )
 	
 	// we need to set the projection matrix before doing
 	// portal-to-screen scissor calculations
-	if (!parms->isObliqueProjection)
+	if( !parms->isObliqueProjection )
 	{
 		// setup the matrix for world space to eye space
-		R_SetupViewMatrix(tr.viewDef);
-		R_SetupProjectionMatrix(tr.viewDef);
+		R_SetupViewMatrix( tr.viewDef );
+		R_SetupProjectionMatrix( tr.viewDef );
 	}
 	
 	// setup render matrices for faster culling

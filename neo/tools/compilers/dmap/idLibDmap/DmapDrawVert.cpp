@@ -35,15 +35,15 @@ If you have questions concerning this license or the applicable additional terms
 idDmapShadowVert::CreateShadowCache
 ============
 */
-int idDmapShadowVert::CreateShadowCache(idDmapShadowVert* vertexCache, const idDmapDrawVert* verts, const int numVerts)
+int idDmapShadowVert::CreateShadowCache( idDmapShadowVert* vertexCache, const idDmapDrawVert* verts, const int numVerts )
 {
-	for (int i = 0; i < numVerts; i++)
+	for( int i = 0; i < numVerts; i++ )
 	{
 		vertexCache[i * 2 + 0].xyzw[0] = verts[i].xyz[0];
 		vertexCache[i * 2 + 0].xyzw[1] = verts[i].xyz[1];
 		vertexCache[i * 2 + 0].xyzw[2] = verts[i].xyz[2];
 		vertexCache[i * 2 + 0].xyzw[3] = 1.0f;
-
+		
 		vertexCache[i * 2 + 1].xyzw[0] = verts[i].xyz[0];
 		vertexCache[i * 2 + 1].xyzw[1] = verts[i].xyz[1];
 		vertexCache[i * 2 + 1].xyzw[2] = verts[i].xyz[2];

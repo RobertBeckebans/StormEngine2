@@ -1654,7 +1654,7 @@ bool idDeclAF::ParseSettings( idLexer& src )
 	}
 	
 	while( src.ReadToken( &token ) )
-	{	
+	{
 		if( !token.Icmp( "mesh" ) )
 		{
 			if( !src.ExpectTokenType( TT_STRING, 0, &token ) )
@@ -1686,7 +1686,7 @@ bool idDeclAF::ParseSettings( idLexer& src )
 			skin = token;
 		}
 		else if( !token.Icmp( "friction" ) )
-		{		
+		{
 			defaultLinearFriction = src.ParseFloat();
 			if( !src.ExpectTokenString( "," ) )
 			{
@@ -1708,7 +1708,7 @@ bool idDeclAF::ParseSettings( idLexer& src )
 			totalMass = src.ParseFloat();
 		}
 		else if( !token.Icmp( "suspendSpeed" ) )
-		{		
+		{
 			suspendVelocity[0] = src.ParseFloat();
 			if( !src.ExpectTokenString( "," ) )
 			{

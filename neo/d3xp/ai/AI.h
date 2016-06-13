@@ -304,26 +304,26 @@ public:
 	
 	virtual void			WriteToSnapshot( idBitMsg& msg ) const;
 	virtual void			ReadFromSnapshot( const idBitMsg& msg );
-
+	
 	idScriptBool			AI_INCOMING;	//#################### SR
-	idScriptBool			AI_HEADSHOT;	//#################### SR	
-	idScriptBool			AI_STRAFING;	//#################### SR	
-
+	idScriptBool			AI_HEADSHOT;	//#################### SR
+	idScriptBool			AI_STRAFING;	//#################### SR
+	
 	// enemy management
 	void					ClearEnemy();
 	bool					EnemyPositionValid() const;
 	void					SetEnemyPosition();
 	void					UpdateEnemyPosition();
-	void					SetEnemy(idActor* newEnemy);
+	void					SetEnemy( idActor* newEnemy );
 protected:
 
-	// ################# SR	
-		
+	// ################# SR
+	
 	idDict					brassReloadDict;
 	jointHandle_t			ejectReloadJoint;
-
-	// ################# 
-
+	
+	// #################
+	
 	// navigation
 	idAAS* 					aas;
 	int						travelFlags;
@@ -342,13 +342,13 @@ protected:
 	float					current_yaw;
 	// ### SR
 	float					ideal_pitch;
-	float					current_pitch;	
-	float					dodgeSpeed;		
-	float					dodgeDelay;	
-	float					dodgeTime;	
-	float					strafeTime;		
-	float					strafeTimeMin;		
-	float					strafeTimeMax;		
+	float					current_pitch;
+	float					dodgeSpeed;
+	float					dodgeDelay;
+	float					dodgeTime;
+	float					strafeTime;
+	float					strafeTimeMin;
+	float					strafeTimeMax;
 	float					strafeSpeed;
 	float					strafeSpeedMin;
 	float					strafeSpeedMax;
@@ -464,7 +464,7 @@ protected:
 	idEntityPtr<idHarvestable>	harvestEnt;
 	
 	idList<turretController_t>	turretControllers;
-
+	
 	// script variables
 	idScriptBool			AI_TALK;
 	idScriptBool			AI_DAMAGE;
@@ -475,7 +475,7 @@ protected:
 	idScriptBool			AI_ENEMY_IN_FOV;
 	idScriptBool			AI_ENEMY_DEAD;
 	idScriptBool			AI_MOVE_DONE;
-	idScriptBool			AI_ONGROUND;	
+	idScriptBool			AI_ONGROUND;
 	idScriptBool			AI_FORWARD;
 	idScriptBool			AI_JUMP;
 	idScriptBool			AI_ENEMY_REACHABLE;
@@ -494,7 +494,7 @@ protected:
 	virtual	void			DormantEnd();		// called when entity wakes from being dormant
 	void					Think();
 	void					Activate( idEntity* activator );
-
+	
 public:
 	virtual AttackPref		ReactionTo( const idEntity* ent ) const;
 protected:
@@ -508,7 +508,7 @@ protected:
 	idVec3					FirstVisiblePointOnPath( const idVec3 origin, const idVec3& target, int travelFlags ) const;
 	void					CalculateAttackOffsets();
 	void					PlayCinematic();
-
+	
 	virtual bool			CanBecomeSolid();
 	void					BecomeSolid();
 	void					BecomeNonSolid();
@@ -586,7 +586,7 @@ protected:
 	void					RemoveProjectile();
 	idProjectile*			LaunchProjectile( const char* jointname, idEntity* target, bool clampToAttackCone );
 	virtual void			DamageFeedback( idEntity* victim, idEntity* inflictor, int& damage );
-	virtual void			IncomingFireFeedback( idEntity * attacker, idWeapon * weapon, const idVec3 & firePos, const idVec3 & fireDir, const idVec3 & hitPos );
+	virtual void			IncomingFireFeedback( idEntity* attacker, idWeapon* weapon, const idVec3& firePos, const idVec3& fireDir, const idVec3& hitPos );
 	void					DirectDamage( const char* meleeDefName, idEntity* ent );
 	bool					TestMelee() const;
 	bool					AttackMelee( const char* meleeDefName );
@@ -616,15 +616,15 @@ protected:
 	// ai/ai_events.cpp
 	//
 	
-	// #### SR	
+	// #### SR
 	
 	void					Event_AIEjectReloadBrass( void );
-	void					Event_AIDodgeLeft( void );	
+	void					Event_AIDodgeLeft( void );
 	void					Event_AIDodgeRight( void );
-	void					Event_AIDodgeBack( void );	
-	void					Event_AIDodgeUp( void );	
+	void					Event_AIDodgeBack( void );
+	void					Event_AIDodgeUp( void );
 	
-	// #### END SR	
+	// #### END SR
 	
 	void					Event_Activate( idEntity* activator );
 	void					Event_Touch( idEntity* other, trace_t* trace );
@@ -637,7 +637,7 @@ protected:
 	void					Event_ClearEnemy();
 	void					Event_MuzzleFlash( const char* jointname );
 	void					Event_CreateMissile( const char* jointname );
-	void					Event_AttackMissile(const char* jointname, int clampToCone);
+	void					Event_AttackMissile( const char* jointname, int clampToCone );
 	void					Event_FireMissileAtTarget( const char* jointname, const char* targetname );
 	void					Event_LaunchMissile( const idVec3& muzzle, const idAngles& ang );
 	void					Event_LaunchHomingMissile();
@@ -669,7 +669,7 @@ protected:
 	void					Event_MoveToAttackPosition( idEntity* entity, const char* attack_anim );
 	void					Event_MoveToEntity( idEntity* ent );
 	void					Event_MoveToPosition( const idVec3& pos );
-	void					Event_MoveToPositionFaceEntity( const idVec3& pos, idEntity * ent );
+	void					Event_MoveToPositionFaceEntity( const idVec3& pos, idEntity* ent );
 	void					Event_SlideTo( const idVec3& pos, float time );
 	void					Event_Wander();
 	void					Event_FacingIdeal();
@@ -763,16 +763,16 @@ protected:
 	void					Event_StartEmitter( const char* name, const char* joint, const char* particle );
 	void					Event_GetEmitter( const char* name );
 	void					Event_StopEmitter( const char* name );
-
+	
 	void					Event_InitTurret( jointHandle_t jointYaw, jointHandle_t jointPitch, jointHandle_t jointBarrel );
 	void					Event_SetTurretParms( int turretNum, int turretAxis, int rate, float minrange, float maxrange );
 	void					Event_SetTurretTracking( int turretNum, int enableTrack );
 	
-	void					Event_GetTurretLocalAnglesIdeal(int turretNum);
-	void					Event_GetTurretLocalAnglesCurrent(int turretNum);
-
-	void					Event_SetTurretLocalAnglesIdeal(int turretNum, const idAngles & angles);
-	void					Event_SetTurretLocalAnglesCurrent(int turretNum, const idAngles & angles);
+	void					Event_GetTurretLocalAnglesIdeal( int turretNum );
+	void					Event_GetTurretLocalAnglesCurrent( int turretNum );
+	
+	void					Event_SetTurretLocalAnglesIdeal( int turretNum, const idAngles& angles );
+	void					Event_SetTurretLocalAnglesCurrent( int turretNum, const idAngles& angles );
 	
 	void					Event_TurretWithinAimTolerance( int turretNum, float yawTolerance, float pitchTolerance );
 };

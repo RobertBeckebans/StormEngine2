@@ -541,10 +541,10 @@ private:
 private:
 	static void				Toggle_f( const idCmdArgs& args );
 	static void				Set_f( const idCmdArgs& args );
-	static void				SetS_f( const idCmdArgs &args );
-	static void				SetU_f( const idCmdArgs &args );
-	static void				SetT_f( const idCmdArgs &args );
-	static void				SetA_f( const idCmdArgs &args );
+	static void				SetS_f( const idCmdArgs& args );
+	static void				SetU_f( const idCmdArgs& args );
+	static void				SetT_f( const idCmdArgs& args );
+	static void				SetA_f( const idCmdArgs& args );
 	static void				Reset_f( const idCmdArgs& args );
 	static void				ListByFlags( const idCmdArgs& args, cvarFlags_t flags );
 	static void				List_f( const idCmdArgs& args );
@@ -1118,12 +1118,14 @@ void idCVarSystemLocal::Set_f( const idCmdArgs& args )
 idCVarSystemLocal::SetS_f
 ============
 */
-void idCVarSystemLocal::SetS_f( const idCmdArgs &args ) {
-	idInternalCVar *cvar;
-
+void idCVarSystemLocal::SetS_f( const idCmdArgs& args )
+{
+	idInternalCVar* cvar;
+	
 	Set_f( args );
 	cvar = localCVarSystem.FindInternal( args.Argv( 1 ) );
-	if ( !cvar ) {
+	if( !cvar )
+	{
 		return;
 	}
 	cvar->flags |= CVAR_SERVERINFO | CVAR_ARCHIVE;
@@ -1134,12 +1136,14 @@ void idCVarSystemLocal::SetS_f( const idCmdArgs &args ) {
 idCVarSystemLocal::SetU_f
 ============
 */
-void idCVarSystemLocal::SetU_f( const idCmdArgs &args ) {
-	idInternalCVar *cvar;
-
+void idCVarSystemLocal::SetU_f( const idCmdArgs& args )
+{
+	idInternalCVar* cvar;
+	
 	Set_f( args );
 	cvar = localCVarSystem.FindInternal( args.Argv( 1 ) );
-	if ( !cvar ) {
+	if( !cvar )
+	{
 		return;
 	}
 	cvar->flags |= /*CVAR_USERINFO | */CVAR_ARCHIVE; // foresthale 2014-05-13: CVAR_USERINFO doesn't exist but the archive flag is still relevant
@@ -1150,12 +1154,14 @@ void idCVarSystemLocal::SetU_f( const idCmdArgs &args ) {
 idCVarSystemLocal::SetT_f
 ============
 */
-void idCVarSystemLocal::SetT_f( const idCmdArgs &args ) {
-	idInternalCVar *cvar;
-
+void idCVarSystemLocal::SetT_f( const idCmdArgs& args )
+{
+	idInternalCVar* cvar;
+	
 	Set_f( args );
 	cvar = localCVarSystem.FindInternal( args.Argv( 1 ) );
-	if ( !cvar ) {
+	if( !cvar )
+	{
 		return;
 	}
 	cvar->flags |= CVAR_TOOL;
@@ -1166,15 +1172,17 @@ void idCVarSystemLocal::SetT_f( const idCmdArgs &args ) {
 idCVarSystemLocal::SetA_f
 ============
 */
-void idCVarSystemLocal::SetA_f( const idCmdArgs &args ) {
-	idInternalCVar *cvar;
-
+void idCVarSystemLocal::SetA_f( const idCmdArgs& args )
+{
+	idInternalCVar* cvar;
+	
 	Set_f( args );
 	cvar = localCVarSystem.FindInternal( args.Argv( 1 ) );
-	if ( !cvar ) {
+	if( !cvar )
+	{
 		return;
 	}
-
+	
 	// FIXME: enable this for ship, so mods can store extra data
 	// but during development we don't want obsolete cvars to continue
 	// to be saved

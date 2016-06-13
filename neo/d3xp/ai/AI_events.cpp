@@ -179,10 +179,10 @@ const idEventDef AI_InitTurret( "initTurret", "ddd", 'd' );
 const idEventDef AI_SetTurretParms( "setTurretParms", "dddff" );
 const idEventDef AI_SetTurretTracking( "setTurretTracking", "dd" );
 const idEventDef AI_TurretWithinAimTolerance( "turretWithinAimTolerance", "dff", 'd' );
-const idEventDef AI_TurretGetLocalAnglesIdeal("turretGetLocalAnglesIdeal", "d", 'v' );
-const idEventDef AI_TurretGetLocalAnglesCurrent("turretGetLocalAnglesCurrent", "d", 'v' );
-const idEventDef AI_TurretSetLocalAnglesIdeal("turretSetLocalAnglesIdeal", "dv" );
-const idEventDef AI_TurretSetLocalAnglesCurrent("turretSetLocalAnglesCurrent", "dv" );
+const idEventDef AI_TurretGetLocalAnglesIdeal( "turretGetLocalAnglesIdeal", "d", 'v' );
+const idEventDef AI_TurretGetLocalAnglesCurrent( "turretGetLocalAnglesCurrent", "d", 'v' );
+const idEventDef AI_TurretSetLocalAnglesIdeal( "turretSetLocalAnglesIdeal", "dv" );
+const idEventDef AI_TurretSetLocalAnglesCurrent( "turretSetLocalAnglesCurrent", "dv" );
 
 CLASS_DECLARATION( idActor, idAI )
 EVENT( EV_Activate,							idAI::Event_Activate )
@@ -325,14 +325,14 @@ EVENT( AI_AIDodgeLeft,						idAI::Event_AIDodgeLeft )			// #### SR
 EVENT( AI_AIDodgeRight,						idAI::Event_AIDodgeRight )			// #### SR
 EVENT( AI_AIDodgeBack,						idAI::Event_AIDodgeBack )			// #### SR
 EVENT( AI_AIDodgeUp,						idAI::Event_AIDodgeUp )				// #### SR
-EVENT( AI_InitTurret,						idAI::Event_InitTurret)
-EVENT( AI_SetTurretParms,					idAI::Event_SetTurretParms)
-EVENT( AI_SetTurretTracking,				idAI::Event_SetTurretTracking)
-EVENT( AI_TurretWithinAimTolerance,			idAI::Event_TurretWithinAimTolerance)
-EVENT( AI_TurretGetLocalAnglesIdeal,		idAI::Event_GetTurretLocalAnglesIdeal)
-EVENT( AI_TurretGetLocalAnglesCurrent,		idAI::Event_GetTurretLocalAnglesCurrent)
-EVENT( AI_TurretSetLocalAnglesIdeal,		idAI::Event_SetTurretLocalAnglesIdeal)
-EVENT( AI_TurretSetLocalAnglesCurrent,		idAI::Event_SetTurretLocalAnglesCurrent)
+EVENT( AI_InitTurret,						idAI::Event_InitTurret )
+EVENT( AI_SetTurretParms,					idAI::Event_SetTurretParms )
+EVENT( AI_SetTurretTracking,				idAI::Event_SetTurretTracking )
+EVENT( AI_TurretWithinAimTolerance,			idAI::Event_TurretWithinAimTolerance )
+EVENT( AI_TurretGetLocalAnglesIdeal,		idAI::Event_GetTurretLocalAnglesIdeal )
+EVENT( AI_TurretGetLocalAnglesCurrent,		idAI::Event_GetTurretLocalAnglesCurrent )
+EVENT( AI_TurretSetLocalAnglesIdeal,		idAI::Event_SetTurretLocalAnglesIdeal )
+EVENT( AI_TurretSetLocalAnglesCurrent,		idAI::Event_SetTurretLocalAnglesCurrent )
 END_CLASS
 
 
@@ -345,14 +345,17 @@ idAI::Event_AIEjectReloadBrass
 Toss a shell model out from the breach if the bone is present
 ================
 */
-void idAI::Event_AIEjectReloadBrass( void ) {
-	if ( !g_showBrass.GetBool() ) {
+void idAI::Event_AIEjectReloadBrass( void )
+{
+	if( !g_showBrass.GetBool() )
+	{
 		return;
 	}
-	if ( ejectReloadJoint == INVALID_JOINT || !brassReloadDict.GetNumKeyVals() ) {
+	if( ejectReloadJoint == INVALID_JOINT || !brassReloadDict.GetNumKeyVals() )
+	{
 		return;
 	}
-
+	
 	/*	MP ?????
 	if ( gameLocal.isClient ) {
 		return;
@@ -360,16 +363,17 @@ void idAI::Event_AIEjectReloadBrass( void ) {
 	*/
 	idMat3 axis;
 	idVec3 origin;	//, linear_velocity, angular_velocity;
-	idEntity *ent;
-
+	idEntity* ent;
+	
 	GetJointWorldTransform( ejectReloadJoint, gameLocal.time, origin, axis );
 	//origin.z += 10;
-
+	
 	gameLocal.SpawnEntityDef( brassReloadDict, &ent, false );
-	if ( !ent || !ent->IsType( idDebris::Type ) ) {
+	if( !ent || !ent->IsType( idDebris::Type ) )
+	{
 		gameLocal.Error( "not an idDebris ai def_ejectReloadBrass" );
 	}
-	idDebris *debris = static_cast<idDebris *>(ent);
+	idDebris* debris = static_cast<idDebris*>( ent );
 	debris->Create( this, origin, axis );
 	debris->Launch();
 	debris->GetPhysics()->SetOrigin( origin );
@@ -377,7 +381,7 @@ void idAI::Event_AIEjectReloadBrass( void ) {
 }
 
 
-// velocity moves 
+// velocity moves
 
 /*
 ================
@@ -386,9 +390,10 @@ idAI::Event_AIDodgeLeft
 Velocity based move left
 ================
 */
-void idAI::Event_AIDodgeLeft( void ) {
+void idAI::Event_AIDodgeLeft( void )
+{
 	physicsObj.SetLinearVelocity( viewAxis[ 1 ] * dodgeSpeed );
-}	
+}
 
 /*
 ================
@@ -397,10 +402,11 @@ idAI::Event_AIDodgeRight
 Velocity based move right
 ================
 */
-void idAI::Event_AIDodgeRight( void ) {	
+void idAI::Event_AIDodgeRight( void )
+{
 	physicsObj.SetLinearVelocity( viewAxis[ 1 ] * -dodgeSpeed );
-}	
-	
+}
+
 /*
 ================
 idAI::Event_AIDodgeBack
@@ -408,9 +414,10 @@ idAI::Event_AIDodgeBack
 Velocity based move back
 ================
 */
-void idAI::Event_AIDodgeBack( void ) {	
+void idAI::Event_AIDodgeBack( void )
+{
 	physicsObj.SetLinearVelocity( viewAxis[ 0 ] * -dodgeSpeed );
-}	
+}
 
 /*
 ================
@@ -419,9 +426,10 @@ idAI::Event_AIDodgeUp
 Velocity based move up
 ================
 */
-void idAI::Event_AIDodgeUp( void ) {
+void idAI::Event_AIDodgeUp( void )
+{
 	physicsObj.SetLinearVelocity( viewAxis[ 2 ] * dodgeSpeed );
-}	
+}
 
 // ########################################################################### END SR
 
@@ -456,7 +464,7 @@ idAI::Event_FindEnemy
 =====================
 */
 void idAI::Event_FindEnemy( int useFOV )
-{	
+{
 	// todo: find enemy AI also?
 	if( gameLocal.InPlayerPVS( this ) )
 	{
@@ -652,7 +660,7 @@ void idAI::Event_HeardSound( int ignore_team )
 {
 	// todo: set up a proper notification event system
 	// check if we heard any sounds in the last frame
-	idActor * actor = gameLocal.GetAlertEntity();
+	idActor* actor = gameLocal.GetAlertEntity();
 	if( actor != NULL && ( !ignore_team || ( ReactionTo( actor ) & ATTACK_ON_SIGHT ) ) && gameLocal.InPlayerPVS( this ) )
 	{
 		idVec3 pos = actor->GetPhysics()->GetOrigin();
@@ -752,7 +760,7 @@ idAI::Event_AttackMissile
 */
 void idAI::Event_AttackMissile( const char* jointname, int clampToCone )
 {
-	idProjectile* proj = LaunchProjectile(jointname, enemy.GetEntity(), clampToCone!=0.0);
+	idProjectile* proj = LaunchProjectile( jointname, enemy.GetEntity(), clampToCone != 0.0 );
 	idThread::ReturnEntity( proj );
 }
 
@@ -1253,7 +1261,7 @@ void idAI::Event_MoveToPosition( const idVec3& pos )
 idAI::Event_MoveToPositionFaceEntity
 =====================
 */
-void idAI::Event_MoveToPositionFaceEntity( const idVec3& pos, idEntity * ent )
+void idAI::Event_MoveToPositionFaceEntity( const idVec3& pos, idEntity* ent )
 {
 	StopMove( MOVE_STATUS_DONE );
 	MoveToPositionFaceEntity( pos, ent );
@@ -2406,10 +2414,10 @@ void idAI::Event_RestoreMove()
 			MoveToCover( savedMove.goalEntity.GetEntity(), lastVisibleEnemyPos );
 			break;
 			
-		case MOVE_TO_POSITION :		
+		case MOVE_TO_POSITION :
 			MoveToPosition( savedMove.moveDest );
 			break;
-
+			
 		case MOVE_TO_POSITION_FACE_ENTITY:
 			MoveToPositionFaceEntity( savedMove.moveDest, savedMove.goalEntity );
 			break;
@@ -2932,13 +2940,13 @@ idAI::Event_LocateEnemy
 ================
 */
 void idAI::Event_LocateEnemy()
-{	
+{
 	idActor* enemyEnt = enemy.GetEntity();
 	if( !enemyEnt )
 	{
 		return;
 	}
-
+	
 	int areaNum;
 	enemyEnt->GetAASLocation( aas, lastReachableEnemyPos, areaNum );
 	SetEnemyPosition();
@@ -3429,8 +3437,8 @@ idAI::Event_InitTurret
 void idAI::Event_InitTurret( jointHandle_t jointYaw, jointHandle_t jointPitch, jointHandle_t jointBarrel )
 {
 	const int turretIndex = turretControllers.Num();
-
-	turretController_t & turret = turretControllers.Alloc();
+	
+	turretController_t& turret = turretControllers.Alloc();
 	turret.SetYawJoint( jointYaw );
 	turret.SetPitchJoint( jointPitch );
 	turret.SetBarrelJoint( jointBarrel );
@@ -3444,19 +3452,19 @@ idAI::Event_SetTurretParms
 */
 void idAI::Event_SetTurretParms( int turretNum, int turretAxis, int rate, float minrange, float maxrange )
 {
-	if ( turretNum < turretControllers.Num() )
+	if( turretNum < turretControllers.Num() )
 	{
-		turretController_t & turret = turretControllers[ turretNum ];
-		switch ( turretAxis )
+		turretController_t& turret = turretControllers[ turretNum ];
+		switch( turretAxis )
 		{
-		case TURRET_YAW:
-			turret.SetYawRate( rate );
-			turret.SetYawRange( minrange, maxrange );
-			break;
-		case TURRET_PITCH:
-			turret.SetPitchRate( rate );
-			turret.SetPitchRange( minrange, maxrange );
-			break;
+			case TURRET_YAW:
+				turret.SetYawRate( rate );
+				turret.SetYawRange( minrange, maxrange );
+				break;
+			case TURRET_PITCH:
+				turret.SetPitchRate( rate );
+				turret.SetPitchRange( minrange, maxrange );
+				break;
 		}
 	}
 }
@@ -3467,12 +3475,12 @@ idAI::Event_SetTurretTrack
 ===============
 */
 void idAI::Event_SetTurretTracking( int turretNum, int enableTrack )
-{	
-	if ( turretNum < turretControllers.Num() )
+{
+	if( turretNum < turretControllers.Num() )
 	{
-		turretController_t & turret = turretControllers[ turretNum ];
+		turretController_t& turret = turretControllers[ turretNum ];
 		turret.SetTrackTarget( enableTrack != 0 );
-	}	
+	}
 }
 
 /*
@@ -3480,12 +3488,12 @@ void idAI::Event_SetTurretTracking( int turretNum, int enableTrack )
 idAI::Event_GetTurretLocalAnglesIdeal
 ===============
 */
-void idAI::Event_GetTurretLocalAnglesIdeal(int turretNum)
+void idAI::Event_GetTurretLocalAnglesIdeal( int turretNum )
 {
-	if (turretNum < turretControllers.Num())
+	if( turretNum < turretControllers.Num() )
 	{
-		const turretController_t & turret = turretControllers[turretNum];
-		idThread::ReturnVector(turret.GetAnglesIdeal().ToVec3());
+		const turretController_t& turret = turretControllers[turretNum];
+		idThread::ReturnVector( turret.GetAnglesIdeal().ToVec3() );
 	}
 }
 
@@ -3494,12 +3502,12 @@ void idAI::Event_GetTurretLocalAnglesIdeal(int turretNum)
 idAI::Event_GetTurretLocalAnglesCurrent
 ===============
 */
-void idAI::Event_GetTurretLocalAnglesCurrent(int turretNum)
+void idAI::Event_GetTurretLocalAnglesCurrent( int turretNum )
 {
-	if (turretNum < turretControllers.Num())
+	if( turretNum < turretControllers.Num() )
 	{
-		const turretController_t & turret = turretControllers[turretNum];
-		idThread::ReturnVector(turret.GetAnglesCurrent().ToVec3());
+		const turretController_t& turret = turretControllers[turretNum];
+		idThread::ReturnVector( turret.GetAnglesCurrent().ToVec3() );
 	}
 }
 
@@ -3508,12 +3516,12 @@ void idAI::Event_GetTurretLocalAnglesCurrent(int turretNum)
 idAI::Event_SetTurretLocalAnglesIdeal
 ===============
 */
-void idAI::Event_SetTurretLocalAnglesIdeal(int turretNum, const idAngles & angles)
+void idAI::Event_SetTurretLocalAnglesIdeal( int turretNum, const idAngles& angles )
 {
-	if (turretNum < turretControllers.Num())
+	if( turretNum < turretControllers.Num() )
 	{
-		turretController_t & turret = turretControllers[turretNum];
-		turret.SetAnglesIdeal(angles);
+		turretController_t& turret = turretControllers[turretNum];
+		turret.SetAnglesIdeal( angles );
 	}
 }
 
@@ -3522,12 +3530,12 @@ void idAI::Event_SetTurretLocalAnglesIdeal(int turretNum, const idAngles & angle
 idAI::Event_SetTurretLocalAnglesCurrent
 ===============
 */
-void idAI::Event_SetTurretLocalAnglesCurrent(int turretNum, const idAngles & angles)
+void idAI::Event_SetTurretLocalAnglesCurrent( int turretNum, const idAngles& angles )
 {
-	if (turretNum < turretControllers.Num())
+	if( turretNum < turretControllers.Num() )
 	{
-		turretController_t & turret = turretControllers[turretNum];
-		turret.SetAnglesIdeal(angles);
+		turretController_t& turret = turretControllers[turretNum];
+		turret.SetAnglesIdeal( angles );
 	}
 }
 
@@ -3539,9 +3547,9 @@ idAI::Event_TurretWithinAimTolerance
 void idAI::Event_TurretWithinAimTolerance( int turretNum, float yawTolerance, float pitchTolerance )
 {
 	bool inTolerance = false;
-	if ( turretNum < turretControllers.Num() )
+	if( turretNum < turretControllers.Num() )
 	{
-		turretController_t & turret = turretControllers[ turretNum ];
+		turretController_t& turret = turretControllers[ turretNum ];
 		inTolerance = turret.WithinAimTolerance( yawTolerance, pitchTolerance );
 	}
 	idThread::ReturnInt( inTolerance );

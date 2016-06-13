@@ -42,7 +42,7 @@ If you have questions concerning this license or the applicable additional terms
 class CGetString : public CDialog
 {
 public:
-	CGetString(LPCSTR pPrompt, CString *pFeedback, CWnd* pParent = NULL);   // standard constructor
+	CGetString( LPCSTR pPrompt, CString* pFeedback, CWnd* pParent = NULL ); // standard constructor
 	virtual ~CGetString();
 // Overrides
 
@@ -51,21 +51,21 @@ public:
 	enum { IDD = IDD_DIALOG_GETSTRING };
 	
 	CString	m_strEditBox;
-	CString *m_pFeedback;
+	CString* m_pFeedback;
 	LPCSTR	m_pPrompt;
-
+	
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	virtual BOOL OnInitDialog();
 	virtual void OnOK();
-
+	
 	DECLARE_MESSAGE_MAP()
 };
 
-LPCSTR GetString(LPCSTR psPrompt);
-bool GetYesNo(const char *psQuery);
-void ErrorBox(const char *sString);
-void InfoBox(const char *sString);
-void WarningBox(const char *sString);
+LPCSTR GetString( LPCSTR psPrompt );
+bool GetYesNo( const char* psQuery );
+void ErrorBox( const char* sString );
+void InfoBox( const char* sString );
+void WarningBox( const char* sString );
 
 #endif /* !__GETSTRING_H__ */

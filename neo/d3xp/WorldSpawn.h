@@ -51,7 +51,7 @@ public:
 	void			Restore( idRestoreGame* savefile );
 	
 	virtual void	Remove();
-private:	
+private:
 };
 
 #endif /* !__GAME_WORLDSPAWN_H__ */

@@ -46,7 +46,7 @@ public:
 	void GetSurfaceAttributes();
 	void SetSurfaceAttributes();
 	CTextureBar();
-
+	
 // Dialog Data
 	//{{AFX_DATA(CTextureBar)
 	enum { IDD = IDD_TEXTUREBAR };
@@ -62,26 +62,26 @@ public:
 	int	m_nVScale;
 	int		m_nRotateAmt;
 	//}}AFX_DATA
-
-
+	
+	
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CTextureBar)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+protected:
+	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	//}}AFX_VIRTUAL
-
+	
 // Implementation
 protected:
 	// Generated message map functions
 	//{{AFX_MSG(CTextureBar)
-	afx_msg void OnDeltaposSpinHshift(NMHDR* pNMHDR, LRESULT* pResult);
-	afx_msg void OnDeltaposSpinVshift(NMHDR* pNMHDR, LRESULT* pResult);
-	afx_msg void OnDeltaposSpinHScale(NMHDR* pNMHDR, LRESULT* pResult);
-	afx_msg void OnDeltaposSpinVScale(NMHDR* pNMHDR, LRESULT* pResult);
-	afx_msg void OnDeltaposSpinRotate(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnDeltaposSpinHshift( NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void OnDeltaposSpinVshift( NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void OnDeltaposSpinHScale( NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void OnDeltaposSpinVScale( NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void OnDeltaposSpinRotate( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void OnSelectionPrint();
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg int OnCreate( LPCREATESTRUCT lpCreateStruct );
 	afx_msg void OnBtnApplytexturestuff();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()

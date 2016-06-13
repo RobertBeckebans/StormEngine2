@@ -43,10 +43,11 @@ If you have questions concerning this license or the applicable additional terms
 AllocTri
 ===============
 */
-mapTri_t	*AllocTri( void ) {
-	mapTri_t	*tri;
-
-	tri = (mapTri_t *)Mem_Alloc( sizeof( *tri ), TAG_DMAP );
+mapTri_t*	AllocTri( void )
+{
+	mapTri_t*	tri;
+	
+	tri = ( mapTri_t* )Mem_Alloc( sizeof( *tri ), TAG_DMAP );
 	memset( tri, 0, sizeof( *tri ) );
 	return tri;
 }
@@ -56,7 +57,8 @@ mapTri_t	*AllocTri( void ) {
 FreeTri
 ===============
 */
-void		FreeTri( mapTri_t *tri ) {
+void		FreeTri( mapTri_t* tri )
+{
 	Mem_Free( tri );
 }
 
@@ -68,16 +70,18 @@ MergeTriLists
 This does not copy any tris, it just relinks them
 ===============
 */
-mapTri_t	*MergeTriLists( mapTri_t *a, mapTri_t *b ) {
-	mapTri_t	**prev;
-
+mapTri_t*	MergeTriLists( mapTri_t* a, mapTri_t* b )
+{
+	mapTri_t**	prev;
+	
 	prev = &a;
-	while ( *prev ) {
-		prev = &(*prev)->next;
+	while( *prev )
+	{
+		prev = &( *prev )->next;
 	}
-
+	
 	*prev = b;
-
+	
 	return a;
 }
 
@@ -87,10 +91,12 @@ mapTri_t	*MergeTriLists( mapTri_t *a, mapTri_t *b ) {
 FreeTriList
 ===============
 */
-void FreeTriList( mapTri_t *a ) {
-	mapTri_t	*next;
-
-	for ( ; a ; a = next ) {
+void FreeTriList( mapTri_t* a )
+{
+	mapTri_t*	next;
+	
+	for( ; a ; a = next )
+	{
 		next = a->next;
 		Mem_Free( a );
 	}
@@ -101,19 +107,21 @@ void FreeTriList( mapTri_t *a ) {
 CopyTriList
 ===============
 */
-mapTri_t	*CopyTriList( const mapTri_t *a ) {
-	mapTri_t	*testList;
-	const mapTri_t	*tri;
-
+mapTri_t*	CopyTriList( const mapTri_t* a )
+{
+	mapTri_t*	testList;
+	const mapTri_t*	tri;
+	
 	testList = NULL;
-	for ( tri = a ; tri ; tri = tri->next ) {
-		mapTri_t	*copy;
-
+	for( tri = a ; tri ; tri = tri->next )
+	{
+		mapTri_t*	copy;
+		
 		copy = CopyMapTri( tri );
 		copy ->next = testList;
 		testList = copy;
 	}
-
+	
 	return testList;
 }
 
@@ -123,15 +131,17 @@ mapTri_t	*CopyTriList( const mapTri_t *a ) {
 CountTriList
 =============
 */
-int	CountTriList( const mapTri_t *tri ) {
+int	CountTriList( const mapTri_t* tri )
+{
 	int		c;
-
+	
 	c = 0;
-	while ( tri ) {
+	while( tri )
+	{
 		c++;
 		tri = tri->next;
 	}
-
+	
 	return c;
 }
 
@@ -141,12 +151,13 @@ int	CountTriList( const mapTri_t *tri ) {
 CopyMapTri
 ===============
 */
-mapTri_t	*CopyMapTri( const mapTri_t *tri ) {
-	mapTri_t		*t;
-
-	t = (mapTri_t *)Mem_Alloc( sizeof( *t ), TAG_DMAP );
+mapTri_t*	CopyMapTri( const mapTri_t* tri )
+{
+	mapTri_t*		t;
+	
+	t = ( mapTri_t* )Mem_Alloc( sizeof( *t ), TAG_DMAP );
 	*t = *tri;
-
+	
 	return t;
 }
 
@@ -155,7 +166,8 @@ mapTri_t	*CopyMapTri( const mapTri_t *tri ) {
 MapTriArea
 ===============
 */
-float MapTriArea( const mapTri_t *tri ) {
+float MapTriArea( const mapTri_t* tri )
+{
 	return idWinding::TriangleArea( tri->v[0].xyz, tri->v[1].xyz, tri->v[2].xyz );
 }
 
@@ -166,21 +178,24 @@ RemoveBadTris
 Return a new list with any zero or negative area triangles removed
 ===============
 */
-mapTri_t	*RemoveBadTris( const mapTri_t *list ) {
-	mapTri_t	*newList;
-	mapTri_t	*copy;
-	const mapTri_t	*tri;
-
+mapTri_t*	RemoveBadTris( const mapTri_t* list )
+{
+	mapTri_t*	newList;
+	mapTri_t*	copy;
+	const mapTri_t*	tri;
+	
 	newList = NULL;
-
-	for ( tri = list ; tri ; tri = tri->next ) {
-		if ( MapTriArea( tri ) > 0 ) {
+	
+	for( tri = list ; tri ; tri = tri->next )
+	{
+		if( MapTriArea( tri ) > 0 )
+		{
 			copy = CopyMapTri( tri );
 			copy->next = newList;
 			newList = copy;
 		}
 	}
-
+	
 	return newList;
 }
 
@@ -189,9 +204,11 @@ mapTri_t	*RemoveBadTris( const mapTri_t *list ) {
 BoundTriList
 ================
 */
-void BoundTriList( const mapTri_t *list, idBounds &b ) {
+void BoundTriList( const mapTri_t* list, idBounds& b )
+{
 	b.Clear();
-	for ( ; list ; list = list->next ) {
+	for( ; list ; list = list->next )
+	{
 		b.AddPoint( list->v[0].xyz );
 		b.AddPoint( list->v[1].xyz );
 		b.AddPoint( list->v[2].xyz );
@@ -203,9 +220,10 @@ void BoundTriList( const mapTri_t *list, idBounds &b ) {
 DrawTri
 ================
 */
-void DrawTri( const mapTri_t *tri ) {
+void DrawTri( const mapTri_t* tri )
+{
 	idWinding w;
-
+	
 	w.SetNumPoints( 3 );
 	VectorCopy( tri->v[0].xyz, w[0] );
 	VectorCopy( tri->v[1].xyz, w[1] );
@@ -221,22 +239,24 @@ FlipTriList
 Swaps the vertex order
 ================
 */
-void	FlipTriList( mapTri_t *tris ) {
-	mapTri_t	*tri;
-
-	for ( tri = tris ; tri ; tri = tri->next ) {
+void	FlipTriList( mapTri_t* tris )
+{
+	mapTri_t*	tri;
+	
+	for( tri = tris ; tri ; tri = tri->next )
+	{
 		idDmapDrawVert	v;
-		const struct hashVert_s *hv;
-		struct optVertex_s	*ov;
-
+		const struct hashVert_s* hv;
+		struct optVertex_s*	ov;
+		
 		v = tri->v[0];
 		tri->v[0] = tri->v[2];
 		tri->v[2] = v;
-
+		
 		hv = tri->hashVert[0];
 		tri->hashVert[0] = tri->hashVert[2];
 		tri->hashVert[2] = hv;
-
+		
 		ov = tri->optVert[0];
 		tri->optVert[0] = tri->optVert[2];
 		tri->optVert[2] = ov;
@@ -248,15 +268,16 @@ void	FlipTriList( mapTri_t *tris ) {
 WindingForTri
 ================
 */
-idWinding *WindingForTri( const mapTri_t *tri ) {
-	idWinding	*w;
-
+idWinding* WindingForTri( const mapTri_t* tri )
+{
+	idWinding*	w;
+	
 	w = new idWinding( 3 );
 	w->SetNumPoints( 3 );
-	VectorCopy( tri->v[0].xyz, (*w)[0] );
-	VectorCopy( tri->v[1].xyz, (*w)[1] );
-	VectorCopy( tri->v[2].xyz, (*w)[2] );
-
+	VectorCopy( tri->v[0].xyz, ( *w )[0] );
+	VectorCopy( tri->v[1].xyz, ( *w )[1] );
+	VectorCopy( tri->v[2].xyz, ( *w )[2] );
+	
 	return w;
 }
 
@@ -267,32 +288,36 @@ TriVertsFromOriginal
 Regenerate the texcoords and colors on a fragmented tri from the plane equations
 ================
 */
-void		TriVertsFromOriginal( mapTri_t *tri, const mapTri_t *original ) {
+void		TriVertsFromOriginal( mapTri_t* tri, const mapTri_t* original )
+{
 	int		i, j;
 	float	denom;
-
+	
 	denom = idWinding::TriangleArea( original->v[0].xyz, original->v[1].xyz, original->v[2].xyz );
-	if ( denom == 0 ) {
+	if( denom == 0 )
+	{
 		return;		// original was degenerate, so it doesn't matter
 	}
-
-	for ( i = 0 ; i < 3 ; i++ ) {
-		float	a, b, c;
 	
+	for( i = 0 ; i < 3 ; i++ )
+	{
+		float	a, b, c;
+		
 		// find the barycentric coordinates
 		a = idWinding::TriangleArea( tri->v[i].xyz, original->v[1].xyz, original->v[2].xyz ) / denom;
 		b = idWinding::TriangleArea( tri->v[i].xyz, original->v[2].xyz, original->v[0].xyz ) / denom;
 		c = idWinding::TriangleArea( tri->v[i].xyz, original->v[0].xyz, original->v[1].xyz ) / denom;
-
+		
 		// regenerate the interpolated values
-		tri->v[i].st[0] = a * original->v[0].st[0] 
-			 + b * original->v[1].st[0] + c * original->v[2].st[0];
-		tri->v[i].st[1] = a * original->v[0].st[1] 
-			 + b * original->v[1].st[1] + c * original->v[2].st[1];
-
-		for ( j = 0 ; j < 3 ; j++ ) {
+		tri->v[i].st[0] = a * original->v[0].st[0]
+						  + b * original->v[1].st[0] + c * original->v[2].st[0];
+		tri->v[i].st[1] = a * original->v[0].st[1]
+						  + b * original->v[1].st[1] + c * original->v[2].st[1];
+						  
+		for( j = 0 ; j < 3 ; j++ )
+		{
 			tri->v[i].normal[j] = a * original->v[0].normal[j]
-				 + b * original->v[1].normal[j] + c * original->v[2].normal[j];
+								  + b * original->v[1].normal[j] + c * original->v[2].normal[j];
 		}
 		tri->v[i].normal.Normalize();
 	}
@@ -308,43 +333,56 @@ created by clipping the originalTri
 OriginalTri can be NULL if you don't care about texCoords
 ================
 */
-mapTri_t *WindingToTriList( const idWinding *w, const mapTri_t *originalTri ) {
-	mapTri_t	*tri;
-	mapTri_t	*triList;
+mapTri_t* WindingToTriList( const idWinding* w, const mapTri_t* originalTri )
+{
+	mapTri_t*	tri;
+	mapTri_t*	triList;
 	int			i, j;
-	const idVec3	*vec;
-
-	if ( !w ) {
+	const idVec3*	vec;
+	
+	if( !w )
+	{
 		return NULL;
 	}
-
+	
 	triList = NULL;
-	for ( i = 2 ; i < w->GetNumPoints() ; i++ ) {
+	for( i = 2 ; i < w->GetNumPoints() ; i++ )
+	{
 		tri = AllocTri();
-		if ( !originalTri ) {
+		if( !originalTri )
+		{
 			memset( tri, 0, sizeof( *tri ) );
-		} else {
+		}
+		else
+		{
 			*tri = *originalTri;
 		}
 		tri->next = triList;
 		triList = tri;
-
-		for ( j = 0 ; j < 3 ; j++ ) {
-			if ( j == 0 ) {
-				vec = &((*w)[0]).ToVec3();
-			} else if ( j == 1 ) {
-				vec = &((*w)[i-1]).ToVec3();
-			} else {
-				vec = &((*w)[i]).ToVec3();
+		
+		for( j = 0 ; j < 3 ; j++ )
+		{
+			if( j == 0 )
+			{
+				vec = &( ( *w )[0] ).ToVec3();
 			}
-
+			else if( j == 1 )
+			{
+				vec = &( ( *w )[i - 1] ).ToVec3();
+			}
+			else
+			{
+				vec = &( ( *w )[i] ).ToVec3();
+			}
+			
 			VectorCopy( *vec, tri->v[j].xyz );
 		}
-		if ( originalTri ) {
+		if( originalTri )
+		{
 			TriVertsFromOriginal( tri, originalTri );
 		}
 	}
-
+	
 	return triList;
 }
 
@@ -354,28 +392,30 @@ mapTri_t *WindingToTriList( const idWinding *w, const mapTri_t *originalTri ) {
 ClipTriList
 ==================
 */
-void	ClipTriList( const mapTri_t *list, const idPlane &plane, float epsilon, 
-						mapTri_t **front, mapTri_t **back ) {
-	const mapTri_t *tri;
-	mapTri_t		*newList;
-	idWinding		*w, *frontW, *backW;
-
+void	ClipTriList( const mapTri_t* list, const idPlane& plane, float epsilon,
+					 mapTri_t** front, mapTri_t** back )
+{
+	const mapTri_t* tri;
+	mapTri_t*		newList;
+	idWinding*		w, *frontW, *backW;
+	
 	*front = NULL;
 	*back = NULL;
-
-	for ( tri = list ; tri ; tri = tri->next ) {
+	
+	for( tri = list ; tri ; tri = tri->next )
+	{
 		w = WindingForTri( tri );
 		w->Split( plane, epsilon, &frontW, &backW );
-
+		
 		newList = WindingToTriList( frontW, tri );
 		*front = MergeTriLists( *front, newList );
-
+		
 		newList = WindingToTriList( backW, tri );
 		*back = MergeTriLists( *back, newList );
-
+		
 		delete w;
 	}
-
+	
 }
 
 /*
@@ -383,6 +423,7 @@ void	ClipTriList( const mapTri_t *list, const idPlane &plane, float epsilon,
 PlaneForTri
 ==================
 */
-void	PlaneForTri( const mapTri_t *tri, idPlane &plane ) {
+void	PlaneForTri( const mapTri_t* tri, idPlane& plane )
+{
 	plane.FromPoints( tri->v[0].xyz, tri->v[1].xyz, tri->v[2].xyz );
 }

@@ -219,16 +219,16 @@ public:
 	
 	virtual const idMaterial* 		FindMaterial( const char* name, bool makeDefault = true );
 	virtual const idMaterial* 		MaterialByIndex( int index, bool forceParse = true );
-
+	
 	virtual const idDeclSkin* 		FindSkin( const char* name, bool makeDefault = true );
 	virtual const idDeclSkin* 		SkinByIndex( int index, bool forceParse = true );
-
+	
 	virtual const idSoundShader* 	FindSound( const char* name, bool makeDefault = true );
 	virtual const idSoundShader* 	SoundByIndex( int index, bool forceParse = true );
-
+	
 	virtual const idDeclFX*			FindFx( const char* name, bool makeDefault = true );
 	virtual const idDeclFX*			FxByIndex( int index, bool forceParse = true );
-
+	
 	virtual const idDeclParticle*	FindParticle( const char* name, bool makeDefault = true );
 	virtual const idDeclParticle*	ParticleByIndex( int index, bool forceParse = true );
 	
@@ -910,7 +910,7 @@ void idDeclManagerLocal::Init()
 #endif
 	
 	// decls used throughout the engine
-	RegisterDeclType( "table",				DECL_TABLE,			idDeclAllocator<idDeclTable> );	
+	RegisterDeclType( "table",				DECL_TABLE,			idDeclAllocator<idDeclTable> );
 	RegisterDeclType( "material",			DECL_MATERIAL,		idDeclAllocator<idMaterial> );
 	RegisterDeclType( "skin",				DECL_SKIN,			idDeclAllocator<idDeclSkin> );
 	RegisterDeclType( "sound",				DECL_SOUND,			idDeclAllocator<idSoundShader> );
@@ -1041,11 +1041,11 @@ idDeclManagerLocal::BeginLevelLoad
 void idDeclManagerLocal::BeginLevelLoad()
 {
 	insideLevelLoad = true;
-
-	// foresthale 2014-05-28: Brian Harris suggested the editors should never purge assets, because of potential for crashes on improperly refcounted assets
-	if ( com_editors )
-		return;
 	
+	// foresthale 2014-05-28: Brian Harris suggested the editors should never purge assets, because of potential for crashes on improperly refcounted assets
+	if( com_editors )
+		return;
+		
 	// clear all the referencedThisLevel flags and purge all the data
 	// so the next reference will cause a reparse
 	for( int i = 0; i < DECL_MAX_TYPES; i++ )
@@ -2546,7 +2546,7 @@ bool idDeclLocal::ReplaceSourceFileText()
 	sourceTextLength = textLength;
 	
 	ParseLocal(); // jeremy swigart 07-23-2014; binary particles get updated when .prt is updated
-
+	
 	return true;
 }
 

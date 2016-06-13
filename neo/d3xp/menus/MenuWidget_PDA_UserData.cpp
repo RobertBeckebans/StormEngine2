@@ -80,12 +80,15 @@ void idMenuWidget_PDA_UserData::Update()
 		
 			if( pdaIndex == 0 )
 			{
-				if( common->IsMultiplayer() ) { // SS2 fix; we don't need the name of the computer to be showing up as character's name, if it's a singleplayer game
+				if( common->IsMultiplayer() )   // SS2 fix; we don't need the name of the computer to be showing up as character's name, if it's a singleplayer game
+				{
 					txtName->SetIgnoreColor( false );
-					txtName->SetText( session->GetLocalUserName( 0 ) );					
-				} else {
+					txtName->SetText( session->GetLocalUserName( 0 ) );
+				}
+				else
+				{
 					txtName->SetIgnoreColor( false );
-					txtName->SetText( idLocalization::GetString( "#str_personal_pda_player_name" ) ); 
+					txtName->SetText( idLocalization::GetString( "#str_personal_pda_player_name" ) );
 				}
 			}
 			else

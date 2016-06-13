@@ -175,9 +175,9 @@ static void RB_SimpleWorldSetup()
 		renderProgManager.Unbind();
 	else
 		renderProgManager.BindShader_Color();
-
+		
 	backEnd.currentSpace = &backEnd.viewDef->worldSpace;
-
+	
 	qglMatrixMode( GL_PROJECTION );
 	qglLoadMatrixf( backEnd.viewDef->projectionMatrix );
 	qglMatrixMode( GL_MODELVIEW );
@@ -187,7 +187,7 @@ static void RB_SimpleWorldSetup()
 	//renderProgManager.CommitUniforms();
 	if( !r_showNvidiaHack.GetBool() )
 		renderProgManager.CommitUniforms();
-
+		
 	GL_Scissor( backEnd.viewDef->viewport.x1 + backEnd.viewDef->scissor.x1,
 				backEnd.viewDef->viewport.y1 + backEnd.viewDef->scissor.y1,
 				backEnd.viewDef->scissor.x2 + 1 - backEnd.viewDef->scissor.x1,
@@ -216,8 +216,8 @@ void RB_PolygonClear()
 	qglDisable( GL_SCISSOR_TEST );
 	qglBegin( GL_POLYGON );
 	qglVertex3f( -20, -20, -10 );
-	qglVertex3f(  20, -20, -10 );
-	qglVertex3f(  20,  20, -10 );
+	qglVertex3f( 20, -20, -10 );
+	qglVertex3f( 20,  20, -10 );
 	qglVertex3f( -20,  20, -10 );
 	qglEnd();
 	qglPopAttrib();
@@ -325,7 +325,7 @@ static void R_ColorByStencilBuffer()
 		{1, 1, 0},
 		{1, 1, 1},
 	};
-
+	
 	RB_SimpleWorldSetup();
 	
 	// clear color buffer to white (>6 passes)
@@ -481,7 +481,7 @@ static void RB_ShowIntensity()
 			colorReadback[i + 2] = 2 * ( j - 128 );
 		}
 	}
-
+	
 	renderProgManager.Unbind();
 	
 	// draw it back to the screen
@@ -518,7 +518,7 @@ static void RB_ShowDepthBuffer()
 	{
 		return;
 	}
-
+	
 	renderProgManager.Unbind();
 	
 	qglPushMatrix();
@@ -731,8 +731,8 @@ static void RB_RenderDrawSurfListWithFunction( drawSurf_t** drawSurfs, int numDr
 			// change the matrix if needed
 			if( drawSurf->space != backEnd.currentSpace )
 			{
-				backEnd.currentSpace=drawSurf->space;
-
+				backEnd.currentSpace = drawSurf->space;
+				
 				RB_LoadMatrixWithBypass( drawSurf->space->modelViewMatrix );
 				RB_SetMVP( drawSurf->space->mvp );
 			}
@@ -816,13 +816,16 @@ static void RB_ShowSilhouette()
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.BindShader_Color();
 	//GL_Color( 0.5, 0, 0 );
-	if( !r_showNvidiaHack.GetBool() ) {
-		qglColor3f( 0.5, 0, 0 ); 
-	} else {
+	if( !r_showNvidiaHack.GetBool() )
+	{
+		qglColor3f( 0.5, 0, 0 );
+	}
+	else
+	{
 		renderProgManager.BindShader_Color();
 		GL_Color( 0.5, 0, 0 );
 	}
-
+	
 	GL_State( GLS_SRCBLEND_ONE | GLS_DSTBLEND_ONE );
 	
 	for( vLight = backEnd.viewDef->viewLights; vLight; vLight = vLight->next )
@@ -835,7 +838,7 @@ static void RB_ShowSilhouette()
 				RB_SimpleSurfaceSetup( surf );
 				
 				const srfTriangles_t* tri = surf->frontEndGeo;
-				if (!tri) continue;
+				if( !tri ) continue;
 				
 				idVertexBuffer vertexBuffer;
 				if( !vertexCache.GetVertexBuffer( tri->shadowCache, &vertexBuffer ) )
@@ -946,7 +949,7 @@ Debugging tool
 
 static idStr surfModelName, surfMatName;
 static idVec3 surfPoint;
-static bool surfTraced=false;
+static bool surfTraced = false;
 
 
 void idRenderSystemLocal::OnFrame()
@@ -955,18 +958,18 @@ void idRenderSystemLocal::OnFrame()
 	modelTrace_t mt;
 	idVec3 start, end;
 	
-	surfTraced=false;
-
+	surfTraced = false;
+	
 	if( !r_showSurfaceInfo.GetBool() )
 	{
 		return;
 	}
 	
-	if ( tr.primaryView == NULL )
+	if( tr.primaryView == NULL )
 	{
 		return;
 	}
-
+	
 	// start far enough away that we don't hit the player model
 	start = tr.primaryView->renderView.vieworg + tr.primaryView->renderView.viewaxis[0] * 32;
 	end = start + tr.primaryView->renderView.viewaxis[0] * 1000.0f;
@@ -974,11 +977,11 @@ void idRenderSystemLocal::OnFrame()
 	{
 		return;
 	}
-
-	surfPoint=mt.point;
-	surfModelName=mt.entity->hModel->Name();
-	surfMatName=mt.material->GetName();
-	surfTraced=true;
+	
+	surfPoint = mt.point;
+	surfModelName = mt.entity->hModel->Name();
+	surfMatName = mt.material->GetName();
+	surfTraced = true;
 }
 
 
@@ -991,15 +994,15 @@ static void RB_ShowSurfaceInfo( drawSurf_t** drawSurfs, int numDrawSurfs )
 	
 	// globalImages->BindNull();
 	// qglDisable( GL_TEXTURE_2D );
-
+	
 	RB_SimpleWorldSetup();
-
+	
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.BindShader_TextureVertexColor();
 	GL_SelectTexture( 0 );
 	globalImages->whiteImage->Bind();
-
-	RB_SetVertexColorParms(SVC_MODULATE);
+	
+	RB_SetVertexColorParms( SVC_MODULATE );
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.CommitUniforms();
 	
@@ -1041,8 +1044,8 @@ static void RB_ShowViewEntitys( viewEntity_t* vModels )
 		common->Printf( "view entities: " );
 		for( const viewEntity_t* vModel = vModels; vModel; vModel = vModel->next )
 		{
-			if (!vModel->entityDef) continue;
-
+			if( !vModel->entityDef ) continue;
+			
 			if( vModel->entityDef->IsDirectlyVisible() )
 			{
 				common->Printf( "<%i> ", vModel->entityDef->index );
@@ -1075,7 +1078,7 @@ static void RB_ShowViewEntitys( viewEntity_t* vModels )
 		//renderProgManager.CommitUniforms();
 		if( r_showNvidiaHack.GetBool() )
 			renderProgManager.CommitUniforms();
-
+			
 		const idRenderEntityLocal* edef = vModel->entityDef;
 		if( !edef )
 		{
@@ -1101,7 +1104,7 @@ static void RB_ShowViewEntitys( viewEntity_t* vModels )
 			qglColor3f( color[0], color[1], color[2] );
 		else
 			GL_Color( color[0], color[1], color[2] );
-
+			
 		RB_DrawBounds( edef->localReferenceBounds );
 		
 		// transform the upper bounds corner into global space
@@ -1157,7 +1160,7 @@ static void RB_ShowTexturePolarity( drawSurf_t** drawSurfs, int numDrawSurfs )
 	globalImages->BindNull();
 	
 	GL_State( GLS_SRCBLEND_SRC_ALPHA | GLS_DSTBLEND_ONE_MINUS_SRC_ALPHA );
-
+	
 	RB_SimpleWorldSetup();
 	//renderProgManager.BindShader_Color(); // foresthale 2014-05-02: don't use a shader for tools
 	
@@ -1300,7 +1303,7 @@ static void RB_ShowTangentSpace( drawSurf_t** drawSurfs, int numDrawSurfs )
 	globalImages->BindNull();
 	
 	GL_State( GLS_SRCBLEND_SRC_ALPHA | GLS_DSTBLEND_ONE_MINUS_SRC_ALPHA );
-
+	
 	RB_SimpleWorldSetup();
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.BindShader_Color();
@@ -1330,7 +1333,7 @@ static void RB_ShowTangentSpace( drawSurf_t** drawSurfs, int numDrawSurfs )
 				//GL_Color( 0.5 + 0.5 * vertexTangent[0],  0.5 + 0.5 * vertexTangent[1],
 				//		  0.5 + 0.5 * vertexTangent[2], 0.5 );
 				qglColor4f( 0.5 + 0.5 * vertexTangent[0],  0.5 + 0.5 * vertexTangent[1],
-						  0.5 + 0.5 * vertexTangent[2], 0.5 );
+							0.5 + 0.5 * vertexTangent[2], 0.5 );
 			}
 			else if( r_showTangentSpace.GetInteger() == 2 )
 			{
@@ -1338,7 +1341,7 @@ static void RB_ShowTangentSpace( drawSurf_t** drawSurfs, int numDrawSurfs )
 				//GL_Color( 0.5 + 0.5 * vertexBiTangent[0],  0.5 + 0.5 * vertexBiTangent[1],
 				//		  0.5 + 0.5 * vertexBiTangent[2], 0.5 );
 				qglColor4f( 0.5 + 0.5 * vertexBiTangent[0],  0.5 + 0.5 * vertexBiTangent[1],
-						  0.5 + 0.5 * vertexBiTangent[2], 0.5 );
+							0.5 + 0.5 * vertexBiTangent[2], 0.5 );
 			}
 			else
 			{
@@ -1346,7 +1349,7 @@ static void RB_ShowTangentSpace( drawSurf_t** drawSurfs, int numDrawSurfs )
 				//GL_Color( 0.5 + 0.5 * vertexNormal[0],  0.5 + 0.5 * vertexNormal[1],
 				//		  0.5 + 0.5 * vertexNormal[2], 0.5 );
 				qglColor4f( 0.5 + 0.5 * vertexNormal[0],  0.5 + 0.5 * vertexNormal[1],
-						  0.5 + 0.5 * vertexNormal[2], 0.5 );
+							0.5 + 0.5 * vertexNormal[2], 0.5 );
 			}
 			qglVertex3fv( v->xyz.ToFloatPtr() );
 		}
@@ -1374,7 +1377,7 @@ static void RB_ShowVertexColor( drawSurf_t** drawSurfs, int numDrawSurfs )
 		return;
 	}
 	globalImages->BindNull();
-
+	
 	RB_SimpleWorldSetup();
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.BindShader_Color();
@@ -1430,7 +1433,7 @@ static void RB_ShowNormals( drawSurf_t** drawSurfs, int numDrawSurfs )
 	}
 	
 	globalImages->BindNull();
-
+	
 	RB_SimpleWorldSetup();
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.BindShader_Color();
@@ -1621,7 +1624,7 @@ static void RB_ShowTextureVectors( drawSurf_t** drawSurfs, int numDrawSurfs )
 	GL_State( GLS_DEPTHFUNC_LESS );
 	
 	globalImages->BindNull();
-
+	
 	RB_SimpleWorldSetup();
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.BindShader_Color();
@@ -1737,7 +1740,7 @@ static void RB_ShowDominantTris( drawSurf_t** drawSurfs, int numDrawSurfs )
 	qglEnable( GL_POLYGON_OFFSET_LINE );
 	
 	globalImages->BindNull();
-
+	
 	RB_SimpleWorldSetup();
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.BindShader_Color();
@@ -1808,7 +1811,7 @@ static void RB_ShowEdges( drawSurf_t** drawSurfs, int numDrawSurfs )
 	globalImages->BindNull();
 	
 	GL_State( GLS_DEPTHFUNC_ALWAYS );
-
+	
 	RB_SimpleWorldSetup();
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.BindShader_Color();
@@ -1818,7 +1821,7 @@ static void RB_ShowEdges( drawSurf_t** drawSurfs, int numDrawSurfs )
 		drawSurf = drawSurfs[i];
 		
 		tri = drawSurf->frontEndGeo;
-		if (!tri) continue;
+		if( !tri ) continue;
 		
 		idDrawVert* ac = ( idDrawVert* )tri->verts;
 		if( !ac )
@@ -1997,7 +2000,7 @@ static void RB_ShowPortals()
 		GL_State( GLS_DEPTHFUNC_ALWAYS );
 	else
 		renderProgManager.BindShader_Color();
-	
+		
 	( ( idRenderWorldLocal* )backEnd.viewDef->renderWorld )->ShowPortals();
 }
 
@@ -2008,8 +2011,8 @@ RB_ClearDebugText
 */
 void RB_ClearDebugText( int time )
 {
-	rb_nextDebugTextTime=time;
-
+	rb_nextDebugTextTime = time;
+	
 	if( !time )
 	{
 		// free up our strings
@@ -2031,7 +2034,7 @@ static void clearDebugText()
 	int			num;
 	debugText_t*	text;
 	
-	int time=rb_nextDebugTextTime;
+	int time = rb_nextDebugTextTime;
 	rb_debugTextTime = time;
 	
 	// copy any text that still needs to be drawn
@@ -2137,8 +2140,8 @@ static void RB_DrawText( const char* text, const idVec3& origin, float scale, co
 	//renderProgManager.BindShader_TextureVertexColor();
 	GL_SelectTexture( 0 );
 	globalImages->whiteImage->Bind();
-
-	RB_SetVertexColorParms(SVC_MODULATE);
+	
+	RB_SetVertexColorParms( SVC_MODULATE );
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.CommitUniforms();
 	
@@ -2249,8 +2252,8 @@ void RB_ShowDebugText()
 	//renderProgManager.BindShader_TextureVertexColor();
 	GL_SelectTexture( 0 );
 	globalImages->whiteImage->Bind();
-
-	RB_SetVertexColorParms(SVC_MODULATE);
+	
+	RB_SetVertexColorParms( SVC_MODULATE );
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.CommitUniforms();
 	
@@ -2301,7 +2304,7 @@ void RB_ShowDebugText()
 	}
 	
 	qglLineWidth( 1 );
-
+	
 	clearDebugText();
 }
 
@@ -2312,8 +2315,8 @@ RB_ClearDebugLines
 */
 void RB_ClearDebugLines( int time )
 {
-	rb_nextDebugLineTime=time;
-	if (!time) rb_numDebugLines=0;
+	rb_nextDebugLineTime = time;
+	if( !time ) rb_numDebugLines = 0;
 }
 
 static void clearDebugLines()
@@ -2321,9 +2324,9 @@ static void clearDebugLines()
 	int			i;
 	int			num;
 	debugLine_t*	line;
-
+	
 	rb_debugLineTime = rb_nextDebugLineTime;
-
+	
 	// copy any lines that still need to be drawn
 	num	= 0;
 	line = rb_debugLines;
@@ -2349,7 +2352,7 @@ RB_AddDebugLine
 void RB_AddDebugLine( const idVec4& color, const idVec3& start, const idVec3& end, const int lifeTime, const bool depthTest )
 {
 	debugLine_t* line;
-
+	
 	if( rb_numDebugLines < MAX_DEBUG_LINES )
 	{
 		line = &rb_debugLines[ rb_numDebugLines++ ];
@@ -2371,30 +2374,30 @@ void RB_ShowDebugLines()
 	int			i;
 	int			width;
 	debugLine_t*	line;
-
+	
 	if( !rb_numDebugLines )
 	{
 		return;
 	}
-
+	
 	// all lines are expressed in world coordinates
 	RB_SimpleWorldSetup();
-
+	
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.BindShader_TextureVertexColor();
 	if( !r_showNvidiaHack.GetBool() )
 		GL_SelectTexture( 0 );
 	else
 		renderProgManager.BindShader_TextureVertexColor();
-
+		
 	globalImages->whiteImage->Bind();
-
-	RB_SetVertexColorParms(SVC_MODULATE);
+	
+	RB_SetVertexColorParms( SVC_MODULATE );
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.CommitUniforms();
 	if( r_showNvidiaHack.GetBool() )
 		renderProgManager.CommitUniforms();
-	
+		
 	width = r_debugLineWidth.GetInteger();
 	if( width < 1 )
 	{
@@ -2453,7 +2456,7 @@ void RB_ShowDebugLines()
 	
 	qglLineWidth( 1 );
 	GL_State( GLS_DEFAULT );
-
+	
 	clearDebugLines();
 }
 
@@ -2464,7 +2467,7 @@ RB_ClearDebugPolygons
 */
 void RB_ClearDebugPolygons( int time )
 {
-	rb_nextDebugPolygonTime=time;
+	rb_nextDebugPolygonTime = time;
 	
 	if( !time )
 	{
@@ -2478,8 +2481,8 @@ static void clearDebugPolygons()
 	int				i;
 	int				num;
 	debugPolygon_t*	poly;
-
-	int time=rb_nextDebugPolygonTime;
+	
+	int time = rb_nextDebugPolygonTime;
 	rb_debugPolygonTime = time;
 	
 	// copy any polygons that still need to be drawn
@@ -2541,8 +2544,8 @@ void RB_ShowDebugPolygons()
 	//renderProgManager.BindShader_TextureVertexColor();
 	GL_SelectTexture( 0 );
 	globalImages->whiteImage->Bind();
-
-	RB_SetVertexColorParms(SVC_MODULATE);
+	
+	RB_SetVertexColorParms( SVC_MODULATE );
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.CommitUniforms();
 	
@@ -2589,7 +2592,7 @@ void RB_ShowDebugPolygons()
 	}
 	
 	GL_State( GLS_DEFAULT );
-
+	
 	clearDebugPolygons();
 }
 
@@ -3075,7 +3078,7 @@ void RB_ShowTrace( drawSurf_t** drawSurfs, int numDrawSurfs )
 	
 	// check and draw the surfaces
 	globalImages->whiteImage->Bind();
-
+	
 	RB_SimpleWorldSetup();
 	
 	// find how many are ambient
@@ -3098,8 +3101,8 @@ void RB_ShowTrace( drawSurf_t** drawSurfs, int numDrawSurfs )
 		{
 			continue;
 		}
-
-		RB_SimpleSurfaceSetup(surf);
+		
+		RB_SimpleSurfaceSetup( surf );
 		// qglLoadMatrixf( surf->space->modelViewMatrix );
 		
 		// highlight the surface
@@ -3138,7 +3141,7 @@ RB_RenderDebugTools
 */
 void RB_RenderDebugTools( drawSurf_t** drawSurfs, int numDrawSurfs )
 {
-	if(r_enableDebugRenderTools.GetBool() == false)
+	if( r_enableDebugRenderTools.GetBool() == false )
 		return;
 	// don't do much if this was a 2D rendering
 	if( !backEnd.viewDef->viewEntitys )
@@ -3217,24 +3220,26 @@ RB_SetGL2D
 This is not used by the normal game paths, just by some tools
 =============
 */
-void RB_SetGL2D( void ) {
+void RB_SetGL2D( void )
+{
 	// set 2D virtual screen size
 	qglViewport( 0, 0, glConfig.nativeScreenWidth, glConfig.nativeScreenHeight );
-	if ( r_useScissor.GetBool() ) {
+	if( r_useScissor.GetBool() )
+	{
 		qglScissor( 0, 0, glConfig.nativeScreenWidth, glConfig.nativeScreenHeight );
 	}
 	qglMatrixMode( GL_PROJECTION );
-    qglLoadIdentity();
+	qglLoadIdentity();
 	qglOrtho( 0, 640, 480, 0, 0, 1 );		// always assume 640x480 virtual coordinates
 	qglMatrixMode( GL_MODELVIEW );
-    qglLoadIdentity();
-
+	qglLoadIdentity();
+	
 	GL_State( GLS_DEPTHFUNC_ALWAYS |
 			  GLS_SRCBLEND_SRC_ALPHA |
 			  GLS_DSTBLEND_ONE_MINUS_SRC_ALPHA );
-
+			  
 	GL_Cull( CT_TWO_SIDED );
-
+	
 	qglDisable( GL_DEPTH_TEST );
 	qglDisable( GL_STENCIL_TEST );
 }

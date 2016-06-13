@@ -236,7 +236,7 @@ bool idMenuScreen_Shell_PressStart::HandleAction( idWidgetAction& action, const 
 	}
 	
 	//if( menuData->ActiveScreen() != SHELL_AREA_START )
-	if (menuData->ActiveScreen() != SHELL_AREA_ROOT) // motorsep 12-21-2014; we don't need Start screen on PC
+	if( menuData->ActiveScreen() != SHELL_AREA_ROOT ) // motorsep 12-21-2014; we don't need Start screen on PC
 	{
 		return false;
 	}

@@ -215,32 +215,32 @@ bool R_PreciseCullSurface( const drawSurf_t* drawSurf, idBounds& ndcBounds )
 	return false;
 }
 
-idCVar r_waterReflectFix("r_waterReflectFix", "1", CVAR_RENDERER | CVAR_BOOL, "perform the water oblique projection matrix fix");
+idCVar r_waterReflectFix( "r_waterReflectFix", "1", CVAR_RENDERER | CVAR_BOOL, "perform the water oblique projection matrix fix" );
 
 /*
 =====================
 R_ObliqueProjection - adjust near plane of previously set projection matrix to perform an oblique projection
 =====================
 */
-static void R_ObliqueProjection(viewDef_t *parms)
+static void R_ObliqueProjection( viewDef_t* parms )
 {
 	float mvt[16];	//model view transpose
 	idPlane pB = parms->clipPlanes[0];
 	idPlane cp;
-	R_MatrixTranspose(parms->worldSpace.modelViewMatrix, mvt);
-	R_GlobalPlaneToLocal(mvt, pB, cp);	//transform plane (which is set to the surface we're mirroring about's plane) to camera space
-
+	R_MatrixTranspose( parms->worldSpace.modelViewMatrix, mvt );
+	R_GlobalPlaneToLocal( mvt, pB, cp );	//transform plane (which is set to the surface we're mirroring about's plane) to camera space
+	
 	//oblique projection adjustment code
-	idVec4 clipPlane(cp[0], cp[1], cp[2], cp[3]);
+	idVec4 clipPlane( cp[0], cp[1], cp[2], cp[3] );
 	idVec4 q;
-	q[0] = ((clipPlane[0] < 0.0f ? -1.0f : clipPlane[0] > 0.0f ? 1.0f : 0.0f) + parms->projectionMatrix[8]) / parms->projectionMatrix[0];
-	q[1] = ((clipPlane[1] < 0.0f ? -1.0f : clipPlane[1] > 0.0f ? 1.0f : 0.0f) + parms->projectionMatrix[9]) / parms->projectionMatrix[5];
+	q[0] = ( ( clipPlane[0] < 0.0f ? -1.0f : clipPlane[0] > 0.0f ? 1.0f : 0.0f ) + parms->projectionMatrix[8] ) / parms->projectionMatrix[0];
+	q[1] = ( ( clipPlane[1] < 0.0f ? -1.0f : clipPlane[1] > 0.0f ? 1.0f : 0.0f ) + parms->projectionMatrix[9] ) / parms->projectionMatrix[5];
 	q[2] = -1.0f;
-	q[3] = (1.0f + parms->projectionMatrix[10]) / parms->projectionMatrix[14];
-
+	q[3] = ( 1.0f + parms->projectionMatrix[10] ) / parms->projectionMatrix[14];
+	
 	// scaled plane vector
-	float d = 2.0f / (clipPlane * q);
-
+	float d = 2.0f / ( clipPlane * q );
+	
 	// Replace the third row of the projection matrix
 	parms->projectionMatrix[2] = clipPlane[0] * d;
 	parms->projectionMatrix[6] = clipPlane[1] * d;
@@ -289,39 +289,39 @@ static viewDef_t* R_MirrorViewBySurface( const drawSurf_t* drawSurf )
 	R_MirrorVector( tr.viewDef->renderView.viewaxis[2], &surface, &camera, parms->renderView.viewaxis[2] );
 	
 	// make the view origin 16 units away from the center of the surface
-	const idVec3 center = (drawSurf->frontEndGeo->bounds[0] + drawSurf->frontEndGeo->bounds[1]) * 0.5f;
-	const idVec3 viewOrigin = center + (originalPlane.Normal() * 16.0f);
-
-	R_LocalPointToGlobal(drawSurf->space->modelMatrix, viewOrigin, parms->initialViewAreaOrigin);
-
+	const idVec3 center = ( drawSurf->frontEndGeo->bounds[0] + drawSurf->frontEndGeo->bounds[1] ) * 0.5f;
+	const idVec3 viewOrigin = center + ( originalPlane.Normal() * 16.0f );
+	
+	R_LocalPointToGlobal( drawSurf->space->modelMatrix, viewOrigin, parms->initialViewAreaOrigin );
+	
 	// set the mirror clip plane
 	parms->numClipPlanes = 1;
 	parms->clipPlanes[0] = -camera.axis[0];
 	
 	parms->clipPlanes[0][3] = -( camera.origin * parms->clipPlanes[0].Normal() );
 	
-	if (r_waterReflectFix.GetBool() && !parms->is2Dgui && drawSurf->material->GetSurfaceType() == SURFTYPE_MIRROR)
+	if( r_waterReflectFix.GetBool() && !parms->is2Dgui && drawSurf->material->GetSurfaceType() == SURFTYPE_MIRROR )
 	{
 		parms->isObliqueProjection = true;
 		float dist = parms->clipPlanes[0].Dist();
 		float viewdist = parms->renderView.vieworg * parms->clipPlanes[0].Normal();
 		float fDist = -dist + viewdist;
 		static const float fudge = 2.f;	//fudge avoids depth precision artifacts when performing oblique projection
-		if (fDist > fudge || fDist < -fudge)
+		if( fDist > fudge || fDist < -fudge )
 		{
-			if (fDist < 0.f)
+			if( fDist < 0.f )
 				fDist += fudge;
 			else
 				fDist -= fudge;
 		}
-
-		parms->clipPlanes[0][3] = fDist;		
-
-		R_SetupViewMatrix(parms);
-		R_SetupProjectionMatrix(parms);
-		R_ObliqueProjection(parms);
+		
+		parms->clipPlanes[0][3] = fDist;
+		
+		R_SetupViewMatrix( parms );
+		R_SetupProjectionMatrix( parms );
+		R_ObliqueProjection( parms );
 	}
-
+	
 	return parms;
 }
 
@@ -439,7 +439,7 @@ void R_MirrorRender( const drawSurf_t* surf, textureStage_t* stage, idScreenRect
 	
 	// generate render commands for it
 	R_RenderView( parms );
-
+	
 	// copy this rendering to the image
 	stage->dynamicFrameCount = tr.frameCount;
 	stage->image = globalImages->scratchImage;

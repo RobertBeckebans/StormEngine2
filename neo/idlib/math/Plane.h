@@ -72,7 +72,7 @@ class idPlane
 {
 public:
 	idPlane();
-	explicit idPlane( const idVec4 & vec );
+	explicit idPlane( const idVec4& vec );
 	explicit idPlane( float a, float b, float c, float d );
 	explicit idPlane( const idVec3& normal, const float dist );
 	explicit idPlane( const idVec3& v0, const idVec3& v1, const idVec3& v2, bool fixDegenerate = false );
@@ -142,7 +142,7 @@ ID_INLINE idPlane::idPlane()
 {
 }
 
-ID_INLINE idPlane::idPlane( const idVec4 & vec )
+ID_INLINE idPlane::idPlane( const idVec4& vec )
 {
 	this->a = vec.x;
 	this->b = vec.y;

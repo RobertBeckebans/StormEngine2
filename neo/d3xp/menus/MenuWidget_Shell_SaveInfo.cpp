@@ -41,7 +41,8 @@ idMenuWidget_Shell_SaveInfo::idMenuWidget_Shell_SaveInfo()
 	loadIndex = 0;
 	forSaveScreen = false;
 	saveThumbDefault = NULL;
-	for(int i = 0; i < MAX_SAVEGAMES; i++) {
+	for( int i = 0; i < MAX_SAVEGAMES; i++ )
+	{
 		saveGameThumbnails[i] = NULL;
 	}
 }
@@ -60,19 +61,19 @@ void idMenuWidget_Shell_SaveInfo::Initialize( idMenuHandler* data )
 	 */
 	if( fileSystem->IsFolder( "maps" ) == FOLDER_YES )
 	{
-		idFileList* files = fileSystem->ListFilesTree("maps","map",false);
+		idFileList* files = fileSystem->ListFilesTree( "maps", "map", false );
 		const idStrList& fileList = files->GetList();
 		const idMaterial* tempMat;
 		idStr thumbNailFile;
 		for( int i = 0; i < fileList.Num(); i++ )
 		{
-			thumbNailFile =fileList[i];
+			thumbNailFile = fileList[i];
 			thumbNailFile.StripFileExtension();
 			// Touch the Material and do not populate list if not found.
 			tempMat = declManager->FindMaterial( thumbNailFile.c_str(), false );
 		}
 	}
-    UpdateSavePreviews();
+	UpdateSavePreviews();
 }
 
 /*
@@ -178,23 +179,29 @@ void idMenuWidget_Shell_SaveInfo::Update()
 	idSWFSpriteInstance* img = GetSprite()->GetScriptObject()->GetNestedSprite( "img" );
 	if( img != NULL )
 	{
-	    // TODO_SPARTY: until we have a thumbnail hide the image
-		if(forSaveScreen )
+		// TODO_SPARTY: until we have a thumbnail hide the image
+		if( forSaveScreen )
 			img->SetVisible( false );
 		else
 			img->SetVisible( true );
-	    if(	saveGameThumbnails[loadIndex] != NULL ) {
-		    // Use Detected Thumbnail
-		    img->SetMaterial( saveGameThumbnails[loadIndex] );
-	    } else {
-		    if(saveThumbDefault != NULL) {
-			    // Use Default Thumbnail.
-			    img->SetMaterial( saveThumbDefault );
-		    } else {
-			    // No thumbnail Image exists.
-			    img->SetVisible( false );
-		    }
-	    }
+		if(	saveGameThumbnails[loadIndex] != NULL )
+		{
+			// Use Detected Thumbnail
+			img->SetMaterial( saveGameThumbnails[loadIndex] );
+		}
+		else
+		{
+			if( saveThumbDefault != NULL )
+			{
+				// Use Default Thumbnail.
+				img->SetMaterial( saveThumbDefault );
+			}
+			else
+			{
+				// No thumbnail Image exists.
+				img->SetVisible( false );
+			}
+		}
 	}
 }
 
@@ -208,41 +215,44 @@ void idMenuWidget_Shell_SaveInfo::UpdateSavePreviews()
 	const saveGameDetailsList_t& saveGameInfo = session->GetSaveGameManager().GetEnumeratedSavegames();
 	saveGameDetailsList_t sortedSaves = saveGameInfo;
 	idStr thumbNailFile;
-	for(int i = 0; i < MAX_SAVEGAMES; i++) {
+	for( int i = 0; i < MAX_SAVEGAMES; i++ )
+	{
 		saveGameThumbnails[i] = NULL;
 	}
-
+	
 	/*
 	 *	Generate each auto-save preview at this time.
 	 */
-	if(sortedSaves.Num() != 0) {
+	if( sortedSaves.Num() != 0 )
+	{
 		const char* saveFolder = "savegame";
 		// Sort the Games before looking up the image preview.
 		sortedSaves.Sort( idSort_SavesByDate() );
-		for(int i =0; i < sortedSaves.Num();i++ )
+		for( int i = 0; i < sortedSaves.Num(); i++ )
 		{
-	        /* Test to See if there is a Generated Save Image */
+			/* Test to See if there is a Generated Save Image */
 			const idSaveGameDetails& details = sortedSaves[ i ];
-			if(details.GetHasThumbnail()) {
+			if( details.GetHasThumbnail() )
+			{
 				thumbNailFile = saveFolder;
-				thumbNailFile.Append("/");
-				thumbNailFile.Append(details.GetSlotName());
-				thumbNailFile.Append("/" SAVEGAME_THUMB_FILENAME);
+				thumbNailFile.Append( "/" );
+				thumbNailFile.Append( details.GetSlotName() );
+				thumbNailFile.Append( "/" SAVEGAME_THUMB_FILENAME );
 				saveGameThumbnails[i] = declManager->FindMaterial( thumbNailFile.c_str() );
 			}
 		}
-		for(int i =0; i < sortedSaves.Num();i++ )
+		for( int i = 0; i < sortedSaves.Num(); i++ )
 		{
 			const idSaveGameDetails& details = sortedSaves[ i ];
-			if(saveGameThumbnails[i] != NULL)
+			if( saveGameThumbnails[i] != NULL )
 				continue;
 			/* Check for pre-generated Thumbnail */
 			thumbNailFile = "maps/";
-			thumbNailFile.Append(details.GetMapFileName());
+			thumbNailFile.Append( details.GetMapFileName() );
 			saveGameThumbnails[i] = declManager->FindMaterial( thumbNailFile.c_str(), false );
 		}
-	    renderSystem->LoadLevelImages();
-    }
+		renderSystem->LoadLevelImages();
+	}
 }
 
 /*

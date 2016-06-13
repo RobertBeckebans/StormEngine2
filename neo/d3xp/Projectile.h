@@ -51,7 +51,7 @@ public :
 	void					Spawn();
 	
 	void					Remove();
-
+	
 	void					Save( idSaveGame* savefile ) const;
 	void					Restore( idRestoreGame* savefile );
 	
@@ -103,7 +103,7 @@ public :
 	virtual void			PostSimulate( int endTime );
 	
 	virtual void			FreeBeams();
-
+	
 	struct simulatedProjectile_t
 	{
 		simulatedProjectile_t(): projectile( NULL ), startTime( 0 ) {}
@@ -152,7 +152,7 @@ protected:
 	int						smokeFlyTime;
 	bool					mNoExplodeDisappear;
 	bool					mTouchTriggers;
-
+	
 	idStr					mImpactEffectWaterSurface;
 	idStr					mImpactEffectWaterSolid;
 	
@@ -271,7 +271,7 @@ public :
 	virtual void			Launch( const idVec3& start, const idVec3& dir, const idVec3& pushVelocity, const float timeSinceFire = 0.0f, const float launchPower = 1.0f, const float dmgPower = 1.0f );
 	virtual void			Explode( const trace_t& collision, idEntity* ignore );
 	
-private:	
+private:
 	renderEntity_t			secondModel;
 	qhandle_t				secondModelDefHandle;
 	int						nextDamageTime;
@@ -283,7 +283,7 @@ private:
 		qhandle_t				modelDefHandle;
 		idEntityPtr<idEntity>	target;
 	};
-
+	
 	idList<beamTarget_t, TAG_PROJECTILE>	beamTargets;
 	
 	void					FreeBeams();

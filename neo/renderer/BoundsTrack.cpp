@@ -290,7 +290,7 @@ void	idBoundsTrack::Test()
 		FindBoundsIntersectionsSimSIMD( shortTestBounds, boundsList, maxIndex, intersectedIndexes2 );
 	}
 	const int64 stop = Sys_Microseconds();
-	idLib::Printf( "%i microseconds for 40 itterations\n", (int)(stop - start) );
+	idLib::Printf( "%i microseconds for 40 itterations\n", ( int )( stop - start ) );
 }
 
 

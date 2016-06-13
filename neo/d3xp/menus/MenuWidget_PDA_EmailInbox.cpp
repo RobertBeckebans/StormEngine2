@@ -108,10 +108,13 @@ void idMenuWidget_PDA_EmailInbox::Update()
 			
 			if( pdaIndex == 0 )
 			{
-				if( common->IsMultiplayer() ) { // SS2 fix; we don't need the name of the computer to be showing up as character's name, if it's a singleplayer game					
+				if( common->IsMultiplayer() )   // SS2 fix; we don't need the name of the computer to be showing up as character's name, if it's a singleplayer game
+				{
 					ownerText.Append( session->GetLocalUserName( 0 ) );
-				} else {					
-					ownerText.Append( idLocalization::GetString( "#str_personal_pda_player_name" ) );					
+				}
+				else
+				{
+					ownerText.Append( idLocalization::GetString( "#str_personal_pda_player_name" ) );
 				}
 				//ownerText.Append( session->GetLocalUserName( 0 ) );
 			}

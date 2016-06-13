@@ -164,7 +164,7 @@ userCmdString_t	userCmdStrings[] =
 	{ "_impulse30",		UB_IMPULSE30 },
 	{ "_impulse31",		UB_IMPULSE31 },
 	
-	{ "_impulse40",		UB_IMPULSE40 },	
+	{ "_impulse40",		UB_IMPULSE40 },
 	
 	{ NULL,				UB_NONE },
 };
@@ -864,9 +864,9 @@ Draws axis and threshold / range rings into an RGBA image
 void	DrawJoypadTexture(
 	const int	size,
 	byte	image[],
-
+	
 	const idVec2 raw,
-
+	
 	const float threshold,
 	const float range,
 	const transferFunction_t shape,
@@ -1251,7 +1251,7 @@ void idUsercmdGenLocal::InitForNewMap()
 	
 	Clear();
 	ClearAngles();
-
+	
 	// motorsep 03-19-2015; FIXME: Preloading water splash projectile impact particle effect; this should not be here and particle effect should be preloaded as any other - when loading decls
 	declManager->FindParticle( "liquidprojectileimpact.prt" );
 }

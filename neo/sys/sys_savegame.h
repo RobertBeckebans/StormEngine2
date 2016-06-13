@@ -181,11 +181,11 @@ public:
 	{
 		return date > other.date;
 	}
-      
+	
 	idStr   GetSlotName() const
 	{
 		return slotName;
-	}	
+	}
 	idStr	GetMapName() const
 	{
 		return descriptors.GetString( SAVEGAME_DETAIL_FIELD_MAP, "" );

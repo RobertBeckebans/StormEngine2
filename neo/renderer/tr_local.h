@@ -72,7 +72,7 @@ enum demoCommand_t
 	DC_DEFINE_MODEL,
 	DC_SET_PORTAL_STATE,
 	DC_UPDATE_SOUNDOCCLUSION,
-	DC_GUI_MODEL,	
+	DC_GUI_MODEL,
 	DC_UPDATE_DECAL,
 	DC_DELETE_DECAL,
 	DC_UPDATE_OVERLAY,
@@ -449,7 +449,7 @@ struct viewDef_t
 	bool				isEditor;
 	bool				is2Dgui;
 	bool				isObliqueProjection;
-
+	
 	int					numClipPlanes;			// mirrors will often use a single clip plane
 	idPlane				clipPlanes[MAX_CLIP_PLANES];		// in world space, the positive side
 	// of the plane is the visible side
@@ -566,7 +566,7 @@ struct copyRenderCommand_t
 	int					imageHeight;
 	idImage*				image;
 	int					cubeFace;					// when copying to a cubeMap
-	bool				clearColorAfterCopy;	
+	bool				clearColorAfterCopy;
 };
 
 struct postProcessCommand_t
@@ -744,12 +744,12 @@ struct backEndState_t
 	bool				glowRenderCopied;		// foresthale 2014-04-21: true if the glow buffer has been updated this frame, used instead of r_glowEnable checks because that may be on for a 2D scene where the last glow update was in the past
 	
 	idRenderMatrix		prevMVP[2];				// world MVP from previous frame for motion blur, per-eye
-
+	
 	// RB begin
 	idRenderMatrix		shadowV[6];				// shadow depth view matrix
 	idRenderMatrix		shadowP[6];				// shadow depth projection matrix
 	// RB end
-
+	
 	// surfaces used for code-based drawing
 	drawSurf_t			unitSquareSurface;
 	drawSurf_t			zeroOneCubeSurface;
@@ -822,8 +822,8 @@ public:
 	virtual const emptyCommand_t* 	SwapCommandBuffers( uint64* frontEndMicroSec, uint64* backEndMicroSec, uint64* shadowMicroSec, uint64* gpuMicroSec );
 	// foresthale 2014-05-19: the editor views need some wrapper code to set up a view render and restore state afterward so that the fixed function OpenGL code of the editors keep working
 	virtual void			Editor_SetupState();
-	virtual void			Editor_BeginView(int width, int height, int &restoreWidth, int &restoreHeight);
-	virtual void			Editor_EndView(int restoreWidth, int restoreHeight);
+	virtual void			Editor_BeginView( int width, int height, int& restoreWidth, int& restoreHeight );
+	virtual void			Editor_EndView( int restoreWidth, int restoreHeight );
 	
 	virtual void			SwapCommandBuffers_FinishRendering( uint64* frontEndMicroSec, uint64* backEndMicroSec, uint64* shadowMicroSec, uint64* gpuMicroSec );
 	virtual const emptyCommand_t* 	SwapCommandBuffers_FinishCommandBuffers();
@@ -851,7 +851,7 @@ public:
 	{
 		return frameCount;
 	};
-
+	
 	void OnFrame();
 	
 public:
@@ -919,8 +919,8 @@ public:
 	idParallelJobList* 		frontEndJobList;
 	
 	unsigned				timerQueryId;		// for GL_TIME_ELAPSED_EXT queries
-
-
+	
+	
 	// foresthale 2014-03-01: screenshots need to override the results of GetWidth() and GetHeight()
 	int						screenshotOverrideWidth;
 	int						screenshotOverrideHeight;
@@ -1495,7 +1495,7 @@ POLYTOPE
 ============================================================
 */
 
-srfTriangles_t *R_PolytopeSurface(int numPlanes, const idPlane *planes, idWinding **windings);
+srfTriangles_t* R_PolytopeSurface( int numPlanes, const idPlane* planes, idWinding** windings );
 
 //=============================================
 

@@ -3176,9 +3176,9 @@ void idCompiler::CompileFile( const char* text, const char* _filename, bool toCo
 	
 	if( !toConsole )
 	{
-		gameLocal.Printf( "Compiling '%s'\n", filename.c_str());
-	}	
- 	compile_time.Start();
+		gameLocal.Printf( "Compiling '%s'\n", filename.c_str() );
+	}
+	compile_time.Start();
 	
 	scope				= &def_namespace;
 	basetype			= NULL;

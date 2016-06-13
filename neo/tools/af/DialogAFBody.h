@@ -31,28 +31,29 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogAFBody dialog
 
-class DialogAFBody : public CDialog {
+class DialogAFBody : public CDialog
+{
 
-	DECLARE_DYNAMIC(DialogAFBody)
-
+	DECLARE_DYNAMIC( DialogAFBody )
+	
 public:
-						DialogAFBody( CWnd* pParent = NULL );   // standard constructor
+	DialogAFBody( CWnd* pParent = NULL );   // standard constructor
 	virtual				~DialogAFBody();
-	void				LoadFile( idDeclAF *af );
+	void				LoadFile( idDeclAF* af );
 	void				SaveFile( void );
-	void				LoadBody( const char *name );
+	void				LoadBody( const char* name );
 	void				SaveBody( void );
 	void				UpdateFile( void );
-
-	DialogAFConstraint *constraintDlg;
-
+	
+	DialogAFConstraint* constraintDlg;
+	
 	enum				{ IDD = IDD_DIALOG_AF_BODY };
-
+	
 protected:
 	virtual BOOL		OnInitDialog();
 	virtual void		DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
 	virtual INT_PTR		OnToolHitTest( CPoint point, TOOLINFO* pTI ) const;
-	afx_msg BOOL		OnToolTipNotify( UINT id, NMHDR *pNMHDR, LRESULT *pResult );
+	afx_msg BOOL		OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnShowWindow( BOOL bShow, UINT nStatus );
 	afx_msg void		OnCbnSelchangeComboBodies();
 	afx_msg void		OnBnClickedButtonNewbody();
@@ -60,45 +61,45 @@ protected:
 	afx_msg void		OnBnClickedButtonDeletebody();
 	afx_msg void		OnCbnSelchangeComboCmType();
 	afx_msg void		OnEnChangeEditCmLength();
-	afx_msg void		OnDeltaposSpinCmLength(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinCmLength( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditCmHeight();
-	afx_msg void		OnDeltaposSpinCmHeight(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinCmHeight( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditCmWidth();
-	afx_msg void		OnDeltaposSpinCmWidth(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinCmWidth( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditCmNumsides();
-	afx_msg void		OnDeltaposSpinCmNumsides(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinCmNumsides( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnCbnSelchangeComboBoneJoint1();
 	afx_msg void		OnCbnSelchangeComboBoneJoint2();
 	afx_msg void		OnEnChangeEditCmDensity();
-	afx_msg void		OnDeltaposSpinCmDensity(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinCmDensity( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditCmInertiascale();
 	afx_msg void		OnBnClickedRadioOriginCoordinates();
 	afx_msg void		OnBnClickedRadioOriginBonecenter();
 	afx_msg void		OnBnClickedRadioOriginJoint();
 	afx_msg void		OnEnChangeEditAfVectorX();
-	afx_msg void		OnDeltaposSpinAfVectorX(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinAfVectorX( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditAfVectorY();
-	afx_msg void		OnDeltaposSpinAfVectorY(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinAfVectorY( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditAfVectorZ();
-	afx_msg void		OnDeltaposSpinAfVectorZ(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinAfVectorZ( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnOnCbnSelchangeComboOriginBoneCenterJoint1();
 	afx_msg void		OnOnCbnSelchangeComboOriginBoneCenterJoint2();
 	afx_msg void		OnOnCbnSelchangeComboOriginJoint();
 	afx_msg void		OnEnChangeEditAnglesPitch();
-	afx_msg void		OnDeltaposSpinAnglesPitch(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinAnglesPitch( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditAnglesYaw();
-	afx_msg void		OnDeltaposSpinAnglesYaw(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinAnglesYaw( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditAnglesRoll();
-	afx_msg void		OnDeltaposSpinAnglesRoll(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinAnglesRoll( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnBnClickedCheckSelfcollision();
 	afx_msg void		OnEnChangeEditContents();
 	afx_msg void		OnEnChangeEditClipmask();
 	afx_msg void		OnEnChangeEditLinearfriction();
-	afx_msg void		OnDeltaposSpinLinearfriction(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinLinearfriction( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditAngularfriction();
-	afx_msg void		OnDeltaposSpinAngularfriction(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinAngularfriction( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditContactfriction();
-	afx_msg void		OnDeltaposSpinContactfriction(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinContactfriction( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditFrictionDirection();
 	afx_msg void		OnEnChangeEditContactMotorDirection();
 	afx_msg void		OnCbnSelchangeComboModifiedjoint();
@@ -106,14 +107,14 @@ protected:
 	afx_msg void		OnBnClickedRadioModifyPosition();
 	afx_msg void		OnBnClickedRadioModifyBoth();
 	afx_msg void		OnEnChangeEditContainedjoints();
-
+	
 	DECLARE_MESSAGE_MAP()
-
+	
 private:
-	idDeclAF *			file;
-	idDeclAF_Body *		body;
+	idDeclAF* 			file;
+	idDeclAF_Body* 		body;
 	int					numJoints;
-
+	
 	//{{AFX_DATA(DialogAFBody)
 	CComboBox			bodyList;				// list with bodies
 	CComboBox			cm_comboType;
@@ -145,9 +146,9 @@ private:
 	CComboBox			m_comboModifiedJoint;
 	CEdit				m_editContainedJoints;
 	//}}AFX_DATA
-
+	
 	static toolTip_t	toolTips[];
-
+	
 private:
 	void				InitBodyList( void );
 	void				InitJointLists( void );

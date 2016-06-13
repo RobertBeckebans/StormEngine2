@@ -660,7 +660,7 @@ const char* Sys_GetCmdLine()
 Sys_ReLaunch
 ========================
 */
-void Sys_ReLaunch( void * data, const unsigned int dataSize )
+void Sys_ReLaunch( void* data, const unsigned int dataSize )
 {
 	// DG: implementing this... basic old fork() exec() (+ setsid()) routine..
 	// NOTE: this function used to have parameters: the commandline arguments, but as one string..

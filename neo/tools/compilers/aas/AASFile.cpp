@@ -1446,7 +1446,7 @@ bool idAASFileLocal::Load( const idStr& fileName, unsigned int mapFileCRC )
 		src.Error( "idAASFileLocal::Load: tree depth = %d", depth );
 	}
 	
-	common->UpdateLevelLoadPacifier(true);
+	common->UpdateLevelLoadPacifier( true );
 	
 	common->Printf( "done.\n" );
 	

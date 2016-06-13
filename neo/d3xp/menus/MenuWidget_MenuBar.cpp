@@ -74,7 +74,7 @@ void idMenuWidget_MenuBar::Update()
 		
 		if( index != 0 )
 		{
-			totalWidth += rightSpacer;			
+			totalWidth += rightSpacer;
 		}
 		
 		idMenuWidget& child = GetChildByIndex( index );
@@ -87,7 +87,7 @@ void idMenuWidget_MenuBar::Update()
 	}
 	
 	// 640 is half the size of our flash files width
-	float xPos = 640.0f - ( totalWidth / 2.0f );	
+	float xPos = 640.0f - ( totalWidth / 2.0f );
 	GetSprite()->SetXPos( xPos );
 	
 	idSWFSpriteInstance* backing = GetSprite()->GetScriptObject()->GetNestedSprite( "backing" );
@@ -163,7 +163,7 @@ bool idMenuWidget_MenuBar::PrepareListElement( idMenuWidget& widget, const int n
 			ti->SetText( headings[ navIndex ] );
 			button->SetPosition( buttonPos );
 			totalWidth += ti->GetTextLength();
-			buttonPos += rightSpacer + ti->GetTextLength();			
+			buttonPos += rightSpacer + ti->GetTextLength();
 		}
 	}
 	

@@ -180,7 +180,7 @@ RemapShaderBySkin
 ===============
 */
 const idMaterial* idDeclSkin::RemapShaderBySkin( const idMaterial* shader ) const
-{	
+{
 	if( !shader )
 	{
 		return NULL;

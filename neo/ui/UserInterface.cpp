@@ -169,12 +169,15 @@ void idUserInterfaceManagerLocal::EndLevelLoad( const char* mapName )
 				c--;
 			}
 		}
-		if(c) {
-			gProgress = (100 * i) / c;
-		} else {
+		if( c )
+		{
+			gProgress = ( 100 * i ) / c;
+		}
+		else
+		{
 			gProgress = 100;
 		}
-		common->UpdateLevelLoadPacifier(true,gProgress);
+		common->UpdateLevelLoadPacifier( true, gProgress );
 	}
 	if( cvarSystem->GetCVarBool( "fs_buildresources" ) && mapName != NULL && mapName[ 0 ] != '\0' )
 	{
@@ -359,10 +362,10 @@ idUserInterfaceLocal::idUserInterfaceLocal()
 
 idUserInterfaceLocal::~idUserInterfaceLocal()
 {
-	// foresthale 2014-05-29: editGUIs shutdown code doesn't remove the gui before it gets destroyed	
+	// foresthale 2014-05-29: editGUIs shutdown code doesn't remove the gui before it gets destroyed
 	uiManagerLocal.guis.Remove( this ); // motorsep 06-02-2014 was introduced by foresthale, that's what crashes game (bug # 0000213)
 	delete desktop;
-	desktop = NULL;	
+	desktop = NULL;
 }
 
 const char* idUserInterfaceLocal::Name() const
@@ -427,30 +430,36 @@ bool idUserInterfaceLocal::InitFromFile( const char* qpath, bool rebuild, bool c
 		}
 	}
 	state.Set( "text", "Test Text!" );
-
+	
 	if( com_editors )
-	{	
+	{
 		idParser src( LEXFL_NOFATALERRORS | LEXFL_NOSTRINGCONCAT | LEXFL_ALLOWMULTICHARLITERALS | LEXFL_ALLOWBACKSLASHSTRINGCONCAT );
-
+		
 		//Load the timestamp so reload guis will work correctly
-		fileSystem->ReadFile(qpath, NULL, &timeStamp);
-
+		fileSystem->ReadFile( qpath, NULL, &timeStamp );
+		
 		src.LoadFile( qpath );
-
-		if ( src.IsLoaded() ) {
+		
+		if( src.IsLoaded() )
+		{
 			idToken token;
-			while( src.ReadToken( &token ) ) {
-				if ( idStr::Icmp( token, "windowDef" ) == 0 ) {
-					if ( desktop->Parse( &src, rebuild ) ) {
+			while( src.ReadToken( &token ) )
+			{
+				if( idStr::Icmp( token, "windowDef" ) == 0 )
+				{
+					if( desktop->Parse( &src, rebuild ) )
+					{
 						desktop->SetFlag( WIN_DESKTOP );
 						desktop->FixupParms();
 					}
 					continue;
 				}
 			}
-
+			
 			state.Set( "name", qpath );
-		} else {
+		}
+		else
+		{
 			desktop->SetFlag( WIN_DESKTOP );
 			desktop->name = "Desktop";
 			desktop->text = va( "Invalid GUI: %s", qpath );
@@ -465,7 +474,7 @@ bool idUserInterfaceLocal::InitFromFile( const char* qpath, bool rebuild, bool c
 	else
 	{
 		idTokenParser& bsrc = uiManagerLocal.GetBinaryParser();
-		if ( rebuild || !bsrc.IsLoaded() || !bsrc.StartParsing( source ) )
+		if( rebuild || !bsrc.IsLoaded() || !bsrc.StartParsing( source ) )
 		{
 			idParser src( LEXFL_NOFATALERRORS | LEXFL_NOSTRINGCONCAT | LEXFL_ALLOWMULTICHARLITERALS | LEXFL_ALLOWBACKSLASHSTRINGCONCAT );
 			src.LoadFile( source );

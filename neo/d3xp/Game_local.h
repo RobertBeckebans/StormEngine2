@@ -286,10 +286,10 @@ struct beam_t
 {
 	renderEntity_t			renderEntity;
 	qhandle_t				modelHandle;
-
+	
 	bool IsValid() const;
 	void Clear();
-
+	
 	beam_t();
 };
 
@@ -312,7 +312,7 @@ public:
 	idHashIndex				entityHash;				// hash table to quickly find entities by name
 	idWorldspawn* 			world;					// world entity
 	idLinkList<idEntity>	spawnedEntities;		// all spawned entities
-	idLinkList<idEntity>	activeEntities;			// all thinking entities (idEntity::thinkFlags != 0)	
+	idLinkList<idEntity>	activeEntities;			// all thinking entities (idEntity::thinkFlags != 0)
 	idLinkList<idEntity>	aimAssistEntities;		// all aim Assist entities
 	int						numEntitiesToDeactivate;// number of entities that became inactive in current frame
 	bool					sortPushers;			// true if active lists needs to be reordered to place pushers at the front
@@ -357,9 +357,9 @@ public:
 	int						entityDefBits;			// bits required to store an entity def number
 	
 	// snapshots can be read at multiple recursive levels, so track a reference count to better know when we are processing snapshots and when we aren't
-	int						mClientSnapshotRefCount; 
+	int						mClientSnapshotRefCount;
 	bool					mSpawningMapEntities;
-
+	
 	static const char* 		sufaceTypeNames[ MAX_SURFACE_TYPES ];	// text names for surface types
 	
 	idEntityPtr<idEntity>	lastGUIEnt;				// last entity with a GUI, used by Cmd_NextGUI_f
@@ -470,13 +470,13 @@ public:
 	
 	bool					CheatsOk( bool requirePlayer = true );
 	gameState_t				GameState() const;
-
+	
 	template<typename T>
-	T*						SpawnEntity( const idDict* args = NULL ) 
+	T*						SpawnEntity( const idDict* args = NULL )
 	{
-		return static_cast<T*>( SpawnEntityType( T::Type, args ) ); 
+		return static_cast<T*>( SpawnEntityType( T::Type, args ) );
 	}
-
+	
 	idEntity* 				SpawnEntityType( const idTypeInfo& classdef, const idDict* args = NULL );
 	bool					SpawnEntityDef( const idDict& args, idEntity** ent = NULL, bool setDefaults = true );
 	int						GetSpawnId( const idEntity* ent ) const;
@@ -529,7 +529,7 @@ public:
 	void					BloodSplat( const idVec3& origin, const idVec3& dir, float size, const char* material );
 	
 	void					AddBeam( const beam_t& beam );
-
+	
 	void					CallFrameCommand( idEntity* ent, const function_t* frameCommand );
 	void					CallObjectFrameCommand( idEntity* ent, const char* frameCommand );
 	
@@ -625,17 +625,17 @@ public:
 	virtual void					Shell_UpdateLeaderboard( const idLeaderboardCallback* callback );
 	virtual void					Shell_SetGameComplete();
 	
-	virtual void					StartDemoPlayback( idRenderWorld * renderworld );
-
+	virtual void					StartDemoPlayback( idRenderWorld* renderworld );
+	
 	void							DemoWriteGameInfo();
-
+	
 	enum gameDemoCommand_t
 	{
 		GCMD_UNKNOWN,
 		GCMD_GAMETIME,
 	};
-	virtual bool					ProcessDemoCommand( idDemoFile * readDemo );
-
+	virtual bool					ProcessDemoCommand( idDemoFile* readDemo );
+	
 	void					Shell_ClearRepeater();
 	
 	const char* 			GetMapFileName()
@@ -691,7 +691,7 @@ private:
 	int						teamCurrentInitialSpot[2];
 	
 	idList<beam_t, TAG_PROJECTILE>	beams;
-
+	
 	struct netInterpolationInfo_t  		// Was in GameTimeManager.h in id5, needed common place to put this.
 	{
 		netInterpolationInfo_t()
@@ -726,7 +726,7 @@ private:
 	void					MapClear( bool clearClients );
 	
 	void					UpdateBeams();
-
+	
 	pvsHandle_t				GetClientPVS( idPlayer* player, pvsType_t type );
 	void					SetupPlayerPVS();
 	void					FreePlayerPVS();
@@ -869,16 +869,16 @@ typedef enum
 // content masks
 enum CollisionMask
 {
-	MASK_ALL					= (-1),
-	MASK_SOLID					= (CONTENTS_SOLID),
-	MASK_MONSTERSOLID			= (CONTENTS_SOLID | CONTENTS_MONSTERCLIP | CONTENTS_BODY),
-	MASK_PLAYERSOLID			= (CONTENTS_SOLID | CONTENTS_PLAYERCLIP | CONTENTS_BODY),
-	MASK_DEADSOLID				= (CONTENTS_SOLID | CONTENTS_PLAYERCLIP),
-	MASK_WATER					= (CONTENTS_WATER),
-	MASK_OPAQUE					= (CONTENTS_OPAQUE),
-	MASK_SHOT_RENDERMODEL		= (CONTENTS_SOLID | CONTENTS_RENDERMODEL),
-	MASK_SHOT_BOUNDINGBOX		= (CONTENTS_SOLID | CONTENTS_BODY),
-	MASK_AI_VISION				= (CONTENTS_SOLID | CONTENTS_OPAQUE),
+	MASK_ALL					= ( -1 ),
+	MASK_SOLID					= ( CONTENTS_SOLID ),
+	MASK_MONSTERSOLID			= ( CONTENTS_SOLID | CONTENTS_MONSTERCLIP | CONTENTS_BODY ),
+	MASK_PLAYERSOLID			= ( CONTENTS_SOLID | CONTENTS_PLAYERCLIP | CONTENTS_BODY ),
+	MASK_DEADSOLID				= ( CONTENTS_SOLID | CONTENTS_PLAYERCLIP ),
+	MASK_WATER					= ( CONTENTS_WATER ),
+	MASK_OPAQUE					= ( CONTENTS_OPAQUE ),
+	MASK_SHOT_RENDERMODEL		= ( CONTENTS_SOLID | CONTENTS_RENDERMODEL ),
+	MASK_SHOT_BOUNDINGBOX		= ( CONTENTS_SOLID | CONTENTS_BODY ),
+	MASK_AI_VISION				= ( CONTENTS_SOLID | CONTENTS_OPAQUE ),
 };
 
 
@@ -918,9 +918,9 @@ ID_INLINE type* idEntityPtr<type>::GetEntity() const
 	// DG: removed extraneous parenthesis to shut up clang
 	if( gameLocal.spawnIds[ entityNum ] == ( spawnId >> GENTITYNUM_BITS ) )
 	{
-		if ( gameLocal.entities[ entityNum ] && !gameLocal.entities[ entityNum ]->GetType()->IsType( type::Type ))
+		if( gameLocal.entities[ entityNum ] && !gameLocal.entities[ entityNum ]->GetType()->IsType( type::Type ) )
 			return NULL;
-
+			
 		return static_cast<type*>( gameLocal.entities[ entityNum ] );
 	}
 	return NULL;

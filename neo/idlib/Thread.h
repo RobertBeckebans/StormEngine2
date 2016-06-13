@@ -331,7 +331,7 @@ protected:
 	virtual int		Run();
 	
 	bool			forceStop;
-
+	
 private:
 	idStr			name;
 	uintptr_t		threadHandle;

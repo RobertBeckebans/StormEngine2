@@ -86,7 +86,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include <dinput.h>
 
-#ifdef _MSC_VER 
+#ifdef _MSC_VER
 #pragma warning( default: 4005 )  /* macro redefinition */
 #endif
 

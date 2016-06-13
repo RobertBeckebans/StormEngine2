@@ -38,11 +38,11 @@ class rvGEHideModifier : public rvGEModifier
 {
 public:
 
-	rvGEHideModifier ( const char* name, idWindow* window, bool hide );
-
-	virtual bool		Apply	( void );
-	virtual bool		Undo	( void );
-
+	rvGEHideModifier( const char* name, idWindow* window, bool hide );
+	
+	virtual bool		Apply( void );
+	virtual bool		Undo( void );
+	
 protected:
 
 	bool		mHide;

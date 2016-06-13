@@ -93,7 +93,7 @@ enum textureFormat_t
 	FMT_X16,			// 16 bpp
 	FMT_Y16_X16,		// 32 bpp
 	FMT_RGB565,			// 16 bpp
-
+	
 	// RB: don't change above for legacy .bimage compatibility
 	// foresthale 2014-02-19: added RGBA16F and DEPTHSTENCIL for HDR view rendering
 	FMT_RGBA16F,		// 64 bpp
@@ -161,7 +161,7 @@ ID_INLINE idImageOpts::idImageOpts()
 	gammaMips		= false;
 	readback		= false;
 	sRGB			= false; // foresthale 2014-02-20: fixed r_useSRGB texture handling
-
+	
 };
 
 /*

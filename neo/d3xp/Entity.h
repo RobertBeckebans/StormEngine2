@@ -197,7 +197,7 @@ public:
 	int						entityNumber;			// index into the entity list
 	int						entityDefNumber;		// index into the entity def list
 	
-	idLinkList<idEntity>	spawnNode;				// for being linked into spawnedEntities list	
+	idLinkList<idEntity>	spawnNode;				// for being linked into spawnedEntities list
 	idLinkList<idEntity>	activeNode;				// for being linked into activeEntities list
 	idLinkList<idEntity>	aimAssistNode;			// linked into gameLocal.aimAssistEntities
 	
@@ -209,7 +209,7 @@ public:
 	idStr					name;					// name of entity
 	idDict					spawnArgs;				// key/value pairs used to spawn and initialize entity
 	idScriptObject			scriptObject;			// contains all script defined data for this entity
-		
+	
 	int						thinkFlags;				// TH_? flags
 	int						dormantStart;			// time that the entity was first closed off from player
 	bool					cinematic;				// during cinematics, entity will only think if cinematic is set
@@ -253,7 +253,7 @@ public:
 	void					SetGrabbedState( bool grabbed );
 	bool					IsGrabbed();
 	
-	void 					RunScriptFunc( const char *name ); 	// ############################### SR		
+	void 					RunScriptFunc( const char* name ); 	// ############################### SR
 	
 public:
 	ABSTRACT_PROTOTYPE( idEntity );
@@ -335,7 +335,7 @@ public:
 	void					FreeSoundEmitter( bool immediate );
 	
 	// music volume control begins	## SS2
-	void 					SetMusicVolume( int channel, float to, float over ); 
+	void 					SetMusicVolume( int channel, float to, float over );
 	// music volume control ends
 	
 	// entity binding
@@ -364,36 +364,75 @@ public:
 	bool					GetMasterPosition( idVec3& masterOrigin, idMat3& masterAxis ) const;
 	void					GetWorldVelocities( idVec3& linearVelocity, idVec3& angularVelocity ) const;
 	
-	virtual int				GetTeam() const { return 0; }
-	virtual AttackPref		ReactionTo( const idEntity* ent ) const { return ATTACK_IGNORE; }
-	virtual bool			CanSee( idEntity* ent, bool useFOV ) const { return false; }
-
-	virtual bool			PowerUpActive( int powerup ) const { return false; }
-	virtual bool			GivePowerUp( int powerup, int time, unsigned int giveFlags ) { return false; }
-	virtual float			PowerUpModifier( int type ) { return 1.0f; }
+	virtual int				GetTeam() const
+	{
+		return 0;
+	}
+	virtual AttackPref		ReactionTo( const idEntity* ent ) const
+	{
+		return ATTACK_IGNORE;
+	}
+	virtual bool			CanSee( idEntity* ent, bool useFOV ) const
+	{
+		return false;
+	}
+	
+	virtual bool			PowerUpActive( int powerup ) const
+	{
+		return false;
+	}
+	virtual bool			GivePowerUp( int powerup, int time, unsigned int giveFlags )
+	{
+		return false;
+	}
+	virtual float			PowerUpModifier( int type )
+	{
+		return 1.0f;
+	}
 	virtual void			ClearPowerup( int i ) {}
-
-	virtual bool			Give( const char* statname, const char* value, unsigned int giveFlags ) { return false; }
-
+	
+	virtual bool			Give( const char* statname, const char* value, unsigned int giveFlags )
+	{
+		return false;
+	}
+	
 	virtual void			AddProjectilesFired( int count ) {}
 	virtual void			IncrementClientFireCount() {}
-
+	
 	virtual void			GetViewPos( idVec3& origin, idMat3& axis ) const;
 	virtual void			CalculateViewWeaponPos( idVec3& origin, idMat3& axis ) const;
-	virtual bool			CanShowWeaponViewmodel() const { return true; }
-	virtual idWeapon*		GetCurrentWeapon() { return NULL; }
-	virtual size_t			GetAIAimTargets( idVec3 * aimPts, size_t maxAimPts ) { return 0; }
-
-	virtual void			WeaponLoweringCallback( idWeapon * weapon ) {}
-	virtual void			WeaponRisingCallback( idWeapon * weapon ) {}
+	virtual bool			CanShowWeaponViewmodel() const
+	{
+		return true;
+	}
+	virtual idWeapon*		GetCurrentWeapon()
+	{
+		return NULL;
+	}
+	virtual size_t			GetAIAimTargets( idVec3* aimPts, size_t maxAimPts )
+	{
+		return 0;
+	}
 	
-	const usercmd_t *		GetUserCmd() const { return NULL; }
-
-	virtual idInventory*	GetInventory() { return NULL; }
+	virtual void			WeaponLoweringCallback( idWeapon* weapon ) {}
+	virtual void			WeaponRisingCallback( idWeapon* weapon ) {}
+	
+	const usercmd_t* 		GetUserCmd() const
+	{
+		return NULL;
+	}
+	
+	virtual idInventory*	GetInventory()
+	{
+		return NULL;
+	}
 	bool					WeaponAvailable( const char* name );
 	
-	virtual bool			IsLocallyControlled() const { return false; }
-
+	virtual bool			IsLocallyControlled() const
+	{
+		return false;
+	}
+	
 	// physics
 	// set a new physics object to be used by this entity
 	void					SetPhysics( idPhysics* phys );
@@ -448,12 +487,12 @@ public:
 	// callback function for when another entity received damage from this entity.  damage can be adjusted and returned to the caller.
 	virtual void			DamageFeedback( idEntity* victim, idEntity* inflictor, int& damage );
 	// callback function when there is incoming weapon fire that is on target
-	virtual void			IncomingFireFeedback( idEntity * attacker, idWeapon * weapon, const idVec3 & firePos, const idVec3 & fireDir, const idVec3 & hitPos );
+	virtual void			IncomingFireFeedback( idEntity* attacker, idWeapon* weapon, const idVec3& firePos, const idVec3& fireDir, const idVec3& hitPos );
 	// callback function when the entity fires own weapon
 	virtual void			WeaponFireFeedback( const idDict* weaponDef );
 	// called for entities that are locally controlled for controller shake
 	virtual void			SetControllerShake( float highMagnitude, int highDuration, float lowMagnitude, int lowDuration ) {}
-
+	
 	// notifies this entity that it is in pain
 	virtual bool			Pain( idEntity* inflictor, idEntity* attacker, int damage, const idVec3& dir, int location );
 	// notifies this entity that is has been killed
@@ -515,17 +554,35 @@ public:
 	void					ServerSendEvent( int eventId, const idBitMsg* msg, bool saveEvent, lobbyUserID_t excluding = lobbyUserID_t() ) const;
 	void					ClientSendEvent( int eventId, const idBitMsg* msg ) const;
 	
-	void					SetUseClientInterpolation( bool use ) { useClientInterpolation = use; }
+	void					SetUseClientInterpolation( bool use )
+	{
+		useClientInterpolation = use;
+	}
 	
-	void					SetSkipReplication( const bool skip ) { fl.skipReplication = skip; }
-	bool					GetSkipReplication() const { return fl.skipReplication; }
-	bool					IsReplicated() const { return  GetEntityNumber() < ENTITYNUM_FIRST_NON_REPLICATED; }
+	void					SetSkipReplication( const bool skip )
+	{
+		fl.skipReplication = skip;
+	}
+	bool					GetSkipReplication() const
+	{
+		return fl.skipReplication;
+	}
+	bool					IsReplicated() const
+	{
+		return  GetEntityNumber() < ENTITYNUM_FIRST_NON_REPLICATED;
+	}
 	
 	void					CreateDeltasFromOldOriginAndAxis( const idVec3& oldOrigin, const idMat3& oldAxis );
 	void					DecayOriginAndAxisDelta();
-
-	uint32					GetPredictedKey() { return predictionKey; }
-	void					SetPredictedKey( uint32 key_ ) { predictionKey = key_; }
+	
+	uint32					GetPredictedKey()
+	{
+		return predictionKey;
+	}
+	void					SetPredictedKey( uint32 key_ )
+	{
+		predictionKey = key_;
+	}
 	
 	void					FlagNewSnapshot();
 	
@@ -551,7 +608,10 @@ public:
 		return snapshotsReceived;
 	}
 	
-	virtual bool			CanBecomeSolid() { return true; }
+	virtual bool			CanBecomeSolid()
+	{
+		return true;
+	}
 	virtual void			BecomeSolid() { }
 	virtual void			BecomeNonSolid() { }
 protected:
@@ -559,8 +619,14 @@ protected:
 	int						modelDefHandle;						// handle to static renderer model
 	refSound_t				refSound;							// used to present sound to the audio engine
 	
-	idVec3					GetOriginDelta() const { return originDelta; }
-	idMat3					GetAxisDelta() const { return axisDelta; }
+	idVec3					GetOriginDelta() const
+	{
+		return originDelta;
+	}
+	idMat3					GetAxisDelta() const
+	{
+		return axisDelta;
+	}
 	
 private:
 	idPhysics_Static		defaultPhysicsObj;					// default physics object
@@ -586,7 +652,7 @@ private:
 	idMat3					axisDelta;
 	
 	interpolationBehavior_t	interpolationBehavior;
-	unsigned int			snapshotsReceived;	
+	unsigned int			snapshotsReceived;
 private:
 	void					FixupLocalizedStrings();
 	
@@ -678,7 +744,7 @@ private:
 	void					Event_GetGuiParm( int guiNum, const char* key );
 	void					Event_GetGuiParmFloat( int guiNum, const char* key );
 	void					Event_GuiNamedEvent( int guiNum, const char* event );
-	void					Event_PrecacheSkin( const char* skinName ); // motorsep 08-23-2014; allows precaching of skins	
+	void					Event_PrecacheSkin( const char* skinName ); // motorsep 08-23-2014; allows precaching of skins
 	void					Event_PrecacheParticle( const char* particleName ); // Dandel 08-23-2014; allows precaching of particles
 	void					Event_PrecacheMaterial( const char* MaterialName );
 	void					Event_PrecacheModelDef( const char* modelDefName ); // motorsep 09-16-2015; allows precaching of models/anims
@@ -687,7 +753,7 @@ private:
 	void					Event_BecomeNonSolid();
 	void					Event_SetPowerupTime( int powerup, int time );
 	void					Event_IsPowerupActive( int powerup );
-	void					Event_WeaponAvailable( const char * weaponName );
+	void					Event_WeaponAvailable( const char* weaponName );
 	void					Event_GetWeaponEntity();
 	void					Event_RandomPath();
 };

@@ -31,20 +31,21 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogAFView dialog
 
-class DialogAFView : public CDialog {
+class DialogAFView : public CDialog
+{
 
-	DECLARE_DYNAMIC(DialogAFView)
-
+	DECLARE_DYNAMIC( DialogAFView )
+	
 public:
-						DialogAFView(CWnd* pParent = NULL);   // standard constructor
+	DialogAFView( CWnd* pParent = NULL ); // standard constructor
 	virtual				~DialogAFView();
-
+	
 	enum				{ IDD = IDD_DIALOG_AF_VIEW };
-
+	
 protected:
-	virtual void		DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual void		DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	virtual INT_PTR		OnToolHitTest( CPoint point, TOOLINFO* pTI ) const;
-	afx_msg BOOL		OnToolTipNotify( UINT id, NMHDR *pNMHDR, LRESULT *pResult );
+	afx_msg BOOL		OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnBnClickedCheckViewBodies();
 	afx_msg void		OnBnClickedCheckViewBodynames();
 	afx_msg void		OnBnClickedCheckViewBodyMass();
@@ -68,9 +69,9 @@ protected:
 	afx_msg void		OnBnClickedCheckPhysicsTiming();
 	afx_msg void		OnBnClickedCheckPhysicsDragEntities();
 	afx_msg void		OnBnClickedCheckPhysicsShowDragSelection();
-
+	
 	DECLARE_MESSAGE_MAP()
-
+	
 private:
 	//{{AFX_DATA(DialogAFView)
 	BOOL				m_showBodies;
@@ -97,8 +98,8 @@ private:
 	BOOL				m_dragEntity;
 	BOOL				m_dragShowSelection;
 	//}}AFX_DATA
-
+	
 	float				m_gravity;
-
+	
 	static toolTip_t	toolTips[];
 };

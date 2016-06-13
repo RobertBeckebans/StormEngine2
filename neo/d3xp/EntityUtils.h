@@ -41,55 +41,70 @@ enum TurretParm
 
 struct turretController_t
 {
-public:	
+public:
 	void SetFov( float fov );
-
+	
 	void SetYawJoint( jointHandle_t joint );
 	void SetPitchJoint( jointHandle_t joint );
 	void SetBarrelJoint( jointHandle_t jointBarrel );
-
+	
 	void SetYawRate( float rate );
 	void SetYawRange( float minYaw, float maxYaw );
 	void SetPitchRate( float rate );
 	void SetPitchRange( float minPitch, float maxPitch );
-
-	const idAngles & GetAnglesIdeal() const { return anglesIdeal; }
-	const idAngles & GetAnglesCurrent() const { return anglesCurrent; }
-
-	void SetAnglesIdeal(const idAngles & angles) { anglesIdeal = angles; }
-	void SetAnglesCurrent(const idAngles & angles) { anglesCurrent = angles; }
-
+	
+	const idAngles& GetAnglesIdeal() const
+	{
+		return anglesIdeal;
+	}
+	const idAngles& GetAnglesCurrent() const
+	{
+		return anglesCurrent;
+	}
+	
+	void SetAnglesIdeal( const idAngles& angles )
+	{
+		anglesIdeal = angles;
+	}
+	void SetAnglesCurrent( const idAngles& angles )
+	{
+		anglesCurrent = angles;
+	}
+	
 	bool WithinAimTolerance( float yawTolerance, float pitchTolerance );
-
-	void SetTrackTarget( bool track ) { trackingEnabled = track; }
-
-	void SetProjectileParms( const idDeclEntityDef * decl );
-
-	void Update( idAI * owner );
-
+	
+	void SetTrackTarget( bool track )
+	{
+		trackingEnabled = track;
+	}
+	
+	void SetProjectileParms( const idDeclEntityDef* decl );
+	
+	void Update( idAI* owner );
+	
 	void Save( idSaveGame* savefile ) const;
 	void Restore( idRestoreGame* savefile );
-
+	
 	turretController_t();
 private:
 	float					fieldOfView;
-
+	
 	idEntityPtr<idActor>	target;
-
+	
 	jointHandle_t			jointYaw;
 	jointHandle_t			jointPitch;
 	jointHandle_t			jointBarrel;
-
+	
 	float					yawMin, yawMax, yawRate;
 	float					pitchMin, pitchMax, pitchRate;
-
+	
 	idAngles				anglesIdeal;
 	idAngles				anglesCurrent;
-
+	
 	bool					trackingEnabled;
-
+	
 	//const idDeclEntityDef * projectileDecl;
-	//float					projectileSpeed;	
+	//float					projectileSpeed;
 	//idVec3					projectileGravity;
 	//float					projectileMaxHeight;
 	//idClipModel*			projectileClipModel;
@@ -97,6 +112,6 @@ private:
 	
 };
 
-idActor * FindEnemy( idEntity * attacker, bool useFov );
+idActor* FindEnemy( idEntity* attacker, bool useFov );
 
 #endif /* !__GAME_ENTITY_UTILS_H__ */

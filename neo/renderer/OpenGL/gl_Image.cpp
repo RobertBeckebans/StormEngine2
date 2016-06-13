@@ -172,11 +172,11 @@ void idImage::SetTexParameters()
 		case TT_CUBIC:
 			target = GL_TEXTURE_CUBE_MAP_EXT;
 			break;
-			// RB begin
+		// RB begin
 		case TT_2D_ARRAY:
 			target = GL_TEXTURE_2D_ARRAY;
 			break;
-			// RB end
+		// RB end
 		default:
 			idLib::FatalError( "%s: bad texture type %d", GetName(), opts.textureType );
 			return;
@@ -342,7 +342,7 @@ void idImage::SetTexParameters()
 		glTexParameteri( target, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
 #endif
 	}
-
+	
 }
 
 /*
@@ -364,19 +364,19 @@ void idImage::AllocImage()
 	{
 		case FMT_RGBA8:
 			// foresthale 2014-02-20: fixed r_useSRGB texture handling
-			internalFormat = (opts.sRGB && r_useSRGB.GetBool()) ? GL_SRGB8_ALPHA8 : GL_RGBA8;
+			internalFormat = ( opts.sRGB && r_useSRGB.GetBool() ) ? GL_SRGB8_ALPHA8 : GL_RGBA8;
 			dataFormat = GL_RGBA;
 			dataType = GL_UNSIGNED_BYTE;
 			break;
 		case FMT_XRGB8:
 			// foresthale 2014-02-20: fixed r_useSRGB texture handling
-			internalFormat = (opts.sRGB && r_useSRGB.GetBool()) ? GL_SRGB : GL_RGB;
+			internalFormat = ( opts.sRGB && r_useSRGB.GetBool() ) ? GL_SRGB : GL_RGB;
 			dataFormat = GL_RGBA;
 			dataType = GL_UNSIGNED_BYTE;
 			break;
 		case FMT_RGB565:
 			// foresthale 2014-02-20: fixed r_useSRGB texture handling
-			internalFormat = (opts.sRGB && r_useSRGB.GetBool()) ? GL_SRGB : GL_RGB;
+			internalFormat = ( opts.sRGB && r_useSRGB.GetBool() ) ? GL_SRGB : GL_RGB;
 			dataFormat = GL_RGB;
 			dataType = GL_UNSIGNED_SHORT_5_6_5;
 			break;
@@ -421,12 +421,12 @@ void idImage::AllocImage()
 			dataType = GL_UNSIGNED_BYTE;
 			break;
 		case FMT_DXT1:
-			internalFormat = (opts.sRGB && r_useSRGB.GetBool()) ? GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT : GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+			internalFormat = ( opts.sRGB && r_useSRGB.GetBool() ) ? GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT : GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
 			dataFormat = GL_RGBA;
 			dataType = GL_UNSIGNED_BYTE;
 			break;
 		case FMT_DXT5:
-			internalFormat = (opts.sRGB && r_useSRGB.GetBool()) ? GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT : GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+			internalFormat = ( opts.sRGB && r_useSRGB.GetBool() ) ? GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT : GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
 			dataFormat = GL_RGBA;
 			dataType = GL_UNSIGNED_BYTE;
 			break;
@@ -458,7 +458,7 @@ void idImage::AllocImage()
 			break;
 		case FMT_SHADOW_ARRAY:
 		{
-			switch(r_shadowMapQuality.GetInteger())
+			switch( r_shadowMapQuality.GetInteger() )
 			{
 				case 0:
 					internalFormat = GL_DEPTH_COMPONENT;
@@ -614,7 +614,7 @@ void idImage::PurgeImage()
 	if( texnum != TEXTURE_NOT_LOADED )
 	{
 		// foresthale 2014-10-05: hitting quit in the launch console crashes if we call qglDeleteTextures (which is NULL at the time)
-		if ( qglDeleteTextures )
+		if( qglDeleteTextures )
 			qglDeleteTextures( 1, ( GLuint* )&texnum );	// this should be the ONLY place it is ever called!
 		texnum = TEXTURE_NOT_LOADED;
 	}

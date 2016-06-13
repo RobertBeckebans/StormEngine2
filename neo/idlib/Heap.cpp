@@ -46,16 +46,16 @@ If you have questions concerning this license or the applicable additional terms
 #define DEBUGHEAP_BUFFER (0x40000000)
 #define DEBUGHEAP_LIST (1<<20)
 // just a basic heap - grows, never shrinks
-static unsigned char *debugheapstart = NULL;
-static unsigned char *debugheapend;
-static unsigned char *debugheapcur;
+static unsigned char* debugheapstart = NULL;
+static unsigned char* debugheapend;
+static unsigned char* debugheapcur;
 // each allocation that is made is tracked as a pair of pointers (start and end) and a live flag, we can check sentinels for corruption
 static unsigned int debugheaplivecount = 0;
-static unsigned char *debugheaplivepointers[DEBUGHEAP_LIST][2];
+static unsigned char* debugheaplivepointers[DEBUGHEAP_LIST][2];
 static unsigned char debugheapliveflag[DEBUGHEAP_LIST];
 static mutexHandle_t debugheapmutex;
 
-void Mem_Printf( const char *fmt, ...)
+void Mem_Printf( const char* fmt, ... )
 {
 	char buf[1024];
 	va_list ap;
@@ -63,129 +63,129 @@ void Mem_Printf( const char *fmt, ...)
 	va_start( ap, fmt );
 	vsprintf( buf, fmt, ap );
 	va_end( ap );
-
+	
 #ifdef WIN32
 	buf[1023] = 0;
-	OutputDebugString(buf);
+	OutputDebugString( buf );
 #else
-	printf("%s", buf);
+	printf( "%s", buf );
 #endif
 }
 
 void* Mem_Alloc16( const size_t size, const memTag_t tag )
 {
-	size_t paddedsize = ((size + 15) & ~15);
-	unsigned char *m;
-
-	if (debugheapstart == NULL)
+	size_t paddedsize = ( ( size + 15 ) & ~15 );
+	unsigned char* m;
+	
+	if( debugheapstart == NULL )
 	{
-		Sys_MutexCreate(debugheapmutex);
+		Sys_MutexCreate( debugheapmutex );
 #if 0
-		debugheapstart = (unsigned char *)malloc(DEBUGHEAP_BUFFER);
+		debugheapstart = ( unsigned char* )malloc( DEBUGHEAP_BUFFER );
 		debugheapend = debugheapstart + DEBUGHEAP_BUFFER;
 #else
 		// the buffer itself
 		static unsigned char debugheapbuffer[DEBUGHEAP_BUFFER];
 		debugheapstart = debugheapbuffer;
-		debugheapend = debugheapbuffer + sizeof(debugheapbuffer);
+		debugheapend = debugheapbuffer + sizeof( debugheapbuffer );
 #endif
 		debugheapcur = debugheapstart;
 	}
-
-	if (size == 0)
+	
+	if( size == 0 )
 	{
 		//Mem_Printf("DEBUGHEAP Mem_Alloc16(%i,%i) size == 0\n", (int)size, (int)tag);
 		return NULL;
 	}
-
-	Sys_MutexLock(debugheapmutex, true);
-	if (debugheaplivecount == DEBUGHEAP_LIST)
+	
+	Sys_MutexLock( debugheapmutex, true );
+	if( debugheaplivecount == DEBUGHEAP_LIST )
 	{
-		Mem_Printf("DEBUGHEAP Mem_Alloc16(%i,%i) debugheaplivecount == DEBUGHEAP_LIST\n", (int)size, (int)tag);
-		Sys_MutexUnlock(debugheapmutex);
+		Mem_Printf( "DEBUGHEAP Mem_Alloc16(%i,%i) debugheaplivecount == DEBUGHEAP_LIST\n", ( int )size, ( int )tag );
+		Sys_MutexUnlock( debugheapmutex );
 		return NULL;
 	}
-	if (debugheapcur+size > debugheapend)
+	if( debugheapcur + size > debugheapend )
 	{
-		Mem_Printf("DEBUGHEAP Mem_Alloc16(%i,%i) debugheapcur+size > DEBUGHEAP_BUFFER\n", (int)size, (int)tag);
-		Sys_MutexUnlock(debugheapmutex);
+		Mem_Printf( "DEBUGHEAP Mem_Alloc16(%i,%i) debugheapcur+size > DEBUGHEAP_BUFFER\n", ( int )size, ( int )tag );
+		Sys_MutexUnlock( debugheapmutex );
 		return NULL;
 	}
-
+	
 	// advance the heap in 16 byte increments, so that the return addresses are always aligned (as expected)
 	m = debugheapcur;
 	debugheapcur += paddedsize;
-
+	
 	// add the new range to the live pointer data
 	debugheaplivepointers[debugheaplivecount][0] = m;
 	debugheaplivepointers[debugheaplivecount][1] = m + size;
 	debugheapliveflag[debugheaplivecount] = 1; // allocated - this will be changed to 0 on free
 	debugheaplivecount++;
-
+	
 	// fill the memory with intentional garbage
-	for (size_t i = 0;i < paddedsize;i += 4)
-		*((int*)(m + i)) = 0xDEADBEEF;
-
+	for( size_t i = 0; i < paddedsize; i += 4 )
+		* ( ( int* )( m + i ) ) = 0xDEADBEEF;
+		
 	// we're done with the mutex now
-	Sys_MutexUnlock(debugheapmutex);
-
+	Sys_MutexUnlock( debugheapmutex );
+	
 	return m;
 }
 
 void Mem_Free16( void* ptr )
 {
-	unsigned char *m = (unsigned char *)ptr;
-	if (ptr == NULL)
+	unsigned char* m = ( unsigned char* )ptr;
+	if( ptr == NULL )
 	{
 		//Mem_Printf("Mem_Free16(%p) pointer == NULL\n", ptr);
 		return;
 	}
-	Sys_MutexLock(debugheapmutex, true);
-	if (m >= debugheapstart && m < debugheapend)
+	Sys_MutexLock( debugheapmutex, true );
+	if( m >= debugheapstart && m < debugheapend )
 	{
 		// do a binary search to find the pointer quickly - we know they are in sorted order
 		int i = 0, j = debugheaplivecount, k = 0;
-		for (;;)
+		for( ;; )
 		{
-			k = (i + j) >> 1;
-			if (debugheaplivepointers[k][0] < m)
+			k = ( i + j ) >> 1;
+			if( debugheaplivepointers[k][0] < m )
 			{
-				if (i == k)
+				if( i == k )
 					break;
 				i = k;
 			}
-			else if (debugheaplivepointers[k][0] > m)
+			else if( debugheaplivepointers[k][0] > m )
 			{
-				if (j == k)
+				if( j == k )
 					break;
 				j = k;
 			}
 			else
 				break;
 		}
-		if (m >= debugheaplivepointers[k][0] && m < debugheaplivepointers[k][1])
+		if( m >= debugheaplivepointers[k][0] && m < debugheaplivepointers[k][1] )
 		{
-			if (m == debugheaplivepointers[k][0])
+			if( m == debugheaplivepointers[k][0] )
 			{
 				// a perfectly normal freeing operation, cool!  we don't really do that.
-				if (debugheapliveflag[k])
+				if( debugheapliveflag[k] )
 				{
 					// we'll notice this flag is cleared next time a free occurs on the same pointer
 					debugheapliveflag[k] = 0;
-					Sys_MutexUnlock(debugheapmutex);
+					Sys_MutexUnlock( debugheapmutex );
 					return;
 				}
 				else
-					Mem_Printf("DEBUGHEAP: Mem_Free16(%p) pointer is a duplicate free!\n", ptr);
+					Mem_Printf( "DEBUGHEAP: Mem_Free16(%p) pointer is a duplicate free!\n", ptr );
 			}
 			else
-				Mem_Printf("DEBUGHEAP: Mem_Free16(%p) pointer is not at the start of the block! (%p ... %p)\n", ptr, debugheaplivepointers[k][0], debugheaplivepointers[k][1]);
+				Mem_Printf( "DEBUGHEAP: Mem_Free16(%p) pointer is not at the start of the block! (%p ... %p)\n", ptr, debugheaplivepointers[k][0], debugheaplivepointers[k][1] );
 		}
-		Mem_Printf("DEBUGHEAP: Mem_Free16(%p) pointer is in debugheap but does not match any range!\n", ptr);
+		Mem_Printf( "DEBUGHEAP: Mem_Free16(%p) pointer is in debugheap but does not match any range!\n", ptr );
 	}
 	else
-		Mem_Printf("DEBUGHEAP: Mem_Free16(%p) pointer isn't even in the debugheap range! (%p ... %p)\n", ptr, debugheapstart, debugheapend);
-	Sys_MutexUnlock(debugheapmutex);
+		Mem_Printf( "DEBUGHEAP: Mem_Free16(%p) pointer isn't even in the debugheap range! (%p ... %p)\n", ptr, debugheapstart, debugheapend );
+	Sys_MutexUnlock( debugheapmutex );
 }
 
 #else // DEBUGHEAP

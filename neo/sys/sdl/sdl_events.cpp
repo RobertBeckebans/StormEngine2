@@ -93,15 +93,15 @@ struct mouse_poll_t
 static idList<kbd_poll_t> kbd_polls;
 static idList<mouse_poll_t> mouse_polls;
 static idList<sysEvent_t> event_queue;
-void Sys_QueEvent( sysEventType_t type, int value, int value2, int ptrLength, void *ptr, int inputDeviceNum );
+void Sys_QueEvent( sysEventType_t type, int value, int value2, int ptrLength, void* ptr, int inputDeviceNum );
 
 #define SDL_BFG_MAX_CONTROLLER_BUTTON_EVENTS K_JOY_DPAD_RIGHT-K_JOY1+1
 #define SDL_BFG_EVENTS_MAX_CONTROLLER_EVENTS SDL_CONTROLLER_BUTTON_MAX + SDL_CONTROLLER_AXIS_MAX
 struct gamepad_device_t
 {
 	SDL_JoystickID gamePadId;
-	SDL_Joystick *gameJoyStick;
-	SDL_GameController *gamePad;
+	SDL_Joystick* gameJoyStick;
+	SDL_GameController* gamePad;
 	int oldState[SDL_CONTROLLER_BUTTON_MAX];
 	int oldAxisState[SDL_CONTROLLER_AXIS_MAX];
 	/* This is a Mapping of the Cardinal Directions for each axis */
@@ -118,34 +118,39 @@ struct gamepad_device_t
 		gamePad = NULL;
 		activeEvents = 0;
 		gameJoyStick = NULL;
-		for(int i = 0;i < SDL_CONTROLLER_BUTTON_MAX; i++)
+		for( int i = 0; i < SDL_CONTROLLER_BUTTON_MAX; i++ )
 			oldState[i] = 0;
-		for(int i = 0;i < SDL_CONTROLLER_AXIS_MAX; i++) {
+		for( int i = 0; i < SDL_CONTROLLER_AXIS_MAX; i++ )
+		{
 			oldAxisState[i] = 0;
 		}
-		for(int i = 0; i < SDL_BFG_MAX_CONTROLLER_BUTTON_EVENTS;i++)
+		for( int i = 0; i < SDL_BFG_MAX_CONTROLLER_BUTTON_EVENTS; i++ )
 			oldButtonStates[i] = false;
 	}
 	
-	gamepad_device_t( SDL_GameController * v )
+	gamepad_device_t( SDL_GameController* v )
 	{
 		gamePad = v;
 		activeEvents = 0;
-		gameJoyStick = SDL_GameControllerGetJoystick(v);
-		gamePadId = SDL_JoystickInstanceID(gameJoyStick);
-		for(int i = 0;i < SDL_CONTROLLER_BUTTON_MAX; i++)
+		gameJoyStick = SDL_GameControllerGetJoystick( v );
+		gamePadId = SDL_JoystickInstanceID( gameJoyStick );
+		for( int i = 0; i < SDL_CONTROLLER_BUTTON_MAX; i++ )
 			oldState[i] = 0;
-		for(int i = 0;i < SDL_CONTROLLER_AXIS_MAX; i++) {
+		for( int i = 0; i < SDL_CONTROLLER_AXIS_MAX; i++ )
+		{
 			oldAxisState[i] = 0;
 		}
-		for(int i = 0; i < SDL_BFG_MAX_CONTROLLER_BUTTON_EVENTS;i++)
+		for( int i = 0; i < SDL_BFG_MAX_CONTROLLER_BUTTON_EVENTS; i++ )
 			oldButtonStates[i] = false;
 	}
-	void PushButton( int inputDeviceNum, int key, bool value ) {
+	void PushButton( int inputDeviceNum, int key, bool value )
+	{
 		int curKey = 0;
-		if(K_JOY1 <= key && key <=K_JOY_DPAD_RIGHT) {
-			curKey = key-K_JOY1;
-			if(oldButtonStates[curKey] != value) {
+		if( K_JOY1 <= key && key <= K_JOY_DPAD_RIGHT )
+		{
+			curKey = key - K_JOY1;
+			if( oldButtonStates[curKey] != value )
+			{
 				oldButtonStates[curKey] = value;
 				Sys_QueEvent( SE_KEY, key, value, 0, NULL, inputDeviceNum );
 			}
@@ -154,7 +159,7 @@ struct gamepad_device_t
 	void PostInputEvent( int inputDeviceNum, int event, int value, int range = 16384 )
 	{
 		// These events are used for GUI button presses
-		if( ( J_ACTION1 <= event  ) && ( event <= J_ACTION_MAX ) )
+		if( ( J_ACTION1 <= event ) && ( event <= J_ACTION_MAX ) )
 		{
 			PushButton( inputDeviceNum, K_JOY1 + ( event - J_ACTION1 ), value );
 		}
@@ -204,15 +209,16 @@ struct gamepad_device_t
 				PushButton( inputDeviceNum, K_JOY_TRIGGER2, ( value > range ) );
 			}
 		}
-	
+		
 		// These events are used for actual game input
 		events[activeEvents].event = event;
 		events[activeEvents].value = value;
 		activeEvents++;
 	}
-
-	int	pollEvents(int controllerID) {
-		static const int sdl2BFG_ButtonRemap[SDL_CONTROLLER_BUTTON_MAX] =	
+	
+	int	pollEvents( int controllerID )
+	{
+		static const int sdl2BFG_ButtonRemap[SDL_CONTROLLER_BUTTON_MAX] =
 		{
 			/* SEE: SDL_GameControllerButton in SDL_gamecontroller.h */
 			J_ACTION1,		J_ACTION2		,		// A, B
@@ -232,23 +238,27 @@ struct gamepad_device_t
 		};
 		activeEvents = 0;
 		int currentState = 0;
-		for(int i = 0;i < SDL_CONTROLLER_BUTTON_MAX; i++) {
-			if(-1 < sdl2BFG_ButtonRemap[i]) {
-				currentState = SDL_GameControllerGetButton(gamePad,(SDL_GameControllerButton)i);
-				PostInputEvent(controllerID,sdl2BFG_ButtonRemap[i],currentState);
+		for( int i = 0; i < SDL_CONTROLLER_BUTTON_MAX; i++ )
+		{
+			if( -1 < sdl2BFG_ButtonRemap[i] )
+			{
+				currentState = SDL_GameControllerGetButton( gamePad, ( SDL_GameControllerButton )i );
+				PostInputEvent( controllerID, sdl2BFG_ButtonRemap[i], currentState );
 			}
 		}
 		int currentAxisState = 0;
-
-		for(int i = 0;i < SDL_CONTROLLER_AXIS_MAX; i++) {
-			currentAxisState = SDL_GameControllerGetAxis(gamePad,(SDL_GameControllerAxis)i);
-			PostInputEvent(controllerID,sdl2BFG_AxisRemap[i],currentAxisState);
+		
+		for( int i = 0; i < SDL_CONTROLLER_AXIS_MAX; i++ )
+		{
+			currentAxisState = SDL_GameControllerGetAxis( gamePad, ( SDL_GameControllerAxis )i );
+			PostInputEvent( controllerID, sdl2BFG_AxisRemap[i], currentAxisState );
 		}
 		return activeEvents;
 	}
 	int		ReturnInputEvent( const int n, int& action, int& value )
 	{
-		if(-1 < n && n < activeEvents) {
+		if( -1 < n && n < activeEvents )
+		{
 			action = events[n].event;
 			value  = events[n].value;
 			return 1;
@@ -281,22 +291,22 @@ static int SDL_KeyToDoom3Key( SDL_Keycode key, bool& isChar )
 		case SDLK_SPACE:
 			return K_SPACE;
 			
-			//case SDLK_EXCLAIM:
-			/*
-			SDLK_QUOTEDBL:
-			SDLK_HASH:
-			SDLK_DOLLAR:
-			SDLK_AMPERSAND:
-			SDLK_QUOTE		= 39,
-			SDLK_LEFTPAREN		= 40,
-			SDLK_RIGHTPAREN		= 41,
-			SDLK_ASTERISK		= 42,
-			SDLK_PLUS		= 43,
-			SDLK_COMMA		= 44,
-			SDLK_MINUS		= 45,
-			SDLK_PERIOD		= 46,
-			SDLK_SLASH		= 47,
-			*/
+		//case SDLK_EXCLAIM:
+		/*
+		SDLK_QUOTEDBL:
+		SDLK_HASH:
+		SDLK_DOLLAR:
+		SDLK_AMPERSAND:
+		SDLK_QUOTE		= 39,
+		SDLK_LEFTPAREN		= 40,
+		SDLK_RIGHTPAREN		= 41,
+		SDLK_ASTERISK		= 42,
+		SDLK_PLUS		= 43,
+		SDLK_COMMA		= 44,
+		SDLK_MINUS		= 45,
+		SDLK_PERIOD		= 46,
+		SDLK_SLASH		= 47,
+		*/
 		case SDLK_SLASH:
 			return K_SLASH;// this is the '/' key on the keyboard
 		case SDLK_QUOTE:
@@ -331,7 +341,7 @@ static int SDL_KeyToDoom3Key( SDL_Keycode key, bool& isChar )
 		case SDLK_9:
 			return K_9;
 			
-			// DG: add some missing keys..
+		// DG: add some missing keys..
 		case SDLK_UNDERSCORE:
 			return K_UNDERLINE;
 			
@@ -355,28 +365,28 @@ static int SDL_KeyToDoom3Key( SDL_Keycode key, bool& isChar )
 			
 		case SDLK_EQUALS:
 			return K_EQUALS;
-			// DG end
-			
-			/*
-			SDLK_COLON		= 58,
-			SDLK_SEMICOLON		= 59,
-			SDLK_LESS		= 60,
-			SDLK_EQUALS		= 61,
-			SDLK_GREATER		= 62,
-			SDLK_QUESTION		= 63,
-			SDLK_AT			= 64,
-			*/
-			/*
-			   Skip uppercase letters
-			 */
-			/*
-			SDLK_LEFTBRACKET	= 91,
-			SDLK_BACKSLASH		= 92,
-			SDLK_RIGHTBRACKET	= 93,
-			SDLK_CARET		= 94,
-			SDLK_UNDERSCORE		= 95,
-			SDLK_BACKQUOTE		= 96,
-			*/
+		// DG end
+		
+		/*
+		SDLK_COLON		= 58,
+		SDLK_SEMICOLON		= 59,
+		SDLK_LESS		= 60,
+		SDLK_EQUALS		= 61,
+		SDLK_GREATER		= 62,
+		SDLK_QUESTION		= 63,
+		SDLK_AT			= 64,
+		*/
+		/*
+		   Skip uppercase letters
+		 */
+		/*
+		SDLK_LEFTBRACKET	= 91,
+		SDLK_BACKSLASH		= 92,
+		SDLK_RIGHTBRACKET	= 93,
+		SDLK_CARET		= 94,
+		SDLK_UNDERSCORE		= 95,
+		SDLK_BACKQUOTE		= 96,
+		*/
 		case SDLK_RIGHTBRACKET:
 			return K_RBRACKET;
 		case SDLK_LEFTBRACKET:
@@ -470,13 +480,13 @@ static int SDL_KeyToDoom3Key( SDL_Keycode key, bool& isChar )
 		case SDLK_PAUSE:
 			return K_PAUSE;
 			
-			// DG: add tab key support
+		// DG: add tab key support
 		case SDLK_TAB:
 			return K_TAB;
-			// DG end
-			
-			//case SDLK_APPLICATION:
-			//	return K_COMMAND;
+		// DG end
+		
+		//case SDLK_APPLICATION:
+		//	return K_COMMAND;
 		case SDLK_CAPSLOCK:
 			return K_CAPSLOCK;
 			
@@ -503,9 +513,9 @@ static int SDL_KeyToDoom3Key( SDL_Keycode key, bool& isChar )
 			
 		case SDLK_RGUI:
 			return K_RWIN;
-			//case SDLK_MENU:
-			//	return K_MENU;
-			
+		//case SDLK_MENU:
+		//	return K_MENU;
+		
 		case SDLK_LALT:
 			return K_LALT;
 			
@@ -577,8 +587,8 @@ static int SDL_KeyToDoom3Key( SDL_Keycode key, bool& isChar )
 			
 		case SDLK_F12:
 			return K_F12;
-			// K_INVERTED_EXCLAMATION;
-			
+		// K_INVERTED_EXCLAMATION;
+		
 		case SDLK_F13:
 			return K_F13;
 			
@@ -626,14 +636,14 @@ static int SDL_KeyToDoom3Key( SDL_Keycode key, bool& isChar )
 			
 		case SDLK_KP_DIVIDE:
 			return K_KP_SLASH;
-			// K_SUPERSCRIPT_TWO;
-
-
-			
+		// K_SUPERSCRIPT_TWO;
+		
+		
+		
 		case SDLK_KP_MINUS:
 			return K_KP_MINUS;
-			// K_ACUTE_ACCENT;
-			
+		// K_ACUTE_ACCENT;
+		
 		case SDLK_KP_PLUS:
 			return K_KP_PLUS;
 			
@@ -646,31 +656,31 @@ static int SDL_KeyToDoom3Key( SDL_Keycode key, bool& isChar )
 		case SDLK_KP_EQUALS:
 			return K_KP_EQUALS;
 			
-			// K_MASCULINE_ORDINATOR;
-			// K_GRAVE_A;
-			// K_AUX1;
-			// K_CEDILLA_C;
-			// K_GRAVE_E;
-			// K_AUX2;
-			// K_AUX3;
-			// K_AUX4;
-			// K_GRAVE_I;
-			// K_AUX5;
-			// K_AUX6;
-			// K_AUX7;
-			// K_AUX8;
-			// K_TILDE_N;
-			// K_GRAVE_O;
-			// K_AUX9;
-			// K_AUX10;
-			// K_AUX11;
-			// K_AUX12;
-			// K_AUX13;
-			// K_AUX14;
-			// K_GRAVE_U;
-			// K_AUX15;
-			// K_AUX16;
-			
+		// K_MASCULINE_ORDINATOR;
+		// K_GRAVE_A;
+		// K_AUX1;
+		// K_CEDILLA_C;
+		// K_GRAVE_E;
+		// K_AUX2;
+		// K_AUX3;
+		// K_AUX4;
+		// K_GRAVE_I;
+		// K_AUX5;
+		// K_AUX6;
+		// K_AUX7;
+		// K_AUX8;
+		// K_TILDE_N;
+		// K_GRAVE_O;
+		// K_AUX9;
+		// K_AUX10;
+		// K_AUX11;
+		// K_AUX12;
+		// K_AUX13;
+		// K_AUX14;
+		// K_GRAVE_U;
+		// K_AUX15;
+		// K_AUX16;
+		
 		case SDLK_PRINTSCREEN:
 			return K_PRINTSCREEN;
 			
@@ -702,7 +712,7 @@ static void PushConsoleEvent( const char* s )
 }
 
 
-int sys_HandleSDL_Events(void *userdata, SDL_Event *event);
+int sys_HandleSDL_Events( void* userdata, SDL_Event* event );
 /*
 =================
 Sys_InitInput
@@ -717,36 +727,40 @@ void Sys_InitInput()
 	joystick_Devices.SetGranularity( MAX_JOYSTICKS );
 	in_keyboard.SetModified();
 	/* Initialize Game Controller API */
-	SDL_Init( SDL_INIT_JOYSTICK |SDL_INIT_GAMECONTROLLER );
+	SDL_Init( SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER );
 	/* Initialize Event Filter */
-	SDL_SetEventFilter(sys_HandleSDL_Events, NULL);
+	SDL_SetEventFilter( sys_HandleSDL_Events, NULL );
 	idStr ControllerPath = Sys_DefaultBasePath();
-	ControllerPath.Append("/base/gamecontrollerdb.txt");
-	common->Printf( "Loading controller Mapping file \"%s\"\n",ControllerPath.c_str());
-	SDL_GameControllerAddMappingsFromFile(ControllerPath.c_str());
+	ControllerPath.Append( "/base/gamecontrollerdb.txt" );
+	common->Printf( "Loading controller Mapping file \"%s\"\n", ControllerPath.c_str() );
+	SDL_GameControllerAddMappingsFromFile( ControllerPath.c_str() );
 	ControllerPath = Sys_DefaultSavePath();
-	ControllerPath.Append("/gamecontrollerdb.txt");
-	common->Printf( "Loading controller Mapping file \"%s\"\n",ControllerPath.c_str());
-	SDL_GameControllerAddMappingsFromFile(ControllerPath.c_str());
-    char guid[64];
-    SDL_GameController *gamecontroller;
-    for (int i = 0; i < SDL_NumJoysticks(); ++i) {
-        const char *name;
-        SDL_JoystickGetGUIDString(SDL_JoystickGetDeviceGUID(i),
-                                  guid, sizeof (guid));
-
-        if ( SDL_IsGameController(i) )
-        {
-            name = SDL_GameControllerNameForIndex(i);
-			if(joystick_Devices.Num() < MAX_JOYSTICKS) {
-				common->Printf( "Adding Controller \"%s\" ( GUID: %s )\n",name, guid);
-		        gamecontroller = SDL_GameControllerOpen(i);
-				joystick_Devices.Append(gamepad_device_t( gamecontroller ));
-			} else{
-				common->Printf( "Detected Controller Not used: %s ( GUID: %s )\n",name, guid);
+	ControllerPath.Append( "/gamecontrollerdb.txt" );
+	common->Printf( "Loading controller Mapping file \"%s\"\n", ControllerPath.c_str() );
+	SDL_GameControllerAddMappingsFromFile( ControllerPath.c_str() );
+	char guid[64];
+	SDL_GameController* gamecontroller;
+	for( int i = 0; i < SDL_NumJoysticks(); ++i )
+	{
+		const char* name;
+		SDL_JoystickGetGUIDString( SDL_JoystickGetDeviceGUID( i ),
+								   guid, sizeof( guid ) );
+								   
+		if( SDL_IsGameController( i ) )
+		{
+			name = SDL_GameControllerNameForIndex( i );
+			if( joystick_Devices.Num() < MAX_JOYSTICKS )
+			{
+				common->Printf( "Adding Controller \"%s\" ( GUID: %s )\n", name, guid );
+				gamecontroller = SDL_GameControllerOpen( i );
+				joystick_Devices.Append( gamepad_device_t( gamecontroller ) );
 			}
-        }
-    }
+			else
+			{
+				common->Printf( "Detected Controller Not used: %s ( GUID: %s )\n", name, guid );
+			}
+		}
+	}
 }
 
 /*
@@ -872,17 +886,20 @@ sysEvent_t Sys_GetEvent()
 	int eventNum = event_queue.Num();
 	
 	static const sysEvent_t res_none = { SE_NONE, 0, 0, 0, NULL };
-	if(eventNum && eventHead < eventNum ) {
+	if( eventNum && eventHead < eventNum )
+	{
 		res = event_queue[eventHead];
 		eventHead++;
 		return res;
-	} else{
+	}
+	else
+	{
 		return res_none;
 	}
-		
+	
 }
 
-void Sys_QueEvent( sysEventType_t type, int value, int value2, int ptrLength, void *ptr, int inputDeviceNum )
+void Sys_QueEvent( sysEventType_t type, int value, int value2, int ptrLength, void* ptr, int inputDeviceNum )
 {
 	sysEvent_t eventData = { };
 	eventData.evType = type;
@@ -891,9 +908,9 @@ void Sys_QueEvent( sysEventType_t type, int value, int value2, int ptrLength, vo
 	eventData.evPtrLength = ptrLength;
 	eventData.evPtr = ptr;
 	eventData.inputDevice = inputDeviceNum;
-	event_queue.Append(eventData);
+	event_queue.Append( eventData );
 }
-int sys_HandleSDL_Events(void *userdata, SDL_Event *event)
+int sys_HandleSDL_Events( void* userdata, SDL_Event* event )
 {
 	sysEvent_t res = { };
 	int key;
@@ -927,7 +944,7 @@ int sys_HandleSDL_Events(void *userdata, SDL_Event *event)
 					// DG end
 					break;
 					
-					// DG: handle resizing and moving of window
+				// DG: handle resizing and moving of window
 				case SDL_WINDOWEVENT_RESIZED:
 				{
 					int w = event->window.data1;
@@ -948,11 +965,11 @@ int sys_HandleSDL_Events(void *userdata, SDL_Event *event)
 					r_windowY.SetInteger( y );
 					break;
 				}
-				// DG end
+					// DG end
 			}
 			
 			return 0;
-		
+			
 		case SDL_KEYDOWN:
 			if( event->key.keysym.sym == SDLK_RETURN && ( event->key.keysym.mod & KMOD_ALT ) > 0 )
 			{
@@ -978,9 +995,9 @@ int sys_HandleSDL_Events(void *userdata, SDL_Event *event)
 				cvarSystem->SetCVarBool( "in_nograb", grab );
 				return 0;
 			}
-			// DG end
-			
-			// fall through
+		// DG end
+		
+		// fall through
 		case SDL_KEYUP:
 		{
 			bool isChar;
@@ -990,7 +1007,7 @@ int sys_HandleSDL_Events(void *userdata, SDL_Event *event)
 			{
 				key = K_GRAVE;
 				c = K_BACKSPACE; // bad hack to get empty console inputline..
-
+				
 			} // DG end, the original code is in the else case
 			else
 			{
@@ -1017,25 +1034,27 @@ int sys_HandleSDL_Events(void *userdata, SDL_Event *event)
 			Sys_QueEvent( SE_KEY, key, event->key.state == SDL_PRESSED ? 1 : 0, 0, NULL, 0 );
 			kbd_polls.Append( kbd_poll_t( key, event->key.state == SDL_PRESSED ) );
 			
-			if( key == K_BACKSPACE && event->key.state == SDL_PRESSED ) {
+			if( key == K_BACKSPACE && event->key.state == SDL_PRESSED )
+			{
 				//c = key;
 				Sys_QueEvent( SE_CHAR, K_BACKSPACE, 0, 0, NULL, 0 );
 			}
 			//Sys_QueEvent( SE_CHAR, c, 0, 0, NULL, 0 );
 			return 0;
-
+			
 		}
 		
 		case SDL_TEXTINPUT:
 			if( event->text.text && *event->text.text )
 			{
-				if( !event->text.text[1] ) 
+				if( !event->text.text[1] )
 					Sys_QueEvent( SE_CHAR, *event->text.text, 0, 0, NULL, 0 );
-				else {
+				else
+				{
 					char* s = NULL;
 					size_t s_pos = 0;
 					s = strdup( event->text.text );
-					while( s !=NULL )
+					while( s != NULL )
 					{
 						Sys_QueEvent( SE_CHAR, s[s_pos], 0, 0, NULL, 0 );
 						s_pos++;
@@ -1113,38 +1132,40 @@ int sys_HandleSDL_Events(void *userdata, SDL_Event *event)
 		case SDL_JOYDEVICEADDED:         /**< A new joystick has been inserted into the system */
 		case SDL_JOYDEVICEREMOVED:       /**< An opened joystick has been removed */
 			/* Always Pass these events on to SDL*/
-	        return 1;
-
+			return 1;
+			
 		case SDL_CONTROLLERDEVICEADDED:
 			/* TODO: Handle what happens when a gamepad is added */
 			/* 			Sys_QueEvent( SE_KEY, key, value, 0, NULL, inputDeviceNum ); */
 			common->Printf( "Controller Device Connected: %u\n", event->cdevice.which );
 			{
-				SDL_GameController *gamecontroller = NULL;
-				gamecontroller = SDL_GameControllerOpen(event->cdevice.which);
+				SDL_GameController* gamecontroller = NULL;
+				gamecontroller = SDL_GameControllerOpen( event->cdevice.which );
 				common->Printf( "Controller Connected %s\n",
-					SDL_GameControllerNameForIndex(event->cdevice.which) );
-				joystick_Devices.Append(gamepad_device_t(gamecontroller));
+								SDL_GameControllerNameForIndex( event->cdevice.which ) );
+				joystick_Devices.Append( gamepad_device_t( gamecontroller ) );
 			}
-	        return 1;
-	    case SDL_CONTROLLERDEVICEREMOVED:
+			return 1;
+		case SDL_CONTROLLERDEVICEREMOVED:
 			/* TODO: Handle what happens when a gamepad is removed */
-			for(int i = 0; i< joystick_Devices.Num();i++) {
-				if(event->cdevice.which == joystick_Devices[i].gamePadId) {
+			for( int i = 0; i < joystick_Devices.Num(); i++ )
+			{
+				if( event->cdevice.which == joystick_Devices[i].gamePadId )
+				{
 					common->Printf( "Controller Device Removed: %u\n", event->cdevice.which );
 					common->Printf( "Controller Device Name %s\n",
-						SDL_GameControllerName(joystick_Devices[i].gamePad) );
-					SDL_GameControllerClose(joystick_Devices[i].gamePad);
-					joystick_Devices.RemoveIndex(i);
+									SDL_GameControllerName( joystick_Devices[i].gamePad ) );
+					SDL_GameControllerClose( joystick_Devices[i].gamePad );
+					joystick_Devices.RemoveIndex( i );
 					break;
 				}
 			}
-	        return 1;
-	    case SDL_CONTROLLERBUTTONDOWN:
-	    case SDL_CONTROLLERBUTTONUP:
-	    case SDL_CONTROLLERAXISMOTION:
+			return 1;
+		case SDL_CONTROLLERBUTTONDOWN:
+		case SDL_CONTROLLERBUTTONUP:
+		case SDL_CONTROLLERAXISMOTION:
 			/* The Actual per-Device events are handled when joystick devices get polled. */
-	        return 1;
+			return 1;
 		case SDL_QUIT:
 			PushConsoleEvent( "quit" );
 			return 0;
@@ -1188,7 +1209,7 @@ void Sys_ClearEvents()
 		
 	kbd_polls.SetNum( 0 );
 	mouse_polls.SetNum( 0 );
-	event_queue.SetNum(0);
+	event_queue.SetNum( 0 );
 	eventHead = 0;
 }
 
@@ -1276,12 +1297,13 @@ int Sys_PollMouseInputEvents( int mouseEvents[MAX_MOUSE_EVENTS][2] )
 int activeController = -1;
 int Sys_PollJoystickInputEvents( int deviceNum )
 {
-	if( -1 < deviceNum && deviceNum < joystick_Devices.Num()) {
-		if(SDL_GameControllerGetAttached(joystick_Devices[deviceNum].gamePad))
+	if( -1 < deviceNum && deviceNum < joystick_Devices.Num() )
+	{
+		if( SDL_GameControllerGetAttached( joystick_Devices[deviceNum].gamePad ) )
 		{
 			activeController = deviceNum;
-			return joystick_Devices[deviceNum].pollEvents(deviceNum);
-
+			return joystick_Devices[deviceNum].pollEvents( deviceNum );
+			
 		}
 	}
 	return 0;//win32.g_Joystick.PollInputEvents( deviceNum );
@@ -1291,8 +1313,9 @@ int Sys_PollJoystickInputEvents( int deviceNum )
 int Sys_ReturnJoystickInputEvent( const int n, int& action, int& value )
 {
 
-	if(-1 < activeController ) {
-		return joystick_Devices[activeController].ReturnInputEvent(n,action,value);
+	if( -1 < activeController )
+	{
+		return joystick_Devices[activeController].ReturnInputEvent( n, action, value );
 	}
 	return 0;//win32.g_Joystick.ReturnInputEvent( n, action, value );
 }
@@ -1305,7 +1328,8 @@ void Sys_EndJoystickInputEvents()
 
 void Sys_SetRumble( int device, int low, int hi )
 {
-	if( -1 < device && device < joystick_Devices.Num()) {
+	if( -1 < device && device < joystick_Devices.Num() )
+	{
 		//joystick_Devices[deviceNum].pollEvents(deviceNum);
 	}
 }

@@ -225,13 +225,14 @@ void idMenuScreen_Shell_Stereoscopics::HideScreen( const mainMenuTransition_t tr
 					//     (the old way would have been unnecessarily painful on POSIX systems)
 					//Sys_ReLaunch();
 					// DG end
-
+					
 					// motorsep 12-28-2014; reverted back to the original Sys_ReLaunch; guys from RBDoom 3 BFG team made it impossible to pass any cmds on restart
 					idStr cmdLine = Sys_GetCmdLine();
-					if (cmdLine.Find("com_skipIntroVideos") < 0) {
-						cmdLine.Append(" +set com_skipIntroVideos 1");
+					if( cmdLine.Find( "com_skipIntroVideos" ) < 0 )
+					{
+						cmdLine.Append( " +set com_skipIntroVideos 1" );
 					}
-					Sys_ReLaunch((void*)cmdLine.c_str(), cmdLine.Length());
+					Sys_ReLaunch( ( void* )cmdLine.c_str(), cmdLine.Length() );
 				}
 				return idSWFScriptVar();
 			}

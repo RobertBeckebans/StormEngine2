@@ -39,28 +39,28 @@ If you have questions concerning this license or the applicable additional terms
 /////////////////////////////////////////////////////////////////////////////
 // CDialogInfo dialog
 void HideInfoDialog();
-void ShowInfoDialog(const char* pText);
+void ShowInfoDialog( const char* pText );
 
 class CDialogInfo : public CDialog
 {
 // Construction
 public:
-	CDialogInfo(CWnd* pParent = NULL);   // standard constructor
-
+	CDialogInfo( CWnd* pParent = NULL ); // standard constructor
+	
 // Dialog Data
 	//{{AFX_DATA(CDialogInfo)
 	enum { IDD = IDD_DLG_INFORMATION };
 	CEdit	m_wndInfo;
 	//}}AFX_DATA
-
-
+	
+	
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CDialogInfo)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+protected:
+	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	//}}AFX_VIRTUAL
-
+	
 // Implementation
 protected:
 

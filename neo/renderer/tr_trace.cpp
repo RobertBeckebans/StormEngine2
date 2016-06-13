@@ -502,10 +502,10 @@ localTrace_t R_LocalTrace( const idVec3& start, const idVec3& end, const float r
 	localTrace_t hit;
 	hit.fraction = 1.0f;
 	
-	// Prevent Crashes when surface has no verticies. 
+	// Prevent Crashes when surface has no verticies.
 	if( tri->numVerts == 0 )
 		return hit;
-	
+		
 	ALIGNTYPE16 idPlane planes[4];
 	// create two planes orthogonal to each other that intersect along the trace
 	idVec3 startDir = end - start;

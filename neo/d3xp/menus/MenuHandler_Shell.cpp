@@ -90,7 +90,7 @@ void idMenuHandler_Shell::Update()
 			HidePacifier();
 			PlaySound( GUI_SOUND_MUSIC ); // motorsep 06-14-2014; playing music in main menu
 			//if( nextScreen == SHELL_AREA_START || nextScreen == SHELL_AREA_PARTY_LOBBY || nextScreen == SHELL_AREA_GAME_LOBBY || nextScreen == SHELL_AREA_INVALID )
-			if (nextScreen == SHELL_AREA_ROOT || nextScreen == SHELL_AREA_PARTY_LOBBY || nextScreen == SHELL_AREA_GAME_LOBBY || nextScreen == SHELL_AREA_INVALID) // motorsep 12-21-2014; we don't need Start screen on PC
+			if( nextScreen == SHELL_AREA_ROOT || nextScreen == SHELL_AREA_PARTY_LOBBY || nextScreen == SHELL_AREA_GAME_LOBBY || nextScreen == SHELL_AREA_INVALID ) // motorsep 12-21-2014; we don't need Start screen on PC
 			{
 				nextScreen = SHELL_AREA_ROOT;
 			}
@@ -561,7 +561,7 @@ void idMenuHandler_Shell::Initialize( const char* swfFile, idSoundWorld* sw )
 	// precache sounds
 	// don't load gui music for the pause menu to save some memory
 	// const idSoundShader* soundShader = NULL;
-	const idSoundShader* soundShader = declManager->FindSound( "gui/menu_music", true ); // motorsep 06-14-2014; there is plenty of RAM on PC, so precache main menu music	
+	const idSoundShader* soundShader = declManager->FindSound( "gui/menu_music", true ); // motorsep 06-14-2014; there is plenty of RAM on PC, so precache main menu music
 	if( !inGame )
 	{
 		// soundShader = declManager->FindSound( "gui/menu_music", true ); // main menu music
@@ -621,7 +621,7 @@ void idMenuHandler_Shell::Initialize( const char* swfFile, idSoundWorld* sw )
 	{
 		sounds[ GUI_SOUND_ROLL_OVER ] = soundShader->GetName();
 	}
-	soundShader = declManager->FindSound( "gui/btn_roll_out", true ); // roll off a button; currently not utilized 
+	soundShader = declManager->FindSound( "gui/btn_roll_out", true ); // roll off a button; currently not utilized
 	if( soundShader != NULL )
 	{
 		sounds[ GUI_SOUND_ROLL_OUT ] = soundShader->GetName();
@@ -790,7 +790,7 @@ void idMenuHandler_Shell::SetupPCOptions()
 	{
 		if( g_demoMode.GetBool() )
 		{
-			
+		
 			navOptions.Append( "START DEMO" );	// START DEMO
 			if( g_demoMode.GetInteger() == 2 )
 			{
@@ -1304,7 +1304,7 @@ void idMenuHandler_Shell::UpdateBGState()
 	}
 	
 	//if( smallFrameShowing || largeFrameShowing || nextScreen == SHELL_AREA_START )
-	if (smallFrameShowing || largeFrameShowing || nextScreen == SHELL_AREA_ROOT) // motorsep 12-21-2014; we don't need Start screen on PC
+	if( smallFrameShowing || largeFrameShowing || nextScreen == SHELL_AREA_ROOT ) // motorsep 12-21-2014; we don't need Start screen on PC
 	{
 		ShowLogo( false );
 	}
@@ -1466,12 +1466,12 @@ void idMenuHandler_Shell::ShowDoomIntro()
 		
 		int numTextFields = NUM_DOOM_INTRO_LINES;
 		idStr textEntries[NUM_DOOM_INTRO_LINES] = { va( "%s %s", idLocalization::GetString( "#str_04052" ), idLocalization::GetString( "#str_04053" ) ),
-				va( "%s %s", idLocalization::GetString( "#str_04054" ), idLocalization::GetString( "#str_04055" ) ),
-				idLocalization::GetString( "#str_03012" ),
-				idLocalization::GetString( "#str_04056" ),
-				idLocalization::GetString( "#str_04057" ),
-				va( "%s %s", idLocalization::GetString( "#str_04058" ), idLocalization::GetString( "#str_04059" ) ),
-				va( "%s %s", idLocalization::GetString( "#str_04060" ), idLocalization::GetString( "#str_04061" ) )
+													va( "%s %s", idLocalization::GetString( "#str_04054" ), idLocalization::GetString( "#str_04055" ) ),
+													idLocalization::GetString( "#str_03012" ),
+													idLocalization::GetString( "#str_04056" ),
+													idLocalization::GetString( "#str_04057" ),
+													va( "%s %s", idLocalization::GetString( "#str_04058" ), idLocalization::GetString( "#str_04059" ) ),
+													va( "%s %s", idLocalization::GetString( "#str_04060" ), idLocalization::GetString( "#str_04061" ) )
 												  };
 												  
 		for( int i = 0; i < numTextFields; ++i )

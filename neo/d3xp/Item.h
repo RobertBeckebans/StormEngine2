@@ -78,7 +78,7 @@ public:
 	virtual void			Think();
 	virtual void			Present();
 	
-	void 					RunScriptFunc( const char *name );	// ######## SR 	
+	void 					RunScriptFunc( const char* name );	// ######## SR
 	
 	enum
 	{

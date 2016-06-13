@@ -100,17 +100,23 @@ void idMenuScreen_Cinematic::Update()
 idMenuScreen_Cinematic::ShowCinematicHint
 ========================
 */
-void idMenuScreen_Cinematic::ShowCinematicHint() {
-	if ( cinematicHint ) {
+void idMenuScreen_Cinematic::ShowCinematicHint()
+{
+	if( cinematicHint )
+	{
 		idSWFTextInstance* txtHint = cinematicHint->GetScriptObject()->GetNestedText( "info", "txtHint" );
-		if( txtHint != NULL ) {
+		if( txtHint != NULL )
+		{
 			idStr hintText = idLocalization::GetString( "#str_press" );
 			keyBindings_t bind = idKeyInput::KeyBindingsFromBinding( "_moveUP", true );
-			if( !bind.mouse.IsEmpty() ) {
+			if( !bind.mouse.IsEmpty() )
+			{
 				hintText.Append( " [" );
 				hintText.Append( bind.mouse );
 				hintText.Append( "] " );
-			} else if( !bind.keyboard.IsEmpty() ) {
+			}
+			else if( !bind.keyboard.IsEmpty() )
+			{
 				hintText.Append( " [" );
 				hintText.Append( bind.keyboard );
 				hintText.Append( "] " );
@@ -121,6 +127,6 @@ void idMenuScreen_Cinematic::ShowCinematicHint() {
 			txtHint->SetStrokeInfo( true, 0.75f, 1.5f );
 		}
 	}
-}	
+}
 
 

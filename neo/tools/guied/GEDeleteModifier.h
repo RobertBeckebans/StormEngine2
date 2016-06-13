@@ -38,10 +38,10 @@ class rvGEDeleteModifier : public rvGEModifier
 {
 public:
 
-	rvGEDeleteModifier ( const char* name, idWindow* window );
-
-	virtual bool		Apply	( void );
-	virtual bool		Undo	( void );
+	rvGEDeleteModifier( const char* name, idWindow* window );
+	
+	virtual bool		Apply( void );
+	virtual bool		Undo( void );
 };
 
 #endif // GEDELETEMODIFIER_H_

@@ -194,9 +194,12 @@ void idGameLocal::SyncPlayersWithLobbyUsers( bool initial )
 		
 		lobby.EnableSnapshotsForLobbyUser( lobbyUserID );
 	}
-	if(newLobbyUsers.Num()) {
-		nCountB = (100 / newLobbyUsers.Num()) / 2;
-	} else {
+	if( newLobbyUsers.Num() )
+	{
+		nCountB = ( 100 / newLobbyUsers.Num() ) / 2;
+	}
+	else
+	{
 		nCountB = 50;
 	}
 	pProgress = 0;
@@ -230,13 +233,13 @@ void idGameLocal::SyncPlayersWithLobbyUsers( bool initial )
 		// Clear this player's old usercmds.
 		common->ResetPlayerInput( freePlayerDataIndex );
 		
-		common->UpdateLevelLoadPacifier(true,pProgress);
+		common->UpdateLevelLoadPacifier( true, pProgress );
 		
 		
 		// spawn the player
 		SpawnPlayer( freePlayerDataIndex );
 		pProgress += nCountB;
-		common->UpdateLevelLoadPacifier(true,pProgress);
+		common->UpdateLevelLoadPacifier( true, pProgress );
 		
 		ServerWriteInitialReliableMessages( freePlayerDataIndex, lobbyUserID );
 	}
@@ -726,7 +729,7 @@ void idGameLocal::ClientReadSnapshot( const idSnapShot& ss )
 	}
 	
 	++mClientSnapshotRefCount;
-
+	
 	// if prediction is off, enable local client smoothing
 	//localPlayer->SetSelfSmooth( dupeUsercmds > 2 );
 	
@@ -1006,7 +1009,7 @@ void idGameLocal::ClientReadSnapshot( const idSnapShot& ss )
 	
 	// process entity events
 	ClientProcessEntityNetworkEventQueue();
-
+	
 	--mClientSnapshotRefCount;
 }
 
@@ -1211,10 +1214,10 @@ void idGameLocal::ClientRunFrame( idUserCmdMgr& cmdMgr, bool lastPredictFrame, g
 	
 	idPlayer* player = static_cast<idPlayer*>( entities[GetLocalClientNum()] );
 	if( !player )
-	{	
+	{
 	
 		// service any pending events
-		idEvent::ServiceEvents();		
+		idEvent::ServiceEvents();
 		
 		return;
 	}
@@ -1243,9 +1246,9 @@ void idGameLocal::ClientRunFrame( idUserCmdMgr& cmdMgr, bool lastPredictFrame, g
 	
 	slow.Set( time, previousTime, realClientTime );
 	fast.Set( time, previousTime, realClientTime );
-
+	
 	DemoWriteGameInfo();
-
+	
 	// run prediction on all active entities
 	for( ent = activeEntities.Next(); ent != NULL; ent = ent->activeNode.Next() )
 	{

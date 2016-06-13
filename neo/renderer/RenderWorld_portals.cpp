@@ -1192,7 +1192,7 @@ void idRenderWorldLocal::ShowPortals()
 				// red = can't see
 				//GL_Color( 1, 0, 0 );
 				if( !r_showNvidiaHack.GetBool() )
-					qglColor3f(1, 0, 0);
+					qglColor3f( 1, 0, 0 );
 				else
 					GL_Color( 1, 0, 0 );
 			}
@@ -1201,11 +1201,11 @@ void idRenderWorldLocal::ShowPortals()
 				// green = see through
 				//GL_Color( 0, 1, 0 );
 				if( !r_showNvidiaHack.GetBool() )
-					qglColor3f(0, 1, 0);
+					qglColor3f( 0, 1, 0 );
 				else
 					GL_Color( 0, 1, 0 );
 			}
-
+			
 			// RB begin
 			renderProgManager.CommitUniforms();
 			// RB end

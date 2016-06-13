@@ -155,8 +155,11 @@ public:
 	void					SetState( const function_t* newState );
 	void					SetState( const char* statename );
 	
-	virtual int				GetTeam() const { return team; }	
-
+	virtual int				GetTeam() const
+	{
+		return team;
+	}
+	
 	// vision testing
 	void					SetEyeHeight( float height );
 	float					EyeHeight() const;

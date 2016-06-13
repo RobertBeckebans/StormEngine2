@@ -839,7 +839,7 @@ const emptyCommand_t* idRenderSystemLocal::SwapCommandBuffers_FinishCommandBuffe
 	renderCrops[0].x2 = GetWidth() - 1;
 	renderCrops[0].y2 = GetHeight() - 1;
 	currentRenderCrop = 0;
-
+	
 	// foresthale 2014-05-23: this hack is fairly horrible, but there was no easier way after much research
 	if( ( com_editors & EDITOR_GUI ) && tr.viewDef )
 	{
@@ -1177,10 +1177,10 @@ void idRenderSystemLocal::Editor_SetupState()
 	globalFramebuffers->BindSystemFramebuffer();
 }
 
-void idRenderSystemLocal::Editor_BeginView(int width, int height, int &restoreWidth, int &restoreHeight)
+void idRenderSystemLocal::Editor_BeginView( int width, int height, int& restoreWidth, int& restoreHeight )
 {
 	// save the attributes so we can restore them later
-	qglPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT | GL_POLYGON_BIT | GL_SCISSOR_BIT | GL_STENCIL_BUFFER_BIT | GL_TEXTURE_BIT | GL_TRANSFORM_BIT | GL_VIEWPORT_BIT);
+	qglPushAttrib( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT | GL_POLYGON_BIT | GL_SCISSOR_BIT | GL_STENCIL_BUFFER_BIT | GL_TEXTURE_BIT | GL_TRANSFORM_BIT | GL_VIEWPORT_BIT );
 	// change the render size
 	SwapCommandBuffers( NULL, NULL, NULL, NULL );
 	restoreWidth = glConfig.nativeScreenWidth;
@@ -1190,7 +1190,7 @@ void idRenderSystemLocal::Editor_BeginView(int width, int height, int &restoreWi
 	SwapCommandBuffers( NULL, NULL, NULL, NULL ); // this is needed for the nativeScreenWidth/Height to take hold
 }
 
-void idRenderSystemLocal::Editor_EndView(int restoreWidth, int restoreHeight)
+void idRenderSystemLocal::Editor_EndView( int restoreWidth, int restoreHeight )
 {
 	// this should exit right after vsync, with the GPU idle and ready to draw
 	const emptyCommand_t* cmd = SwapCommandBuffers( NULL, NULL, NULL, NULL );
@@ -1201,7 +1201,7 @@ void idRenderSystemLocal::Editor_EndView(int restoreWidth, int restoreHeight)
 	glConfig.nativeScreenWidth = restoreWidth;
 	glConfig.nativeScreenHeight = restoreHeight;
 	SwapCommandBuffers( NULL, NULL, NULL, NULL ); // this is needed for the nativeScreenWidth/Height to take hold
-
+	
 	// now restore state for fixed function editor rendering
 	globalFramebuffers->BindSystemFramebuffer();
 //	qglDisable(GL_SCISSOR_TEST);
@@ -1213,8 +1213,8 @@ void idRenderSystemLocal::Editor_EndView(int restoreWidth, int restoreHeight)
 	qglPopAttrib();
 	// make sure we're using fixed function rendering
 	renderProgManager.Unbind();
-	qglBindTexture(GL_TEXTURE_2D, 0);
-	qglEnable(GL_TEXTURE_2D);
-	qglDisable(GL_TEXTURE_3D);
-	qglDisable(GL_TEXTURE_CUBE_MAP);
+	qglBindTexture( GL_TEXTURE_2D, 0 );
+	qglEnable( GL_TEXTURE_2D );
+	qglDisable( GL_TEXTURE_3D );
+	qglDisable( GL_TEXTURE_CUBE_MAP );
 }

@@ -214,12 +214,13 @@ idCommonLocal::Quit
 void idCommonLocal::Quit()
 {
 #ifdef ID_ALLOW_TOOLS
-	if ( com_editors & EDITOR_RADIANT ) {
+	if( com_editors & EDITOR_RADIANT )
+	{
 		RadiantInit();
 		return;
 	}
 #endif
-
+	
 	// don't try to shutdown if we are in a recursive error
 	if( !com_errorEntered )
 	{
@@ -377,15 +378,23 @@ void idCommonLocal::AddStartupCommands()
 idCommonLocal::InitTool
 =================
 */
-void idCommonLocal::InitTool( const toolFlag_t tool, const idDict *dict ) {
+void idCommonLocal::InitTool( const toolFlag_t tool, const idDict* dict )
+{
 #ifdef ID_ALLOW_TOOLS
-	if ( tool & EDITOR_SOUND ) {
+	if( tool & EDITOR_SOUND )
+	{
 		SoundEditorInit( dict );
-	} else if ( tool & EDITOR_LIGHT ) {
+	}
+	else if( tool & EDITOR_LIGHT )
+	{
 		LightEditorInit( dict );
-	} else if ( tool & EDITOR_PARTICLE ) {
+	}
+	else if( tool & EDITOR_PARTICLE )
+	{
 		ParticleEditorInit( dict );
-	} else if ( tool & EDITOR_AF ) {
+	}
+	else if( tool & EDITOR_AF )
+	{
 		AFEditorInit( dict );
 	}
 #endif
@@ -398,7 +407,8 @@ idCommonLocal::ActivateTool
 Activates or Deactivates a tool
 ==================
 */
-void idCommonLocal::ActivateTool( bool active ) {
+void idCommonLocal::ActivateTool( bool active )
+{
 	com_editorActive = active;
 //	 ** Tools don't need to grab the mouse.  The SDL window grabs and release the mouse when activated.
 //	Sys_GrabMouseCursor( !active );
@@ -518,7 +528,8 @@ Com_Editor_f
   we can start the editor dynamically, but we won't ever get back
 ==================
 */
-static void Com_Editor_f( const idCmdArgs &args ) {
+static void Com_Editor_f( const idCmdArgs& args )
+{
 	RadiantInit();
 }
 
@@ -528,16 +539,18 @@ static void Com_Editor_f( const idCmdArgs &args ) {
 Com_ScriptDebugger_f
 =============
 */
-static void Com_ScriptDebugger_f( const idCmdArgs &args ) {
+static void Com_ScriptDebugger_f( const idCmdArgs& args )
+{
 #ifdef USE_MFC_TOOLS
 	DebuggerServerInit();
 	
 	// Make sure it wasnt on the command line
-	if ( !( com_editors & EDITOR_DEBUGGER ) ) {
+	if( !( com_editors & EDITOR_DEBUGGER ) )
+	{
 		DebuggerClientInit( NULL );
 	}
 #else
-	common->Printf("Debugger not included in build\n");
+	common->Printf( "Debugger not included in build\n" );
 #endif
 }
 
@@ -546,19 +559,21 @@ static void Com_ScriptDebugger_f( const idCmdArgs &args ) {
 Com_EditGUIs_f
 =============
 */
-static void Com_EditGUIs_f( const idCmdArgs &args ) {	
+static void Com_EditGUIs_f( const idCmdArgs& args )
+{
 
 	// motorsep 12-28-2014; safety mechanicsm that ensures AA is off before GUI Editor can be used; eventually we might need a better solution or at least a Dialog window that lets user know about restart
 	// potentially I see having a menu screen with all tools shortcuts there and dialog window popping up if restart or some settings changes are required
-	int antialiasing = cvarSystem->GetCVarInteger("r_multiSamples");
-
-	if (antialiasing != 0) {		
-		idStr cmdLine = Sys_GetCmdLine();		
-		cmdLine.Append(" +set r_multiSamples 0");		
-		Sys_ReLaunch((void*)cmdLine.c_str(), cmdLine.Length());		
+	int antialiasing = cvarSystem->GetCVarInteger( "r_multiSamples" );
+	
+	if( antialiasing != 0 )
+	{
+		idStr cmdLine = Sys_GetCmdLine();
+		cmdLine.Append( " +set r_multiSamples 0" );
+		Sys_ReLaunch( ( void* )cmdLine.c_str(), cmdLine.Length() );
 		return;
-	}	
-
+	}
+	
 	GUIEditorInit();
 }
 
@@ -567,7 +582,8 @@ static void Com_EditGUIs_f( const idCmdArgs &args ) {
 Com_MaterialEditor_f
 =============
 */
-static void Com_MaterialEditor_f( const idCmdArgs &args ) {
+static void Com_MaterialEditor_f( const idCmdArgs& args )
+{
 	// Turn off sounds
 	soundSystem->SetMute( true );
 	MaterialEditorInit();
@@ -622,7 +638,8 @@ CONSOLE_COMMAND( printMemInfo, "prints memory debugging data", NULL )
 Com_EditLights_f
 ==================
 */
-static void Com_EditLights_f( const idCmdArgs &args ) {
+static void Com_EditLights_f( const idCmdArgs& args )
+{
 	LightEditorInit( NULL );
 	cvarSystem->SetCVarInteger( "g_editEntityMode", 1 );
 }
@@ -632,7 +649,8 @@ static void Com_EditLights_f( const idCmdArgs &args ) {
 Com_EditSounds_f
 ==================
 */
-static void Com_EditSounds_f( const idCmdArgs &args ) {
+static void Com_EditSounds_f( const idCmdArgs& args )
+{
 	SoundEditorInit( NULL );
 	cvarSystem->SetCVarInteger( "g_editEntityMode", 2 );
 }
@@ -642,7 +660,8 @@ static void Com_EditSounds_f( const idCmdArgs &args ) {
 Com_EditDecls_f
 ==================
 */
-static void Com_EditDecls_f( const idCmdArgs &args ) {
+static void Com_EditDecls_f( const idCmdArgs& args )
+{
 	DeclBrowserInit( NULL );
 }
 
@@ -651,7 +670,8 @@ static void Com_EditDecls_f( const idCmdArgs &args ) {
 Com_EditAFs_f
 ==================
 */
-static void Com_EditAFs_f( const idCmdArgs &args ) {
+static void Com_EditAFs_f( const idCmdArgs& args )
+{
 	AFEditorInit( NULL );
 }
 
@@ -660,7 +680,8 @@ static void Com_EditAFs_f( const idCmdArgs &args ) {
 Com_EditParticles_f
 ==================
 */
-static void Com_EditParticles_f( const idCmdArgs &args ) {
+static void Com_EditParticles_f( const idCmdArgs& args )
+{
 	ParticleEditorInit( NULL );
 }
 
@@ -669,7 +690,8 @@ static void Com_EditParticles_f( const idCmdArgs &args ) {
 Com_EditScripts_f
 ==================
 */
-static void Com_EditScripts_f( const idCmdArgs &args ) {
+static void Com_EditScripts_f( const idCmdArgs& args )
+{
 	ScriptEditorInit( NULL );
 }
 
@@ -678,7 +700,8 @@ static void Com_EditScripts_f( const idCmdArgs &args ) {
 Com_EditPDAs_f
 ==================
 */
-static void Com_EditPDAs_f( const idCmdArgs &args ) {
+static void Com_EditPDAs_f( const idCmdArgs& args )
+{
 	PDAEditorInit( NULL );
 }
 #endif // ID_ALLOW_TOOLS
@@ -976,7 +999,7 @@ void idCommonLocal::InitLanguageDict()
 	}
 	
 	fileSystem->FreeFileList( langFiles );
-
+	
 	Sys_InitScanTable();
 }
 
@@ -1041,7 +1064,7 @@ void idCommonLocal::InitCommands()
 	cmdSystem->AddCommand( "editGUIs", Com_EditGUIs_f, CMD_FL_TOOL, "launches the GUI Editor" );
 	cmdSystem->AddCommand( "editPDAs", Com_EditPDAs_f, CMD_FL_TOOL, "launches the in-game PDA Editor" );
 	cmdSystem->AddCommand( "debugger", Com_ScriptDebugger_f, CMD_FL_TOOL, "launches the Script Debugger" );
-
+	
 	//BSM Nerve: Add support for the material editor
 	cmdSystem->AddCommand( "materialEditor", Com_MaterialEditor_f, CMD_FL_TOOL, "launches the Material Editor" );
 #endif
@@ -1094,56 +1117,56 @@ idCommonLocal::RenderBink
 	const float movieAspect = ( 16.0f / 9.0f );
 	const float imageWidth = SCREEN_WIDTH * movieAspect / sysAspect;
 	const float chop = 0.5f * ( SCREEN_WIDTH - imageWidth );
-	
+
 	idStr materialText;
 	materialText.Format( "{ translucent { videoMap %s } }", path );
-	
+
 	//idMaterial* material = const_cast<idMaterial*>( declManager->FindMaterial( "splashbink" ) );
 	//idMaterial* material = const_cast<idMaterial*>( declManager->FindMaterial( "video/loadvideo" ) );		// Beth-iD logo, should be removed rather sooner, once KiA logo has sound
-	idMaterial* material = const_cast<idMaterial*>( declManager->FindMaterial( "video/kialogo" ) );		
+	idMaterial* material = const_cast<idMaterial*>( declManager->FindMaterial( "video/kialogo" ) );
 	material->Parse( materialText.c_str(), materialText.Length(), false );
 	material->ResetCinematicTime( Sys_Milliseconds() );
-	
+
 	soundWorld->PlayShaderDirectly( path_audio, 0 ); // "gui/loadvideointro"
 	soundWorld->UnPause();
 	soundSystem->SetPlayingSoundWorld( soundWorld );
-	soundSystem->Render();		
+	soundSystem->Render();
 
-	int mouseEvents[MAX_MOUSE_EVENTS][2];	
+	int mouseEvents[MAX_MOUSE_EVENTS][2];
 
 #if !defined(WIN32)
 	sysEvent_t	ev; //SS2 fix RoQ videos skipping
 #endif
-	//while( Sys_Milliseconds() <= material->GetCinematicStartTime() + material->CinematicLength() ) 
+	//while( Sys_Milliseconds() <= material->GetCinematicStartTime() + material->CinematicLength() )
 
 	// FIX ME: timing should be polled from the video
 	while( Sys_Milliseconds() <= 14000 ) // 13 sec (+1 sec delay) is the length of the test video we have
-	{		
+	{
 #if !defined(WIN32)
 		// pump all the events
 		Sys_GenerateEvents();
 		// Activate Events.
 		ev = Sys_GetEvent();
 #endif
-		Sys_GenerateEvents();		
+		Sys_GenerateEvents();
 		Sys_GetEvent();
-		IN_ActivateMouse();		
+		IN_ActivateMouse();
 		int keyBoardEvents = Sys_PollKeyboardInputEvents();	 //SS2 fix RoQ videos skipping
 		int numMouseEvents = Sys_PollMouseInputEvents( mouseEvents );
 		int numJoystickEvents = Sys_PollJoystickInputEvents( 0 );
 		renderSystem->DrawStretchPic( chop, 0, imageWidth, SCREEN_HEIGHT, 0, 0, 1, 1, material );
 		const emptyCommand_t* cmd = renderSystem->SwapCommandBuffers( &time_frontend, &time_backend, &time_shadows, &time_gpu );
-		renderSystem->RenderCommandBuffers( cmd );		
+		renderSystem->RenderCommandBuffers( cmd );
 		if(!com_firstLaunchIntroVideos.GetBool()) {
 			if ( keyBoardEvents > 0 ) //SS2 fix RoQ videos skipping
 				break;
-			if ( numMouseEvents > 0 ) 
-				break;		
+			if ( numMouseEvents > 0 )
+				break;
 		}
-			// TODO: Fix Joystick input to enable skip.		
+			// TODO: Fix Joystick input to enable skip.
 		Sys_Sleep( 10 );
 	}
-	
+
 	soundSystem->StopAllSounds(); // Stop Playing Video Sound track.
 	material->MakeDefault();
 } */
@@ -1160,43 +1183,47 @@ void idCommonLocal::RenderBink( const char* path,  const char* path_audio )
 	
 	idStr materialText;
 	materialText.Format( "{ translucent { videoMap %s } }", path );
-		
-	idMaterial* material = const_cast<idMaterial*>( declManager->FindMaterial( "video/kialogo" ) );		
+	
+	idMaterial* material = const_cast<idMaterial*>( declManager->FindMaterial( "video/kialogo" ) );
 	material->Parse( materialText.c_str(), materialText.Length(), false );
 	material->ResetCinematicTime( Sys_Milliseconds() );
 	
 	soundWorld->PlayShaderDirectly( path_audio, 0 ); // "gui/loadvideointro"
 	soundWorld->UnPause();
 	soundSystem->SetPlayingSoundWorld( soundWorld );
-	soundSystem->Render();			
-
+	soundSystem->Render();
+	
 	sysEvent_t	ev; //SS2 fix RoQ videos skipping
 	bool EndVideo = false;
-
+	
 	// FIX ME: timing should be polled from the video
 	while( Sys_Milliseconds() <= 14000 ) // 13 sec (+1 sec delay) is the length of the test video we have
-	{		
-		Sys_GenerateEvents();		
+	{
+		Sys_GenerateEvents();
 		ev = Sys_GetEvent();
 		Sys_PollJoystickInputEvents( 0 );
 		renderSystem->DrawStretchPic( chop, 0, imageWidth, SCREEN_HEIGHT, 0, 0, 1, 1, material );
 		const emptyCommand_t* cmd = renderSystem->SwapCommandBuffers( &time_frontend, &time_backend, &time_shadows, &time_gpu );
-		renderSystem->RenderCommandBuffers( cmd );		
-		if ( !com_firstLaunchIntroVideos.GetBool() ) {
-			if(ev.evType != SE_NONE) {				
-				while(ev.evType != SE_NONE) {				
-					if(ev.evType == SE_KEY) {
-						if(ev.evValue < K_JOY_STICK1_UP || K_JOY_DPAD_RIGHT  < ev.evValue )			
-							EndVideo = true;					
-					}					
+		renderSystem->RenderCommandBuffers( cmd );
+		if( !com_firstLaunchIntroVideos.GetBool() )
+		{
+			if( ev.evType != SE_NONE )
+			{
+				while( ev.evType != SE_NONE )
+				{
+					if( ev.evType == SE_KEY )
+					{
+						if( ev.evValue < K_JOY_STICK1_UP || K_JOY_DPAD_RIGHT  < ev.evValue )
+							EndVideo = true;
+					}
 					ev = Sys_GetEvent();
 				}
 			}
 		}
 		if( EndVideo )
- 			break;			
-				// TODO: Restrict Joystick input to only allow pressing buttons/triggers to skip video, no dpad or sticks.		
-		Sys_Sleep( 10 );		
+			break;
+		// TODO: Restrict Joystick input to only allow pressing buttons/triggers to skip video, no dpad or sticks.
+		Sys_Sleep( 10 );
 	}
 	
 	soundSystem->StopAllSounds(); // Stop Playing Video Sound track.
@@ -1352,7 +1379,7 @@ idCommonLocal::Init
 =================
 */
 void idCommonLocal::Init( int argc, const char* const* argv, const char* cmdline )
-{	
+{
 	try
 	{
 		// set interface pointers used by idLib
@@ -1417,7 +1444,7 @@ void idCommonLocal::Init( int argc, const char* const* argv, const char* cmdline
 		
 		// initialize processor specific SIMD implementation
 		InitSIMD();
-
+		
 		// init commands
 		InitCommands();
 		
@@ -1437,9 +1464,9 @@ void idCommonLocal::Init( int argc, const char* const* argv, const char* cmdline
 		
 		stringsFile.SetNameAndType( SAVEGAME_STRINGS_FILENAME, SAVEGAMEFILE_BINARY );
 		stringsFile.PreAllocate( MAX_SAVEGAME_STRING_TABLE_SIZE );
-
+		
 		// Pre-Allocate the Thumbnail file in memory.
-		ThumbnailFile.SetNameAndType(SAVEGAME_THUMB_FILENAME, SAVEGAMEFILE_THUMB);
+		ThumbnailFile.SetNameAndType( SAVEGAME_THUMB_FILENAME, SAVEGAMEFILE_THUMB );
 		ThumbnailFile.PreAllocate( MIN_SAVEGAME_PREVIEW_SIZE_BYTES );
 		
 		// motorsep 01-16-2015; Doom 3 BFG never had _startup.resources, we don't have it either. No idea what needs to go there, but apparently it's non-essential
@@ -1508,7 +1535,7 @@ void idCommonLocal::Init( int argc, const char* const* argv, const char* cmdline
 			splashScreen = declManager->FindMaterial( "guis/assets/splash/legal_english" );
 		}
 		
-		//int legalStartTime = Sys_Milliseconds();		
+		//int legalStartTime = Sys_Milliseconds();
 		declManager->Init2();
 		
 		// initialize string database so we can use it for loading messages
@@ -1528,10 +1555,10 @@ void idCommonLocal::Init( int argc, const char* const* argv, const char* cmdline
 		
 		// initialize the user interfaces
 		uiManager->Init();
-				
+		
 		// load the game dll
 		LoadGameDLL();
-
+		
 		// On the PC touch them all so they get included in the resource build
 		if( !fileSystem->UsingResourceFiles() )
 		{
@@ -1567,7 +1594,7 @@ void idCommonLocal::Init( int argc, const char* const* argv, const char* cmdline
 		session->GetSaveGameManager().WaitForAllProcessors();
 		session->Pump();
 		InitializeMPMapsModes();
-
+		
 		// leaderboards need to be initialized after InitializeMPMapsModes, which populates the MP Map list.
 		if( game != NULL )
 		{
@@ -1584,7 +1611,7 @@ void idCommonLocal::Init( int argc, const char* const* argv, const char* cmdline
 		AddStartupCommands();
 		
 		StartMenu( true );
-				
+		
 		const int legalMinTime = 4000; // was 4000; how long to keep legal screen visible before bringing up menu
 		const bool showVideo = ( !com_skipIntroVideos.GetBool() && fileSystem->UsingResourceFiles() );
 		
@@ -1606,19 +1633,19 @@ void idCommonLocal::Init( int argc, const char* const* argv, const char* cmdline
 		}		*/
 		
 		int legalStartTime = Sys_Milliseconds(); // SE2 fix ends
-
-	    renderSystem->LoadLevelImages();
+		
+		renderSystem->LoadLevelImages();
 #ifndef _DEBUG
-		while( Sys_Milliseconds() - legalStartTime < legalMinTime )		
-		{			
+		while( Sys_Milliseconds() - legalStartTime < legalMinTime )
+		{
 			RenderSplash();
 			Sys_GenerateEvents();
 			Sys_Sleep( 10 );
-		}	
+		}
 #endif
 		
 		com_firstLaunchIntroVideos.SetBool( false ); // SE2 feature; allow intro video to be skippable
-
+		
 		// print all warnings queued during initialization
 		PrintWarnings();
 		
@@ -1626,7 +1653,7 @@ void idCommonLocal::Init( int argc, const char* const* argv, const char* cmdline
 		console->ClearNotifyLines();
 		
 		CheckStartupStorageRequirements();
-				
+		
 		if( preload_CommonAssets.GetBool() && fileSystem->UsingResourceFiles() )
 		{
 			idPreloadManifest manifest;
@@ -1755,10 +1782,10 @@ void idCommonLocal::Shutdown()
 	
 	printf( "commonDialog.Shutdown();\n" );
 	commonDialog.Shutdown();
-
+	
 	// foresthale 2014-05-28: stop the game thread before we get to doexit() and hit all the dtors and end up waiting on a dead idGameThread
 	gameThread.StopThread();
-
+	
 	// unload the game dll
 	printf( "UnloadGameDLL();\n" );
 	UnloadGameDLL();
@@ -1767,8 +1794,8 @@ void idCommonLocal::Shutdown()
 	saveFile.Clear( true );
 	printf( "stringsFile.Clear( true );\n" );
 	stringsFile.Clear( true );
-	printf( "ThumbnailFile.Clear( true );\n" );	
-	ThumbnailFile.Clear(true);
+	printf( "ThumbnailFile.Clear( true );\n" );
+	ThumbnailFile.Clear( true );
 	
 	// only shut down the log file after all output is done
 	printf( "CloseLogFile();\n" );
@@ -2036,11 +2063,13 @@ void idCommonLocal::ResetPlayerInput( int playerIndex )
 idCommonLocal::WriteFlaggedCVarsToFile
 ==================
 */
-void idCommonLocal::WriteFlaggedCVarsToFile( const char *filename, int flags, const char *setCmd ) {
-	idFile *f;
-
+void idCommonLocal::WriteFlaggedCVarsToFile( const char* filename, int flags, const char* setCmd )
+{
+	idFile* f;
+	
 	f = fileSystem->OpenFileWrite( filename, "fs_configpath" );
-	if ( !f ) {
+	if( !f )
+	{
 		Printf( "Couldn't write %s.\n", filename );
 		return;
 	}
@@ -2077,7 +2106,7 @@ Common_Disconnect_f
 */
 CONSOLE_COMMAND_SHIP( disconnect, "disconnects from a game", NULL )
 {
-	if ( !(com_editors & EDITOR_DMAP) )
+	if( !( com_editors & EDITOR_DMAP ) )
 	{
 		session->QuitMatch();
 	}

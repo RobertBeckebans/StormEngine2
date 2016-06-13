@@ -87,7 +87,7 @@ idRenderModel* idRenderModelBeam::InstantiateDynamicModel( const struct renderEn
 	}
 	
 	if( cachedModel != NULL )
-	{	
+	{
 		assert( dynamic_cast<idRenderModelStatic*>( cachedModel ) != NULL );
 		assert( idStr::Icmp( cachedModel->Name(), beam_SnapshotName ) == 0 );
 		
@@ -96,7 +96,7 @@ idRenderModel* idRenderModelBeam::InstantiateDynamicModel( const struct renderEn
 		tri = surf.geometry;
 	}
 	else
-	{	
+	{
 		staticModel = new( TAG_MODEL ) idRenderModelStatic;
 		staticModel->InitEmpty( beam_SnapshotName );
 		
@@ -112,7 +112,7 @@ idRenderModel* idRenderModelBeam::InstantiateDynamicModel( const struct renderEn
 		tri->verts[ 1 ].SetTexCoord( 0, 1 );
 		tri->verts[ 2 ].SetTexCoord( 1, 0 );
 		tri->verts[ 3 ].SetTexCoord( 1, 1 );
-
+		
 		tri->indexes[0] = 0;
 		tri->indexes[1] = 2;
 		tri->indexes[2] = 1;
@@ -147,9 +147,9 @@ idRenderModel* idRenderModelBeam::InstantiateDynamicModel( const struct renderEn
 	idVec3	dir = mid - localView;
 	minor.Cross( major, dir );
 	minor.Normalize();
-
+	
 	float width = 1.0f;
-	if ( renderEntity->shaderParms[ SHADERPARM_BEAM_WIDTH ] != 0.0f )
+	if( renderEntity->shaderParms[ SHADERPARM_BEAM_WIDTH ] != 0.0f )
 	{
 		width = renderEntity->shaderParms[ SHADERPARM_BEAM_WIDTH ];
 		minor *= renderEntity->shaderParms[ SHADERPARM_BEAM_WIDTH ] * 0.5f;
@@ -158,12 +158,12 @@ idRenderModel* idRenderModelBeam::InstantiateDynamicModel( const struct renderEn
 	const float l = ( renderEntity->origin - target ).Length();
 	const float s = renderEntity->shaderParms[ SHADERPARM_BEAM_TILE_S ] > 0.0f ? l / width / renderEntity->shaderParms[ SHADERPARM_BEAM_TILE_S ] : 1.0f;
 	const float t = renderEntity->shaderParms[ SHADERPARM_BEAM_TILE_T ] > 0.0f ? renderEntity->shaderParms[ SHADERPARM_BEAM_TILE_T ] : 1.0f;
-
+	
 	int red = idMath::Ftoi( renderEntity->shaderParms[ SHADERPARM_RED ] * 255.0f );
 	int green = idMath::Ftoi( renderEntity->shaderParms[ SHADERPARM_GREEN ] * 255.0f );
 	int blue = idMath::Ftoi( renderEntity->shaderParms[ SHADERPARM_BLUE ] * 255.0f );
 	int alpha = idMath::Ftoi( renderEntity->shaderParms[ SHADERPARM_ALPHA ] * 255.0f );
-
+	
 	tri->verts[0].xyz = minor;
 	tri->verts[0].color[0] = red;
 	tri->verts[0].color[1] = green;
@@ -192,7 +192,7 @@ idRenderModel* idRenderModelBeam::InstantiateDynamicModel( const struct renderEn
 	tri->verts[ 1 ].SetTexCoord( 0, t );
 	tri->verts[ 2 ].SetTexCoord( s, 0 );
 	tri->verts[ 3 ].SetTexCoord( s, t );
-
+	
 	R_BoundTriSurf( tri );
 	
 	staticModel->bounds = tri->bounds;

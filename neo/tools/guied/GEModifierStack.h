@@ -38,23 +38,23 @@ class rvGEModifierStack
 {
 public:
 
-	rvGEModifierStack ( );
-	~rvGEModifierStack ( );
-
-	void			BlockNextMerge	( void );
-
-	bool			Append			( rvGEModifier* modifier );
-	bool			Undo			( void );
-	bool			Redo			( void );
-
-	void			Reset			( void );
-
-	bool			CanUndo			( void );
-	bool			CanRedo			( void );
-
-	rvGEModifier*	GetUndoModifier	( void );
-	rvGEModifier*	GetRedoModifier	( void );
-
+	rvGEModifierStack( );
+	~rvGEModifierStack( );
+	
+	void			BlockNextMerge( void );
+	
+	bool			Append( rvGEModifier* modifier );
+	bool			Undo( void );
+	bool			Redo( void );
+	
+	void			Reset( void );
+	
+	bool			CanUndo( void );
+	bool			CanRedo( void );
+	
+	rvGEModifier*	GetUndoModifier( void );
+	rvGEModifier*	GetRedoModifier( void );
+	
 protected:
 
 	idList<rvGEModifier*>	mModifiers;
@@ -62,31 +62,31 @@ protected:
 	bool					mMergeBlock;
 };
 
-ID_INLINE bool rvGEModifierStack::CanRedo ( void )
+ID_INLINE bool rvGEModifierStack::CanRedo( void )
 {
-	return mCurrentModifier < mModifiers.Num()-1;
+	return mCurrentModifier < mModifiers.Num() - 1;
 }
 
-ID_INLINE bool rvGEModifierStack::CanUndo ( void )
+ID_INLINE bool rvGEModifierStack::CanUndo( void )
 {
 	return mCurrentModifier >= 0;
 }
 
-ID_INLINE void rvGEModifierStack::BlockNextMerge ( void )
+ID_INLINE void rvGEModifierStack::BlockNextMerge( void )
 {
 	mMergeBlock = true;
 }
 
-ID_INLINE rvGEModifier* rvGEModifierStack::GetUndoModifier ( void )
+ID_INLINE rvGEModifier* rvGEModifierStack::GetUndoModifier( void )
 {
-	assert ( CanUndo ( ) );
+	assert( CanUndo( ) );
 	return mModifiers[mCurrentModifier];
 }
 
-ID_INLINE rvGEModifier* rvGEModifierStack::GetRedoModifier ( void )
+ID_INLINE rvGEModifier* rvGEModifierStack::GetRedoModifier( void )
 {
-	assert ( CanRedo ( ) );
-	return mModifiers[mCurrentModifier+1];
+	assert( CanRedo( ) );
+	return mModifiers[mCurrentModifier + 1];
 }
 
 #endif

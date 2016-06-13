@@ -35,14 +35,14 @@ If you have questions concerning this license or the applicable additional terms
 
 idGuiModel* tr_dmapGuiModel;
 
-idCVar r_useTurboShadow("r_useTurboShadow", "1", CVAR_RENDERER | CVAR_BOOL, "use the infinite projection with W technique for dynamic shadows");
-idCVar r_useShadowProjectedCull("r_useShadowProjectedCull", "1", CVAR_RENDERER | CVAR_BOOL, "discard triangles outside light volume before shadowing");
-idCVar r_useShadowVertexProgram("r_useShadowVertexProgram", "1", CVAR_RENDERER | CVAR_BOOL, "do the shadow projection in the vertex program on capable cards");
-idCVar r_useCulling("r_useCulling", "2", CVAR_RENDERER | CVAR_INTEGER, "0 = none, 1 = sphere, 2 = sphere + box", 0, 2, idCmdSystem::ArgCompletion_Integer<0, 2>);
-idCVar r_useEntityCulling("r_useEntityCulling", "1", CVAR_RENDERER | CVAR_BOOL, "0 = none, 1 = box");
-idCVar r_useLightCulling("r_useLightCulling", "3", CVAR_RENDERER | CVAR_INTEGER, "0 = none, 1 = box, 2 = exact clip of polyhedron faces, 3 = also areas", 0, 3, idCmdSystem::ArgCompletion_Integer<0, 3>);
-idCVar com_purgeAll("com_purgeAll", "0", CVAR_BOOL | CVAR_ARCHIVE | CVAR_SYSTEM, "purge everything between level loads");
-idCVar r_useDeferredTangents("r_useDeferredTangents", "1", CVAR_RENDERER | CVAR_BOOL, "defer tangents calculations after deform");
+idCVar r_useTurboShadow( "r_useTurboShadow", "1", CVAR_RENDERER | CVAR_BOOL, "use the infinite projection with W technique for dynamic shadows" );
+idCVar r_useShadowProjectedCull( "r_useShadowProjectedCull", "1", CVAR_RENDERER | CVAR_BOOL, "discard triangles outside light volume before shadowing" );
+idCVar r_useShadowVertexProgram( "r_useShadowVertexProgram", "1", CVAR_RENDERER | CVAR_BOOL, "do the shadow projection in the vertex program on capable cards" );
+idCVar r_useCulling( "r_useCulling", "2", CVAR_RENDERER | CVAR_INTEGER, "0 = none, 1 = sphere, 2 = sphere + box", 0, 2, idCmdSystem::ArgCompletion_Integer<0, 2> );
+idCVar r_useEntityCulling( "r_useEntityCulling", "1", CVAR_RENDERER | CVAR_BOOL, "0 = none, 1 = box" );
+idCVar r_useLightCulling( "r_useLightCulling", "3", CVAR_RENDERER | CVAR_INTEGER, "0 = none, 1 = box, 2 = exact clip of polyhedron faces, 3 = also areas", 0, 3, idCmdSystem::ArgCompletion_Integer<0, 3> );
+idCVar com_purgeAll( "com_purgeAll", "0", CVAR_BOOL | CVAR_ARCHIVE | CVAR_SYSTEM, "purge everything between level loads" );
+idCVar r_useDeferredTangents( "r_useDeferredTangents", "1", CVAR_RENDERER | CVAR_BOOL, "defer tangents calculations after deform" );
 
 /*
 =================
@@ -71,15 +71,15 @@ R_InitMaterialsDmap
 */
 void R_InitMaterialsDmap()
 {
-	dmap_tr.defaultMaterial = declManager->FindMaterial("_default", false);
-	if (!dmap_tr.defaultMaterial)
+	dmap_tr.defaultMaterial = declManager->FindMaterial( "_default", false );
+	if( !dmap_tr.defaultMaterial )
 	{
-		common->FatalError("_default material not found");
+		common->FatalError( "_default material not found" );
 	}
-	dmap_tr.defaultPointLight = declManager->FindMaterial("lights/defaultPointLight");
-	dmap_tr.defaultProjectedLight = declManager->FindMaterial("lights/defaultProjectedLight");
-	dmap_tr.whiteMaterial = declManager->FindMaterial("_white");
-	dmap_tr.charSetMaterial = declManager->FindMaterial("textures/bigchars");
+	dmap_tr.defaultPointLight = declManager->FindMaterial( "lights/defaultPointLight" );
+	dmap_tr.defaultProjectedLight = declManager->FindMaterial( "lights/defaultProjectedLight" );
+	dmap_tr.whiteMaterial = declManager->FindMaterial( "_white" );
+	dmap_tr.charSetMaterial = declManager->FindMaterial( "textures/bigchars" );
 }
 
 /*
@@ -90,50 +90,50 @@ R_MakeFullScreenTrisDmap
 static srfDmapTriangles_t* R_MakeFullScreenTrisDmap()
 {
 	// copy verts and indexes
-	srfDmapTriangles_t* tri = (srfDmapTriangles_t*)Mem_ClearedAlloc(sizeof(*tri), TAG_RENDER_TOOLS);
-
+	srfDmapTriangles_t* tri = ( srfDmapTriangles_t* )Mem_ClearedAlloc( sizeof( *tri ), TAG_RENDER_TOOLS );
+	
 	tri->numIndexes = 6;
 	tri->numVerts = 4;
-
-	int indexSize = tri->numIndexes * sizeof(tri->indexes[0]);
-	int allocatedIndexBytes = ALIGN(indexSize, 16);
-	tri->indexes = (uint*)Mem_Alloc(allocatedIndexBytes, TAG_RENDER_TOOLS);
-
-	int vertexSize = tri->numVerts * sizeof(tri->verts[0]);
-	int allocatedVertexBytes = ALIGN(vertexSize, 16);
-	tri->verts = (idDmapDrawVert*)Mem_ClearedAlloc(allocatedVertexBytes, TAG_RENDER_TOOLS);
-
+	
+	int indexSize = tri->numIndexes * sizeof( tri->indexes[0] );
+	int allocatedIndexBytes = ALIGN( indexSize, 16 );
+	tri->indexes = ( uint* )Mem_Alloc( allocatedIndexBytes, TAG_RENDER_TOOLS );
+	
+	int vertexSize = tri->numVerts * sizeof( tri->verts[0] );
+	int allocatedVertexBytes = ALIGN( vertexSize, 16 );
+	tri->verts = ( idDmapDrawVert* )Mem_ClearedAlloc( allocatedVertexBytes, TAG_RENDER_TOOLS );
+	
 	idDmapDrawVert* verts = tri->verts;
-
+	
 	uint tempIndexes[6] = { 3, 0, 2, 2, 0, 1 };
-	memcpy(tri->indexes, tempIndexes, indexSize);
-
+	memcpy( tri->indexes, tempIndexes, indexSize );
+	
 	verts[0].xyz[0] = -1.0f;
 	verts[0].xyz[1] = 1.0f;
 	verts[0].st[0] = 0.0f;
 	verts[0].st[1] = 1.0f;
-
+	
 	verts[1].xyz[0] = 1.0f;
 	verts[1].xyz[1] = 1.0f;
 	verts[1].st[0] = 1.0f;
 	verts[1].st[1] = 1.0f;
-
+	
 	verts[2].xyz[0] = 1.0f;
 	verts[2].xyz[1] = -1.0f;
 	verts[2].st[0] = 1.0f;
 	verts[2].st[1] = 0.0f;
-
+	
 	verts[3].xyz[0] = -1.0f;
 	verts[3].xyz[1] = -1.0f;
 	verts[3].st[0] = 0.0f;
 	verts[3].st[1] = 0.0f;
-
-	for (int i = 0; i < 4; i++)
+	
+	for( int i = 0; i < 4; i++ )
 	{
-		verts[i].SetColor(0xffffffff);
+		verts[i].SetColor( 0xffffffff );
 	}
-
-
+	
+	
 	return tri;
 }
 
@@ -145,32 +145,32 @@ R_MakeZeroOneCubeTrisDmap
 */
 static srfDmapTriangles_t* R_MakeZeroOneCubeTrisDmap()
 {
-	srfDmapTriangles_t* tri = (srfDmapTriangles_t*)Mem_ClearedAlloc(sizeof(*tri), TAG_RENDER_TOOLS);
-
+	srfDmapTriangles_t* tri = ( srfDmapTriangles_t* )Mem_ClearedAlloc( sizeof( *tri ), TAG_RENDER_TOOLS );
+	
 	tri->numVerts = 8;
 	tri->numIndexes = 36;
-
-	const int indexSize = tri->numIndexes * sizeof(tri->indexes[0]);
-	const int allocatedIndexBytes = ALIGN(indexSize, 16);
-	tri->indexes = (uint*)Mem_Alloc(allocatedIndexBytes, TAG_RENDER_TOOLS);
-
-	const int vertexSize = tri->numVerts * sizeof(tri->verts[0]);
-	const int allocatedVertexBytes = ALIGN(vertexSize, 16);
-	tri->verts = (idDmapDrawVert*)Mem_ClearedAlloc(allocatedVertexBytes, TAG_RENDER_TOOLS);
-
+	
+	const int indexSize = tri->numIndexes * sizeof( tri->indexes[0] );
+	const int allocatedIndexBytes = ALIGN( indexSize, 16 );
+	tri->indexes = ( uint* )Mem_Alloc( allocatedIndexBytes, TAG_RENDER_TOOLS );
+	
+	const int vertexSize = tri->numVerts * sizeof( tri->verts[0] );
+	const int allocatedVertexBytes = ALIGN( vertexSize, 16 );
+	tri->verts = ( idDmapDrawVert* )Mem_ClearedAlloc( allocatedVertexBytes, TAG_RENDER_TOOLS );
+	
 	idDmapDrawVert* verts = tri->verts;
-
+	
 	const float low = 0.0f;
 	const float high = 1.0f;
-
-	idVec3 center(0.0f);
-	idVec3 mx(low, 0.0f, 0.0f);
-	idVec3 px(high, 0.0f, 0.0f);
-	idVec3 my(0.0f, low, 0.0f);
-	idVec3 py(0.0f, high, 0.0f);
-	idVec3 mz(0.0f, 0.0f, low);
-	idVec3 pz(0.0f, 0.0f, high);
-
+	
+	idVec3 center( 0.0f );
+	idVec3 mx( low, 0.0f, 0.0f );
+	idVec3 px( high, 0.0f, 0.0f );
+	idVec3 my( 0.0f, low, 0.0f );
+	idVec3 py( 0.0f, high, 0.0f );
+	idVec3 mz( 0.0f, 0.0f, low );
+	idVec3 pz( 0.0f, 0.0f, high );
+	
 	verts[0].xyz = center + mx + my + mz;
 	verts[1].xyz = center + px + my + mz;
 	verts[2].xyz = center + px + py + mz;
@@ -179,7 +179,7 @@ static srfDmapTriangles_t* R_MakeZeroOneCubeTrisDmap()
 	verts[5].xyz = center + px + my + pz;
 	verts[6].xyz = center + px + py + pz;
 	verts[7].xyz = center + mx + py + pz;
-
+	
 	// bottom
 	tri->indexes[0 * 3 + 0] = 2;
 	tri->indexes[0 * 3 + 1] = 3;
@@ -222,12 +222,12 @@ static srfDmapTriangles_t* R_MakeZeroOneCubeTrisDmap()
 	tri->indexes[11 * 3 + 0] = 5;
 	tri->indexes[11 * 3 + 1] = 4;
 	tri->indexes[11 * 3 + 2] = 6;
-
-	for (int i = 0; i < 4; i++)
+	
+	for( int i = 0; i < 4; i++ )
 	{
-		verts[i].SetColor(0xffffffff);
+		verts[i].SetColor( 0xffffffff );
 	}
-
+	
 	return tri;
 }
 
@@ -241,57 +241,57 @@ Initializes the Test Image Triangles
 */
 srfDmapTriangles_t* R_MakeTestImageTrianglesDmap()
 {
-	srfDmapTriangles_t* tri = (srfDmapTriangles_t*)Mem_ClearedAlloc(sizeof(*tri), TAG_RENDER_TOOLS);
-
+	srfDmapTriangles_t* tri = ( srfDmapTriangles_t* )Mem_ClearedAlloc( sizeof( *tri ), TAG_RENDER_TOOLS );
+	
 	tri->numIndexes = 6;
 	tri->numVerts = 4;
-
-	int indexSize = tri->numIndexes * sizeof(tri->indexes[0]);
-	int allocatedIndexBytes = ALIGN(indexSize, 16);
-	tri->indexes = (uint*)Mem_Alloc(allocatedIndexBytes, TAG_RENDER_TOOLS);
-
-	int vertexSize = tri->numVerts * sizeof(tri->verts[0]);
-	int allocatedVertexBytes = ALIGN(vertexSize, 16);
-	tri->verts = (idDmapDrawVert*)Mem_ClearedAlloc(allocatedVertexBytes, TAG_RENDER_TOOLS);
-
+	
+	int indexSize = tri->numIndexes * sizeof( tri->indexes[0] );
+	int allocatedIndexBytes = ALIGN( indexSize, 16 );
+	tri->indexes = ( uint* )Mem_Alloc( allocatedIndexBytes, TAG_RENDER_TOOLS );
+	
+	int vertexSize = tri->numVerts * sizeof( tri->verts[0] );
+	int allocatedVertexBytes = ALIGN( vertexSize, 16 );
+	tri->verts = ( idDmapDrawVert* )Mem_ClearedAlloc( allocatedVertexBytes, TAG_RENDER_TOOLS );
+	
 	ALIGNTYPE16 uint tempIndexes[6] = { 3, 0, 2, 2, 0, 1 };
-	memcpy(tri->indexes, tempIndexes, indexSize);
-
+	memcpy( tri->indexes, tempIndexes, indexSize );
+	
 	idDmapDrawVert* tempVerts = tri->verts;
 	tempVerts[0].xyz[0] = 0.0f;
 	tempVerts[0].xyz[1] = 0.0f;
 	tempVerts[0].xyz[2] = 0;
 	tempVerts[0].st[0] = 0.0f;
 	tempVerts[0].st[1] = 0.0f;
-
+	
 	tempVerts[1].xyz[0] = 1.0f;
 	tempVerts[1].xyz[1] = 0.0f;
 	tempVerts[1].xyz[2] = 0;
 	tempVerts[1].st[0] = 1.0f;
 	tempVerts[1].st[1] = 0.0f;
-
+	
 	tempVerts[2].xyz[0] = 1.0f;
 	tempVerts[2].xyz[1] = 1.0f;
 	tempVerts[2].xyz[2] = 0;
 	tempVerts[2].st[0] = 1.0f;
 	tempVerts[2].st[1] = 1.0f;
-
+	
 	tempVerts[3].xyz[0] = 0.0f;
 	tempVerts[3].xyz[1] = 1.0f;
 	tempVerts[3].xyz[2] = 0;
 	tempVerts[3].st[0] = 0.0f;
 	tempVerts[3].st[1] = 1.0f;
-
-	for (int i = 0; i < 4; i++)
+	
+	for( int i = 0; i < 4; i++ )
 	{
-		tempVerts[i].SetColor(0xFFFFFFFF);
+		tempVerts[i].SetColor( 0xFFFFFFFF );
 	}
 	return tri;
 }
 
 void idDmapRenderSystemLocal::OnFrame()
 {
-	assert(0);
+	assert( 0 );
 }
 
 
@@ -309,43 +309,43 @@ void idDmapRenderSystemLocal::Clear()
 	ambientLightVector.Zero();
 	worlds.Clear();
 	primaryWorld = NULL;
-	memset(&primaryRenderView, 0, sizeof(primaryRenderView));
+	memset( &primaryRenderView, 0, sizeof( primaryRenderView ) );
 	primaryView = NULL;
 	defaultMaterial = NULL;
 	testImage = NULL;
 	ambientCubeImage = NULL;
 	viewDef = NULL;
-	memset(&pc, 0, sizeof(pc));
-	memset(&identitySpace, 0, sizeof(identitySpace));
-	memset(renderCrops, 0, sizeof(renderCrops));
+	memset( &pc, 0, sizeof( pc ) );
+	memset( &identitySpace, 0, sizeof( identitySpace ) );
+	memset( renderCrops, 0, sizeof( renderCrops ) );
 	currentRenderCrop = 0;
 	currentColorNativeBytesOrder = 0xFFFFFFFF;
 	currentGLState = 0;
 	guiRecursionLevel = 0;
 	guiModel = NULL;
-	memset(gammaTable, 0, sizeof(gammaTable));
+	memset( gammaTable, 0, sizeof( gammaTable ) );
 	takingScreenshot = false;
-
-	if (unitSquareTriangles != NULL)
+	
+	if( unitSquareTriangles != NULL )
 	{
-		Mem_Free(unitSquareTriangles);
+		Mem_Free( unitSquareTriangles );
 		unitSquareTriangles = NULL;
 	}
-
-	if (zeroOneCubeTriangles != NULL)
+	
+	if( zeroOneCubeTriangles != NULL )
 	{
-		Mem_Free(zeroOneCubeTriangles);
+		Mem_Free( zeroOneCubeTriangles );
 		zeroOneCubeTriangles = NULL;
 	}
-
-	if (testImageTriangles != NULL)
+	
+	if( testImageTriangles != NULL )
 	{
-		Mem_Free(testImageTriangles);
+		Mem_Free( testImageTriangles );
 		testImageTriangles = NULL;
 	}
-
+	
 	frontEndJobList = NULL;
-
+	
 #ifdef BUGFIXEDSCREENSHOTRESOLUTION
 	// foresthale 2014-03-01: screenshots need to override the results of GetWidth() and GetHeight()
 	screenshotOverrideWidth = 0;
@@ -361,68 +361,68 @@ idDmapRenderSystemLocal::Init
 void idDmapRenderSystemLocal::Init()
 {
 
-	common->Printf("------- Initializing Dmap RenderSystem --------\n");
-
+	common->Printf( "------- Initializing Dmap RenderSystem --------\n" );
+	
 	// clear all our internal state
 	viewCount = 1;		// so cleared structures never match viewCount
 	// we used to memset tr, but now that it is a class, we can't, so
 	// there may be other state we need to reset
-
+	
 	ambientLightVector[0] = 0.5f;
 	ambientLightVector[1] = 0.5f - 0.385f;
 	ambientLightVector[2] = 0.8925f;
 	ambientLightVector[3] = 1.0f;
-
-	memset(&backEnd, 0, sizeof(backEnd));
-
+	
+	memset( &backEnd, 0, sizeof( backEnd ) );
+	
 	R_InitCvarsDmap();
-
+	
 	R_InitCommandsDmap();
-
-	guiModel = new(TAG_RENDER)idGuiModel;
+	
+	guiModel = new( TAG_RENDER )idGuiModel;
 	guiModel->Clear();
 	tr_dmapGuiModel = guiModel;	// for DeviceContext fast path
-
+	
 	globalImages->Init();
 	globalFramebuffers->Init(); // foresthale 2014-02-18: framebuffer objects
-
+	
 	idCinematic::InitCinematic();
-
+	
 	// build brightness translation tables
 	R_SetColorMappings();
-
+	
 	R_InitMaterialsDmap();
-
+	
 	dmapRenderModelManager->Init();
-
+	
 	// set the identity space
 	identitySpace.modelMatrix[0 * 4 + 0] = 1.0f;
 	identitySpace.modelMatrix[1 * 4 + 1] = 1.0f;
 	identitySpace.modelMatrix[2 * 4 + 2] = 1.0f;
-
+	
 	// make sure the dmap_tr.unitSquareTriangles data is current in the vertex / index cache
-	if (unitSquareTriangles == NULL)
+	if( unitSquareTriangles == NULL )
 	{
 		unitSquareTriangles = R_MakeFullScreenTrisDmap();
 	}
 	// make sure the dmap_tr.zeroOneCubeTriangles data is current in the vertex / index cache
-	if (zeroOneCubeTriangles == NULL)
+	if( zeroOneCubeTriangles == NULL )
 	{
 		zeroOneCubeTriangles = R_MakeZeroOneCubeTrisDmap();
 	}
 	// make sure the dmap_tr.testImageTriangles data is current in the vertex / index cache
-	if (testImageTriangles == NULL)
+	if( testImageTriangles == NULL )
 	{
 		testImageTriangles = R_MakeTestImageTrianglesDmap();
 	}
-
-	frontEndJobList = parallelJobManager->AllocJobList(JOBLIST_RENDERER_FRONTEND, JOBLIST_PRIORITY_MEDIUM, 2048, 0, NULL);
-
+	
+	frontEndJobList = parallelJobManager->AllocJobList( JOBLIST_RENDERER_FRONTEND, JOBLIST_PRIORITY_MEDIUM, 2048, 0, NULL );
+	
 	// make sure the command buffers are ready to accept the first screen update
-	SwapCommandBuffers(NULL, NULL, NULL, NULL);
-
-	common->Printf("Dmap RenderSystem initialized.\n");
-	common->Printf("--------------------------------------\n");
+	SwapCommandBuffers( NULL, NULL, NULL, NULL );
+	
+	common->Printf( "Dmap RenderSystem initialized.\n" );
+	common->Printf( "--------------------------------------\n" );
 }
 
 /*
@@ -435,14 +435,14 @@ Downsample is the number of steps to mipmap the image before saving it
 If ref == NULL, common->UpdateScreen will be used
 ==================
 */
-void idDmapRenderSystemLocal::TakeScreenshot(int width, int height, const char* fileName, int blends, renderView_t* ref)
+void idDmapRenderSystemLocal::TakeScreenshot( int width, int height, const char* fileName, int blends, renderView_t* ref )
 {
-	assert(0);
+	assert( 0 );
 }
 
-void idDmapRenderSystemLocal::TakeScreenshot(int width, int height, idFile* outFile, int blends, renderView_t* ref)
+void idDmapRenderSystemLocal::TakeScreenshot( int width, int height, idFile* outFile, int blends, renderView_t* ref )
 {
-	assert(0);
+	assert( 0 );
 }
 
 /*
@@ -452,39 +452,39 @@ idDmapRenderSystemLocal::Shutdown
 */
 void idDmapRenderSystemLocal::Shutdown()
 {
-	common->Printf("idDmapRenderSystemLocal::Shutdown()\n");
-
+	common->Printf( "idDmapRenderSystemLocal::Shutdown()\n" );
+	
 	fonts.DeleteContents();
-
-	if (R_IsInitialized())
+	
+	if( R_IsInitialized() )
 	{
 		globalFramebuffers->PurgeAllFramebuffers(); // foresthale 2014-02-18: framebuffer objects
 		globalImages->PurgeAllImages();
 	}
-
+	
 	dmapRenderModelManager->Shutdown();
-
+	
 	idCinematic::ShutdownCinematic();
-
+	
 	globalFramebuffers->Shutdown(); // foresthale 2014-02-18: framebuffer objects
 	globalImages->Shutdown();
-
+	
 	// free frame memory
 	R_ShutdownFrameData();
-
+	
 	UnbindBufferObjects();
-
+	
 	// free the vertex cache, which should have nothing allocated now
 	dmapVertexCache.Shutdown();
-
+	
 	RB_ShutdownDebugTools();
-
+	
 	delete guiModel;
-
-	parallelJobManager->FreeJobList(frontEndJobList);
-
+	
+	parallelJobManager->FreeJobList( frontEndJobList );
+	
 	Clear();
-
+	
 	ShutdownOpenGL();
 }
 
@@ -496,7 +496,7 @@ idDmapRenderSystemLocal::ResetGuiModels
 void idDmapRenderSystemLocal::ResetGuiModels()
 {
 	delete guiModel;
-	guiModel = new(TAG_RENDER)idGuiModel;
+	guiModel = new( TAG_RENDER )idGuiModel;
 	guiModel->Clear();
 	guiModel->BeginFrame();
 	tr_dmapGuiModel = guiModel;	// for DeviceContext fast path
@@ -513,8 +513,8 @@ void idDmapRenderSystemLocal::BeginLevelLoad()
 	R_InitMaterialsDmap();
 	globalImages->BeginLevelLoad();
 	dmapRenderModelManager->BeginLevelLoad();
-
-
+	
+	
 }
 
 /*
@@ -524,7 +524,7 @@ idDmapRenderSystemLocal::LoadLevelImages
 */
 void idDmapRenderSystemLocal::LoadLevelImages()
 {
-	globalImages->LoadLevelImages(false);
+	globalImages->LoadLevelImages( false );
 }
 
 /*
@@ -532,9 +532,9 @@ void idDmapRenderSystemLocal::LoadLevelImages()
 idDmapRenderSystemLocal::Preload
 ========================
 */
-void idDmapRenderSystemLocal::Preload(const idPreloadManifest& manifest, const char* mapName)
+void idDmapRenderSystemLocal::Preload( const idPreloadManifest& manifest, const char* mapName )
 {
-	assert(0);
+	assert( 0 );
 	/*
 	globalImages->Preload(manifest, true);
 	uiManager->Preload(mapName);
@@ -558,7 +558,7 @@ void idDmapRenderSystemLocal::EndLevelLoad()
 idDmapRenderSystemLocal::BeginAutomaticBackgroundSwaps
 ========================
 */
-void idDmapRenderSystemLocal::BeginAutomaticBackgroundSwaps(autoRenderIconType_t icon)
+void idDmapRenderSystemLocal::BeginAutomaticBackgroundSwaps( autoRenderIconType_t icon )
 {
 }
 
@@ -576,7 +576,7 @@ void idDmapRenderSystemLocal::EndAutomaticBackgroundSwaps()
 idDmapRenderSystemLocal::AreAutomaticBackgroundSwapsRunning
 ========================
 */
-bool idDmapRenderSystemLocal::AreAutomaticBackgroundSwapsRunning(autoRenderIconType_t* icon) const
+bool idDmapRenderSystemLocal::AreAutomaticBackgroundSwapsRunning( autoRenderIconType_t* icon ) const
 {
 	return false;
 }
@@ -586,21 +586,21 @@ bool idDmapRenderSystemLocal::AreAutomaticBackgroundSwapsRunning(autoRenderIconT
 idDmapRenderSystemLocal::RegisterFont
 ============
 */
-idFont* idDmapRenderSystemLocal::RegisterFont(const char* fontName)
+idFont* idDmapRenderSystemLocal::RegisterFont( const char* fontName )
 {
 
 	idStrStatic< MAX_OSPATH > baseFontName = fontName;
-	baseFontName.Replace("fonts/", "");
-	for (int i = 0; i < fonts.Num(); i++)
+	baseFontName.Replace( "fonts/", "" );
+	for( int i = 0; i < fonts.Num(); i++ )
 	{
-		if (idStr::Icmp(fonts[i]->GetName(), baseFontName) == 0)
+		if( idStr::Icmp( fonts[i]->GetName(), baseFontName ) == 0 )
 		{
 			fonts[i]->Touch();
 			return fonts[i];
 		}
 	}
-	idFont* newFont = new(TAG_FONT)idFont(baseFontName);
-	fonts.Append(newFont);
+	idFont* newFont = new( TAG_FONT )idFont( baseFontName );
+	fonts.Append( newFont );
 	return newFont;
 }
 
@@ -611,7 +611,7 @@ idDmapRenderSystemLocal::ResetFonts
 */
 void idDmapRenderSystemLocal::ResetFonts()
 {
-	fonts.DeleteContents(true);
+	fonts.DeleteContents( true );
 }
 /*
 ========================
@@ -621,17 +621,17 @@ idDmapRenderSystemLocal::InitOpenGL
 void idDmapRenderSystemLocal::InitOpenGL()
 {
 	// if OpenGL isn't started, start it now
-	if (!R_IsInitialized())
+	if( !R_IsInitialized() )
 	{
 		R_InitOpenGL();
-
+		
 		// Reloading images here causes the rendertargets to get deleted. Figure out how to handle this properly on 360
-		globalImages->ReloadImages(true);
-
+		globalImages->ReloadImages( true );
+		
 		int err = qglGetError();
-		if (err != GL_NO_ERROR)
+		if( err != GL_NO_ERROR )
 		{
-			common->Printf("glGetError() = 0x%x\n", err);
+			common->Printf( "glGetError() = 0x%x\n", err );
 		}
 	}
 }
@@ -680,12 +680,12 @@ int idDmapRenderSystemLocal::GetWidth() const
 {
 #ifdef BUGFIXEDSCREENSHOTRESOLUTION
 	// foresthale 2014-03-01: screenshots need to override the results of GetWidth() and GetHeight()
-	if (screenshotOverrideWidth)
+	if( screenshotOverrideWidth )
 	{
 		return screenshotOverrideWidth;
 	}
 #endif
-	if (glConfig.stereo3Dmode == STEREO3D_SIDE_BY_SIDE || glConfig.stereo3Dmode == STEREO3D_SIDE_BY_SIDE_COMPRESSED)
+	if( glConfig.stereo3Dmode == STEREO3D_SIDE_BY_SIDE || glConfig.stereo3Dmode == STEREO3D_SIDE_BY_SIDE_COMPRESSED )
 	{
 		return glConfig.nativeScreenWidth >> 1;
 	}
@@ -701,22 +701,22 @@ int idDmapRenderSystemLocal::GetHeight() const
 {
 #ifdef BUGFIXEDSCREENSHOTRESOLUTION
 	// foresthale 2014-03-01: screenshots need to override the results of GetWidth() and GetHeight()
-	if (screenshotOverrideHeight)
+	if( screenshotOverrideHeight )
 	{
 		return screenshotOverrideHeight;
 	}
 #endif
-	if (glConfig.stereo3Dmode == STEREO3D_HDMI_720)
+	if( glConfig.stereo3Dmode == STEREO3D_HDMI_720 )
 	{
 		return 720;
 	}
 	extern idCVar stereoRender_warp;
-	if (glConfig.stereo3Dmode == STEREO3D_SIDE_BY_SIDE && stereoRender_warp.GetBool())
+	if( glConfig.stereo3Dmode == STEREO3D_SIDE_BY_SIDE && stereoRender_warp.GetBool() )
 	{
 		// for the Rift, render a square aspect view that will be symetric for the optics
 		return glConfig.nativeScreenWidth >> 1;
 	}
-	if (glConfig.stereo3Dmode == STEREO3D_INTERLACED || glConfig.stereo3Dmode == STEREO3D_TOP_AND_BOTTOM_COMPRESSED)
+	if( glConfig.stereo3Dmode == STEREO3D_INTERLACED || glConfig.stereo3Dmode == STEREO3D_TOP_AND_BOTTOM_COMPRESSED )
 	{
 		return glConfig.nativeScreenHeight >> 1;
 	}
@@ -768,7 +768,7 @@ stereo3DMode_t idDmapRenderSystemLocal::GetStereoScopicRenderingMode() const
 idDmapRenderSystemLocal::IsStereoScopicRenderingSupported
 ========================
 */
-void idDmapRenderSystemLocal::EnableStereoScopicRendering(const stereo3DMode_t mode) const
+void idDmapRenderSystemLocal::EnableStereoScopicRendering( const stereo3DMode_t mode ) const
 {
 	//stereoRender_enable.SetInteger(mode);
 }
@@ -780,15 +780,15 @@ idDmapRenderSystemLocal::GetPixelAspect
 */
 float idDmapRenderSystemLocal::GetPixelAspect() const
 {
-	switch (glConfig.stereo3Dmode)
+	switch( glConfig.stereo3Dmode )
 	{
-	case STEREO3D_SIDE_BY_SIDE_COMPRESSED:
-		return glConfig.pixelAspect * 2.0f;
-	case STEREO3D_TOP_AND_BOTTOM_COMPRESSED:
-	case STEREO3D_INTERLACED:
-		return glConfig.pixelAspect * 0.5f;
-	default:
-		return glConfig.pixelAspect;
+		case STEREO3D_SIDE_BY_SIDE_COMPRESSED:
+			return glConfig.pixelAspect * 2.0f;
+		case STEREO3D_TOP_AND_BOTTOM_COMPRESSED:
+		case STEREO3D_INTERLACED:
+			return glConfig.pixelAspect * 0.5f;
+		default:
+			return glConfig.pixelAspect;
 	}
 }
 

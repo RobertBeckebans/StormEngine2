@@ -45,7 +45,7 @@ public:
 		TS_STARTED,
 		TS_STOPPED
 	};
-
+	
 	idTimer();
 	idTimer( double clockTicks );
 	~idTimer();
@@ -60,7 +60,10 @@ public:
 	void			Clear();
 	double			ClockTicks() const;
 	double			Milliseconds() const;
-	TimerState		State() const { return state; }
+	TimerState		State() const
+	{
+		return state;
+	}
 private:
 	static double	base;
 	TimerState		state;

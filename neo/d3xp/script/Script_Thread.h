@@ -203,7 +203,7 @@ private:
 public:
 	CLASS_PROTOTYPE( idThread );
 	
-	idThread( const char * name = NULL );
+	idThread( const char* name = NULL );
 	idThread( idEntity* self, const function_t* func );
 	idThread( const function_t* func );
 	idThread( idInterpreter* source, const function_t* func, int args );
@@ -238,7 +238,7 @@ public:
 	void						CallFunction( idEntity* obj, const function_t* func, bool clearStack );
 	
 	void						DisplayInfo();
-	void						DebugInfo( msg_t & threadMsg );
+	void						DebugInfo( msg_t& threadMsg );
 	static idThread*			GetThread( int num );
 	static void					ListThreads_f( const idCmdArgs& args );
 	static void					Restart();

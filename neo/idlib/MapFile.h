@@ -152,7 +152,7 @@ public:
 	{
 		return sides[i];
 	}
-	void					GetGeometryCRC( unsigned int & crc ) const;
+	void					GetGeometryCRC( unsigned int& crc ) const;
 	
 protected:
 	int						numSides;
@@ -200,7 +200,7 @@ public:
 	{
 		explicitSubdivisions = b;
 	}
-	void					GetGeometryCRC( unsigned int & crc ) const;
+	void					GetGeometryCRC( unsigned int& crc ) const;
 	
 protected:
 	idStr					material;
@@ -262,7 +262,7 @@ public:
 	{
 		primitives.Append( p );
 	}
-	void					GetGeometryCRC( unsigned int & crc ) const;
+	void					GetGeometryCRC( unsigned int& crc ) const;
 	void					RemovePrimitiveData();
 	
 protected:

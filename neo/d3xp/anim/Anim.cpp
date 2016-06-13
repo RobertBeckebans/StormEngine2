@@ -428,7 +428,7 @@ bool idMD5Anim::LoadBinary( idFile* file, ID_TIME_T sourceTimeStamp )
 	
 	ID_TIME_T loadedTimeStamp;
 	file->ReadBig( loadedTimeStamp );
-	if( !fileSystem->InProductionMode() && sourceTimeStamp != loadedTimeStamp && sourceTimeStamp>0 )
+	if( !fileSystem->InProductionMode() && sourceTimeStamp != loadedTimeStamp && sourceTimeStamp > 0 )
 	{
 		return false;
 	}

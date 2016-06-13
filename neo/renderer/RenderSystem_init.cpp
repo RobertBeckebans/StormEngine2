@@ -232,7 +232,7 @@ idCVar r_shadowMapRandomizeJitter( "r_shadowMapRandomizeJitter", "1", CVAR_RENDE
 idCVar r_shadowMapSamples( "r_shadowMapSamples", "4", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_INTEGER, "0, 1, 4, or 16" );
 idCVar r_shadowMapSplits( "r_shadowMapSplits", "4", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_INTEGER, "number of splits for cascaded shadow mapping with parallel lights", 0, 4 );
 idCVar r_shadowMapSplitWeight( "r_shadowMapSplitWeight", "0.95", CVAR_RENDERER | CVAR_FLOAT, ".00001 old setting" );
-idCVar r_shadowMapLodScale( "r_shadowMapLodScale", "1.5", CVAR_RENDERER | CVAR_FLOAT, "" ); 
+idCVar r_shadowMapLodScale( "r_shadowMapLodScale", "1.5", CVAR_RENDERER | CVAR_FLOAT, "" );
 idCVar r_shadowMapLodBias( "r_shadowMapLodBias", "1", CVAR_RENDERER | CVAR_INTEGER, "" );
 idCVar r_shadowMapPolygonFactor( "r_shadowMapPolygonFactor", "2.75", CVAR_RENDERER | CVAR_FLOAT, "polygonOffset factor for drawing shadow buffer (2.75 old setting)" );
 idCVar r_shadowMapPolygonOffset( "r_shadowMapPolygonOffset", "-150", CVAR_RENDERER | CVAR_FLOAT, "polygonOffset units for drawing shadow buffer (0 old setting)" );
@@ -247,7 +247,7 @@ idCVar r_shadowMapStaticShadowsDistance( "r_shadowMapStaticShadowsDistance", "10
 idCVar r_screenshot_png( "screenshot_png", "0", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL, "Save Screenshots as PNG files." );
 
 idCVar r_screenshot_png_quality( "screenshot_png_quality", "3", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_INTEGER, "Modifies the compression level of the png File to be written.\n\t0 = Worst Quality\n\t3 = Default Quality Setting\n\t8 = Best Quality",
-	0, 8, idCmdSystem::ArgCompletion_Integer<0, 8> );
+								 0, 8, idCmdSystem::ArgCompletion_Integer<0, 8> );
 
 
 // GL_ARB_multitexture
@@ -437,7 +437,7 @@ static void CALLBACK DebugCallback( unsigned int source, unsigned int type,
 	OutputDebugString( "\n" );
 #else
 	printf( "%s\n", message );
-#endif	
+#endif
 }
 // RB end
 
@@ -467,13 +467,13 @@ static void R_CheckPortableExtensions()
 	{
 		glConfig.vendor = VENDOR_INTEL;
 	}
-
-
+	
+	
 	// Integrate Features found in OpenGL 2.x
 	qglTexImage3D = ( PFNGLTEXIMAGE3DPROC )GLimp_ExtensionPointer( "glTexImage3D" );
 	// GL_ARB_multitexture
 	glConfig.multitextureAvailable = R_CheckExtension( "GL_ARB_multitexture" );
-	if( 3.1f < glConfig.glVersion  )
+	if( 3.1f < glConfig.glVersion )
 	{
 		glConfig.multitextureAvailable = true;
 		qglActiveTextureARB = ( void( APIENTRY* )( GLenum ) )GLimp_ExtensionPointer( "glActiveTexture" );
@@ -501,7 +501,7 @@ static void R_CheckPortableExtensions()
 	// DRI drivers may have GL_ARB_texture_compression but no GL_EXT_texture_compression_s3tc
 	glConfig.textureCompressionAvailable = R_CheckExtension( "GL_ARB_texture_compression" );
 	glConfig.S3TCtextureCompressionAvailable = R_CheckExtension( "GL_EXT_texture_compression_s3tc" );
-	if( 3.1f < glConfig.glVersion  )
+	if( 3.1f < glConfig.glVersion )
 	{
 		qglCompressedTexImage2DARB = ( PFNGLCOMPRESSEDTEXIMAGE2DARBPROC )GLimp_ExtensionPointer( "glCompressedTexImage2D" );
 		qglCompressedTexSubImage2DARB = ( PFNGLCOMPRESSEDTEXSUBIMAGE2DARBPROC )GLimp_ExtensionPointer( "glCompressedTexSubImage2D" );
@@ -513,7 +513,7 @@ static void R_CheckPortableExtensions()
 		qglCompressedTexSubImage2DARB = ( PFNGLCOMPRESSEDTEXSUBIMAGE2DARBPROC )GLimp_ExtensionPointer( "glCompressedTexSubImage2DARB" );
 		qglGetCompressedTexImageARB = ( PFNGLGETCOMPRESSEDTEXIMAGEARBPROC )GLimp_ExtensionPointer( "glGetCompressedTexImageARB" );
 	}
-
+	
 	// GL_EXT_texture_filter_anisotropic
 	glConfig.anisotropicFilterAvailable = R_CheckExtension( "GL_EXT_texture_filter_anisotropic" );
 	if( glConfig.anisotropicFilterAvailable )
@@ -565,7 +565,7 @@ static void R_CheckPortableExtensions()
 		qglGetBufferParameterivARB = ( PFNGLGETBUFFERPARAMETERIVARBPROC )GLimp_ExtensionPointer( "glGetBufferParameteriv" );
 		qglGetBufferPointervARB = ( PFNGLGETBUFFERPOINTERVARBPROC )GLimp_ExtensionPointer( "glGetBufferPointerv" );
 	}
-	else if ( glConfig.vertexBufferObjectAvailable )
+	else if( glConfig.vertexBufferObjectAvailable )
 	{
 		qglBindBufferARB = ( PFNGLBINDBUFFERARBPROC )GLimp_ExtensionPointer( "glBindBufferARB" );
 		qglBindBufferRange = ( PFNGLBINDBUFFERRANGEPROC )GLimp_ExtensionPointer( "glBindBufferRange" );
@@ -663,36 +663,36 @@ static void R_CheckPortableExtensions()
 		// foresthale 2014-02-18: added qglDrawbuffers
 		qglDrawBuffers = ( PFNGLDRAWBUFFERSPROC )GLimp_ExtensionPointer( "glDrawBuffers" );
 	}
-
+	
 	// foresthale 2014-02-16: added GL_ARB_framebuffer_object
-	glConfig.frameBufferObjectAvailable = R_CheckExtension( "GL_ARB_framebuffer_object");
+	glConfig.frameBufferObjectAvailable = R_CheckExtension( "GL_ARB_framebuffer_object" );
 	if( glConfig.frameBufferObjectAvailable )
 	{
 		// All of these features are in the OpenGL 3.0 core spec.
-		qglIsRenderbuffer                      = ( PFNGLISRENDERBUFFERPROC                      )GLimp_ExtensionPointer( "glIsRenderbuffer" );
-		qglBindRenderbuffer                    = ( PFNGLBINDRENDERBUFFERPROC                    )GLimp_ExtensionPointer( "glBindRenderbuffer" );
-		qglDeleteRenderbuffers                 = ( PFNGLDELETERENDERBUFFERSPROC                 )GLimp_ExtensionPointer( "glDeleteRenderbuffers" );
-		qglGenRenderbuffers                    = ( PFNGLGENRENDERBUFFERSPROC                    )GLimp_ExtensionPointer( "glGenRenderbuffers" );
-		qglRenderbufferStorage                 = ( PFNGLRENDERBUFFERSTORAGEPROC                 )GLimp_ExtensionPointer( "glRenderbufferStorage" );
-		qglGetRenderbufferParameteriv          = ( PFNGLGETRENDERBUFFERPARAMETERIVPROC          )GLimp_ExtensionPointer( "glGetRenderbufferParameteriv" );
-		qglIsFramebuffer                       = ( PFNGLISFRAMEBUFFERPROC                       )GLimp_ExtensionPointer( "glIsFramebuffer" );
-		qglBindFramebuffer                     = ( PFNGLBINDFRAMEBUFFERPROC                     )GLimp_ExtensionPointer( "glBindFramebuffer" );
-		qglDeleteFramebuffers                  = ( PFNGLDELETEFRAMEBUFFERSPROC                  )GLimp_ExtensionPointer( "glDeleteFramebuffers" );
-		qglGenFramebuffers                     = ( PFNGLGENFRAMEBUFFERSPROC                     )GLimp_ExtensionPointer( "glGenFramebuffers" );
-		qglCheckFramebufferStatus              = ( PFNGLCHECKFRAMEBUFFERSTATUSPROC              )GLimp_ExtensionPointer( "glCheckFramebufferStatus" );
-		qglFramebufferTexture1D                = ( PFNGLFRAMEBUFFERTEXTURE1DPROC                )GLimp_ExtensionPointer( "glFramebufferTexture1D" );
-		qglFramebufferTexture2D                = ( PFNGLFRAMEBUFFERTEXTURE2DPROC                )GLimp_ExtensionPointer( "glFramebufferTexture2D" );
-		qglFramebufferTexture3D                = ( PFNGLFRAMEBUFFERTEXTURE3DPROC                )GLimp_ExtensionPointer( "glFramebufferTexture3D" );
-		qglFramebufferRenderbuffer             = ( PFNGLFRAMEBUFFERRENDERBUFFERPROC             )GLimp_ExtensionPointer( "glFramebufferRenderbuffer" );
+		qglIsRenderbuffer                      = ( PFNGLISRENDERBUFFERPROC )GLimp_ExtensionPointer( "glIsRenderbuffer" );
+		qglBindRenderbuffer                    = ( PFNGLBINDRENDERBUFFERPROC )GLimp_ExtensionPointer( "glBindRenderbuffer" );
+		qglDeleteRenderbuffers                 = ( PFNGLDELETERENDERBUFFERSPROC )GLimp_ExtensionPointer( "glDeleteRenderbuffers" );
+		qglGenRenderbuffers                    = ( PFNGLGENRENDERBUFFERSPROC )GLimp_ExtensionPointer( "glGenRenderbuffers" );
+		qglRenderbufferStorage                 = ( PFNGLRENDERBUFFERSTORAGEPROC )GLimp_ExtensionPointer( "glRenderbufferStorage" );
+		qglGetRenderbufferParameteriv          = ( PFNGLGETRENDERBUFFERPARAMETERIVPROC )GLimp_ExtensionPointer( "glGetRenderbufferParameteriv" );
+		qglIsFramebuffer                       = ( PFNGLISFRAMEBUFFERPROC )GLimp_ExtensionPointer( "glIsFramebuffer" );
+		qglBindFramebuffer                     = ( PFNGLBINDFRAMEBUFFERPROC )GLimp_ExtensionPointer( "glBindFramebuffer" );
+		qglDeleteFramebuffers                  = ( PFNGLDELETEFRAMEBUFFERSPROC )GLimp_ExtensionPointer( "glDeleteFramebuffers" );
+		qglGenFramebuffers                     = ( PFNGLGENFRAMEBUFFERSPROC )GLimp_ExtensionPointer( "glGenFramebuffers" );
+		qglCheckFramebufferStatus              = ( PFNGLCHECKFRAMEBUFFERSTATUSPROC )GLimp_ExtensionPointer( "glCheckFramebufferStatus" );
+		qglFramebufferTexture1D                = ( PFNGLFRAMEBUFFERTEXTURE1DPROC )GLimp_ExtensionPointer( "glFramebufferTexture1D" );
+		qglFramebufferTexture2D                = ( PFNGLFRAMEBUFFERTEXTURE2DPROC )GLimp_ExtensionPointer( "glFramebufferTexture2D" );
+		qglFramebufferTexture3D                = ( PFNGLFRAMEBUFFERTEXTURE3DPROC )GLimp_ExtensionPointer( "glFramebufferTexture3D" );
+		qglFramebufferRenderbuffer             = ( PFNGLFRAMEBUFFERRENDERBUFFERPROC )GLimp_ExtensionPointer( "glFramebufferRenderbuffer" );
 		qglGetFramebufferAttachmentParameteriv = ( PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVPROC )GLimp_ExtensionPointer( "glGetFramebufferAttachmentParameteriv" );
-		qglGenerateMipmap                      = ( PFNGLGENERATEMIPMAPPROC                      )GLimp_ExtensionPointer( "glGenerateMipmap" );
-		qglBlitFramebuffer                     = ( PFNGLBLITFRAMEBUFFERPROC                     )GLimp_ExtensionPointer( "glBlitFramebuffer" );
-		qglRenderbufferStorageMultisample      = ( PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC      )GLimp_ExtensionPointer( "glRenderbufferStorageMultisample" );
-		qglFramebufferTextureLayer             = ( PFNGLFRAMEBUFFERTEXTURELAYERPROC             )GLimp_ExtensionPointer( "glFramebufferTextureLayer" );
+		qglGenerateMipmap                      = ( PFNGLGENERATEMIPMAPPROC )GLimp_ExtensionPointer( "glGenerateMipmap" );
+		qglBlitFramebuffer                     = ( PFNGLBLITFRAMEBUFFERPROC )GLimp_ExtensionPointer( "glBlitFramebuffer" );
+		qglRenderbufferStorageMultisample      = ( PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC )GLimp_ExtensionPointer( "glRenderbufferStorageMultisample" );
+		qglFramebufferTextureLayer             = ( PFNGLFRAMEBUFFERTEXTURELAYERPROC )GLimp_ExtensionPointer( "glFramebufferTextureLayer" );
 	}
-
+	
 	glConfig.textureFloatAvailable = R_CheckExtension( "GL_ARB_texture_float" );
-
+	
 	// GL_ARB_uniform_buffer_object
 	glConfig.uniformBufferAvailable = R_CheckExtension( "GL_ARB_uniform_buffer_object" );
 	if( glConfig.uniformBufferAvailable )
@@ -772,7 +772,7 @@ static void R_CheckPortableExtensions()
 		
 		if( r_debugContext.GetInteger() >= 1 )
 		{
-			qglDebugMessageCallbackARB( (GLDEBUGPROCARB)DebugCallback, NULL ); // RB / DG fix for gldebug compile
+			qglDebugMessageCallbackARB( ( GLDEBUGPROCARB )DebugCallback, NULL ); // RB / DG fix for gldebug compile
 		}
 		if( r_debugContext.GetInteger() >= 2 )
 		{
@@ -803,7 +803,7 @@ static void R_CheckPortableExtensions()
 	{
 		idLib::Error( "GL_EXT_texture_compression_s3tc not available" );
 	}
-
+	
 	// GL_ARB_vertex_buffer_object
 	if( !glConfig.vertexBufferObjectAvailable )
 	{
@@ -1111,7 +1111,7 @@ void R_InitOpenGL()
 	
 	// Reset our gamma
 	R_SetColorMappings();
-
+	
 	// foresthale 2014-02-19: init the view framebuffer object
 	globalFramebuffers->InitIntrinsics();
 	
@@ -1151,7 +1151,7 @@ GL_CheckErrors
 ==================
 */
 // RB: added filename, line parms
-void GL_CheckErrors_Extended(const char* file, int line)
+void GL_CheckErrors_Extended( const char* file, int line )
 {
 	int		err;
 	char	s[64];
@@ -1449,12 +1449,12 @@ void R_ReadTiledPixels( int width, int height, byte* buffer, renderView_t* ref =
 	int sysWidth = renderSystem->GetWidth();
 	int sysHeight = renderSystem->GetHeight();
 	byte* temp = ( byte* )R_StaticAlloc( ( sysWidth + 3 ) * sysHeight * 3 );
-
+	
 	// foresthale 2014-03-01: fixed custom screenshot resolution by doing a more direct render path
 #ifdef BUGFIXEDSCREENSHOTRESOLUTION
-	if (sysWidth > width)
+	if( sysWidth > width )
 		sysWidth = width;
-	if (sysHeight > height)
+	if( sysHeight > height )
 		sysHeight = height;
 	// make sure the game / draw thread has completed
 	commonLocal.WaitGameThread();
@@ -1507,13 +1507,13 @@ void R_ReadTiledPixels( int width, int height, byte* buffer, renderView_t* ref =
 			{
 				// discard anything currently on the list
 				tr.SwapCommandBuffers( NULL, NULL, NULL, NULL );
-				
+			
 				// build commands to render the scene
 				tr.primaryWorld->RenderScene( ref );
-				
+			
 				// finish off these commands
 				const emptyCommand_t* cmd = tr.SwapCommandBuffers( NULL, NULL, NULL, NULL );
-				
+			
 				// issue the commands to the GPU
 				tr.RenderCommandBuffers( cmd );
 			}
@@ -1547,7 +1547,7 @@ void R_ReadTiledPixels( int width, int height, byte* buffer, renderView_t* ref =
 			}
 		}
 	}
-
+	
 	// foresthale 2014-03-01: fixed custom screenshot resolution by doing a more direct render path
 #ifdef BUGFIXEDSCREENSHOTRESOLUTION
 	// discard anything currently on the list
@@ -1583,7 +1583,7 @@ void idRenderSystemLocal::TakeScreenshot( int width, int height, const char* fil
 {
 	byte*		buffer;
 	int			i, j, c, temp;
-
+	
 	takingScreenshot = true;
 	const int pix = width * height;
 	const int bufferSize = pix * 3 + 18;
@@ -1622,9 +1622,12 @@ void idRenderSystemLocal::TakeScreenshot( int width, int height, const char* fil
 		R_StaticFree( shortBuffer );
 		r_jitter.SetBool( false );
 	}
-	if(	r_screenshot_png.GetBool()) {
-		R_WritePNG( fileName, buffer+18, width, height, false );
-	} else {
+	if(	r_screenshot_png.GetBool() )
+	{
+		R_WritePNG( fileName, buffer + 18, width, height, false );
+	}
+	else
+	{
 		// fill in the header (this is vertically flipped, which qglReadPixels emits)
 		buffer[2] = 2;		// uncompressed type
 		buffer[12] = width & 255;
@@ -1632,7 +1635,7 @@ void idRenderSystemLocal::TakeScreenshot( int width, int height, const char* fil
 		buffer[14] = height & 255;
 		buffer[15] = height >> 8;
 		buffer[16] = 24;	// pixel size
-	
+		
 		// swap rgb to bgr
 		c = 18 + width * height * 3;
 		for( i = 18 ; i < c ; i += 3 )
@@ -1641,7 +1644,7 @@ void idRenderSystemLocal::TakeScreenshot( int width, int height, const char* fil
 			buffer[i] = buffer[i + 2];
 			buffer[i + 2] = temp;
 		}
-	
+		
 		fileSystem->WriteFile( fileName, buffer, c );
 	}
 	R_StaticFree( buffer );
@@ -1712,7 +1715,7 @@ void idRenderSystemLocal::TakeScreenshot( int width, int height, idFile* outFile
 	}
 	
 	//fileSystem->WriteFile( fileName, buffer, c );
-    outFile->Write(buffer, c);
+	outFile->Write( buffer, c );
 	outFile->ForceFlush();
 	R_StaticFree( buffer );
 	
@@ -1756,9 +1759,12 @@ void R_ScreenshotFilename( int& lastNumber, const char* base, idStr& fileName )
 		d = frac / 10;
 		frac -= d * 10;
 		e = frac;
-		if(r_screenshot_png.GetBool()) {
+		if( r_screenshot_png.GetBool() )
+		{
 			sprintf( fileName, "%s%i%i%i%i%i.png", base, a, b, c, d, e );
-		} else {
+		}
+		else
+		{
 			sprintf( fileName, "%s%i%i%i%i%i.tga", base, a, b, c, d, e );
 		}
 		if( lastNumber == 99999 )
@@ -1831,11 +1837,14 @@ void R_ScreenShot_f( const idCmdArgs& args )
 			common->Printf( "usage: screenshot\n       screenshot <filename>\n       screenshot <width> <height>\n       screenshot <width> <height> <blends>\n" );
 			return;
 	}
-	if(r_screenshot_png.GetBool()) {
+	if( r_screenshot_png.GetBool() )
+	{
 		R_ScreenshotFilename( lastPngNumber, "screenshots/shot", checkname );
-	} else {
+	}
+	else
+	{
 		R_ScreenshotFilename( lastNumber, "screenshots/shot", checkname );
-	}	
+	}
 	// put the console away
 	console->Close();
 	
@@ -1883,7 +1892,7 @@ void R_StencilShot()
 	buffer[16] = 24;	// pixel size
 	
 	fileSystem->WriteFile( "screenshots/stencilShot.tga", buffer.Ptr(), c, "fs_savepath" );
-
+	
 }
 
 /*
@@ -1895,34 +1904,34 @@ envshot <basename>
 Saves out env/<basename>_ft.tga, etc
 ==================
 */
-void R_EnvShot_f( const idCmdArgs &args )
+void R_EnvShot_f( const idCmdArgs& args )
 {
 	idStr		fullname;
-	const char	*baseName;
+	const char*	baseName;
 	int			i;
 	idMat3		axis[6];
 	renderView_t	ref;
 	viewDef_t	primary;
 	int			blends;
-	const char	*extensions[6] =  { "_px.tga", "_nx.tga", "_py.tga", "_ny.tga", "_pz.tga", "_nz.tga" };
+	const char*	extensions[6] =  { "_px.tga", "_nx.tga", "_py.tga", "_ny.tga", "_pz.tga", "_nz.tga" };
 	int			size;
 	bool old_pngshot = r_screenshot_png.GetBool();
-	r_screenshot_png.SetBool(false);
-	if ( args.Argc() != 2 && args.Argc() != 3 && args.Argc() != 4 )
+	r_screenshot_png.SetBool( false );
+	if( args.Argc() != 2 && args.Argc() != 3 && args.Argc() != 4 )
 	{
 		common->Printf( "USAGE: envshot <basename> [size] [blends]\n" );
-		r_screenshot_png.SetBool(old_pngshot);
+		r_screenshot_png.SetBool( old_pngshot );
 		return;
 	}
 	baseName = args.Argv( 1 );
-
+	
 	blends = 1;
-	if ( args.Argc() == 4 )
+	if( args.Argc() == 4 )
 	{
 		size = atoi( args.Argv( 2 ) );
 		blends = atoi( args.Argv( 3 ) );
 	}
-	else if ( args.Argc() == 3 )
+	else if( args.Argc() == 3 )
 	{
 		size = atoi( args.Argv( 2 ) );
 		blends = 1;
@@ -1932,41 +1941,41 @@ void R_EnvShot_f( const idCmdArgs &args )
 		size = 256;
 		blends = 1;
 	}
-
-	if ( !tr.primaryView )
+	
+	if( !tr.primaryView )
 	{
 		common->Printf( "No primary view.\n" );
-		r_screenshot_png.SetBool(old_pngshot);
+		r_screenshot_png.SetBool( old_pngshot );
 		return;
 	}
 	primary = *tr.primaryView;
-
+	
 	memset( &axis, 0, sizeof( axis ) );
 	axis[0][0][0] = 1;
 	axis[0][1][2] = 1;
 	axis[0][2][1] = 1;
-
+	
 	axis[1][0][0] = -1;
 	axis[1][1][2] = -1;
 	axis[1][2][1] = 1;
-
+	
 	axis[2][0][1] = 1;
 	axis[2][1][0] = -1;
 	axis[2][2][2] = -1;
-
+	
 	axis[3][0][1] = -1;
 	axis[3][1][0] = -1;
 	axis[3][2][2] = 1;
-
+	
 	axis[4][0][2] = 1;
 	axis[4][1][0] = -1;
 	axis[4][2][1] = 1;
-
+	
 	axis[5][0][2] = -1;
 	axis[5][1][0] = 1;
 	axis[5][2][1] = 1;
-
-	for ( i = 0 ; i < 6 ; i++ )
+	
+	for( i = 0 ; i < 6 ; i++ )
 	{
 		ref = primary.renderView;
 		ref.x = ref.y = 0;
@@ -1977,7 +1986,7 @@ void R_EnvShot_f( const idCmdArgs &args )
 		sprintf( fullname, "env/%s%s", baseName, extensions[i] );
 		tr.TakeScreenshot( size, size, fullname, blends, &ref );
 	}
-	r_screenshot_png.SetBool(old_pngshot);
+	r_screenshot_png.SetBool( old_pngshot );
 	common->Printf( "Wrote %s, etc\n", fullname.c_str() );
 }
 
@@ -2631,7 +2640,7 @@ void idRenderSystemLocal::Clear()
 	}
 	
 	frontEndJobList = NULL;
-
+	
 #ifdef BUGFIXEDSCREENSHOTRESOLUTION
 	// foresthale 2014-03-01: screenshots need to override the results of GetWidth() and GetHeight()
 	screenshotOverrideWidth = 0;
@@ -2810,7 +2819,7 @@ srfTriangles_t* R_MakeTestImageTriangles()
 	
 	idDrawVert* tempVerts = tri->verts;
 	tempVerts[0].xyz[0] = 0.0f;
-
+	
 	tempVerts[0].xyz[1] = 0.0f;
 	tempVerts[0].xyz[2] = 0;
 	tempVerts[0].SetTexCoord( 0.0, 0.0f );
@@ -2902,7 +2911,7 @@ void idRenderSystemLocal::Init()
 	
 	// foresthale 2014-05-28: due to increased MAX_INTERACTIONS_PER_LIGHT the job limit also has to be increased
 #ifdef ID_ALLOW_TOOLS
-	frontEndJobList = parallelJobManager->AllocJobList( JOBLIST_RENDERER_FRONTEND, JOBLIST_PRIORITY_MEDIUM, 16384, 0, NULL );	
+	frontEndJobList = parallelJobManager->AllocJobList( JOBLIST_RENDERER_FRONTEND, JOBLIST_PRIORITY_MEDIUM, 16384, 0, NULL );
 #else
 	frontEndJobList = parallelJobManager->AllocJobList( JOBLIST_RENDERER_FRONTEND, JOBLIST_PRIORITY_MEDIUM, 2048, 0, NULL );
 #endif

@@ -118,9 +118,9 @@ const idEventDef EV_MotionBlurOn( "motionBlurOn" );
 const idEventDef EV_MotionBlurOff( "motionBlurOff" );
 const idEventDef EV_GuiNamedEvent( "guiNamedEvent", "ds" );
 const idEventDef EV_PrecacheSkin( "precacheSkin", "s" ); // motorsep 08-23-2014; allows precaching of skins
-const idEventDef EV_PrecacheParticle("precacheParticle", "s");
+const idEventDef EV_PrecacheParticle( "precacheParticle", "s" );
 const idEventDef EV_PrecacheModelDef( "precacheModelDef", "s" );// motorsep 09-16-2015; allows precaching of models/anims
-const idEventDef EV_PrecacheMaterial("precacheMaterial", "s");
+const idEventDef EV_PrecacheMaterial( "precacheMaterial", "s" );
 const idEventDef EV_CanBecomeSolid( "canBecomeSolid", NULL, 'f' );
 const idEventDef EV_BecomeSolid( "becomeSolid" );
 const idEventDef EV_BecomeNonSolid( "becomeNonSolid" );
@@ -201,8 +201,8 @@ EVENT( EV_GetGuiParm,			idEntity::Event_GetGuiParm )
 EVENT( EV_GetGuiParmFloat,		idEntity::Event_GetGuiParmFloat )
 EVENT( EV_GuiNamedEvent,		idEntity::Event_GuiNamedEvent )
 EVENT( EV_PrecacheSkin,			idEntity::Event_PrecacheSkin ) // motorsep 08-23-2014; allows precaching of skins
-EVENT( EV_PrecacheMaterial,		idEntity::Event_PrecacheMaterial) // Dandel 12-26-2014; allows precaching of Materials
-EVENT( EV_PrecacheParticle,		idEntity::Event_PrecacheParticle) // Dandel 12-26-2014; allows precaching of Particles
+EVENT( EV_PrecacheMaterial,		idEntity::Event_PrecacheMaterial ) // Dandel 12-26-2014; allows precaching of Materials
+EVENT( EV_PrecacheParticle,		idEntity::Event_PrecacheParticle ) // Dandel 12-26-2014; allows precaching of Particles
 EVENT( EV_PrecacheModelDef,		idEntity::Event_PrecacheModelDef ) // motorsep 09-16-2015; allows precaching of models/anims
 EVENT( EV_CanBecomeSolid,		idEntity::Event_CanBecomeSolid )
 EVENT( EV_BecomeSolid,			idEntity::Event_BecomeSolid )
@@ -467,7 +467,7 @@ idEntity::idEntity():
 	entityNumber	= ENTITYNUM_NONE;
 	entityDefNumber = -1;
 	
-	spawnNode.SetOwner( this );	
+	spawnNode.SetOwner( this );
 	activeNode.SetOwner( this );
 	
 	snapshotNode.SetOwner( this );
@@ -665,7 +665,7 @@ void idEntity::Spawn()
 	{
 		BecomeNonSolid();
 	}
-
+	
 	// auto-start a sound on the entity
 	if( refSound.shader && !refSound.waitfortrigger )
 	{
@@ -911,13 +911,13 @@ void idEntity::Restore( idRestoreGame* savefile )
 	
 	// camera target for remote render views
 	cameraTarget = NULL;
-	const char * temp = spawnArgs.GetString( "cameraTarget" );
+	const char* temp = spawnArgs.GetString( "cameraTarget" );
 	if( temp != NULL && temp[0] != '\0' )
 	{
 		// update the camera taget
 		PostEventMS( &EV_UpdateCameraTarget, 0 );
 	}
-
+	
 	// restore must retrieve modelDefHandle from the renderer
 	if( modelDefHandle != -1 )
 	{
@@ -2130,11 +2130,11 @@ idEntity::FinishBind
 void idEntity::FinishBind()
 {
 	BindFlags flags = BFL_NONE;
-	if ( fl.bindOrientated )
-		flags = (BindFlags)(flags|BFL_ORIENTED);
-	if ( fl.bindSnapXform )
-		flags = (BindFlags)(flags|BFL_SNAPXFORM);
-
+	if( fl.bindOrientated )
+		flags = ( BindFlags )( flags | BFL_ORIENTED );
+	if( fl.bindSnapXform )
+		flags = ( BindFlags )( flags | BFL_SNAPXFORM );
+		
 	// set the master on the physics object
 	physics->SetMaster( bindMaster, flags );
 	
@@ -2171,8 +2171,8 @@ void idEntity::Bind( idEntity* master, BindFlags flags )
 	bindJoint = INVALID_JOINT;
 	bindBody = -1;
 	bindMaster = master;
-	fl.bindOrientated = (flags&BFL_ORIENTED)!=0;
-	fl.bindSnapXform = (flags&BFL_SNAPXFORM)!=0;
+	fl.bindOrientated = ( flags & BFL_ORIENTED ) != 0;
+	fl.bindSnapXform = ( flags & BFL_SNAPXFORM ) != 0;
 	
 	FinishBind();
 	
@@ -2214,8 +2214,8 @@ void idEntity::BindToJoint( idEntity* master, const char* jointname, BindFlags f
 	bindJoint = jointnum;
 	bindBody = -1;
 	bindMaster = master;
-	fl.bindOrientated = (flags&BFL_ORIENTED)!=0;
-	fl.bindSnapXform = (flags&BFL_SNAPXFORM)!=0;
+	fl.bindOrientated = ( flags & BFL_ORIENTED ) != 0;
+	fl.bindSnapXform = ( flags & BFL_SNAPXFORM ) != 0;
 	
 	FinishBind();
 	
@@ -2241,8 +2241,8 @@ void idEntity::BindToJoint( idEntity* master, jointHandle_t jointnum, BindFlags 
 	bindJoint = jointnum;
 	bindBody = -1;
 	bindMaster = master;
-	fl.bindOrientated = (flags&BFL_ORIENTED)!=0;
-	fl.bindSnapXform = (flags&BFL_SNAPXFORM)!=0;
+	fl.bindOrientated = ( flags & BFL_ORIENTED ) != 0;
+	fl.bindSnapXform = ( flags & BFL_SNAPXFORM ) != 0;
 	
 	FinishBind();
 	
@@ -2273,8 +2273,8 @@ void idEntity::BindToBody( idEntity* master, int bodyId, BindFlags flags )
 	bindJoint = INVALID_JOINT;
 	bindBody = bodyId;
 	bindMaster = master;
-	fl.bindOrientated = (flags&BFL_ORIENTED)!=0;
-	fl.bindSnapXform = (flags&BFL_SNAPXFORM)!=0;
+	fl.bindOrientated = ( flags & BFL_ORIENTED ) != 0;
+	fl.bindSnapXform = ( flags & BFL_SNAPXFORM ) != 0;
 	
 	FinishBind();
 	
@@ -2963,13 +2963,13 @@ void idEntity::SetPhysics( idPhysics* phys )
 	{
 		physics = &defaultPhysicsObj;
 	}
-
+	
 	BindFlags flags = BFL_NONE;
-	if ( fl.bindOrientated )
-		flags = (BindFlags)(flags|BFL_ORIENTED);
-	if ( fl.bindSnapXform )
-		flags = (BindFlags)(flags|BFL_SNAPXFORM);
-
+	if( fl.bindOrientated )
+		flags = ( BindFlags )( flags | BFL_ORIENTED );
+	if( fl.bindSnapXform )
+		flags = ( BindFlags )( flags | BFL_SNAPXFORM );
+		
 	physics->UpdateTime( gameLocal.time );
 	physics->SetMaster( bindMaster, flags );
 }
@@ -3740,7 +3740,7 @@ idEntity::DamageFeedback
 callback function for when weapons fire is incoming to this entity
 ================
 */
-void idEntity::IncomingFireFeedback( idEntity * attacker, idWeapon * weapon, const idVec3 & firePos, const idVec3 & fireDir, const idVec3 & hitPos )
+void idEntity::IncomingFireFeedback( idEntity* attacker, idWeapon* weapon, const idVec3& firePos, const idVec3& fireDir, const idVec3& hitPos )
 {
 	// implemented in subclasses
 }
@@ -3764,8 +3764,8 @@ idEntity::WeaponAvailable
 */
 bool idEntity::WeaponAvailable( const char* name )
 {
-	idInventory * inventory = GetInventory();
-	if ( inventory != NULL )
+	idInventory* inventory = GetInventory();
+	if( inventory != NULL )
 	{
 		for( int i = 0; i < MAX_WEAPONS; i++ )
 		{
@@ -3778,7 +3778,7 @@ bool idEntity::WeaponAvailable( const char* name )
 				}
 			}
 		}
-	}	
+	}
 	return false;
 }
 
@@ -3952,13 +3952,13 @@ Can be overridden by subclasses when a thread doesn't need to be allocated.
 */
 idThread* idEntity::ConstructScriptObject()
 {
-	idThread * scriptThread;
-
+	idThread* scriptThread;
+	
 	// init the script object's data
 	scriptObject.ClearObject();
 	
 	// call script object's constructor
-	const function_t * constructor = scriptObject.GetConstructor();
+	const function_t* constructor = scriptObject.GetConstructor();
 	if( constructor )
 	{
 		// start a thread that will initialize after Spawn is done being called
@@ -4016,13 +4016,16 @@ void idEntity::DeconstructScriptObject()
 idEntity::RunScriptFunc
 ================
 */
-void idEntity::RunScriptFunc( const char *name ) {
-	const function_t *func;
+void idEntity::RunScriptFunc( const char* name )
+{
+	const function_t* func;
 	
-	if ( scriptObject.HasObject() ) {
+	if( scriptObject.HasObject() )
+	{
 		func = scriptObject.GetFunction( name );
-		if ( func ) {
-			idThread *thread = new idThread( va( "%s_%s", GetName(), func->Name() ) );
+		if( func )
+		{
+			idThread* thread = new idThread( va( "%s_%s", GetName(), func->Name() ) );
 			thread->CallFunction( this, func, true );
 			thread->DelayedStart( 0 );
 		}
@@ -4293,7 +4296,7 @@ bool idEntity::HandleGuiCommands( idEntity* entityGui, const char* cmds )
 				entityGui->renderEntity.shaderParms[ SHADERPARM_MODE ] = 1.0f;
 				continue;
 			}
-						
+			
 			if( token.Icmp( "runScript" ) == 0 )
 			{
 				if( src.ReadToken( &token2 ) )
@@ -4766,7 +4769,7 @@ idEntity::Event_RandomTarget
 ================
 */
 void idEntity::Event_RandomTarget( const char* ignore )
-{	
+{
 	idThread::ReturnEntity( ChooseRandomTarget( ignore ) );
 }
 
@@ -4780,30 +4783,31 @@ idEntity* idEntity::ChooseRandomTarget( const char* ignore )
 	int			num;
 	int			i;
 	int			ignoreNum;
-
+	
 	RemoveNullTargets();
-	if ( !targets.Num() ) {
+	if( !targets.Num() )
+	{
 		return NULL;
 	}
-
+	
 	ignoreNum = -1;
-	if ( ignore && ( ignore[ 0 ] != 0 ) && ( targets.Num() > 1 ) )
+	if( ignore && ( ignore[ 0 ] != 0 ) && ( targets.Num() > 1 ) )
 	{
-		for ( i = 0; i < targets.Num(); i++ )
+		for( i = 0; i < targets.Num(); i++ )
 		{
 			idEntity*	ent = targets[ i ].GetEntity();
-			if ( ent && ( ent->name == ignore ) )
+			if( ent && ( ent->name == ignore ) )
 			{
 				ignoreNum = i;
 				break;
 			}
 		}
 	}
-
-	if ( ignoreNum >= 0 )
+	
+	if( ignoreNum >= 0 )
 	{
 		num = gameLocal.random.RandomInt( targets.Num() - 1 );
-		if ( num >= ignoreNum )
+		if( num >= ignoreNum )
 		{
 			num++;
 		}
@@ -4812,7 +4816,7 @@ idEntity* idEntity::ChooseRandomTarget( const char* ignore )
 	{
 		num = gameLocal.random.RandomInt( targets.Num() );
 	}
-
+	
 	return targets[ num ].GetEntity();
 	
 }
@@ -4825,11 +4829,11 @@ idEntity::Event_BindToJoint
 void idEntity::Event_BindToJoint( idEntity* master, const char* jointname, float orientated, float snapXform )
 {
 	BindFlags flags = BFL_NONE;
-	if ( orientated != 0.0f )
-		flags = (BindFlags)(flags|BFL_ORIENTED);
-	if ( snapXform != 0.0f )
-		flags = (BindFlags)(flags|BFL_SNAPXFORM);
-
+	if( orientated != 0.0f )
+		flags = ( BindFlags )( flags | BFL_ORIENTED );
+	if( snapXform != 0.0f )
+		flags = ( BindFlags )( flags | BFL_SNAPXFORM );
+		
 	BindToJoint( master, jointname, flags );
 }
 
@@ -4851,11 +4855,11 @@ idEntity::Event_Bind
 void idEntity::Event_Bind( idEntity* master, float orientated, float snapXform )
 {
 	BindFlags flags = BFL_NONE;
-	if ( orientated != 0.0f )
-		flags = (BindFlags)(flags|BFL_ORIENTED);
-	if ( snapXform != 0.0f )
-		flags = (BindFlags)(flags|BFL_SNAPXFORM);
-
+	if( orientated != 0.0f )
+		flags = ( BindFlags )( flags | BFL_ORIENTED );
+	if( snapXform != 0.0f )
+		flags = ( BindFlags )( flags | BFL_SNAPXFORM );
+		
 	Bind( master, flags );
 }
 
@@ -4867,11 +4871,11 @@ idEntity::Event_BindPosition
 void idEntity::Event_BindPosition( idEntity* master, float orientated, float snapXform )
 {
 	BindFlags flags = BFL_NONE;
-	if ( orientated != 0.0f )
-		flags = (BindFlags)(flags|BFL_ORIENTED);
-	if ( snapXform != 0.0f )
-		flags = (BindFlags)(flags|BFL_SNAPXFORM);
-
+	if( orientated != 0.0f )
+		flags = ( BindFlags )( flags | BFL_ORIENTED );
+	if( snapXform != 0.0f )
+		flags = ( BindFlags )( flags | BFL_SNAPXFORM );
+		
 	Bind( master, flags );
 }
 
@@ -4911,14 +4915,14 @@ void idEntity::Event_SpawnBind()
 		{
 			parent = gameLocal.FindEntity( bind );
 		}
-
+		
 		BindFlags flags = BFL_NONE;
-
-		if ( spawnArgs.GetBool( "bindOrientated", "1" ) )
-			flags = (BindFlags)(flags|BFL_ORIENTED);
-		if ( spawnArgs.GetBool( "bindSnapTransform", "0" ) )
-			flags = (BindFlags)(flags|BFL_SNAPXFORM);
-
+		
+		if( spawnArgs.GetBool( "bindOrientated", "1" ) )
+			flags = ( BindFlags )( flags | BFL_ORIENTED );
+		if( spawnArgs.GetBool( "bindSnapTransform", "0" ) )
+			flags = ( BindFlags )( flags | BFL_SNAPXFORM );
+			
 		if( parent )
 		{
 			// bind to a joint of the skeletal model of the parent
@@ -5180,9 +5184,9 @@ void idEntity::Event_FadeSound( int channel, float to, float over )
 idEntity::SetMusicVolume
 ================
 */
-void idEntity::SetMusicVolume( int channel, float to, float over ) 
+void idEntity::SetMusicVolume( int channel, float to, float over )
 {
-	if ( spawnArgs.GetBool( "s_bgmusic" ) )
+	if( spawnArgs.GetBool( "s_bgmusic" ) )
 	{
 		Event_FadeSound( channel, to, over );
 	}
@@ -5848,11 +5852,11 @@ void idEntity::Event_PrecacheParticle( const char* particleName )
 idEntity::Event_PrecacheMaterial
 ================
 */
-void idEntity::Event_PrecacheMaterial(const char* MaterialName)
+void idEntity::Event_PrecacheMaterial( const char* MaterialName )
 {
 	// Dandel 12-26-2014; allows precaching of Materials
 	// NOTE: This function is meant to be called during the Init function of scripts.
-	declManager->FindMaterial(MaterialName);
+	declManager->FindMaterial( MaterialName );
 }
 
 // motorsep 08-23-2014; allows precaching of skins
@@ -5861,7 +5865,8 @@ void idEntity::Event_PrecacheMaterial(const char* MaterialName)
 idEntity::Event_PrecacheModelDef
 ================
 */
-void idEntity::Event_PrecacheModelDef( const char* modelDefName ) {
+void idEntity::Event_PrecacheModelDef( const char* modelDefName )
+{
 	declManager->FindModelDef( modelDefName );
 }
 
@@ -6017,30 +6022,30 @@ void idEntity::ReadBindFromSnapshot( const idBitMsg& msg )
 {
 	const int bindEntityNum = msg.ReadBits( GENTITYNUM_BITS );
 	BindFlags flags = BFL_NONE;
-	if ( msg.ReadBool() )
-		flags = (BindFlags)(flags|BFL_ORIENTED);
-	if ( msg.ReadBool() )
-		flags = (BindFlags)(flags|BFL_SNAPXFORM);
+	if( msg.ReadBool() )
+		flags = ( BindFlags )( flags | BFL_ORIENTED );
+	if( msg.ReadBool() )
+		flags = ( BindFlags )( flags | BFL_SNAPXFORM );
 	const int bindType = msg.ReadBits( 2 );
 	const int bindPos = msg.ReadBits( 7 );
-			
+	
 	if( ( bindEntityNum != ENTITYNUM_NONE ) && ( bindEntityNum < MAX_GENTITIES ) )
 	{
 		idEntity* master = gameLocal.entities[ bindEntityNum ];
-
-		switch ( bindType )
+		
+		switch( bindType )
 		{
-		case 1:
+			case 1:
 			{
 				BindToJoint( master, ( jointHandle_t ) bindPos, flags );
 				break;
 			}
-		case 2:
+			case 2:
 			{
 				BindToBody( master, bindPos, flags );
 				break;
 			}
-		default:
+			default:
 			{
 				Bind( master, flags );
 				break;

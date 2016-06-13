@@ -54,12 +54,12 @@ enum EDebuggerMessage
 
 enum ThreadFlags
 {
-	TFL_CURRENT		= (1<<0),
-	TFL_DONE		= (1<<1),
-	TFL_WAITING		= (1<<2),
-	TFL_DYING		= (1<<3),
-	TFL_WAIT_TIME	= (1<<4),
-	TFL_WAIT_ENTITY	= (1<<5),
+	TFL_CURRENT		= ( 1 << 0 ),
+	TFL_DONE		= ( 1 << 1 ),
+	TFL_WAITING		= ( 1 << 2 ),
+	TFL_DYING		= ( 1 << 3 ),
+	TFL_WAIT_TIME	= ( 1 << 4 ),
+	TFL_WAIT_ENTITY	= ( 1 << 5 ),
 };
 
 extern idCVar debugger_serverport;

@@ -35,97 +35,97 @@ If you have questions concerning this license or the applicable additional terms
 #include "GEZOrderModifier.h"
 
 
-rvGEZOrderModifier::rvGEZOrderModifier ( const char* name, idWindow* window, EZOrderChange change ) :
-	rvGEModifier ( name, window )
+rvGEZOrderModifier::rvGEZOrderModifier( const char* name, idWindow* window, EZOrderChange change ) :
+	rvGEModifier( name, window )
 {
 	int			count;
 	int			index;
 	idWindow*	parent;
-
-	parent = window->GetParent ( );
-	if ( !parent )
+	
+	parent = window->GetParent( );
+	if( !parent )
 	{
 		return;
 	}
-
-	count = parent->GetChildCount ( );
-	index = parent->GetChildIndex ( mWindow );
-
-	if ( index + 1 >= count )
+	
+	count = parent->GetChildCount( );
+	index = parent->GetChildIndex( mWindow );
+	
+	if( index + 1 >= count )
 	{
 		mUndoBefore = NULL;
 	}
 	else
 	{
-		mUndoBefore = parent->GetChild ( index + 1 );
+		mUndoBefore = parent->GetChild( index + 1 );
 	}
-
-	switch ( change )
+	
+	switch( change )
 	{
 		case ZO_FORWARD:
-			index+=2;
+			index += 2;
 			break;
-
+			
 		case ZO_BACKWARD:
-			if ( index == 0 )
+			if( index == 0 )
 			{
 				index = 1;
 			}
 			else
 			{
-				index-=1;
+				index -= 1;
 			}
 			break;
-
+			
 		case ZO_BACK:
 			index = 0;
 			break;
-
+			
 		case ZO_FRONT:
 			index = count;
 			break;
 	}
-
-	if ( index >= count )
+	
+	if( index >= count )
 	{
 		mBefore = NULL;
 	}
 	else
 	{
-		mBefore = parent->GetChild ( index );
+		mBefore = parent->GetChild( index );
 	}
 }
 
-bool rvGEZOrderModifier::Apply ( void )
+bool rvGEZOrderModifier::Apply( void )
 {
 	idWindow* parent;
-
-	parent = mWindow->GetParent ( );
-
-	parent->RemoveChild ( mWindow );
-	parent->InsertChild ( mWindow, mBefore );
-
+	
+	parent = mWindow->GetParent( );
+	
+	parent->RemoveChild( mWindow );
+	parent->InsertChild( mWindow, mBefore );
+	
 	return true;
 }
 
-bool rvGEZOrderModifier::Undo ( void )
+bool rvGEZOrderModifier::Undo( void )
 {
 	idWindow* parent;
-
-	parent = mWindow->GetParent ( );
-
-	parent->RemoveChild ( mWindow );
-	parent->InsertChild ( mWindow, mUndoBefore );
-
+	
+	parent = mWindow->GetParent( );
+	
+	parent->RemoveChild( mWindow );
+	parent->InsertChild( mWindow, mUndoBefore );
+	
 	return true;
 }
 
-bool rvGEZOrderModifier::IsValid ( void )
+bool rvGEZOrderModifier::IsValid( void )
 {
-	if ( !mWindow->GetParent ( ) )
+	if( !mWindow->GetParent( ) )
 	{
 		return false;
 	}
-
+	
 	return true;
 }

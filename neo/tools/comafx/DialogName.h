@@ -44,22 +44,22 @@ class DialogName : public CDialog
 	CString m_strCaption;
 // Construction
 public:
-	DialogName(const char *pName, CWnd* pParent = NULL);   // standard constructor
-
+	DialogName( const char* pName, CWnd* pParent = NULL ); // standard constructor
+	
 // Dialog Data
 	//{{AFX_DATA(DialogName)
 	enum { IDD = IDD_NEWNAME };
 	CString	m_strName;
 	//}}AFX_DATA
-
-
+	
+	
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(DialogName)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+protected:
+	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	//}}AFX_VIRTUAL
-
+	
 // Implementation
 protected:
 

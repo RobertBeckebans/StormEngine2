@@ -98,7 +98,7 @@ void idMenuScreen_PDA_Inventory::ShowScreen( const mainMenuTransition_t transiti
 {
 	idPlayer* player = gameLocal.GetLocalPlayer();
 	if( player != NULL )
-	{	
+	{
 		int numItems = player->GetInventory()->items.Num();
 		for( int j = 0; j < numItems; j++ )
 		{
@@ -199,7 +199,7 @@ bool idMenuScreen_PDA_Inventory::IsVisibleWeapon( int index )
 	}
 	
 	if( player->GetInventory()->weapons & ( 1 << index ) )
-	{		
+	{
 		return player->spawnArgs.GetBool( va( "weapon%d_visible", index ) );
 	}
 	
@@ -248,8 +248,8 @@ void idMenuScreen_PDA_Inventory::Update()
 			idStr itemName = weaponDef->dict.GetString( "display_name" );
 			idStr itemDesc = weaponDef->dict.GetString( "inv_desc" );
 			infoBox.SetHeading( idLocalization::GetString( itemName.c_str() ) );
-			infoBox.SetBody( idLocalization::GetString( itemDesc.c_str() ) );			
-			break;		
+			infoBox.SetBody( idLocalization::GetString( itemDesc.c_str() ) );
+			break;
 		}
 		validIndex++;
 	}
@@ -327,8 +327,8 @@ void idMenuScreen_PDA_Inventory::EquipWeapon()
 		if( validIndex == itemList.GetMoveToIndex() )
 		{
 			int slot = player->SlotForWeapon( weap );
-			player->SetPreviousWeapon( slot );			
-			break;		
+			player->SetPreviousWeapon( slot );
+			break;
 		}
 		validIndex++;
 	}

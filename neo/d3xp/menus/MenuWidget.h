@@ -969,9 +969,9 @@ public:
 	int							GetViewOffset() const
 	{
 		return viewOffset;
-
-
-
+		
+		
+		
 	}
 	void						SetViewOffset( const int offset )
 	{
@@ -1050,15 +1050,15 @@ class idMenuWidget_ControlList : public idMenuWidget_List
 {
 public:
 	virtual void				Update();
-	virtual bool				PrepareListElement(idMenuWidget& widget, const int childIndex);
+	virtual bool				PrepareListElement( idMenuWidget& widget, const int childIndex );
 	virtual int					GetTotalNumberOfOptions() const;
 	void						ClearControls();
-	void						AddButton(idStr label_, idMenuDataSource* dataSource_, int fieldIndex_, int repeat_);
-	void						AddButtonInfo(idStr label_, idMenuDataSource* dataSource_, int fieldIndex_, int repeat_);
-	void						AddFullTextSlider(idStr label_, idMenuDataSource* dataSource_, int fieldIndex_, int repeat_);
-	void						AddTextSlider(idStr label_, idMenuDataSource* dataSource_, int fieldIndex_, int repeat_);
-	void						AddSliderBar(idStr label_, idMenuDataSource* dataSource_, int fieldIndex_, int repeat_);
-	void						AddSliderToggle(idStr label_, idMenuDataSource* dataSource_, int fieldIndex_, int repeat_);
+	void						AddButton( idStr label_, idMenuDataSource* dataSource_, int fieldIndex_, int repeat_ );
+	void						AddButtonInfo( idStr label_, idMenuDataSource* dataSource_, int fieldIndex_, int repeat_ );
+	void						AddFullTextSlider( idStr label_, idMenuDataSource* dataSource_, int fieldIndex_, int repeat_ );
+	void						AddTextSlider( idStr label_, idMenuDataSource* dataSource_, int fieldIndex_, int repeat_ );
+	void						AddSliderBar( idStr label_, idMenuDataSource* dataSource_, int fieldIndex_, int repeat_ );
+	void						AddSliderToggle( idStr label_, idMenuDataSource* dataSource_, int fieldIndex_, int repeat_ );
 	//int							GetServerIndex();
 private:
 	idList< idControlEntry_t >	controls;

@@ -1407,7 +1407,7 @@ public:
 		int originalVsync;
 		float originalBrightness;
 		float originalVolume;
-
+		
 		bool originalGlowEnable;
 		bool originalHDREnable;
 		bool originalHQSky;
@@ -1708,11 +1708,11 @@ public:
 	{
 		showSoulCubeInfoOnLoad = show;
 	}
-
+	
 	void 					ShowGrappleCursor(); 	// ############## SR
 	void 					HideGrappleCursor(); 	// ############## SR
 	void 					ShowGrappleText(); 	// ############## SR
-	void 					HideGrappleText(); 	// ############## SR	
+	void 					HideGrappleText(); 	// ############## SR
 	
 	// MULTIPLAYER
 	
@@ -1763,7 +1763,7 @@ private:
 	idSWFSpriteInstance* 	combatCursor;
 	idSWFSpriteInstance* 	grabberCursor;
 	idSWFSpriteInstance* 	itemCursor;
-
+	
 	idSWFSpriteInstance* 	grappleCursor; // #### SR
 	
 	idSWFSpriteInstance* 	bsInfo;
@@ -1832,12 +1832,12 @@ public:
 	virtual void			ShowScreen( const mainMenuTransition_t transitionType );
 	virtual void			HideScreen( const mainMenuTransition_t transitionType );
 	
-	void 					ShowCinematicHint(); 
-		
+	void 					ShowCinematicHint();
+	
 	
 private:
 
-	idSWFSpriteInstance* 	cinematicHint; 
+	idSWFSpriteInstance* 	cinematicHint;
 	
 };
 

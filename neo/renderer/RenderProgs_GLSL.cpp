@@ -237,7 +237,7 @@ const char* prefixes[] =
 	"samplerCubeShadow",	// GLSL
 	
 	"sampler2DArray",		// GLSL"
-
+	
 	"sampler2DMS",			// GLSL
 };
 static const int numPrefixes = sizeof( prefixes ) / sizeof( prefixes[0] );
@@ -353,7 +353,7 @@ static const char* GLSLParmNames[RENDERPARM_TOTAL] =
 	"rpShadowMatrix5Z",
 	"rpShadowMatrix5W",
 	// RB end
-		
+	
 	"rpGlossMatrixS",
 	"rpGlossMatrixT",
 	"rpCubemapColorSpace", // motorsep 05-18-2015
@@ -378,14 +378,15 @@ idStr StripDeadCode( const idStr& in, const char* name )
 	// Make Sure the parser knows to look for header files in the renderprogs source tree.
 	src.SetIncludePath( "renderprogs" );
 	// end SS2 Fix
-
+	
 	src.LoadMemory( in.c_str(), in.Length(), name );
 	src.AddDefine( "PC" );
 	// foresthale 2014-10-05: these aren't needed due to the way we're picking shaders
 #if 0
-	if( r_useUniformArrays.GetBool() ) {
+	if( r_useUniformArrays.GetBool() )
+	{
 		src.AddDefine( "USE_UNIFORM_ARRAYS" );
-		if(r_useGPUSkinning.GetBool()) 
+		if( r_useGPUSkinning.GetBool() )
 			src.AddDefine( "USE_GPU_SKINNING" );
 	}
 #endif
@@ -767,11 +768,11 @@ void ParseInOutStruct( idLexer& src, int attribType, idList< inOutVariable_t >& 
 				break;
 			}
 		}
-
+		
 		// foresthale 2014-03-02: don't declare builtin variables, it just produces warnings on strict compilers (AMD)
-		if( idStr::Cmpn(var.nameGLSL, "gl_", 3) == 0 )
+		if( idStr::Cmpn( var.nameGLSL, "gl_", 3 ) == 0 )
 			var.declareInOut = false;
-
+			
 		inOutVars.Append( var );
 	}
 	

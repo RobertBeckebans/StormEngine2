@@ -466,7 +466,7 @@ void idSoundEmitterLocal::Init( int i, idSoundWorldLocal* sw )
 	spatializedOrigin.Zero();
 	
 	memset( &parms, 0, sizeof( parms ) );
-
+	
 	if( soundWorld && soundWorld->writeDemo )
 	{
 		soundWorld->writeDemo->WriteInt( DS_SOUND );

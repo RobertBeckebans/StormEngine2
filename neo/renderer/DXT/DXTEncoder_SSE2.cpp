@@ -944,7 +944,7 @@ void idDxtEncoder::CompressImageDXT1Fast_SSE2( const byte* inBuf, byte* outBuf, 
 	ALIGN16( byte block[64] );
 	ALIGN16( byte minColor[4] );
 	ALIGN16( byte maxColor[4] );
-
+	
 	assert( width >= 4 && ( width & 3 ) == 0 );
 	assert( height >= 4 && ( height & 3 ) == 0 );
 	
@@ -955,7 +955,7 @@ void idDxtEncoder::CompressImageDXT1Fast_SSE2( const byte* inBuf, byte* outBuf, 
 	
 	for( int j = 0; j < height; j += 4, inBuf += width * 4 * 4 )
 	{
-		commonLocal.LoadPacifierBinarizeProgressIncrement(width*4);
+		commonLocal.LoadPacifierBinarizeProgressIncrement( width * 4 );
 		for( int i = 0; i < width; i += 4 )
 		{
 			ExtractBlock_SSE2( inBuf + i * 4, width, block );
@@ -1007,7 +1007,7 @@ void idDxtEncoder::CompressImageDXT1AlphaFast_SSE2( const byte* inBuf, byte* out
 	ALIGN16( byte block[64] );
 	ALIGN16( byte minColor[4] );
 	ALIGN16( byte maxColor[4] );
-		
+	
 	assert( width >= 4 && ( width & 3 ) == 0 );
 	assert( height >= 4 && ( height & 3 ) == 0 );
 	
@@ -1017,7 +1017,7 @@ void idDxtEncoder::CompressImageDXT1AlphaFast_SSE2( const byte* inBuf, byte* out
 	
 	for( int j = 0; j < height; j += 4, inBuf += width * 4 * 4 )
 	{
-		commonLocal.LoadPacifierBinarizeProgressIncrement(width*4);
+		commonLocal.LoadPacifierBinarizeProgressIncrement( width * 4 );
 		for( int i = 0; i < width; i += 4 )
 		{
 			ExtractBlock_SSE2( inBuf + i * 4, width, block );
@@ -1088,7 +1088,7 @@ void idDxtEncoder::CompressImageDXT5Fast_SSE2( const byte* inBuf, byte* outBuf, 
 	
 	for( int j = 0; j < height; j += 4, inBuf += width * 4 * 4 )
 	{
-		commonLocal.LoadPacifierBinarizeProgressIncrement(width*4);
+		commonLocal.LoadPacifierBinarizeProgressIncrement( width * 4 );
 		for( int i = 0; i < width; i += 4 )
 		{
 			ExtractBlock_SSE2( inBuf + i * 4, width, block );
@@ -1364,7 +1364,7 @@ void idDxtEncoder::CompressYCoCgDXT5Fast_SSE2( const byte* inBuf, byte* outBuf, 
 	
 	for( int j = 0; j < height; j += 4, inBuf += width * 4 * 4 )
 	{
-		commonLocal.LoadPacifierBinarizeProgressIncrement(width*4);
+		commonLocal.LoadPacifierBinarizeProgressIncrement( width * 4 );
 		for( int i = 0; i < width; i += 4 )
 		{
 			ExtractBlock_SSE2( inBuf + i * 4, width, block );
@@ -1502,7 +1502,7 @@ void idDxtEncoder::EmitGreenIndices_SSE2( const byte* block, const int channelBi
 	temp4 = _mm_srli_epi64( temp0, 40 - 10 );
 	temp5 = _mm_srli_epi64( temp0, 48 - 12 );
 	temp6 = _mm_srli_epi64( temp0, 56 - 14 );
-
+	
 	temp0 = _mm_and_si128( temp0, ( const __m128i& )SIMD_SSE2_dword_color_bit_mask0 );
 	temp4 = _mm_and_si128( temp4, ( const __m128i& )SIMD_SSE2_dword_color_bit_mask5 );
 	temp5 = _mm_and_si128( temp5, ( const __m128i& )SIMD_SSE2_dword_color_bit_mask6 );
@@ -1579,7 +1579,7 @@ void idDxtEncoder::CompressNormalMapDXT5Fast_SSE2( const byte* inBuf, byte* outB
 	ALIGN16( byte block[64] );
 	ALIGN16( byte normal1[4] );
 	ALIGN16( byte normal2[4] );
-		
+	
 	assert( width >= 4 && ( width & 3 ) == 0 );
 	assert( height >= 4 && ( height & 3 ) == 0 );
 	
@@ -1589,7 +1589,7 @@ void idDxtEncoder::CompressNormalMapDXT5Fast_SSE2( const byte* inBuf, byte* outB
 	
 	for( int j = 0; j < height; j += 4, inBuf += width * 4 * 4 )
 	{
-		commonLocal.LoadPacifierBinarizeProgressIncrement(width*4);
+		commonLocal.LoadPacifierBinarizeProgressIncrement( width * 4 );
 		for( int i = 0; i < width; i += 4 )
 		{
 			ExtractBlock_SSE2( inBuf + i * 4, width, block );

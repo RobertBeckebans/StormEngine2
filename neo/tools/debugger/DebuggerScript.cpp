@@ -42,7 +42,7 @@ If you have questions concerning this license or the applicable additional terms
 rvDebuggerScript::rvDebuggerScript
 ================
 */
-rvDebuggerScript::rvDebuggerScript ( void )
+rvDebuggerScript::rvDebuggerScript( void )
 {
 	mContents  = NULL;
 	mProgram   = NULL;
@@ -54,9 +54,9 @@ rvDebuggerScript::rvDebuggerScript ( void )
 rvDebuggerScript::~rvDebuggerScript
 ================
 */
-rvDebuggerScript::~rvDebuggerScript ( void )
+rvDebuggerScript::~rvDebuggerScript( void )
 {
-	Unload ( );
+	Unload( );
 }
 
 /*
@@ -66,60 +66,60 @@ rvDebuggerScript::Unload
 Unload the script from memory
 ================
 */
-void rvDebuggerScript::Unload ( void )
+void rvDebuggerScript::Unload( void )
 {
 	delete[] mContents;
 	
-	if ( mInterface )
+	if( mInterface )
 	{
 		delete mInterface;
 	}
 	else
-	{	
+	{
 		//delete mProgram;
 	}
 	
 	mContents  = NULL;
 	mProgram   = NULL;
 	mInterface = NULL;
-}	
+}
 
 /*
 ================
 rvDebuggerScript::Load
 
-Loads the debugger script and attempts to compile it using the method 
+Loads the debugger script and attempts to compile it using the method
 appropriate for the file being loaded.  If the script cant be compiled
 the loading of the script fails
 ================
 */
-bool rvDebuggerScript::Load ( const char* filename )
+bool rvDebuggerScript::Load( const char* filename )
 {
 	void* buffer;
 	int	  size;
-
+	
 	// Unload the script before reloading it
-	Unload ( );
-
+	Unload( );
+	
 	// Cache the filename used to load the script
 	mFilename = filename;
-		
+	
 	// Read in the file
-	size = fileSystem->ReadFile ( filename, &buffer, &mModifiedTime );	
-	if ( buffer == NULL )
+	size = fileSystem->ReadFile( filename, &buffer, &mModifiedTime );
+	if( buffer == NULL )
 	{
 		return false;
 	}
 	
 	// Copy the buffer over
 	mContents = new char [ size + 1 ];
-	memcpy ( mContents, buffer, size );
-	mContents[size] = 0;	
+	memcpy( mContents, buffer, size );
+	mContents[size] = 0;
 	
 	// Cleanup
-	fileSystem->FreeFile ( buffer );
-
-	// Now compile the script so we can tell what a valid line is, etc..  If its 
+	fileSystem->FreeFile( buffer );
+	
+	// Now compile the script so we can tell what a valid line is, etc..  If its
 	// a gui file then we need to parse it using the userinterface system rather
 	// than the normal script compiler.
 	try
@@ -133,39 +133,39 @@ bool rvDebuggerScript::Load ( const char* filename )
 		////BSM Nerve: Loads a game specific main script file
 		//idStr gamedir = cvarSystem->GetCVarString( "fs_game" );
 		//if(gamedir.Length() > 0) {
-
+		
 		//	idStr scriptFile = va("script/%s_main.script", gamedir.c_str());
 		//	if(fileSystem->ReadFile(scriptFile.c_str(), NULL) > 0) {
 		//		mProgram->CompileFile(scriptFile.c_str());
 		//	}
-
+		
 		//}
 		
 		int f;
-
+		
 		// Make sure the file isnt already compiled before trying to compile it again
-		for ( f = mProgram->NumFilenames() - 1; f >= 0; f -- )
+		for( f = mProgram->NumFilenames() - 1; f >= 0; f -- )
 		{
 			idStr qpath;
-			qpath = fileSystem->OSPathToRelativePath ( mProgram->GetFilename ( f ) );
-			qpath.BackSlashesToSlashes ( );
-			if ( !qpath.Cmp ( filename ) )
+			qpath = fileSystem->OSPathToRelativePath( mProgram->GetFilename( f ) );
+			qpath.BackSlashesToSlashes( );
+			if( !qpath.Cmp( filename ) )
 			{
 				break;
 			}
 		}
 		
-		if ( f < 0 )
+		if( f < 0 )
 		{
-			mProgram->CompileText ( filename, mContents, false );
+			mProgram->CompileText( filename, mContents, false );
 		}
 		
 		//mProgram->FinishCompilation ( );
 	}
-	catch ( idException& ex )
+	catch( idException& ex )
 	{
 		idLib::Error( "DebuggerScript Exception: %s", ex.GetError() );
-
+		
 		// Failed to parse the script so fail to load the file
 		delete mProgram;
 		mProgram = NULL;
@@ -176,7 +176,7 @@ bool rvDebuggerScript::Load ( const char* filename )
 		
 		return false;
 	}
-
+	
 	return true;
 }
 
@@ -187,9 +187,9 @@ rvDebuggerScript::Reload
 Reload the contents of the script
 ================
 */
-bool rvDebuggerScript::Reload ( void )
-{	
-	return Load ( mFilename );
+bool rvDebuggerScript::Reload( void )
+{
+	return Load( mFilename );
 }
 
 /*
@@ -199,17 +199,17 @@ rvDebuggerScript::IsValidLine
 Determines whether or not the given line number within the script is a valid line of code
 ================
 */
-bool rvDebuggerScript::IsLineCode ( int linenumber )
+bool rvDebuggerScript::IsLineCode( int linenumber )
 {
 	int i;
 	
-	assert ( mProgram );
-
+	assert( mProgram );
+	
 	// Run through all the statements in the program and see if any match the
 	// linenumber that we are checking.
-	for ( i	= 0; i < mProgram->NumStatements ( ); i ++ )
+	for( i	= 0; i < mProgram->NumStatements( ); i ++ )
 	{
-		if ( mProgram->GetStatement ( i ).linenumber == linenumber )
+		if( mProgram->GetStatement( i ).linenumber == linenumber )
 		{
 			return true;
 		}
@@ -226,26 +226,26 @@ Determines whether or not the file loaded for this script has been modified sinc
 it was loaded.
 ================
 */
-bool rvDebuggerScript::IsFileModified ( bool updateTime )
+bool rvDebuggerScript::IsFileModified( bool updateTime )
 {
 	ID_TIME_T	t;
-	bool	result = false;		
-
+	bool	result = false;
+	
 	// Grab the filetime and shut the file down
-	fileSystem->ReadFile ( mFilename, NULL, &t );
+	fileSystem->ReadFile( mFilename, NULL, &t );
 	
 	// Has the file been modified?
-	if ( t > mModifiedTime )
+	if( t > mModifiedTime )
 	{
 		result = true;
 	}
-
+	
 	// If updateTime is true then we will update the modified time
 	// stored in the script with the files current modified time
-	if ( updateTime )
+	if( updateTime )
 	{
 		mModifiedTime = t;
 	}
 	
-	return result;	
+	return result;
 }

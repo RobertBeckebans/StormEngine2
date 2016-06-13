@@ -43,22 +43,22 @@ class CCommandsDlg : public CDialog
 {
 // Construction
 public:
-	CCommandsDlg(CWnd* pParent = NULL);   // standard constructor
-
+	CCommandsDlg( CWnd* pParent = NULL ); // standard constructor
+	
 // Dialog Data
 	//{{AFX_DATA(CCommandsDlg)
 	enum { IDD = IDD_DLG_COMMANDLIST };
 	CListBox	m_lstCommands;
 	//}}AFX_DATA
-
-
+	
+	
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CCommandsDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+protected:
+	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	//}}AFX_VIRTUAL
-
+	
 // Implementation
 protected:
 

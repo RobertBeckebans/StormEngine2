@@ -257,14 +257,14 @@ public:
 	// RenderWorld_demo.cpp
 	
 	void					StartWritingDemo( idDemoFile* demo );
-	void					StopWritingDemo();	
-
+	void					StopWritingDemo();
+	
 	bool					ProcessDemoCommand( idDemoFile* readDemo, renderView_t* demoRenderView, int* demoTimeOffset );
 	
 	void					WriteLoadMap();
 	void					WriteRenderView( const renderView_t* renderView );
 	void					WriteVisibleDefs( const viewDef_t* viewDef );
-	void					WriteFreeDecal( idDemoFile* f, qhandle_t handle );	
+	void					WriteFreeDecal( idDemoFile* f, qhandle_t handle );
 	void					WriteFreeOverlay( idDemoFile* f, qhandle_t handle );
 	void					WriteFreeLight( qhandle_t handle );
 	void					WriteFreeEntity( qhandle_t handle );
@@ -292,10 +292,10 @@ public:
 	
 	void					PushFrustumIntoTree_r( idRenderEntityLocal* def, idRenderLightLocal* light, const frustumCorners_t& corners, int nodeNum );
 	void					PushFrustumIntoTree( idRenderEntityLocal* def, idRenderLightLocal* light, const idRenderMatrix& frustumTransform, const idBounds& frustumBounds );
-
-	void					PushVolumeIntoTree_r( idRenderEntityLocal *def, idRenderLightLocal *light, const idSphere *sphere, int numPoints, const idVec3 (*points), int nodeNum );
-	void					PushVolumeIntoTree( idRenderEntityLocal *def, idRenderLightLocal *light, int numPoints, const idVec3 (*points) );
-
+	
+	void					PushVolumeIntoTree_r( idRenderEntityLocal* def, idRenderLightLocal* light, const idSphere* sphere, int numPoints, const idVec3( *points ), int nodeNum );
+	void					PushVolumeIntoTree( idRenderEntityLocal* def, idRenderLightLocal* light, int numPoints, const idVec3( *points ) );
+	
 	idRenderModelDecal* 	AllocDecal( qhandle_t newEntityHandle, int startTime );
 	idRenderModelOverlay* 	AllocOverlay( qhandle_t newEntityHandle, int startTime );
 	

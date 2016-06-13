@@ -43,16 +43,16 @@ class CPrefsDlg : public CDialog
 {
 // Construction
 public:
-						CPrefsDlg(CWnd* pParent = NULL);   // standard constructor
-
+	CPrefsDlg( CWnd* pParent = NULL ); // standard constructor
+	
 	void				LoadPrefs();
 	void				SavePrefs();
 	void				SetGamePrefs();
-
+	
 // Dialog Data
 	//{{AFX_DATA(CPrefsDlg)
 	enum { IDD = IDD_DLG_PREFS };
-
+	
 	CSpinButtonCtrl		m_wndUndoSpin;
 	CSpinButtonCtrl		m_wndFontSpin;
 	CSliderCtrl			m_wndTexturequality;
@@ -115,13 +115,13 @@ public:
 	BOOL				m_bSelectWholeEntities;
 	int					m_nTextureQuality;
 	BOOL				m_bGLLighting;
-
+	
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CPrefsDlg)
-	protected:
-	virtual void		DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+protected:
+	virtual void		DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	//}}AFX_VIRTUAL
-
+	
 protected:
 	// Generated message map functions
 	//{{AFX_MSG(CPrefsDlg)

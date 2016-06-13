@@ -32,48 +32,54 @@ If you have questions concerning this license or the applicable additional terms
 
 class idUserInterfaceLocal;
 
-typedef struct {
+typedef struct
+{
 	int time;
-	const idMaterial *mat;
+	const idMaterial* mat;
 	idRectangle rect;
 } markerData_t;
 
-class idMarkerWindow : public idWindow {
+class idMarkerWindow : public idWindow
+{
 public:
-	idMarkerWindow(idUserInterfaceLocal *gui);
+	idMarkerWindow( idUserInterfaceLocal* gui );
 	virtual ~idMarkerWindow();
-	virtual size_t Allocated(){return idWindow::Allocated();};
-	virtual idWinVar *GetWinVarByName(const char *_name, bool winLookup = false);
-
-	virtual const char *HandleEvent(const sysEvent_t *event, bool *updateVisuals);
+	virtual size_t Allocated()
+	{
+		return idWindow::Allocated();
+	};
+	virtual idWinVar* GetWinVarByName( const char* _name, bool winLookup = false );
+	
+	virtual const char* HandleEvent( const sysEvent_t* event, bool* updateVisuals );
 	virtual void PostParse();
-	virtual void Draw(int time, float x, float y);
-	virtual const char *RouteMouseCoords(float xd, float yd);
-	virtual void		Activate(bool activate, idStr &act);
+	virtual void Draw( int time, float x, float y );
+	virtual const char* RouteMouseCoords( float xd, float yd );
+	virtual void		Activate( bool activate, idStr& act );
 	virtual void MouseExit();
 	virtual void MouseEnter();
-
+	
 	
 private:
-	virtual bool ParseInternalVar(const char *name, idParser *src);
+	virtual bool ParseInternalVar( const char* name, idParser* src );
 	void CommonInit();
-	void Line(int x1, int y1, int x2, int y2, dword* out, dword color);
-	void Point(int x, int y, dword *out, dword color);
-
-	typedef struct {
+	void Line( int x1, int y1, int x2, int y2, dword* out, dword color );
+	void Point( int x, int y, dword* out, dword color );
+	
+	typedef struct
+	{
 		short		health;
 		short		heartRate;
 		short		stamina;
 		short		combat;
 	} logStats_t;
-
+	
 	logStats_t loggedStats[MAX_LOGGED_STATS];
 	idList<markerData_t> markerTimes;
 	idStr statData;
 	int numStats;
-	dword *imageBuff;
-	const idMaterial *markerMat;
-	const idMaterial *markerStop;
+	dword* imageBuff;
+	const idMaterial* markerMat;
+	const idMaterial* markerStop;
 	idVec4 markerColor;
 	int currentMarker;
 	int currentTime;

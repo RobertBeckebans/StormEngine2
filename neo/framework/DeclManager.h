@@ -398,19 +398,19 @@ public:
 	// Convenience functions for specific types.
 	virtual const idMaterial* 		FindMaterial( const char* name, bool makeDefault = true ) = 0;
 	virtual const idMaterial* 		MaterialByIndex( int index, bool forceParse = true ) = 0;
-
+	
 	virtual const idDeclSkin* 		FindSkin( const char* name, bool makeDefault = true ) = 0;
 	virtual const idDeclSkin* 		SkinByIndex( int index, bool forceParse = true ) = 0;
-
+	
 	virtual const idSoundShader* 	FindSound( const char* name, bool makeDefault = true ) = 0;
 	virtual const idSoundShader* 	SoundByIndex( int index, bool forceParse = true ) = 0;
-
+	
 	virtual const idDeclFX*			FindFx( const char* name, bool makeDefault = true ) = 0;
 	virtual const idDeclFX*			FxByIndex( int index, bool forceParse = true ) = 0;
 	
 	virtual const idDeclParticle*	FindParticle( const char* name, bool makeDefault = true ) = 0;
 	virtual const idDeclParticle*	ParticleByIndex( int index, bool forceParse = true ) = 0;
-		
+	
 	virtual const idDeclModelDef*	FindModelDef( const char* name, bool makeDefault = true ) = 0;
 	virtual const idDeclModelDef*	ModelDefByIndex( int index, bool forceParse = true ) = 0;
 	

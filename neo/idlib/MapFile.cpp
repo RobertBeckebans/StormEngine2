@@ -260,19 +260,21 @@ bool idMapPatch::Write( idFile* fp, int primitiveNum, const idVec3& origin ) con
 idMapPatch::GetGeometryCRC
 ===============
 */
-void idMapPatch::GetGeometryCRC( unsigned int & crc ) const
+void idMapPatch::GetGeometryCRC( unsigned int& crc ) const
 {
-	CRC32_UpdateChecksum( crc, &horzSubdivisions, sizeof(horzSubdivisions) );
-	CRC32_UpdateChecksum( crc, &vertSubdivisions, sizeof(vertSubdivisions) );
-
-	for (int i = 0; i < GetWidth(); i++) {
-		for (int j = 0; j < GetHeight(); j++) {
+	CRC32_UpdateChecksum( crc, &horzSubdivisions, sizeof( horzSubdivisions ) );
+	CRC32_UpdateChecksum( crc, &vertSubdivisions, sizeof( vertSubdivisions ) );
+	
+	for( int i = 0; i < GetWidth(); i++ )
+	{
+		for( int j = 0; j < GetHeight(); j++ )
+		{
 			const idVec3 vec = verts[j * GetWidth() + i].xyz;
-			CRC32_UpdateChecksum( crc, &vec, sizeof(vec) );
+			CRC32_UpdateChecksum( crc, &vec, sizeof( vec ) );
 		}
 	}
-
-	CRC32_UpdateChecksum( crc, GetMaterial(), strlen(GetMaterial()) );
+	
+	CRC32_UpdateChecksum( crc, GetMaterial(), strlen( GetMaterial() ) );
 }
 
 /*
@@ -560,13 +562,13 @@ bool idMapBrush::Write( idFile* fp, int primitiveNum, const idVec3& origin ) con
 idMapBrush::GetGeometryCRC
 ===============
 */
-void idMapBrush::GetGeometryCRC( unsigned int & crc ) const
+void idMapBrush::GetGeometryCRC( unsigned int& crc ) const
 {
 	for( int i = 0; i < GetNumSides(); i++ )
 	{
 		idMapBrushSide* mapSide = GetSide( i );
 		CRC32_UpdateChecksum( crc, &mapSide->GetPlane(), sizeof( idPlane ) );
-		CRC32_UpdateChecksum( crc, mapSide->GetMaterial(), strlen(mapSide->GetMaterial()) );
+		CRC32_UpdateChecksum( crc, mapSide->GetMaterial(), strlen( mapSide->GetMaterial() ) );
 	}
 }
 
@@ -756,7 +758,7 @@ void idMapEntity::RemovePrimitiveData()
 idMapEntity::GetGeometryCRC
 ===============
 */
-void idMapEntity::GetGeometryCRC( unsigned int & crc ) const
+void idMapEntity::GetGeometryCRC( unsigned int& crc ) const
 {
 	for( int i = 0; i < GetNumPrimitives(); i++ )
 	{
@@ -960,12 +962,12 @@ idMapFile::SetGeometryCRC
 void idMapFile::SetGeometryCRC()
 {
 	CRC32_InitChecksum( geometryCRC );
-
+	
 	for( int i = 0; i < entities.Num(); i++ )
 	{
 		entities[i]->GetGeometryCRC( geometryCRC );
 	}
-
+	
 	CRC32_FinishChecksum( geometryCRC );
 }
 

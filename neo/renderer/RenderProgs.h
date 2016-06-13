@@ -157,11 +157,11 @@ enum renderParm_t
 	
 	RENDERPARM_GLOSSMATRIX_S,
 	RENDERPARM_GLOSSMATRIX_T,
-
+	
 	RENDERPARM_CUBEMAPCOLORSPACE, // motorsep 05-18-2015; needed for switching colorspace in skybox shader; rpcubemapColorSpace
-
+	
 	RENDERPARM_TOTAL,
-
+	
 	RENDERPARM_USER = 128,
 };
 
@@ -367,7 +367,7 @@ public:
 	{
 		BindShader_Builtin( BUILTIN_MOTION_BLUR );
 	}
-
+	
 	// foresthale 2014-02-20: added HDRDither shader
 	void	BindShader_HDRDither()
 	{
@@ -387,7 +387,7 @@ public:
 	{
 		BindShader_Builtin( BUILTIN_HDRGLOWBLURDIRECTIONAL );
 	}
-
+	
 	// the joints buffer should only be bound for vertex programs that use joints
 	bool	ShaderUsesJoints() const
 	{
@@ -459,7 +459,7 @@ protected:
 		BUILTIN_BINK_GUI,
 		BUILTIN_STEREO_INTERLACE,
 		BUILTIN_MOTION_BLUR,
-
+		
 		// foresthale 2014-02-20: added HDRDither shader
 		BUILTIN_HDRDITHER,
 		// foresthale 2014-04-08: r_glow
@@ -473,7 +473,7 @@ protected:
 		BUILTIN_INTERACTION_SHADOW_MAPPING_POINT_SKINNED,
 		BUILTIN_INTERACTION_SHADOW_MAPPING_PARALLEL,
 		BUILTIN_INTERACTION_SHADOW_MAPPING_PARALLEL_SKINNED,
-		// RB end		
+		// RB end
 		MAX_BUILTINS
 	};
 	int builtinShaders[MAX_BUILTINS];

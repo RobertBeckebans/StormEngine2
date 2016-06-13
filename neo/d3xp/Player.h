@@ -211,11 +211,11 @@ public:
 	int						quickSlot[ NUM_QUICK_SLOTS ];
 	
 	// ################################## SR
-
-	idMenuScreen_Cinematic* 		cinema;	
+	
+	idMenuScreen_Cinematic* 		cinema;
 	idMenuHandler_Cinematic*		cinematicManager;
 	
-	idUserInterface *				hudgui;
+	idUserInterface* 				hudgui;
 	
 	// ################################## END SR
 	
@@ -308,8 +308,14 @@ public:
 	float					bloomSpeed;
 	float					bloomIntensity;
 	
-	virtual const usercmd_t *	GetUserCmd() const { return &usercmd; }
-	virtual idWeapon*			GetCurrentWeapon() { return weapon; }
+	virtual const usercmd_t* 	GetUserCmd() const
+	{
+		return &usercmd;
+	}
+	virtual idWeapon*			GetCurrentWeapon()
+	{
+		return weapon;
+	}
 public:
 	CLASS_PROTOTYPE( idPlayer );
 	
@@ -408,10 +414,19 @@ public:
 	void					GiveItem( const char* name );
 	void					GiveHealthPool( float amt );
 	
-	void							SetPrimaryObjective( idTarget_SetPrimaryObjective* target ) { primaryObjective = target; }
-	idTarget_SetPrimaryObjective* 	GetPrimaryObjective() { return primaryObjective; }
+	void							SetPrimaryObjective( idTarget_SetPrimaryObjective* target )
+	{
+		primaryObjective = target;
+	}
+	idTarget_SetPrimaryObjective* 	GetPrimaryObjective()
+	{
+		return primaryObjective;
+	}
 	
-	idInventory* 			GetInventory() { return &inventory; }
+	idInventory* 			GetInventory()
+	{
+		return &inventory;
+	}
 	bool					GiveInventoryItem( idDict* item, unsigned int giveFlags );
 	void					RemoveInventoryItem( idDict* item );
 	bool					GiveInventoryItem( const char* name );
@@ -448,7 +463,7 @@ public:
 	void					NextWeapon();
 	void					NextBestWeapon();
 	void					PrevWeapon();
-	// motorsep 03-22-2015; for water level check in idPlayer class	
+	// motorsep 03-22-2015; for water level check in idPlayer class
 	int						GetWaterLevelLocal();
 	
 	void					SetPreviousWeapon( int num )
@@ -463,8 +478,8 @@ public:
 	void					SetLastHitTime( int time );
 	void					LowerWeapon();
 	void					RaiseWeapon();
-	void					WeaponLoweringCallback( idWeapon * weapon );
-	void					WeaponRisingCallback( idWeapon * weapon );
+	void					WeaponLoweringCallback( idWeapon* weapon );
+	void					WeaponRisingCallback( idWeapon* weapon );
 	void					RemoveWeapon( const char* weap );
 	void					RemoveAllButEssentialWeapons();
 	bool					CanShowWeaponViewmodel() const;
@@ -515,7 +530,7 @@ public:
 	void					UpdateHudStats( idMenuHandler_HUD* hudManager );
 	void					Event_StopAudioLog();
 	bool					IsSoundChannelPlaying( const s_channelType channel = SND_CHANNEL_ANY );
-	void					ShowTip( idStr tip1, const char *key, idStr tip2, bool autoHide );
+	void					ShowTip( idStr tip1, const char* key, idStr tip2, bool autoHide );
 	void					HideTip();
 	bool					IsTipVisible()
 	{
@@ -577,10 +592,19 @@ public:
 	void					StopHealthRecharge();
 	
 	idStr					GetCurrentWeaponName();
-	int						GetCurrentWeaponSlot() { return currentWeapon; }
-	int						GetIdealWeapon() { return idealWeapon.Get(); }
-
-	idHashTable<WeaponToggle_t>	GetWeaponToggles() const { return weaponToggles; }
+	int						GetCurrentWeaponSlot()
+	{
+		return currentWeapon;
+	}
+	int						GetIdealWeapon()
+	{
+		return idealWeapon.Get();
+	}
+	
+	idHashTable<WeaponToggle_t>	GetWeaponToggles() const
+	{
+		return weaponToggles;
+	}
 	
 	bool					CanGive( const char* statname, const char* value );
 	
@@ -619,8 +643,14 @@ public:
 	
 	void					HandleUserCmds( const usercmd_t& newcmd );
 	
-	int						GetClientFireCount() const { return clientFireCount; }
-	void					IncrementClientFireCount() { ++clientFireCount; }
+	int						GetClientFireCount() const
+	{
+		return clientFireCount;
+	}
+	void					IncrementClientFireCount()
+	{
+		++clientFireCount;
+	}
 	
 	void					ShowRespawnHudMessage();
 	void					HideRespawnHudMessage();
@@ -645,11 +675,11 @@ public:
 		numProjectileKills = 0;
 	}
 	
-// ############################# SR	
- 
-	bool					fadingIn; 
-	bool					fadingOut; 
-	bool					showhints; 
+// ############################# SR
+
+	bool					fadingIn;
+	bool					fadingOut;
+	bool					showhints;
 	
 	idStr					compassObjective_1;
 	idStr					compassObjective_2;
@@ -657,7 +687,7 @@ public:
 	
 	int						currentWeapon;	// made public
 	
- // ############################# EMD SR	
+// ############################# EMD SR
 private:
 	// Stats & achievements
 	idAchievementManager	achievementManager;
@@ -674,11 +704,11 @@ private:
 	idPhysics_Player		physicsObj;			// player physics
 	
 	idList<aasLocation_t, TAG_IDLIB_LIST_PLAYER>	aasLocation;		// for AI tracking the player
-
+	
 	// ########################################################################## SR
 	
-	bool					typing; 
-	bool					wiping; 	
+	bool					typing;
+	bool					wiping;
 	idStr 					typemsg;
 	float					typegap;
 	float					pause;
@@ -696,23 +726,23 @@ private:
 	void 					Flashlight( void );
 	void 					BuggyThink( void );
 	int						zoomBuggyFov;
-	idEntityPtr<idAFEntity_Vehicle>	currentVehicle;		
+	idEntityPtr<idAFEntity_Vehicle>	currentVehicle;
 	void 					CycleWeaponAmmo( void );
 	
 	void 					LaunchHook( void );
-	void 					ShowGrappleRope( void ); 
+	void 					ShowGrappleRope( void );
 	void					FlyHook( void );
 	void					GrappleAscend( void );
 	void 					AscentToSwing( void );
 	void					GrappleSwing( void );
 	bool 					skyHook;
 	int						grappling;
-	idEntity *				hooksocket;
-	idMover *				grapple;
-	idMover *				grappleMover;
+	idEntity* 				hooksocket;
+	idMover* 				grapple;
+	idMover* 				grappleMover;
 	idAngles 				swingAngle;
-	idBeam *				grappleBeam;
-	idBeam *				grappleBeamTarget;
+	idBeam* 				grappleBeam;
+	idBeam* 				grappleBeamTarget;
 	float					grapple_flyspeed;
 	float					grapple_accel_time;
 	float					grapple_accel_end;
@@ -722,17 +752,17 @@ private:
 	idVec3					swingDir;
 	const idDeclSkin* 		skin_grapple;
 	const idDeclSkin* 		skin_grapple_attached;
-		
-	idAI *					dodger;
-	//idList<idStr>			compassObjectiveNames;
-
-	// foresthale 2014-05-19: was [255], which means an overflow when initialized by the loop which uses x < 256 as the condition.
-	idEntity *				ropesegment[256];
 	
-
+	idAI* 					dodger;
+	//idList<idStr>			compassObjectiveNames;
+	
+	// foresthale 2014-05-19: was [255], which means an overflow when initialized by the loop which uses x < 256 as the condition.
+	idEntity* 				ropesegment[256];
+	
+	
 	
 	// ########################################################################### END
-
+	
 	
 	int						bobFoot;
 	float					bobFrac;
@@ -798,8 +828,8 @@ private:
 	idEntityPtr<idEntity>				focusGUIent;
 	idEntityPtr<idAI>					focusAI;
 	idEntityPtr<idAFEntity_Vehicle>		focusVehicle;
-
-	idUserInterface* 		focusUI;				// focusGUIent->renderEntity.gui, gui2, or gui3	
+	
+	idUserInterface* 		focusUI;				// focusGUIent->renderEntity.gui, gui2, or gui3
 	int						talkCursor;				// show the state of the focusCharacter (0 == can't talk/dead, 1 == ready to talk, 2 == busy talking)
 	int						focusTime;
 	idUserInterface* 		cursor;
@@ -923,9 +953,9 @@ private:
 	void					Event_StopHelltime( int mode );
 	void					Event_ToggleBloom( int on );
 	void					Event_SetBloomParms( float speed, float intensity );
-
+	
 	void					Event_GetObjective( int objNum ) ;
-
+	
 	void					Event_GetAngles();
 };
 

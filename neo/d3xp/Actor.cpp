@@ -489,27 +489,27 @@ void idActor::Spawn()
 	
 	// spawn any attachments we might have
 	int attachId = 0;
-	const idKeyValue* kv = spawnArgs.MatchPrefix(va("def_attach%d", attachId), NULL);
+	const idKeyValue* kv = spawnArgs.MatchPrefix( va( "def_attach%d", attachId ), NULL );
 	while( kv )
 	{
-		const char * attachJoint = spawnArgs.GetString(va("%s_joint", kv->GetKey().c_str()), NULL);
-		const char * attachAngles = spawnArgs.GetString(va("%s_angles", kv->GetKey().c_str()), NULL);
-		const char * attachOrigin = spawnArgs.GetString(va("%s_origin", kv->GetKey().c_str()), NULL);
+		const char* attachJoint = spawnArgs.GetString( va( "%s_joint", kv->GetKey().c_str() ), NULL );
+		const char* attachAngles = spawnArgs.GetString( va( "%s_angles", kv->GetKey().c_str() ), NULL );
+		const char* attachOrigin = spawnArgs.GetString( va( "%s_origin", kv->GetKey().c_str() ), NULL );
 		
-		idDict args;		
-		args.Set( "classname", kv->GetValue().c_str() );		
+		idDict args;
+		args.Set( "classname", kv->GetValue().c_str() );
 		// make items non-touchable so the player can't take them out of the character's hands
-		args.Set( "no_touch", "1" );		
+		args.Set( "no_touch", "1" );
 		// don't let them drop to the floor
 		args.Set( "dropToFloor", "0" );
 		
-		if (attachJoint != NULL)
-			args.Set("joint", attachJoint);
-		if (attachAngles != NULL)
-			args.Set("angles", attachAngles);
-		if (attachOrigin != NULL)
-			args.Set("origin", attachOrigin);
-
+		if( attachJoint != NULL )
+			args.Set( "joint", attachJoint );
+		if( attachAngles != NULL )
+			args.Set( "angles", attachAngles );
+		if( attachOrigin != NULL )
+			args.Set( "origin", attachOrigin );
+			
 		gameLocal.SpawnEntityDef( args, &ent );
 		if( !ent )
 		{
@@ -519,7 +519,7 @@ void idActor::Spawn()
 		{
 			Attach( ent );
 		}
-		kv = spawnArgs.MatchPrefix(va("def_attach%d", ++attachId), kv);
+		kv = spawnArgs.MatchPrefix( va( "def_attach%d", ++attachId ), kv );
 	}
 	
 	SetupDamageGroups();
@@ -1360,7 +1360,7 @@ idThread* idActor::ConstructScriptObject()
 	}
 	
 	scriptThread->SetThreadName( va( "%s_%s", GetName(), constructor->Name() ) );
-
+	
 	// init the script object's data
 	scriptObject.ClearObject();
 	
@@ -1393,10 +1393,10 @@ idActor::GetFirstScriptFunction
 */
 const function_t* idActor::GetFirstScriptFunction( const char* funcname[], size_t count )
 {
-	for ( size_t i = 0; i < count; ++i )
+	for( size_t i = 0; i < count; ++i )
 	{
 		const function_t* func = scriptObject.GetFunction( funcname[i] );
-		if ( func )
+		if( func )
 			return func;
 	}
 	
@@ -1596,7 +1596,7 @@ bool idActor::CanSee( idEntity* ent, bool useFov ) const
 	
 	idVec3 otherPos;
 	idMat3 otherAxis;
-	ent->GetViewPos( otherPos, otherAxis );		
+	ent->GetViewPos( otherPos, otherAxis );
 	if( useFov && !CheckFOV( otherPos ) )
 	{
 		return false;
@@ -1607,7 +1607,7 @@ bool idActor::CanSee( idEntity* ent, bool useFov ) const
 	GetViewPos( eyePos, eyeAxis );
 	
 	trace_t		tr;
-	gameLocal.clip.TracePoint(tr, eyePos, otherPos, MASK_AI_VISION, this);
+	gameLocal.clip.TracePoint( tr, eyePos, otherPos, MASK_AI_VISION, this );
 	if( tr.fraction >= 1.0f || ( gameLocal.GetTraceEntity( tr ) == ent ) )
 	{
 		return true;
@@ -1898,10 +1898,10 @@ void idActor::Attach( idEntity* ent )
 	attach.channel = animator.GetChannelForJoint( joint );
 	GetJointWorldTransform( joint, gameLocal.time, origin, axis );
 	attach.ent = ent;
-		
-	ent->BindToJoint(this, joint, (BindFlags)(BFL_ORIENTED | BFL_SNAPXFORM));
-	ent->GetPhysics()->SetOrigin(originOffset);
-	ent->GetPhysics()->SetAxis(angleOffset.ToMat3());
+	
+	ent->BindToJoint( this, joint, ( BindFlags )( BFL_ORIENTED | BFL_SNAPXFORM ) );
+	ent->GetPhysics()->SetOrigin( originOffset );
+	ent->GetPhysics()->SetAxis( angleOffset.ToMat3() );
 	ent->cinematic = cinematic;
 }
 
@@ -2100,13 +2100,13 @@ void idActor::SetAnimState( int channel, const char* statename, int blendFrames 
 			allowPain = true;
 			allowEyeFocus = true;
 			break;
-
+			
 		case ANIMCHANNEL_ALL:
 			SetAnimState( ANIMCHANNEL_HEAD, statename, blendFrames );
 			SetAnimState( ANIMCHANNEL_TORSO, statename, blendFrames );
 			SetAnimState( ANIMCHANNEL_LEGS, statename, blendFrames );
 			break;
-
+			
 		default:
 			gameLocal.Error( "idActor::SetAnimState: Unknown anim group" );
 			break;
@@ -2813,75 +2813,75 @@ bool idActor::InternalPlayAnim( int channel, const int animNum )
 {
 	animFlags_t	flags;
 	idEntity* headEnt;
-
+	
 	switch( channel )
 	{
-	case ANIMCHANNEL_TORSO :
-		torsoAnim.idleAnim = false;
-		torsoAnim.PlayAnim( animNum );
-		flags = torsoAnim.GetAnimFlags();
-		if( !flags.prevent_idle_override )
-		{
-			if( headAnim.IsIdle() )
+		case ANIMCHANNEL_TORSO :
+			torsoAnim.idleAnim = false;
+			torsoAnim.PlayAnim( animNum );
+			flags = torsoAnim.GetAnimFlags();
+			if( !flags.prevent_idle_override )
 			{
-				headAnim.animBlendFrames = torsoAnim.lastAnimBlendFrames;
-				SyncAnimChannels( ANIMCHANNEL_HEAD, ANIMCHANNEL_TORSO, torsoAnim.lastAnimBlendFrames );
-			}
-			if( legsAnim.IsIdle() )
-			{
-				legsAnim.animBlendFrames = torsoAnim.lastAnimBlendFrames;
-				SyncAnimChannels( ANIMCHANNEL_LEGS, ANIMCHANNEL_TORSO, torsoAnim.lastAnimBlendFrames );
-			}
-		}
-		break;
-
-	case ANIMCHANNEL_LEGS :
-		legsAnim.idleAnim = false;
-		legsAnim.PlayAnim( animNum );
-		flags = legsAnim.GetAnimFlags();
-		if( !flags.prevent_idle_override )
-		{
-			if( torsoAnim.IsIdle() )
-			{
-				torsoAnim.animBlendFrames = legsAnim.lastAnimBlendFrames;
-				SyncAnimChannels( ANIMCHANNEL_TORSO, ANIMCHANNEL_LEGS, legsAnim.lastAnimBlendFrames );
 				if( headAnim.IsIdle() )
 				{
-					headAnim.animBlendFrames = legsAnim.lastAnimBlendFrames;
-					SyncAnimChannels( ANIMCHANNEL_HEAD, ANIMCHANNEL_LEGS, legsAnim.lastAnimBlendFrames );
+					headAnim.animBlendFrames = torsoAnim.lastAnimBlendFrames;
+					SyncAnimChannels( ANIMCHANNEL_HEAD, ANIMCHANNEL_TORSO, torsoAnim.lastAnimBlendFrames );
+				}
+				if( legsAnim.IsIdle() )
+				{
+					legsAnim.animBlendFrames = torsoAnim.lastAnimBlendFrames;
+					SyncAnimChannels( ANIMCHANNEL_LEGS, ANIMCHANNEL_TORSO, torsoAnim.lastAnimBlendFrames );
 				}
 			}
-		}
-		break;
-
-	case ANIMCHANNEL_HEAD:
-	case ANIMCHANNEL_EYELIDS:
-		headEnt = head.GetEntity();
-		if (headEnt)
-		{
-			headAnim.idleAnim = false;
-			headAnim.PlayAnim(animNum);
-			flags = headAnim.GetAnimFlags();
-			if (!flags.prevent_idle_override)
+			break;
+			
+		case ANIMCHANNEL_LEGS :
+			legsAnim.idleAnim = false;
+			legsAnim.PlayAnim( animNum );
+			flags = legsAnim.GetAnimFlags();
+			if( !flags.prevent_idle_override )
 			{
-				if (torsoAnim.IsIdle())
+				if( torsoAnim.IsIdle() )
 				{
-					torsoAnim.animBlendFrames = headAnim.lastAnimBlendFrames;
-					SyncAnimChannels(ANIMCHANNEL_TORSO, channel, headAnim.lastAnimBlendFrames);
-					if (legsAnim.IsIdle())
+					torsoAnim.animBlendFrames = legsAnim.lastAnimBlendFrames;
+					SyncAnimChannels( ANIMCHANNEL_TORSO, ANIMCHANNEL_LEGS, legsAnim.lastAnimBlendFrames );
+					if( headAnim.IsIdle() )
 					{
-						legsAnim.animBlendFrames = headAnim.lastAnimBlendFrames;
-						SyncAnimChannels(ANIMCHANNEL_LEGS, channel, headAnim.lastAnimBlendFrames);
+						headAnim.animBlendFrames = legsAnim.lastAnimBlendFrames;
+						SyncAnimChannels( ANIMCHANNEL_HEAD, ANIMCHANNEL_LEGS, legsAnim.lastAnimBlendFrames );
 					}
 				}
 			}
-		}
-		break;
-	default :
-		gameLocal.Error( "Unknown anim group" );
-		break;
+			break;
+			
+		case ANIMCHANNEL_HEAD:
+		case ANIMCHANNEL_EYELIDS:
+			headEnt = head.GetEntity();
+			if( headEnt )
+			{
+				headAnim.idleAnim = false;
+				headAnim.PlayAnim( animNum );
+				flags = headAnim.GetAnimFlags();
+				if( !flags.prevent_idle_override )
+				{
+					if( torsoAnim.IsIdle() )
+					{
+						torsoAnim.animBlendFrames = headAnim.lastAnimBlendFrames;
+						SyncAnimChannels( ANIMCHANNEL_TORSO, channel, headAnim.lastAnimBlendFrames );
+						if( legsAnim.IsIdle() )
+						{
+							legsAnim.animBlendFrames = headAnim.lastAnimBlendFrames;
+							SyncAnimChannels( ANIMCHANNEL_LEGS, channel, headAnim.lastAnimBlendFrames );
+						}
+					}
+				}
+			}
+			break;
+		default :
+			gameLocal.Error( "Unknown anim group" );
+			break;
 	}
-
+	
 	return true;
 }
 
@@ -2890,99 +2890,99 @@ bool idActor::InternalPlayAnim( int channel, const int animNum )
 idActor::InternalIdleAnim
 ================
 */
-bool idActor::InternalIdleAnim(int channel, const int animNum)
+bool idActor::InternalIdleAnim( int channel, const int animNum )
 {
 	idEntity* headEnt;
-
-	switch (channel)
+	
+	switch( channel )
 	{
-	case ANIMCHANNEL_TORSO:
-		torsoAnim.BecomeIdle();
-		if (legsAnim.GetAnimFlags().prevent_idle_override)
-		{
-			// don't sync to legs if legs anim doesn't override idle anims
-			torsoAnim.CycleAnim(animNum);
-		}
-		else if (legsAnim.IsIdle())
-		{
-			// play the anim in both legs and torso
-			torsoAnim.CycleAnim(animNum);
-			legsAnim.animBlendFrames = torsoAnim.lastAnimBlendFrames;
-			SyncAnimChannels(ANIMCHANNEL_LEGS, ANIMCHANNEL_TORSO, torsoAnim.lastAnimBlendFrames);
-		}
-		else
-		{
-			// sync the anim to the legs
-			SyncAnimChannels(ANIMCHANNEL_TORSO, ANIMCHANNEL_LEGS, torsoAnim.animBlendFrames);
-		}
-
-		if (headAnim.IsIdle())
-		{
-			SyncAnimChannels(ANIMCHANNEL_HEAD, ANIMCHANNEL_TORSO, torsoAnim.lastAnimBlendFrames);
-		}
-		break;
-
-	case ANIMCHANNEL_LEGS:
-		legsAnim.BecomeIdle();
-		if (torsoAnim.GetAnimFlags().prevent_idle_override)
-		{
-			// don't sync to torso if torso anim doesn't override idle anims
-			legsAnim.CycleAnim(animNum);
-		}
-		else if (torsoAnim.IsIdle())
-		{
-			// play the anim in both legs and torso
-			legsAnim.CycleAnim(animNum);
-			torsoAnim.animBlendFrames = legsAnim.lastAnimBlendFrames;
-			SyncAnimChannels(ANIMCHANNEL_TORSO, ANIMCHANNEL_LEGS, legsAnim.lastAnimBlendFrames);
-			if (headAnim.IsIdle())
+		case ANIMCHANNEL_TORSO:
+			torsoAnim.BecomeIdle();
+			if( legsAnim.GetAnimFlags().prevent_idle_override )
 			{
-				SyncAnimChannels(ANIMCHANNEL_HEAD, ANIMCHANNEL_LEGS, legsAnim.lastAnimBlendFrames);
+				// don't sync to legs if legs anim doesn't override idle anims
+				torsoAnim.CycleAnim( animNum );
 			}
-		}
-		else
-		{
-			// sync the anim to the torso
-			SyncAnimChannels(ANIMCHANNEL_LEGS, ANIMCHANNEL_TORSO, legsAnim.animBlendFrames);
-		}
-		break;
-	case ANIMCHANNEL_HEAD:
-	case ANIMCHANNEL_EYELIDS:
-		headEnt = head.GetEntity();
-		if (headEnt)
-		{
-			headAnim.BecomeIdle();
-			if (torsoAnim.GetAnimFlags().prevent_idle_override)
+			else if( legsAnim.IsIdle() )
 			{
-				// don't sync to torso body if it doesn't override idle anims
-				headAnim.CycleAnim(animNum);
-			}
-			else if (torsoAnim.IsIdle() && legsAnim.IsIdle())
-			{
-				// everything is idle, so play the anim on the head and copy it to the torso and legs
-				headAnim.CycleAnim(animNum);
-				torsoAnim.animBlendFrames = headAnim.lastAnimBlendFrames;
-				SyncAnimChannels(ANIMCHANNEL_TORSO, channel, headAnim.lastAnimBlendFrames);
-				legsAnim.animBlendFrames = headAnim.lastAnimBlendFrames;
-				SyncAnimChannels(ANIMCHANNEL_LEGS, channel, headAnim.lastAnimBlendFrames);
-			}
-			else if (torsoAnim.IsIdle())
-			{
-				// sync the head and torso to the legs
-				SyncAnimChannels(ANIMCHANNEL_HEAD, channel, headAnim.animBlendFrames);
-				torsoAnim.animBlendFrames = headAnim.lastAnimBlendFrames;
-				SyncAnimChannels(ANIMCHANNEL_TORSO, channel, torsoAnim.animBlendFrames);
+				// play the anim in both legs and torso
+				torsoAnim.CycleAnim( animNum );
+				legsAnim.animBlendFrames = torsoAnim.lastAnimBlendFrames;
+				SyncAnimChannels( ANIMCHANNEL_LEGS, ANIMCHANNEL_TORSO, torsoAnim.lastAnimBlendFrames );
 			}
 			else
 			{
-				// sync the head to the torso
-				SyncAnimChannels(ANIMCHANNEL_HEAD, channel, headAnim.animBlendFrames);
+				// sync the anim to the legs
+				SyncAnimChannels( ANIMCHANNEL_TORSO, ANIMCHANNEL_LEGS, torsoAnim.animBlendFrames );
 			}
-		}		
-		break;
-
-	default:
-		gameLocal.Error("Unknown anim group");
+			
+			if( headAnim.IsIdle() )
+			{
+				SyncAnimChannels( ANIMCHANNEL_HEAD, ANIMCHANNEL_TORSO, torsoAnim.lastAnimBlendFrames );
+			}
+			break;
+			
+		case ANIMCHANNEL_LEGS:
+			legsAnim.BecomeIdle();
+			if( torsoAnim.GetAnimFlags().prevent_idle_override )
+			{
+				// don't sync to torso if torso anim doesn't override idle anims
+				legsAnim.CycleAnim( animNum );
+			}
+			else if( torsoAnim.IsIdle() )
+			{
+				// play the anim in both legs and torso
+				legsAnim.CycleAnim( animNum );
+				torsoAnim.animBlendFrames = legsAnim.lastAnimBlendFrames;
+				SyncAnimChannels( ANIMCHANNEL_TORSO, ANIMCHANNEL_LEGS, legsAnim.lastAnimBlendFrames );
+				if( headAnim.IsIdle() )
+				{
+					SyncAnimChannels( ANIMCHANNEL_HEAD, ANIMCHANNEL_LEGS, legsAnim.lastAnimBlendFrames );
+				}
+			}
+			else
+			{
+				// sync the anim to the torso
+				SyncAnimChannels( ANIMCHANNEL_LEGS, ANIMCHANNEL_TORSO, legsAnim.animBlendFrames );
+			}
+			break;
+		case ANIMCHANNEL_HEAD:
+		case ANIMCHANNEL_EYELIDS:
+			headEnt = head.GetEntity();
+			if( headEnt )
+			{
+				headAnim.BecomeIdle();
+				if( torsoAnim.GetAnimFlags().prevent_idle_override )
+				{
+					// don't sync to torso body if it doesn't override idle anims
+					headAnim.CycleAnim( animNum );
+				}
+				else if( torsoAnim.IsIdle() && legsAnim.IsIdle() )
+				{
+					// everything is idle, so play the anim on the head and copy it to the torso and legs
+					headAnim.CycleAnim( animNum );
+					torsoAnim.animBlendFrames = headAnim.lastAnimBlendFrames;
+					SyncAnimChannels( ANIMCHANNEL_TORSO, channel, headAnim.lastAnimBlendFrames );
+					legsAnim.animBlendFrames = headAnim.lastAnimBlendFrames;
+					SyncAnimChannels( ANIMCHANNEL_LEGS, channel, headAnim.lastAnimBlendFrames );
+				}
+				else if( torsoAnim.IsIdle() )
+				{
+					// sync the head and torso to the legs
+					SyncAnimChannels( ANIMCHANNEL_HEAD, channel, headAnim.animBlendFrames );
+					torsoAnim.animBlendFrames = headAnim.lastAnimBlendFrames;
+					SyncAnimChannels( ANIMCHANNEL_TORSO, channel, torsoAnim.animBlendFrames );
+				}
+				else
+				{
+					// sync the head to the torso
+					SyncAnimChannels( ANIMCHANNEL_HEAD, channel, headAnim.animBlendFrames );
+				}
+			}
+			break;
+			
+		default:
+			gameLocal.Error( "Unknown anim group" );
 	}
 	return true;
 }

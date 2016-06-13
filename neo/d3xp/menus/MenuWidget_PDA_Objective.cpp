@@ -60,7 +60,7 @@ void idMenuWidget_PDA_Objective::Update()
 	idSWFSpriteInstance* dataSprite = dataObj->GetSprite();
 	
 	if( dataObj != NULL && dataSprite != NULL )
-	{	
+	{
 		idSWFSpriteInstance* img = dataObj->GetNestedSprite( "objImg", "img" ); // SS2 note; screenshot of the objective
 		
 		if( player->GetInventory()->objectiveNames.Num() == 0 )
@@ -87,7 +87,7 @@ void idMenuWidget_PDA_Objective::Update()
 			
 			int displayCount = 0;
 			for( int index = numObjectives - 1; displayCount < 2 && index >= 0; --index )
-			{			
+			{
 				if( img != NULL )
 				{
 					if( player->GetInventory()->objectiveNames[index].screenshot == NULL )
@@ -102,7 +102,7 @@ void idMenuWidget_PDA_Objective::Update()
 				}
 				
 				// SS2 note; this sprite doesn't exist on frame1, but 1 instance "obj0" exist on frame 2 and 2 instances named "obj0" and "obj1" exist on frame2
-				// since Doom 3 only allows 2 objectives aat once to exist in PDA, one of those instances, e.g. current objective, is highlighted with "sel" sprite (simply 
+				// since Doom 3 only allows 2 objectives aat once to exist in PDA, one of those instances, e.g. current objective, is highlighted with "sel" sprite (simply
 				// a backing by default in Doom 3 BFG).
 				// We can expand that to however manu quests we need to display in SS2, eventually
 				idSWFSpriteInstance* objSel = dataObj->GetNestedSprite( va( "obj%d", objStartIndex - displayCount ), "sel" );

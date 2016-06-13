@@ -36,6 +36,6 @@ extern "C" {
 }
 
 
-void jpeg_memory_src(j_decompress_ptr cinfo, unsigned char *inbuffer, unsigned long insize);
+void jpeg_memory_src( j_decompress_ptr cinfo, unsigned char* inbuffer, unsigned long insize );
 
 #endif

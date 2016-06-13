@@ -399,9 +399,9 @@ void idCommonLocal::ExecuteMapChange()
 		idLib::Warning( "Session state is not LOADING in ExecuteMapChange" );
 		return;
 	}
-
-	int currentTime = 0; 
-
+	
+	int currentTime = 0;
+	
 	// Clear all dialogs before beginning the load
 	common->Dialog().ClearDialogs( true );
 	
@@ -497,7 +497,7 @@ void idCommonLocal::ExecuteMapChange()
 	// Stop rendering the wipe
 	ClearWipe();
 	
-	UpdateLevelLoadPacifier(false,1);	
+	UpdateLevelLoadPacifier( false, 1 );
 	if( fileSystem->UsingResourceFiles() )
 	{
 		idStrStatic< MAX_OSPATH > manifestName = currentMapName;
@@ -510,9 +510,9 @@ void idCommonLocal::ExecuteMapChange()
 		soundSystem->Preload( manifest );
 		game->Preload( manifest );
 	}
-
-	UpdateLevelLoadPacifier(false,5);
-
+	
+	UpdateLevelLoadPacifier( false, 5 );
+	
 	if( common->IsMultiplayer() )
 	{
 		// In multiplayer, make sure the player is either 60Hz or 120Hz
@@ -540,7 +540,7 @@ void idCommonLocal::ExecuteMapChange()
 	{
 		common->Error( "couldn't load %s", fullMapName.c_str() );
 	}
-	UpdateLevelLoadPacifier(false,6);
+	UpdateLevelLoadPacifier( false, 6 );
 	// for the synchronous networking we needed to roll the angles over from
 	// level to level, but now we can just clear everything
 	usercmdGen->InitForNewMap();
@@ -566,7 +566,7 @@ void idCommonLocal::ExecuteMapChange()
 		game->SetServerInfo( matchParameters.serverInfo );
 		game->InitFromNewMap( fullMapName, renderWorld, soundWorld, matchParameters.gameMode, Sys_Milliseconds() );
 	}
-	UpdateLevelLoadPacifier(false,7);
+	UpdateLevelLoadPacifier( false, 7 );
 	game->Shell_CreateMenu( true );
 	sm = Sys_Milliseconds();
 	// Reset some values important to multiplayer
@@ -607,19 +607,19 @@ void idCommonLocal::ExecuteMapChange()
 			game->RunFrame( emptyCommandManager, emptyGameReturn );
 		}
 	}
-	UpdateLevelLoadPacifier(false,8);
+	UpdateLevelLoadPacifier( false, 8 );
 	sm = Sys_Milliseconds();
 	renderSystem->EndLevelLoad();
-	UpdateLevelLoadPacifier(false,48);
+	UpdateLevelLoadPacifier( false, 48 );
 	/* These Next Couple of Events are fairly quick */
 	soundSystem->EndLevelLoad();
-	UpdateLevelLoadPacifier(false,49);
+	UpdateLevelLoadPacifier( false, 49 );
 	declManager->EndLevelLoad();
-	UpdateLevelLoadPacifier(false,50);
+	UpdateLevelLoadPacifier( false, 50 );
 	uiManager->EndLevelLoad( currentMapName );
-	UpdateLevelLoadPacifier(false,51);
+	UpdateLevelLoadPacifier( false, 51 );
 	fileSystem->EndLevelLoad();
-	UpdateLevelLoadPacifier(false,52);
+	UpdateLevelLoadPacifier( false, 52 );
 	
 	
 	if( !mapSpawnData.savegameFile && !IsMultiplayer() )
@@ -632,13 +632,13 @@ void idCommonLocal::ExecuteMapChange()
 		int initFrameProgress = 0;
 		for( int i = 0; i < 100; i++ )
 		{
-			initFrameProgress = (i * 16) / 100;
+			initFrameProgress = ( i * 16 ) / 100;
 			for( int playerIndex = 0; playerIndex < MAX_PLAYERS; ++playerIndex )
 			{
 				emptyCommandManager.PutUserCmdForPlayer( playerIndex, usercmd_t() );
 			}
 			game->RunFrame( emptyCommandManager, emptyGameReturn );
-			UpdateLevelLoadPacifier(false,52+initFrameProgress);
+			UpdateLevelLoadPacifier( false, 52 + initFrameProgress );
 		}
 		
 		// kick off an auto-save of the game (so we can always continue in this map if we die before hitting an autosave)
@@ -649,7 +649,7 @@ void idCommonLocal::ExecuteMapChange()
 	}
 	
 	common->Printf( "----- Generating Interactions -----\n" );
-	UpdateLevelLoadPacifier(false,69);
+	UpdateLevelLoadPacifier( false, 69 );
 	// let the renderSystem generate interactions now that everything is spawned
 	renderWorld->GenerateAllInteractions();
 	
@@ -675,7 +675,7 @@ void idCommonLocal::ExecuteMapChange()
 	sm = Sys_Milliseconds();
 	common->Printf( "%6d msec to finish Interactions\n", ms );
 	common->PrintWarnings();
-	UpdateLevelLoadPacifier(false,100);	
+	UpdateLevelLoadPacifier( false, 100 );
 	session->Pump();
 	
 	if( session->GetState() != idSession::INGAME )
@@ -730,22 +730,27 @@ void idCommonLocal::UpdateLevelLoadPacifier()
 	if( time - lastPacifierSessionTime >= 32 )
 	{
 		lastUpd = time;
-		if(tProgressReverse) {
+		if( tProgressReverse )
+		{
 			tProgress--;
-			if(tProgress == 1) {
+			if( tProgress == 1 )
+			{
 				tProgressReverse = false;
 			}
-		} else {
+		}
+		else
+		{
 			tProgress++;
-			if(tProgress == 100) {
+			if( tProgress == 100 )
+			{
 				tProgressReverse = true;
 			}
 		}
 	}
-	UpdateLevelLoadPacifier(false, tProgress);
+	UpdateLevelLoadPacifier( false, tProgress );
 }
 
-void idCommonLocal::UpdateLevelLoadPacifier(bool updateSecondary)
+void idCommonLocal::UpdateLevelLoadPacifier( bool updateSecondary )
 {
 	static int tProgress = 1;
 	static bool tProgressReverse = false;
@@ -755,26 +760,31 @@ void idCommonLocal::UpdateLevelLoadPacifier(bool updateSecondary)
 	if( time - lastPacifierSessionTime >= 32 )
 	{
 		lastUpd = time;
-		if(tProgressReverse) {
+		if( tProgressReverse )
+		{
 			tProgress--;
-			if(tProgress == 1) {
+			if( tProgress == 1 )
+			{
 				tProgressReverse = false;
 			}
-		} else {
+		}
+		else
+		{
 			tProgress++;
-			if(tProgress == 100) {
+			if( tProgress == 100 )
+			{
 				tProgressReverse = true;
 			}
 		}
 	}
-	UpdateLevelLoadPacifier(updateSecondary, tProgress);
+	UpdateLevelLoadPacifier( updateSecondary, tProgress );
 }
-void idCommonLocal::UpdateLevelLoadPacifier(int mProgress)
+void idCommonLocal::UpdateLevelLoadPacifier( int mProgress )
 {
-	UpdateLevelLoadPacifier(false,  mProgress);
+	UpdateLevelLoadPacifier( false,  mProgress );
 }
 
-void idCommonLocal::UpdateLevelLoadPacifier(bool updateSecondary, int mProgress)
+void idCommonLocal::UpdateLevelLoadPacifier( bool updateSecondary, int mProgress )
 {
 	static bool isIncreasing = true;
 	autoRenderIconType_t icon = AUTORENDER_DEFAULTICON;
@@ -832,33 +842,52 @@ void idCommonLocal::UpdateLevelLoadPacifier(bool updateSecondary, int mProgress)
 			UpdateScreen( false );
 		}
 	}
-	if(loadGUI != NULL) {
+	if( loadGUI != NULL )
+	{
 		idSWFSpriteInstance* loadingBar = loadGUI->GetRootObject().GetNestedSprite( "loadingBar" );
 		idSWFSpriteInstance* subLoadingBar = loadGUI->GetRootObject().GetNestedSprite( "subLoadingBar" );
-		if(updateSecondary) {
-			if(subLoadingBar !=NULL) {
-				if(mProgress < 1) {
-					subLoadingBar->StopFrame(1);
-				} else {
-					if(100 < mProgress){
-						subLoadingBar->StopFrame( 100);
-					} else {
-						subLoadingBar->StopFrame(mProgress);
+		if( updateSecondary )
+		{
+			if( subLoadingBar != NULL )
+			{
+				if( mProgress < 1 )
+				{
+					subLoadingBar->StopFrame( 1 );
+				}
+				else
+				{
+					if( 100 < mProgress )
+					{
+						subLoadingBar->StopFrame( 100 );
+					}
+					else
+					{
+						subLoadingBar->StopFrame( mProgress );
 					}
 				}
 			}
-		} else {
-			if(subLoadingBar !=NULL) {
-				subLoadingBar->SetVisible(false);
+		}
+		else
+		{
+			if( subLoadingBar != NULL )
+			{
+				subLoadingBar->SetVisible( false );
 			}
-			if(loadingBar != NULL) {
-				if(mProgress < 1) {
-					loadingBar->StopFrame(1);
-				} else {
-					if(100 < mProgress){
-						loadingBar->StopFrame( 100);
-					} else {
-						loadingBar->StopFrame(mProgress);
+			if( loadingBar != NULL )
+			{
+				if( mProgress < 1 )
+				{
+					loadingBar->StopFrame( 1 );
+				}
+				else
+				{
+					if( 100 < mProgress )
+					{
+						loadingBar->StopFrame( 100 );
+					}
+					else
+					{
+						loadingBar->StopFrame( mProgress );
 					}
 				}
 			}
@@ -898,10 +927,10 @@ void idCommonLocal::UpdateLevelLoadPacifier(bool updateSecondary, int mProgress)
 }
 
 // foresthale 2014-05-30: loading progress pacifier for binarize operations only
-void idCommonLocal::LoadPacifierBinarizeFilename(const char *filename, const char * reason)
+void idCommonLocal::LoadPacifierBinarizeFilename( const char* filename, const char* reason )
 {
 	idLib::Printf( "Binarize File: '%s' - reason '%s'\n", filename, reason );
-
+	
 	// we won't actually show updates on very quick files (<16ms), so keep this false until the first progress
 	loadPacifierBinarizeActive = false;
 	loadPacifierBinarizeFilename = filename;
@@ -912,7 +941,7 @@ void idCommonLocal::LoadPacifierBinarizeFilename(const char *filename, const cha
 	loadPacifierBinarizeMiplevelTotal = 0;
 }
 
-void idCommonLocal::LoadPacifierBinarizeInfo(const char *info)
+void idCommonLocal::LoadPacifierBinarizeInfo( const char* info )
 {
 	loadPacifierBinarizeInfo = info;
 }
@@ -924,22 +953,22 @@ void idCommonLocal::LoadPacifierBinarizeMiplevel( int level, int maxLevel )
 }
 
 // foresthale 2014-05-30: loading progress pacifier for binarize operations only
-void idCommonLocal::LoadPacifierBinarizeProgress(float progress)
+void idCommonLocal::LoadPacifierBinarizeProgress( float progress )
 {
 	static int lastUpdateTime = 0;
 	int time = Sys_Milliseconds();
-	if (progress == 0.0f)
+	if( progress == 0.0f )
 	{
 		// restart the progress, so that if multiple images have to be
 		// binarized for one filename, we don't give bogus estimates...
 		loadPacifierBinarizeStartTime = Sys_Milliseconds();
 	}
 	loadPacifierBinarizeProgress = progress;
-	if ((time - lastUpdateTime) >= 16)
+	if( ( time - lastUpdateTime ) >= 16 )
 	{
 		lastUpdateTime = time;
 		loadPacifierBinarizeActive = true;
-		UpdateLevelLoadPacifier(true, progress);
+		UpdateLevelLoadPacifier( true, progress );
 	}
 }
 
@@ -958,17 +987,17 @@ void idCommonLocal::LoadPacifierBinarizeEnd()
 }
 
 // foresthale 2014-05-30: loading progress pacifier for binarize operations only
-void idCommonLocal::LoadPacifierBinarizeProgressTotal(int total)
+void idCommonLocal::LoadPacifierBinarizeProgressTotal( int total )
 {
 	loadPacifierBinarizeProgressTotal = total;
 	loadPacifierBinarizeProgressCurrent = 0;
 }
 
 // foresthale 2014-05-30: loading progress pacifier for binarize operations only
-void idCommonLocal::LoadPacifierBinarizeProgressIncrement(int step)
+void idCommonLocal::LoadPacifierBinarizeProgressIncrement( int step )
 {
 	loadPacifierBinarizeProgressCurrent += step;
-	LoadPacifierBinarizeProgress((float)loadPacifierBinarizeProgressCurrent / loadPacifierBinarizeProgressTotal);
+	LoadPacifierBinarizeProgress( ( float )loadPacifierBinarizeProgressCurrent / loadPacifierBinarizeProgressTotal );
 }
 
 /*
@@ -1048,14 +1077,14 @@ bool idCommonLocal::SaveGame( const char* saveName )
 		common->Printf( "You must be alive to save the game\n" );
 		return false;
 	}
-    bool activeShell = 	game->Shell_IsActive();
+	bool activeShell = 	game->Shell_IsActive();
 	soundWorld->Pause();
 	soundSystem->SetPlayingSoundWorld( menuSoundWorld );
 	soundSystem->Render();
-
+	
 	if( insideExecuteMapChange )
 	{
-    	Dialog().ShowSaveIndicator( true );
+		Dialog().ShowSaveIndicator( true );
 		UpdateLevelLoadPacifier();
 	}
 	else
@@ -1063,11 +1092,11 @@ bool idCommonLocal::SaveGame( const char* saveName )
 		// Heremake sure we pump the gui enough times to show the 'saving' dialog
 		const bool captureToImage = false;
 		ThumbnailFile.MakeWritable();
-    	ThumbnailFile.Clear( false );
-   		common->Dialog().ShowSaveIndicator( false );
-	    game->Shell_Show(false);
-	    renderSystem->TakeScreenshot( SAVEGAME_THUMB_WIDTH,SAVEGAME_THUMB_HEIGHT,  &ThumbnailFile, 1, NULL );
-   		game->Shell_Show(activeShell);
+		ThumbnailFile.Clear( false );
+		common->Dialog().ShowSaveIndicator( false );
+		game->Shell_Show( false );
+		renderSystem->TakeScreenshot( SAVEGAME_THUMB_WIDTH, SAVEGAME_THUMB_HEIGHT,  &ThumbnailFile, 1, NULL );
+		game->Shell_Show( activeShell );
 		//TODO: Generate mini-shot for in-game gui
 		Dialog().ShowSaveIndicator( true );
 		
@@ -1083,7 +1112,7 @@ bool idCommonLocal::SaveGame( const char* saveName )
 	saveFile.Clear( false );
 	stringsFile.MakeWritable();
 	stringsFile.Clear( false );
-
+	
 	
 	// Setup the save pipeline
 	pipelineFile = new( TAG_SAVEGAMES ) idFile_SaveGamePipelined();
@@ -1111,13 +1140,16 @@ bool idCommonLocal::SaveGame( const char* saveName )
 	idSaveGameDetails gameDetails;
 	game->GetSaveGameDetails( gameDetails );
 	
-	gameDetails.descriptors.Set( "SaveName", saveName);
-	gameDetails.descriptors.Set( SAVEGAME_DETAIL_FIELD_MAP_FILENAME, currentMapName);
-	if( insideExecuteMapChange ) {
-		gameDetails.descriptors.SetBool(SAVEGAME_DETAIL_FIELD_HAS_THUMBNAIL, false);
-	} else {
-		gameDetails.descriptors.SetBool(SAVEGAME_DETAIL_FIELD_HAS_THUMBNAIL, true);
-	}	
+	gameDetails.descriptors.Set( "SaveName", saveName );
+	gameDetails.descriptors.Set( SAVEGAME_DETAIL_FIELD_MAP_FILENAME, currentMapName );
+	if( insideExecuteMapChange )
+	{
+		gameDetails.descriptors.SetBool( SAVEGAME_DETAIL_FIELD_HAS_THUMBNAIL, false );
+	}
+	else
+	{
+		gameDetails.descriptors.SetBool( SAVEGAME_DETAIL_FIELD_HAS_THUMBNAIL, true );
+	}
 	gameDetails.descriptors.Set( SAVEGAME_DETAIL_FIELD_LANGUAGE, sys_lang.GetString() );
 	gameDetails.descriptors.SetInt( SAVEGAME_DETAIL_FIELD_CHECKSUM, ( int )gameDetails.descriptors.Checksum() );
 	
@@ -1127,8 +1159,9 @@ bool idCommonLocal::SaveGame( const char* saveName )
 	saveFileEntryList_t files;
 	files.Append( &stringsFile );
 	files.Append( &saveFile );
-	if(!insideExecuteMapChange ) {
-		files.Append( &ThumbnailFile);
+	if( !insideExecuteMapChange )
+	{
+		files.Append( &ThumbnailFile );
 	}
 	
 	session->SaveGameSync( gameDetails.slotName, files, gameDetails );
@@ -1141,30 +1174,30 @@ bool idCommonLocal::SaveGame( const char* saveName )
 	syncNextGameFrame = true;
 	/* Update the Game's Menu at this time */
 	if( !insideExecuteMapChange )
-	{	
-	    if( game != NULL )
-	    {
-		    // note which media we are going to need to load
-		    //declManager->BeginLevelLoad();
-		    //renderSystem->BeginLevelLoad();
-		    //soundSystem->BeginLevelLoad();
-		    //uiManager->BeginLevelLoad();
-		
-		    // create main inside an "empty" game level load - so assets get
-		    // purged automagically when we transition to a "real" map
-	        game->Shell_CreateMenu( true );
-    		game->Shell_Show( activeShell );
-		    game->Shell_SyncWithSession();
-		    /* Ugly Hack */
+	{
+		if( game != NULL )
+		{
+			// note which media we are going to need to load
+			//declManager->BeginLevelLoad();
+			//renderSystem->BeginLevelLoad();
+			//soundSystem->BeginLevelLoad();
+			//uiManager->BeginLevelLoad();
+			
+			// create main inside an "empty" game level load - so assets get
+			// purged automagically when we transition to a "real" map
+			game->Shell_CreateMenu( true );
+			game->Shell_Show( activeShell );
+			game->Shell_SyncWithSession();
+			/* Ugly Hack */
 			//declManager->FindMaterial( "models/enemies/base_eyebrows", false);
-		    
-        	//globalImages->ReloadImages( true );
-		    // load
-		    //renderSystem->EndLevelLoad();
-		    //soundSystem->EndLevelLoad();
-		    //declManager->EndLevelLoad();
-		    //uiManager->EndLevelLoad( "" );
-	    }
+			
+			//globalImages->ReloadImages( true );
+			// load
+			//renderSystem->EndLevelLoad();
+			//soundSystem->EndLevelLoad();
+			//declManager->EndLevelLoad();
+			//uiManager->EndLevelLoad( "" );
+		}
 	}
 	return true;
 }
@@ -1272,7 +1305,7 @@ HandleCommonErrors
 */
 bool HandleCommonErrors( const idSaveLoadParms& parms )
 {
-	
+
 	common->Dialog().ShowSaveIndicator( false );
 	
 	if( parms.GetError() == SAVEGAME_E_NONE )
@@ -1482,7 +1515,7 @@ SaveGame_f
 CONSOLE_COMMAND_SHIP( saveGame, "saves a game", NULL )
 {
 	const char* savename = ( args.Argc() > 1 ) ? args.Argv( 1 ) : "quick";
-
+	
 	// Close Game console before saving.
 	console->Close();
 	if( commonLocal.SaveGame( savename ) )
@@ -1578,23 +1611,23 @@ Common_CacheAllMaps_f
 CONSOLE_COMMAND( cacheAllMaps, "loads all maps in a series to cache resources", idCmdSystem::ArgCompletion_MapName )
 {
 	idStr map = "maps";
-	if ( args.Argc() > 0 )
+	if( args.Argc() > 0 )
 		map.Format( "maps/%s", args.Argv( 1 ) );
-	
-	idFileList* files = fileSystem->ListFilesTree(map.c_str(),"map",false);
-	if ( files )
+		
+	idFileList* files = fileSystem->ListFilesTree( map.c_str(), "map", false );
+	if( files )
 	{
 		for( int i = 0; i < files->GetNumFiles(); i++ )
 		{
-			idStr mapFile = files->GetFile( i );			
+			idStr mapFile = files->GetFile( i );
 			mapFile.StripFileExtension();
 			mapFile.StripLeading( "maps/" );
-
+			
 			cmdSystem->AppendCommandText( va( "map %s\n", mapFile.c_str() ) );
 			cmdSystem->AppendCommandText( "wait 30\n" );
 		}
-		fileSystem->FreeFileList(files);
-
+		fileSystem->FreeFileList( files );
+		
 		cmdSystem->AppendCommandText( "quit\n" );
 	}
 }
@@ -1607,23 +1640,23 @@ Common_RunAllAAS_f
 CONSOLE_COMMAND( runAllAAS, "loads all maps in a series to cache resources", idCmdSystem::ArgCompletion_MapName )
 {
 	idStr map = "maps";
-	if ( args.Argc() > 0 )
+	if( args.Argc() > 0 )
 		map.Format( "maps/%s", args.Argv( 1 ) );
-
-	idFileList* files = fileSystem->ListFilesTree(map.c_str(),"map",false);
-	if ( files )
+		
+	idFileList* files = fileSystem->ListFilesTree( map.c_str(), "map", false );
+	if( files )
 	{
 		for( int i = 0; i < files->GetNumFiles(); i++ )
 		{
-			idStr mapFile = files->GetFile( i );			
+			idStr mapFile = files->GetFile( i );
 			mapFile.StripFileExtension();
 			mapFile.StripLeading( "maps/" );
-
+			
 			cmdSystem->AppendCommandText( va( "runaas %s\n", mapFile.c_str() ) );
 			cmdSystem->AppendCommandText( "wait 30\n" );
 		}
-		fileSystem->FreeFileList(files);
-
+		fileSystem->FreeFileList( files );
+		
 		cmdSystem->AppendCommandText( "quit\n" );
 	}
 }

@@ -96,11 +96,11 @@ void idResolutionScale::GetCurrentResolutionScale( float& x, float& y )
 	
 	x = MAXIMUM_RESOLUTION_SCALE;
 	y = MAXIMUM_RESOLUTION_SCALE;
-
+	
 	// foresthale 2014-05-28: don't allow resolution scaling with editors, we don't really care about framerate and we don't refresh constantly anyway
-	if (com_editors)
+	if( com_editors )
 		return;
-
+		
 	switch( rs_enable.GetInteger() )
 	{
 		case 0:

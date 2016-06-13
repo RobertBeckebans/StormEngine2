@@ -272,7 +272,7 @@ void GL_SetDefaultState()
 	
 	// foresthale 2014-02-23: switch to system framebuffer before we set default state as the qglDrawBuffer(GL_BACK) and qglReadBuffer(GL_BACK) would just cause errors
 	globalFramebuffers->BindSystemFramebuffer();
-
+	
 	qglClearDepth( 1.0f );
 	
 	// make sure our GL state vector is set correctly

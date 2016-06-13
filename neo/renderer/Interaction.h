@@ -153,6 +153,6 @@ private:
 };
 
 void R_ShowInteractionMemory_f( const idCmdArgs& args );
-void R_FreeInteractionCullInfo(srfCullInfo_t &cullInfo);
+void R_FreeInteractionCullInfo( srfCullInfo_t& cullInfo );
 
 #endif /* !__INTERACTION_H__ */

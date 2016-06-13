@@ -43,7 +43,7 @@ typedef enum
 	DS_FINISHED,
 	DS_RENDER,
 	DS_SOUND,
-	DS_GAME,	
+	DS_GAME,
 	DS_VERSION
 } demoSystem_t;
 

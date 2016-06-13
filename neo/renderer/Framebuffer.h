@@ -59,32 +59,32 @@ public:
 	{
 		return framebufferName;
 	}
-
+	
 	// Makes this Framebuffer the active buffer
 	void		Bind();
 	// Makes this Framebuffer the active buffer
-	void		Bind(int layer); // Use this only on texture arrays.
+	void		Bind( int layer ); // Use this only on texture arrays.
 	// creates the fbo object for this framebuffer
 	void		Reload() {}
-
+	
 	// allocates a gl fbo object
 	void		AllocFramebuffer();
-
+	
 	// deletes the gl fbo object
 	void		PurgeFramebuffer();
-
+	
 	// configure fbo object - requires Bind first
-	void		SetDepthStencilAttachment(idImage* image);
-
+	void		SetDepthStencilAttachment( idImage* image );
+	
 	// configure fbo object - requires Bind first
-	void		SetDepthAttachment(idImage* image);
-
+	void		SetDepthAttachment( idImage* image );
+	
 	// configure fbo object - requires Bind first
-	void		SetColorAttachment(int index, idImage* image);
-
+	void		SetColorAttachment( int index, idImage* image );
+	
 private:
 	friend class idFramebufferManager;
-
+	
 	// parameters that define this framebuffer
 	idStr		framebufferName;	// name from code, does not corresond to anything on disk
 	int			fbo;				// gl framebuffer object binding
@@ -97,7 +97,7 @@ private:
 	idImage*	depthStencilAttachmentImage; // GL_DEPTH_STENCIL_ATTACHMENT
 	idImage*	depthAttachmentImage; // GL_DEPTH_ATTACHMENT
 	idImage*	colorAttachmentImage[8];
-
+	
 };
 
 ID_INLINE idFramebuffer::idFramebuffer( const char* name, int layer ) : framebufferName( name )
@@ -106,7 +106,7 @@ ID_INLINE idFramebuffer::idFramebuffer( const char* name, int layer ) : framebuf
 	depthStencilAttachmentImage = NULL;
 	depthAttachmentImage = NULL;
 	attachmentImageLayer = layer;
-	for (int i = 0;i < 8;i++)
+	for( int i = 0; i < 8; i++ )
 		colorAttachmentImage[i] = NULL;
 }
 
@@ -122,9 +122,9 @@ public:
 	void				Init();
 	void				Shutdown();
 	void				InitIntrinsics();
-
+	
 	idFramebuffer*		GetFramebuffer( const char* name ) const;
-
+	
 	// purges all the framebuffers before a vid_restart
 	void				PurgeAllFramebuffers();
 	
@@ -142,13 +142,13 @@ public:
 	
 	idFramebuffer*		AllocFramebuffer( const char* name, int layer = -1 );
 	idFramebuffer*		AllocStandaloneFramebuffer( const char* name );
-
+	
 	// the system provides an fbo, this is it (on desktop PC this is usually 0)
 	int					sysfbo;
-
+	
 	// on first Bind we get the fbo
 	bool				gotsysfbo;
-
+	
 	idList<idFramebuffer*, TAG_IDLIB_LIST_FRAMEBUFFER>	framebuffers;
 	idHashIndex			framebufferHash;
 };

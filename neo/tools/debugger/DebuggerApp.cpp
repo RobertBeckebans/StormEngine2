@@ -38,7 +38,7 @@ If you have questions concerning this license or the applicable additional terms
 rvDebuggerApp::rvDebuggerApp
 ================
 */
-rvDebuggerApp::rvDebuggerApp ( )
+rvDebuggerApp::rvDebuggerApp( )
 {
 	mOptions.Init( "Software\\id Software\\DOOM3\\Tools\\Debugger" );
 	mInstance		= NULL;
@@ -51,11 +51,11 @@ rvDebuggerApp::rvDebuggerApp ( )
 rvDebuggerApp::~rvDebuggerApp
 ================
 */
-rvDebuggerApp::~rvDebuggerApp ( )
+rvDebuggerApp::~rvDebuggerApp( )
 {
-	if ( mAccelerators )
+	if( mAccelerators )
 	{
-		DestroyAcceleratorTable ( mAccelerators );
+		DestroyAcceleratorTable( mAccelerators );
 	}
 }
 
@@ -66,32 +66,32 @@ rvDebuggerApp::Initialize
 Initializes the debugger application by creating the debugger window
 ================
 */
-bool rvDebuggerApp::Initialize ( HINSTANCE instance )
+bool rvDebuggerApp::Initialize( HINSTANCE instance )
 {
 	INITCOMMONCONTROLSEX ex;
 	ex.dwICC = ICC_USEREX_CLASSES | ICC_LISTVIEW_CLASSES | ICC_WIN95_CLASSES;
-	ex.dwSize = sizeof(INITCOMMONCONTROLSEX);
-
+	ex.dwSize = sizeof( INITCOMMONCONTROLSEX );
+	
 	mInstance = instance;
-
-	mOptions.Load ( );
-
+	
+	mOptions.Load( );
+	
 	mDebuggerWindow = new rvDebuggerWindow;
-		
-	if ( !mDebuggerWindow->Create ( instance ) )
+	
+	if( !mDebuggerWindow->Create( instance ) )
 	{
 		delete mDebuggerWindow;
 		return false;
 	}
-
+	
 	// Initialize the network connection for the debugger
-	if ( !mClient.Initialize ( ) )
+	if( !mClient.Initialize( ) )
 	{
 		return false;
-	}	
-
-	mAccelerators = LoadAccelerators ( mInstance, MAKEINTRESOURCE(IDR_DBG_ACCELERATORS) );
-
+	}
+	
+	mAccelerators = LoadAccelerators( mInstance, MAKEINTRESOURCE( IDR_DBG_ACCELERATORS ) );
+	
 	return true;
 }
 
@@ -102,24 +102,24 @@ rvDebuggerApp::ProcessWindowMessages
 Process windows messages
 ================
 */
-bool rvDebuggerApp::ProcessWindowMessages ( void )
+bool rvDebuggerApp::ProcessWindowMessages( void )
 {
 	MSG	msg;
-
-	while ( PeekMessage ( &msg, NULL, 0, 0, PM_NOREMOVE ) )
+	
+	while( PeekMessage( &msg, NULL, 0, 0, PM_NOREMOVE ) )
 	{
-		if ( !GetMessage (&msg, NULL, 0, 0) ) 
+		if( !GetMessage( &msg, NULL, 0, 0 ) )
 		{
 			return false;
 		}
 		
-		if ( !TranslateAccelerator ( &msg ) )
+		if( !TranslateAccelerator( &msg ) )
 		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
+			TranslateMessage( &msg );
+			DispatchMessage( &msg );
 		}
 	}
-
+	
 	return true;
 }
 
@@ -130,13 +130,13 @@ rvDebuggerApp::TranslateAccelerator
 Translate any accelerators destined for this window
 ================
 */
-bool rvDebuggerApp::TranslateAccelerator ( LPMSG msg )
+bool rvDebuggerApp::TranslateAccelerator( LPMSG msg )
 {
-	if ( mDebuggerWindow && ::TranslateAccelerator ( mDebuggerWindow->GetWindow(), mAccelerators, msg ) )
+	if( mDebuggerWindow && ::TranslateAccelerator( mDebuggerWindow->GetWindow(), mAccelerators, msg ) )
 	{
 		return true;
 	}
-		
+	
 	return false;
 }
 
@@ -147,18 +147,18 @@ rvDebuggerApp::Run
 Main Loop for the debugger application
 ================
 */
-int rvDebuggerApp::Run ( void )
-{		
+int rvDebuggerApp::Run( void )
+{
 	// Main message loop:
-	while ( ProcessWindowMessages ( ) )
+	while( ProcessWindowMessages( ) )
 	{
-		mClient.ProcessMessages ( );
+		mClient.ProcessMessages( );
 		
-		Sleep ( 0 );
+		Sleep( 0 );
 	}
 	
-	mClient.Shutdown ( );
-	mOptions.Save ( );
+	mClient.Shutdown( );
+	mOptions.Save( );
 	
 	delete mDebuggerWindow;
 	mDebuggerWindow = NULL;
@@ -166,17 +166,17 @@ int rvDebuggerApp::Run ( void )
 	return 1;
 }
 
-void rvDebuggerApp::RunOnce ( void )
+void rvDebuggerApp::RunOnce( void )
 {
-	if ( mDebuggerWindow )
+	if( mDebuggerWindow )
 	{
-		if ( ProcessWindowMessages ( ) )
-			mClient.ProcessMessages ( );
+		if( ProcessWindowMessages( ) )
+			mClient.ProcessMessages( );
 		else
 		{
-			mClient.Shutdown ( );
-			mOptions.Save ( );
-
+			mClient.Shutdown( );
+			mOptions.Save( );
+			
 			delete mDebuggerWindow;
 			mDebuggerWindow = NULL;
 		}

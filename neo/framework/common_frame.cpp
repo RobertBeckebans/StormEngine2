@@ -243,28 +243,28 @@ void idCommonLocal::Draw()
 		// overlay indicating progress
 		renderSystem->SetColor( colorBlack );
 		renderSystem->DrawStretchPic( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 1, 1, whiteMaterial );
-
+		
 		// render the loading gui (idSWF actually) if it is loaded
 		// (we want to see progress of the loading gui binarize too)
-		if ( loadGUI != NULL )
+		if( loadGUI != NULL )
 			loadGUI->Render( renderSystem, Sys_Milliseconds() );
-
+			
 		// update our progress estimates
 		int time = Sys_Milliseconds();
-		if (loadPacifierBinarizeProgress > 0.0f)
-			loadPacifierBinarizeTimeLeft = (1.0 - loadPacifierBinarizeProgress) * (time - loadPacifierBinarizeStartTime) * 0.001f / loadPacifierBinarizeProgress;
+		if( loadPacifierBinarizeProgress > 0.0f )
+			loadPacifierBinarizeTimeLeft = ( 1.0 - loadPacifierBinarizeProgress ) * ( time - loadPacifierBinarizeStartTime ) * 0.001f / loadPacifierBinarizeProgress;
 		else
 			loadPacifierBinarizeTimeLeft = -1.0f;
-
+			
 		// prepare our strings
-		const char *text;
-		if (loadPacifierBinarizeTimeLeft >= 99.5f)
-			text = va("Binarizing %3.0f%% ETA %2.0f minutes", loadPacifierBinarizeProgress * 100.0f, loadPacifierBinarizeTimeLeft / 60.0f);
-		else if (loadPacifierBinarizeTimeLeft)
-			text = va("Binarizing %3.0f%% ETA %2.0f seconds", loadPacifierBinarizeProgress * 100.0f, loadPacifierBinarizeTimeLeft);
+		const char* text;
+		if( loadPacifierBinarizeTimeLeft >= 99.5f )
+			text = va( "Binarizing %3.0f%% ETA %2.0f minutes", loadPacifierBinarizeProgress * 100.0f, loadPacifierBinarizeTimeLeft / 60.0f );
+		else if( loadPacifierBinarizeTimeLeft )
+			text = va( "Binarizing %3.0f%% ETA %2.0f seconds", loadPacifierBinarizeProgress * 100.0f, loadPacifierBinarizeTimeLeft );
 		else
-			text = va("Binarizing %3.0f%%", loadPacifierBinarizeProgress * 100.0f);
-
+			text = va( "Binarizing %3.0f%%", loadPacifierBinarizeProgress * 100.0f );
+			
 		// draw our basic overlay
 		renderSystem->SetColor( idVec4( 0.0f, 0.0f, 0.5f, 1.0f ) );
 		renderSystem->DrawStretchPic( 0, SCREEN_HEIGHT - 48, SCREEN_WIDTH, 48, 0, 0, 1, 1, whiteMaterial );
@@ -279,7 +279,7 @@ void idCommonLocal::Draw()
 		// foresthale 2014-05-30: showing a black background looks better than flickering in widescreen
 		renderSystem->SetColor( colorBlack );
 		renderSystem->DrawStretchPic( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 1, 1, whiteMaterial );
-
+		
 		loadGUI->Render( renderSystem, Sys_Milliseconds() );
 	}
 	else if( game && game->Shell_IsActive() )
@@ -473,7 +473,7 @@ void idCommonLocal::Frame()
 		WriteConfiguration();
 		
 		eventLoop->RunEventLoop();
-
+		
 		renderSystem->OnFrame();
 		
 		// Activate the shell if it's been requested
@@ -500,9 +500,9 @@ void idCommonLocal::Frame()
 			usercmdGen->InhibitUsercmd( INHIBIT_SESSION, false );
 		}
 		
-		const bool pauseGame = ( !mapSpawned || DebuggerServerIsSuspended() || ( !IsMultiplayer() && !com_editors && 
-			( Dialog().IsDialogPausing() || session->IsSystemUIShowing() || ( game && game->Shell_IsActive() ) || com_pause.GetInteger()) ) );
-		
+		const bool pauseGame = ( !mapSpawned || DebuggerServerIsSuspended() || ( !IsMultiplayer() && !com_editors &&
+								 ( Dialog().IsDialogPausing() || session->IsSystemUIShowing() || ( game && game->Shell_IsActive() ) || com_pause.GetInteger() ) ) );
+								 
 		// save the screenshot and audio from the last draw if needed
 		if( aviCaptureMode )
 		{
@@ -528,7 +528,7 @@ void idCommonLocal::Frame()
 		frameTiming.startSyncTime = Sys_Microseconds();
 		const emptyCommand_t* renderCommands = NULL;
 		// foresthale 2014-05-12: also check com_editors as many of them are not particularly thread-safe (editLights for example)
-		if( com_smp.GetBool() && com_editors == 0)
+		if( com_smp.GetBool() && com_editors == 0 )
 		{
 			renderCommands = renderSystem->SwapCommandBuffers( &time_frontend, &time_backend, &time_shadows, &time_gpu );
 		}

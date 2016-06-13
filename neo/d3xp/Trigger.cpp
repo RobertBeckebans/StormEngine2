@@ -1254,7 +1254,7 @@ idTrigger_Fade::Event_Trigger
 */
 void idTrigger_Fade::Event_Trigger( idEntity* activator )
 {
-	idPlayer*player = gameLocal.GetLocalPlayer();
+	idPlayer* player = gameLocal.GetLocalPlayer();
 	if( player )
 	{
 		idVec4		fadeColor = spawnArgs.GetVec4( "fadeColor", "0, 0, 0, 1" );
@@ -1298,15 +1298,15 @@ void idTrigger_Touch::Spawn()
 {
 	contentMask = 0;
 	
-	if (touchPlayer = spawnArgs.GetBool("touch_player", false))
+	if( touchPlayer = spawnArgs.GetBool( "touch_player", false ) )
 		contentMask |= CONTENTS_BODY;
-	if (touchAI = spawnArgs.GetBool("touch_ai", false))
+	if( touchAI = spawnArgs.GetBool( "touch_ai", false ) )
 		contentMask |= CONTENTS_BODY;
-	if (spawnArgs.GetBool("touch_projectile", false))
+	if( spawnArgs.GetBool( "touch_projectile", false ) )
 		contentMask |= CONTENTS_PROJECTILE;
-	if (spawnArgs.GetBool("touch_corpse", false))
+	if( spawnArgs.GetBool( "touch_corpse", false ) )
 		contentMask |= CONTENTS_CORPSE;
-	
+		
 	// get the clip model
 	clipModel = new( TAG_THREAD ) idClipModel( GetPhysics()->GetClipModel() );
 	
@@ -1351,7 +1351,7 @@ void idTrigger_Touch::TouchEntities()
 	idClipModel* cm, *clipModelList[ MAX_GENTITIES ];
 	
 	// don't bother if we're not going to be able to trigger/call anything
-	if (clipModel == NULL || (targets.Num() == 0 && scriptFunction == NULL))
+	if( clipModel == NULL || ( targets.Num() == 0 && scriptFunction == NULL ) )
 	{
 		return;
 	}
@@ -1368,21 +1368,21 @@ void idTrigger_Touch::TouchEntities()
 			continue;
 		}
 		
-		idEntity* entity = cm->GetEntity();		
+		idEntity* entity = cm->GetEntity();
 		if( !entity )
 		{
 			continue;
 		}
-
-		if (cm->GetContents() & CONTENTS_BODY)
+		
+		if( cm->GetContents() & CONTENTS_BODY )
 		{
-			if (entity->IsType(idAI::Type) && !touchAI)
+			if( entity->IsType( idAI::Type ) && !touchAI )
 				continue;
-			if (entity->IsType(idPlayer::Type) && !touchPlayer)
+			if( entity->IsType( idPlayer::Type ) && !touchPlayer )
 				continue;
 		}
 		
-		if (!gameLocal.clip.ContentsModel(cm->GetOrigin(), cm, cm->GetAxis(), -1,
+		if( !gameLocal.clip.ContentsModel( cm->GetOrigin(), cm, cm->GetAxis(), -1,
 										   clipModel->Handle(), clipModel->GetOrigin(), clipModel->GetAxis() ) )
 		{
 			continue;
@@ -1390,11 +1390,11 @@ void idTrigger_Touch::TouchEntities()
 		
 		ActivateTargets( entity );
 		
-		if ( scriptFunction != NULL )
+		if( scriptFunction != NULL )
 		{
-			idThread* thread = new idThread(va("%s_%s", GetName(), scriptFunction->Name()));
-			thread->CallFunction(entity, scriptFunction, false);
-			thread->DelayedStart(0);
+			idThread* thread = new idThread( va( "%s_%s", GetName(), scriptFunction->Name() ) );
+			thread->CallFunction( entity, scriptFunction, false );
+			thread->DelayedStart( 0 );
 		}
 	}
 }
@@ -1553,7 +1553,7 @@ void idTrigger_Flag::Event_Touch( idEntity* other, trace_t* trace )
 				flag->PostEventMS( eventFlag, 0 );
 				break;
 				
-				// RB: 64 bit fixes, changed NULL to 0
+			// RB: 64 bit fixes, changed NULL to 0
 			case 1 :
 				flag->PostEventMS( eventFlag, 0, 0 );
 				break;

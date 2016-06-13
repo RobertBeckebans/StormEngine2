@@ -111,7 +111,7 @@ void idSecurityCamera::Restore( idRestoreGame* savefile )
 	savefile->ReadInt( pvsArea );
 	savefile->ReadStaticObject( physicsObj );
 	savefile->ReadTraceModel( trm );
-
+	
 	SetAlertMode( alertMode );
 }
 

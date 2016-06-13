@@ -370,7 +370,7 @@ void idAnimatedEntity::AddLocalDamageEffect( jointHandle_t jointNum, const idVec
 	idVec3 origin, dir;
 	idMat3 axis;
 	float flesh_wound_size; // SS2 wound decal size
-
+	
 	SetTimeState ts( timeGroup );
 	
 	axis = renderEntity.joints[jointNum].ToMat3() * renderEntity.axis;
@@ -414,7 +414,7 @@ void idAnimatedEntity::AddLocalDamageEffect( jointHandle_t jointNum, const idVec
 	// SS2 wound decal size
 	spawnArgs.GetFloat( "flesh_wound_size", "20", flesh_wound_size );
 	flesh_wound_size = idMath::ClampFloat( 0.0f, 30.0f, flesh_wound_size );
-
+	
 	// can't see wounds on the player model in single player mode
 	if( !( IsType( idPlayer::Type ) && !common->IsMultiplayer() ) )
 	{

@@ -32,27 +32,28 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogGoToLine dialog
 
-class DialogGoToLine : public CDialog {
+class DialogGoToLine : public CDialog
+{
 
-	DECLARE_DYNAMIC(DialogGoToLine)
-
+	DECLARE_DYNAMIC( DialogGoToLine )
+	
 public:
 
-						DialogGoToLine( CWnd* pParent = NULL );   // standard constructor
+	DialogGoToLine( CWnd* pParent = NULL );   // standard constructor
 	virtual				~DialogGoToLine();
-
+	
 	enum				{ IDD = IDD_DIALOG_GOTOLINE };
-
+	
 	void				SetRange( int firstLine, int lastLine );
 	int					GetLine( void ) const;
-
+	
 protected:
 	virtual BOOL		OnInitDialog();
 	virtual void		DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
 	afx_msg void		OnBnClickedOk();
-
+	
 	DECLARE_MESSAGE_MAP()
-
+	
 private:
 
 	CEdit				numberEdit;

@@ -47,8 +47,8 @@ static char THIS_FILE[] = __FILE__;
 // CScaleDialog dialog
 
 
-CScaleDialog::CScaleDialog(CWnd* pParent /*=NULL*/)
-	: CDialog(CScaleDialog::IDD, pParent)
+CScaleDialog::CScaleDialog( CWnd* pParent /*=NULL*/ )
+	: CDialog( CScaleDialog::IDD, pParent )
 {
 	//{{AFX_DATA_INIT(CScaleDialog)
 	m_fZ = 1.0f;
@@ -58,20 +58,20 @@ CScaleDialog::CScaleDialog(CWnd* pParent /*=NULL*/)
 }
 
 
-void CScaleDialog::DoDataExchange(CDataExchange* pDX)
+void CScaleDialog::DoDataExchange( CDataExchange* pDX )
 {
-	CDialog::DoDataExchange(pDX);
+	CDialog::DoDataExchange( pDX );
 	//{{AFX_DATA_MAP(CScaleDialog)
-	DDX_Text(pDX, IDC_EDIT_Z, m_fZ);
-	DDX_Text(pDX, IDC_EDIT_X, m_fX);
-	DDX_Text(pDX, IDC_EDIT_Y, m_fY);
+	DDX_Text( pDX, IDC_EDIT_Z, m_fZ );
+	DDX_Text( pDX, IDC_EDIT_X, m_fX );
+	DDX_Text( pDX, IDC_EDIT_Y, m_fY );
 	//}}AFX_DATA_MAP
 }
 
 
-BEGIN_MESSAGE_MAP(CScaleDialog, CDialog)
+BEGIN_MESSAGE_MAP( CScaleDialog, CDialog )
 	//{{AFX_MSG_MAP(CScaleDialog)
-		// NOTE: the ClassWizard will add message map macros here
+	// NOTE: the ClassWizard will add message map macros here
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 

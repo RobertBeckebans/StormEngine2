@@ -115,7 +115,7 @@ public:
 	bool					OnLadder() const;
 	const idVec3& 			PlayerGetOrigin() const;	// != GetOrigin
 	
-	void 					SetLadderJumpDist( const float newLadderJumpDist, const float newLadderJumpHeight, const float newLadderWeaponAng );	// ###### SR 	
+	void 					SetLadderJumpDist( const float newLadderJumpDist, const float newLadderJumpHeight, const float newLadderWeaponAng );	// ###### SR
 	
 public:	// common physics interface
 	bool					Evaluate( int timeStepMSec, int endTimeMSec );
@@ -205,13 +205,13 @@ private:
 	// ########################################### SR
 	
 	float 					ladderJumpDist;
-	float 					ladderJumpHeight;	
+	float 					ladderJumpHeight;
 	float					ladderWeaponAng;
 	float					ladderYaw;
 	bool					ladderJumping;
-	idVec3					ladderDir;	
+	idVec3					ladderDir;
 	
-	// ################ END SR	
+	// ################ END SR
 	
 	// results of last evaluate
 	waterLevel_t			waterLevel;

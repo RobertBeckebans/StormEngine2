@@ -245,7 +245,7 @@ void idTypeInfo::Shutdown()
 const idEventDef EV_Remove( "remove", NULL );
 
 ABSTRACT_DECLARATION( NULL, idClass )
-EVENT(EV_Remove, idClass::Event_Remove)
+EVENT( EV_Remove, idClass::Event_Remove )
 END_CLASS
 
 // alphabetical order
@@ -337,7 +337,7 @@ idClass::idClass
 */
 idClass::idClass()
 {
-	removeNode.SetOwner(this);
+	removeNode.SetOwner( this );
 }
 
 /*
@@ -386,8 +386,9 @@ void idClass::ListClasses_f( const idCmdArgs& args )
 }
 
 template< class type >
-int cmpScriptEvents( const type *a, const type *b ) {
-	return idStr::Icmp( (*a)->GetName(), (*b)->GetName() );
+int cmpScriptEvents( const type* a, const type* b )
+{
+	return idStr::Icmp( ( *a )->GetName(), ( *b )->GetName() );
 }
 
 /*
@@ -397,17 +398,17 @@ idClass::ExportScriptEvents_f
 */
 void idClass::ExportScriptEvents_f( const idCmdArgs& args )
 {
-	idFile * file = fileSystem->OpenFileWrite( "exportScriptEvents.txt", "fs_basepath" );
-	if ( file != NULL )
+	idFile* file = fileSystem->OpenFileWrite( "exportScriptEvents.txt", "fs_basepath" );
+	if( file != NULL )
 	{
 		int numClassesWritten = 0;
-
+		
 		for( int i = 0; i < types.Num(); i++ )
 		{
 			idTypeInfo* type = types[ i ];
-						
+			
 			idList<const idEventDef*> classEvents;
-			for ( int e = 0; e < idEventDef::NumEventCommands(); ++e )
+			for( int e = 0; e < idEventDef::NumEventCommands(); ++e )
 			{
 				const idEventDef* evt = idEventDef::GetEventCommand( e );
 				if( type->eventMap[ evt->GetEventNum() ] )
@@ -415,57 +416,57 @@ void idClass::ExportScriptEvents_f( const idCmdArgs& args )
 					classEvents.Append( evt );
 				}
 			}
-
+			
 			classEvents.Sort( cmpScriptEvents );
-
-			if ( classEvents.Num() > 0 )
+			
+			if( classEvents.Num() > 0 )
 			{
 				file->Printf( "%-24s %-24s\n", type->classname, type->superclass );
-
-				for ( int e = 0; e < classEvents.Num(); ++e )
+				
+				for( int e = 0; e < classEvents.Num(); ++e )
 				{
 					const idEventDef* evt = classEvents[ e ];
-
+					
 					file->Printf( "\t%s(", evt->GetName() );
-
+					
 					for( int i = 0; i < evt->GetNumArgs(); i++ )
 					{
-						if ( i > 0 )
+						if( i > 0 )
 							file->Printf( ", " );
-
+							
 						switch( evt->GetArgFormat()[ i ] )
 						{
-						case D_EVENT_FLOAT :
+							case D_EVENT_FLOAT :
 							{
 								file->Printf( "float" );
 								break;
 							}
-						case D_EVENT_INTEGER :
+							case D_EVENT_INTEGER :
 							{
 								file->Printf( "integer" );
 								break;
 							}
-						case D_EVENT_VECTOR :
+							case D_EVENT_VECTOR :
 							{
 								file->Printf( "vec3" );
 								break;
 							}
-						case D_EVENT_STRING :
+							case D_EVENT_STRING :
 							{
 								file->Printf( "string" );
 								break;
 							}
-						case D_EVENT_ENTITY:
+							case D_EVENT_ENTITY:
 							{
 								file->Printf( "entity" );
 								break;
 							}
-						case D_EVENT_ENTITY_NULL:
+							case D_EVENT_ENTITY_NULL:
 							{
 								file->Printf( "entity_null" );
 								break;
 							}
-						case D_EVENT_TRACE:
+							case D_EVENT_TRACE:
 							{
 								file->Printf( "trace" );
 								break;
@@ -474,7 +475,7 @@ void idClass::ExportScriptEvents_f( const idCmdArgs& args )
 					}
 					file->Printf( ")\n" );
 				}
-
+				
 				++numClassesWritten;
 			}
 		}
@@ -747,7 +748,7 @@ idClass::Remove
 void idClass::Remove()
 {
 	extern idLinkList<idClass>	RemoveEntities;
-	removeNode.AddToEnd(RemoveEntities);
+	removeNode.AddToEnd( RemoveEntities );
 }
 
 /*
@@ -1022,63 +1023,63 @@ bool idClass::ProcessEventArgs( const idEventDef* ev, int numargs, ... )
 idClass::ProcessEvent
 ================
 */
-bool idClass::ProcessEventWithStringArgs( const idEventDef* ev, const idList<idEventArg> * eventArgs )
+bool idClass::ProcessEventWithStringArgs( const idEventDef* ev, const idList<idEventArg>* eventArgs )
 {
 	idStaticList<idEventArg, 10> args;
-
-	const int numArgs = eventArgs ? eventArgs->Num() : 0;	
-	if ( numArgs > 0 )
+	
+	const int numArgs = eventArgs ? eventArgs->Num() : 0;
+	if( numArgs > 0 )
 	{
-		// copied so that we can runtime patch in correct entity references		
-		for ( int i = 0; i < numArgs; ++i )
+		// copied so that we can runtime patch in correct entity references
+		for( int i = 0; i < numArgs; ++i )
 		{
-			switch ( (*eventArgs)[i].type )
+			switch( ( *eventArgs )[i].type )
 			{
-			case D_EVENT_ENTITY:
+				case D_EVENT_ENTITY:
 				{
-					idEntity * ent = gameLocal.FindEntity( reinterpret_cast<const char *>( (*eventArgs)[i].value ) );
-					if ( ent == NULL )
+					idEntity* ent = gameLocal.FindEntity( reinterpret_cast<const char*>( ( *eventArgs )[i].value ) );
+					if( ent == NULL )
 					{
-						gameLocal.Warning( "Event '%s' cannot find entity '%s'. Cannot Process Event\n", 
-							ev->GetName(),
-							reinterpret_cast<const char *>( (*eventArgs)[i].value ));
+						gameLocal.Warning( "Event '%s' cannot find entity '%s'. Cannot Process Event\n",
+										   ev->GetName(),
+										   reinterpret_cast<const char*>( ( *eventArgs )[i].value ) );
 						return false;
 					}
 					args.Append( ent );
 					break;
 				}
-			case D_EVENT_ENTITY_NULL:
+				case D_EVENT_ENTITY_NULL:
 				{
-					idEntity * ent = gameLocal.FindEntity( reinterpret_cast<const char *>( (*eventArgs)[i].value ) );
+					idEntity* ent = gameLocal.FindEntity( reinterpret_cast<const char*>( ( *eventArgs )[i].value ) );
 					args.Append( ent );
 					break;
 				}
-			default:
-				args.Append((*eventArgs)[i]);
+				default:
+					args.Append( ( *eventArgs )[i] );
 			}
 		}
 	}
-
-	switch (numArgs)
+	
+	switch( numArgs )
 	{
-	case 0:
-		return ProcessEventArgs(ev, 0);
-	case 1:
-		return ProcessEventArgs(ev, numArgs, &args[0]);
-	case 2:
-		return ProcessEventArgs(ev, numArgs, &args[0], &args[1]);
-	case 3:
-		return ProcessEventArgs(ev, numArgs, &args[0], &args[1], &args[2]);
-	case 4:
-		return ProcessEventArgs(ev, numArgs, &args[0], &args[1], &args[2], &args[3]);
-	case 5:
-		return ProcessEventArgs(ev, numArgs, &args[0], &args[1], &args[2], &args[3], &args[4]);
-	case 6:
-		return ProcessEventArgs(ev, numArgs, &args[0], &args[1], &args[2], &args[3], &args[4], &args[5], &args[6]);
-	case 7:
-		return ProcessEventArgs(ev, numArgs, &args[0], &args[1], &args[2], &args[3], &args[4], &args[5], &args[6], &args[7]);
+		case 0:
+			return ProcessEventArgs( ev, 0 );
+		case 1:
+			return ProcessEventArgs( ev, numArgs, &args[0] );
+		case 2:
+			return ProcessEventArgs( ev, numArgs, &args[0], &args[1] );
+		case 3:
+			return ProcessEventArgs( ev, numArgs, &args[0], &args[1], &args[2] );
+		case 4:
+			return ProcessEventArgs( ev, numArgs, &args[0], &args[1], &args[2], &args[3] );
+		case 5:
+			return ProcessEventArgs( ev, numArgs, &args[0], &args[1], &args[2], &args[3], &args[4] );
+		case 6:
+			return ProcessEventArgs( ev, numArgs, &args[0], &args[1], &args[2], &args[3], &args[4], &args[5], &args[6] );
+		case 7:
+			return ProcessEventArgs( ev, numArgs, &args[0], &args[1], &args[2], &args[3], &args[4], &args[5], &args[6], &args[7] );
 	}
-
+	
 	return false;
 }
 

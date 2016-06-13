@@ -834,7 +834,7 @@ bool idRenderWorldLocal::InitFromMap( const char* name )
 	bool loadFromGenerated = true;
 	if( name == mapName )
 	{
-		if( ( fileSystem->InProductionMode() && fileSystem->GetFileLength( generatedFileName ) != -1 ) || ( currentTimeStamp != FILE_NOT_FOUND_TIMESTAMP && (currentTimeStamp == mapTimeStamp || mapTimeStamp<=0) ) )
+		if( ( fileSystem->InProductionMode() && fileSystem->GetFileLength( generatedFileName ) != -1 ) || ( currentTimeStamp != FILE_NOT_FOUND_TIMESTAMP && ( currentTimeStamp == mapTimeStamp || mapTimeStamp <= 0 ) ) )
 		{
 			common->Printf( "idRenderWorldLocal::InitFromMap: retaining existing map\n" );
 			FreeDefs();
@@ -851,7 +851,7 @@ bool idRenderWorldLocal::InitFromMap( const char* name )
 	// see if we have a generated version of this
 	static const byte BPROC_VERSION = 1;
 	static const unsigned int BPROC_MAGIC = ( 'P' << 24 ) | ( 'R' << 16 ) | ( 'O' << 8 ) | BPROC_VERSION;
-
+	
 	bool loaded = false;
 	
 	idFileLocal file( fileSystem->OpenFileReadMemory( generatedFileName ) );
@@ -865,9 +865,9 @@ bool idRenderWorldLocal::InitFromMap( const char* name )
 			file->ReadBig( numEntries );
 			file->ReadString( mapName );
 			file->ReadBig( mapTimeStamp );
-
+			
 			// the binary must be for the current proc to keep loading the generated
-			if ( mapTimeStamp == currentTimeStamp )
+			if( mapTimeStamp == currentTimeStamp )
 			{
 				loaded = true;
 				for( int i = 0; i < numEntries; i++ )
@@ -915,7 +915,7 @@ bool idRenderWorldLocal::InitFromMap( const char* name )
 	}
 	
 	if( !loaded )
-	{	
+	{
 		src = new( TAG_RENDER ) idLexer( filename, LEXFL_NOSTRINGCONCAT | LEXFL_NODOLLARPRECOMPILE );
 		if( !src->IsLoaded() )
 		{
@@ -960,7 +960,7 @@ bool idRenderWorldLocal::InitFromMap( const char* name )
 				break;
 			}
 			
-			common->UpdateLevelLoadPacifier(true);
+			common->UpdateLevelLoadPacifier( true );
 			
 			
 			if( token == "model" )
@@ -1078,8 +1078,8 @@ void idRenderWorldLocal::AddWorldModelEntities()
 	int pProgress = 0;
 	for( int i = 0; i < numPortalAreas; i++ )
 	{
-		pProgress = (i * 100) / numPortalAreas;
-		common->UpdateLevelLoadPacifier(true, pProgress);
+		pProgress = ( i * 100 ) / numPortalAreas;
+		common->UpdateLevelLoadPacifier( true, pProgress );
 		
 		
 		idRenderEntityLocal*	 def = new( TAG_RENDER_ENTITY ) idRenderEntityLocal;

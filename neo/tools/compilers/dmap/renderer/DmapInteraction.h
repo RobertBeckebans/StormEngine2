@@ -32,15 +32,16 @@ If you have questions concerning this license or the applicable additional terms
 
 #define LIGHT_TRIS_DEFERRED			((srfDmapTriangles_t *)-1)
 
-typedef struct areaNumRef_s {
-	struct areaNumRef_s *	next;
+typedef struct areaNumRef_s
+{
+	struct areaNumRef_s* 	next;
 	int						areaNum;
 } areaNumRef_t;
 
 class idDmapRenderEntityLocal;
 class idDmapRenderLightLocal;
 
-void R_CalcInteractionFacingDmap(const idDmapRenderEntityLocal *ent, const srfDmapTriangles_t *tri, const idDmapRenderLightLocal *light, srfCullInfo_t &cullInfo);
-void R_CalcInteractionCullBitsDmap(const idDmapRenderEntityLocal *ent, const srfDmapTriangles_t *tri, const idDmapRenderLightLocal *light, srfCullInfo_t &cullInfo);
+void R_CalcInteractionFacingDmap( const idDmapRenderEntityLocal* ent, const srfDmapTriangles_t* tri, const idDmapRenderLightLocal* light, srfCullInfo_t& cullInfo );
+void R_CalcInteractionCullBitsDmap( const idDmapRenderEntityLocal* ent, const srfDmapTriangles_t* tri, const idDmapRenderLightLocal* light, srfCullInfo_t& cullInfo );
 
 #endif /* !__DMAPINTERACTION_H__ */

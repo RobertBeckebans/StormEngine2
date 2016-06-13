@@ -63,8 +63,8 @@ If you have questions concerning this license or the applicable additional terms
 */
 
 #define CONTACT_EPSILON			0.25f				// maximum contact seperation distance; 
-													// motorsep 08-16-2015: we might want to increase it to 1.0f to avoid any collision issues when player/AI/physics are far away from 0 0 0 of the map
-													// if we increase CONTACT_EPSILON here, don't forget to remove * 4 from CONTACT_EPSILON * 4 in Physics_Base.cpp
+// motorsep 08-16-2015: we might want to increase it to 1.0f to avoid any collision issues when player/AI/physics are far away from 0 0 0 of the map
+// if we increase CONTACT_EPSILON here, don't forget to remove * 4 from CONTACT_EPSILON * 4 in Physics_Base.cpp
 
 class idEntity;
 
@@ -76,11 +76,11 @@ typedef struct impactInfo_s
 	idVec3						velocity;			// velocity at the impact position
 } impactInfo_t;
 
-enum BindFlags 
+enum BindFlags
 {
-	BFL_NONE, 
-	BFL_ORIENTED	= (1<<0),	// orient to the bind parent
-	BFL_SNAPXFORM	= (1<<1),	// clear the local transform on bind
+	BFL_NONE,
+	BFL_ORIENTED	= ( 1 << 0 ),	// orient to the bind parent
+	BFL_SNAPXFORM	= ( 1 << 1 ),	// clear the local transform on bind
 };
 
 class idPhysics : public idClass
@@ -145,7 +145,7 @@ public:	// common physics interface
 	
 	// translate or rotate the physics object in world space
 	virtual void				Translate( const idVec3& translation, int id = -1 ) = 0;
-	virtual void				Rotate( const idRotation& rotation, int id = -1 ) = 0;	
+	virtual void				Rotate( const idRotation& rotation, int id = -1 ) = 0;
 	// get the position and orientation in world space
 	virtual const idVec3& 		GetOrigin( int id = 0 ) const = 0;
 	virtual const idMat3& 		GetAxis( int id = 0 ) const = 0;

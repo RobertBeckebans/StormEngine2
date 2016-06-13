@@ -481,7 +481,7 @@ void idMenuScreen_Shell_Save::DeleteGame( int index )
 				{
 					session->DeleteSaveGameSync( screen->GetSortedSaves()[ index ].slotName );
 				}
-                screen->UpdateSavePreviews();
+				screen->UpdateSavePreviews();
 			}
 			return idSWFScriptVar();
 		}
@@ -520,9 +520,9 @@ idMenuScreen_Shell_Load::LoadGame
 void idMenuScreen_Shell_Save::UpdateSavePreviews()
 {
 	if( saveInfo != NULL )
-    {
-        saveInfo->UpdateSavePreviews();
-    }
+	{
+		saveInfo->UpdateSavePreviews();
+	}
 }
 
 /*

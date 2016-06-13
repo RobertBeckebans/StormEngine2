@@ -460,8 +460,8 @@ void RB_StereoRenderExecuteBackEndCommands( const emptyCommand_t* const allCmds 
 				RB_DrawElementsWithCounters( &backEnd.unitSquareSurface );
 				break;
 			}
-			// a non-warped side-by-side-uncompressed (dual input cable) is rendered
-			// just like STEREO3D_SIDE_BY_SIDE_COMPRESSED, so fall through.
+		// a non-warped side-by-side-uncompressed (dual input cable) is rendered
+		// just like STEREO3D_SIDE_BY_SIDE_COMPRESSED, so fall through.
 		case STEREO3D_SIDE_BY_SIDE_COMPRESSED:
 			GL_SelectTexture( 0 );
 			stereoRenderImages[0]->Bind();
@@ -574,7 +574,7 @@ void RB_ExecuteBackEndCommands( const emptyCommand_t* cmds )
 	// foresthale 2014-04-21: r_glow
 	// we can only render the postprocess glow if the buffer is updated in the same frame
 	backEnd.glowRenderCopied = false;
-
+	
 	// If we have a stereo pixel format, this will draw to both
 	// the back left and back right buffers, which will have a
 	// performance penalty.

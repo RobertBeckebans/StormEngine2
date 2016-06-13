@@ -52,21 +52,21 @@ class rvDebuggerApp
 {
 public:
 
-	rvDebuggerApp ( );
+	rvDebuggerApp( );
 	~rvDebuggerApp( );
-
-	bool				Initialize				( HINSTANCE hInstance );
-	int					Run						( void );
-	void				RunOnce					( void );
 	
-	rvRegistryOptions&	GetOptions				( void );
-	rvDebuggerClient&	GetClient				( void );
-	rvDebuggerWindow&	GetWindow				( void );
+	bool				Initialize( HINSTANCE hInstance );
+	int					Run( void );
+	void				RunOnce( void );
 	
-	HINSTANCE			GetInstance				( void );
-
-	bool				TranslateAccelerator	( LPMSG msg );
-		
+	rvRegistryOptions&	GetOptions( void );
+	rvDebuggerClient&	GetClient( void );
+	rvDebuggerWindow&	GetWindow( void );
+	
+	HINSTANCE			GetInstance( void );
+	
+	bool				TranslateAccelerator( LPMSG msg );
+	
 protected:
 
 	rvRegistryOptions	mOptions;
@@ -76,27 +76,27 @@ protected:
 	HACCEL				mAccelerators;
 	
 private:
-	bool	ProcessWindowMessages	( void );
+	bool	ProcessWindowMessages( void );
 };
 
-ID_INLINE HINSTANCE rvDebuggerApp::GetInstance ( void )
+ID_INLINE HINSTANCE rvDebuggerApp::GetInstance( void )
 {
 	return mInstance;
 }
 
-ID_INLINE rvDebuggerClient& rvDebuggerApp::GetClient ( void )
+ID_INLINE rvDebuggerClient& rvDebuggerApp::GetClient( void )
 {
 	return mClient;
 }
 
-ID_INLINE rvRegistryOptions& rvDebuggerApp::GetOptions ( void )
+ID_INLINE rvRegistryOptions& rvDebuggerApp::GetOptions( void )
 {
 	return mOptions;
 }
 
-ID_INLINE rvDebuggerWindow& rvDebuggerApp::GetWindow ( void )
+ID_INLINE rvDebuggerWindow& rvDebuggerApp::GetWindow( void )
 {
-	assert ( mDebuggerWindow );
+	assert( mDebuggerWindow );
 	return *mDebuggerWindow;
 }
 

@@ -56,14 +56,14 @@ public:
 	// RB: 64 bit fix, changed int to intptr_t
 	intptr_t	value;
 	// RB end
-
-	idEventArg & operator=( const idEventArg & other )
+	
+	idEventArg& operator=( const idEventArg& other )
 	{
 		type = other.type;
 		value = other.value;
 		return *this;
 	}
-
+	
 	idEventArg()
 	{
 		type = D_EVENT_INTEGER;
@@ -237,7 +237,7 @@ public:
 	void* 						operator new( size_t );
 	void						operator delete( void* );
 	
-								idClass();
+	idClass();
 	virtual						~idClass();
 	
 	void						Spawn();
@@ -282,15 +282,15 @@ public:
 	bool						ProcessEvent( const idEventDef* ev, idEventArg arg1, idEventArg arg2, idEventArg arg3, idEventArg arg4, idEventArg arg5, idEventArg arg6, idEventArg arg7 );
 	bool						ProcessEvent( const idEventDef* ev, idEventArg arg1, idEventArg arg2, idEventArg arg3, idEventArg arg4, idEventArg arg5, idEventArg arg6, idEventArg arg7, idEventArg arg8 );
 	
-	bool						ProcessEventWithStringArgs( const idEventDef* ev, const idList<idEventArg> * eventArgs );
-
+	bool						ProcessEventWithStringArgs( const idEventDef* ev, const idList<idEventArg>* eventArgs );
+	
 	// RB: 64 bit fix, changed int to intptr_t
 	bool						ProcessEventArgPtr( const idEventDef* ev, intptr_t* data );
 	// RB end
 	void						CancelEvents( const idEventDef* ev );
 	
 	virtual void				Remove();
-
+	
 	// Static functions
 	static void					Init();
 	static void					Shutdown();
@@ -312,14 +312,14 @@ public:
 	static idTypeInfo* 			GetType( int num );
 	
 	void						Event_Remove();
-
+	
 	idLinkList<idClass>			removeNode;		// for being linked into RemovedEntities list
 private:
 	classSpawnFunc_t			CallSpawnFunc( idTypeInfo* cls );
 	
 	bool						PostEventArgs( const idEventDef* ev, int time, int numargs, ... );
 	bool						ProcessEventArgs( const idEventDef* ev, int numargs, ... );
-		
+	
 	static bool					initialized;
 	static idList<idTypeInfo*, TAG_IDCLASS>	types;
 	static idList<idTypeInfo*, TAG_IDCLASS>	typenums;

@@ -37,29 +37,29 @@ class rvGEItemProps
 public:
 	rvGEItemProps();
 	~rvGEItemProps();
-
-	bool	Create(HWND parent, bool visible);
-	void	Show(bool visible);
-	void	Update(void);
-
-	HWND	GetWindow(void);
-	void	SetWorkspace(rvGEWorkspace* workspace);
-
+	
+	bool	Create( HWND parent, bool visible );
+	void	Show( bool visible );
+	void	Update( void );
+	
+	HWND	GetWindow( void );
+	void	SetWorkspace( rvGEWorkspace* workspace );
+	
 protected:
 
-	static int CALLBACK WndProc(HWND hWnd, UINT msg, LPARAM lParam);
-
+	static int CALLBACK WndProc( HWND hWnd, UINT msg, LPARAM lParam );
+	
 	HWND				mWnd;
 	HWND				mDlg;
 	rvGEWindowWrapper*	mWrapper;
 	rvGEWorkspace*		mWorkspace;
-
+	
 	idDict				mDict;
 	PROPSHEETHEADER		propsh;
 	PROPSHEETPAGE		propsp[4];
 };
 
-ID_INLINE HWND rvGEItemProps::GetWindow(void)
+ID_INLINE HWND rvGEItemProps::GetWindow( void )
 {
 	return mWnd;
 }

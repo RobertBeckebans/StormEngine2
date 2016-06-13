@@ -35,7 +35,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #define	DEFAULT_SIZE	16
 
-// motorsep 07-18-2015; r_shadowMapImageSize cvar does nothing; resolution is tied to r_shadowMapLodBias cvar (and vLight->shadowLOD respectively). At 0 is uses first parameter from the array, 
+// motorsep 07-18-2015; r_shadowMapImageSize cvar does nothing; resolution is tied to r_shadowMapLodBias cvar (and vLight->shadowLOD respectively). At 0 is uses first parameter from the array,
 // and at 1 it uses second. This issue needs to be resolved!
 
 //int shadowMapResolutions[MAX_SHADOWMAP_RESOLUTIONS] = { 2048, 1024, 512, 512, 256 };
@@ -643,7 +643,7 @@ void idImageManager::CreateIntrinsicImages()
 	ImageFromFunction( "_quadratic", R_QuadraticImage );
 	
 	cinematicImage = ImageFromFunction( "_cinematic", R_RGBA8Image );
-
+	
 	//int shadowMapSize = r_shadowMapImageSize.GetInteger();
 	/* for( int i = 0; i < MAX_SHADOWMAP_RESOLUTIONS; ++i )
 	{
@@ -652,18 +652,18 @@ void idImageManager::CreateIntrinsicImages()
 		shadowMapResolutions[i] = shadowMapSize;
 		shadowMapSize >>= 1;
 	} */
-
+	
 	// RB begin
 	shadowImage[0] = ImageFromFunction( va( "_shadowMapArray0_%i", shadowMapResolutions[0] ), R_CreateShadowMapImage_Res0 );
 	shadowImage[1] = ImageFromFunction( va( "_shadowMapArray1_%i", shadowMapResolutions[1] ), R_CreateShadowMapImage_Res1 );
 	shadowImage[2] = ImageFromFunction( va( "_shadowMapArray2_%i", shadowMapResolutions[2] ), R_CreateShadowMapImage_Res2 );
 	shadowImage[3] = ImageFromFunction( va( "_shadowMapArray3_%i", shadowMapResolutions[3] ), R_CreateShadowMapImage_Res3 );
 	shadowImage[4] = ImageFromFunction( va( "_shadowMapArray4_%i", shadowMapResolutions[4] ), R_CreateShadowMapImage_Res4 );
-
+	
 	jitterImage1 = globalImages->ImageFromFunction( "_jitter1", R_CreateJitterImage1 );
 	jitterImage4 = globalImages->ImageFromFunction( "_jitter4", R_CreateJitterImage4 );
 	jitterImage16 = globalImages->ImageFromFunction( "_jitter16", R_CreateJitterImage16 );
-
+	
 	randomImage256 = globalImages->ImageFromFunction( "_random256", R_CreateRandom256Image );
 	// RB end
 	
@@ -687,15 +687,15 @@ void idImageManager::CreateIntrinsicImages()
 	glowFramebufferImage16[1] = ImageFromFunction( "_glowFramebufferHDR1", R_RGBA16FImageLinear );
 	glowFramebufferImage16[2] = ImageFromFunction( "_glowFramebufferHDR2", R_RGBA16FImageLinear );
 	glowFramebufferImage16[3] = ImageFromFunction( "_glowFramebufferHDR3", R_RGBA16FImageLinear );
-
+	
 	// save a copy of this for material comparison, because currentRenderImage may get
 	// reassigned during stereo rendering
 	originalCurrentRenderImage = currentRenderImage;
 	
 	//loadingIconImage = ImageFromFile( "textures/loadingicon2", TF_DEFAULT, TR_CLAMP, TD_DEFAULT, CF_2D );
 	//hellLoadingIconImage = ImageFromFile( "textures/loadingicon3", TF_DEFAULT, TR_CLAMP, TD_DEFAULT, CF_2D );
-	loadingIconImage = ImageFromFile("textures/da_kat", TF_DEFAULT, TR_CLAMP, TD_HIGHQUALITY, CF_2D);
-	hellLoadingIconImage = ImageFromFile("textures/da_kat", TF_DEFAULT, TR_CLAMP, TD_HIGHQUALITY, CF_2D);
+	loadingIconImage = ImageFromFile( "textures/da_kat", TF_DEFAULT, TR_CLAMP, TD_HIGHQUALITY, CF_2D );
+	hellLoadingIconImage = ImageFromFile( "textures/da_kat", TF_DEFAULT, TR_CLAMP, TD_HIGHQUALITY, CF_2D );
 	
 	release_assert( loadingIconImage->referencedOutsideLevelLoad );
 	release_assert( hellLoadingIconImage->referencedOutsideLevelLoad );

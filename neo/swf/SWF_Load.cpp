@@ -50,7 +50,7 @@ bool idSWF::LoadSWF( const char* fullpath )
 		// motorsep 01-16-2015; only print that debug warning when "developer" cvar is set to 1
 		if( com_developer.GetBool() )
 			idLib::Printf( "SWF File not found %s\n", fullpath );
-		return false;		
+		return false;
 	}
 	
 	swfHeader_t header;
@@ -156,7 +156,7 @@ bool idSWF::LoadBinary( const char* bfilename, ID_TIME_T sourceTime )
 	f->ReadBig( magic );
 	f->ReadBig( btimestamp );
 	
-	if( magic != BSWF_MAGIC || ( !fileSystem->InProductionMode() && sourceTime != btimestamp && sourceTime>0 ) )
+	if( magic != BSWF_MAGIC || ( !fileSystem->InProductionMode() && sourceTime != btimestamp && sourceTime > 0 ) )
 	{
 		delete f;
 		return false;

@@ -135,10 +135,11 @@ bool idDeclEntityDef::Parse( const char* text, const int textLength, bool allowB
 	{
 		dict.SetDefaults( &defList[ i ]->dict );
 	}
-
+	
 	// precache all referenced media
 	// do this as long as we arent in modview
-	if ( !( com_editors & (EDITOR_RADIANT|EDITOR_AAS) ) ) {
+	if( !( com_editors & ( EDITOR_RADIANT | EDITOR_AAS ) ) )
+	{
 		game->CacheDictionaryMedia( &dict );
 	}
 	

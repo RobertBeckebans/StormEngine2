@@ -246,7 +246,7 @@ void idVertexBuffer::FreeBufferObject()
 	// RB: 64 bit fixes, changed GLuint to GLintptrARB
 	GLintptrARB bufferObject = reinterpret_cast< GLintptrARB >( apiObject );
 	// foresthale 2014-05-28: we have to check if OpenGL was already shut down as this gets called from doexit()
-	if (R_IsInitialized())
+	if( R_IsInitialized() )
 		qglDeleteBuffersARB( 1, ( const unsigned int* ) & bufferObject );
 	// RB end
 	
@@ -534,7 +534,7 @@ void idIndexBuffer::FreeBufferObject()
 	// RB: 64 bit fixes, changed GLuint to GLintptrARB
 	GLintptrARB bufferObject = reinterpret_cast< GLintptrARB >( apiObject );
 	// foresthale 2014-05-28: we have to check if OpenGL was already shut down as this gets called from doexit()
-	if (R_IsInitialized())
+	if( R_IsInitialized() )
 		qglDeleteBuffersARB( 1, ( const unsigned int* )& bufferObject );
 	// RB end
 	
@@ -807,7 +807,7 @@ void idJointBuffer::FreeBufferObject()
 	GLintptrARB buffer = reinterpret_cast< GLintptrARB >( apiObject );
 	
 	// foresthale 2014-05-28: we have to check if OpenGL was already shut down as this gets called from doexit()
-	if (R_IsInitialized())
+	if( R_IsInitialized() )
 	{
 		qglBindBufferARB( GL_UNIFORM_BUFFER, 0 );
 		qglDeleteBuffersARB( 1, ( const GLuint* )& buffer );

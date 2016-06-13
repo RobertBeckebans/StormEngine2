@@ -48,13 +48,15 @@ idListSortCompare<type>
 #ifdef __INTEL_COMPILER
 // the intel compiler doesn't do the right thing here
 template< class type >
-ID_INLINE int idListSortCompare( const type *a, const type *b ) {
+ID_INLINE int idListSortCompare( const type* a, const type* b )
+{
 	assert( 0 );
 	return 0;
 }
 #else
 template< class type >
-ID_INLINE int idListSortCompare( const type *a, const type *b ) {
+ID_INLINE int idListSortCompare( const type* a, const type* b )
+{
 	return *a - *b;
 }
 #endif
@@ -139,7 +141,8 @@ idSwap<type>
 ================
 */
 template< class type >
-ID_INLINE void idSwap( type &a, type &b ) {
+ID_INLINE void idSwap( type& a, type& b )
+{
 	type c = a;
 	a = b;
 	b = c;
@@ -183,7 +186,7 @@ public:
 	_type_&			Last();
 	const _type_&	First() const;
 	const _type_&	Last() const;
-
+	
 	_type_* 		Ptr();												// returns a pointer to the list
 	const _type_* 	Ptr() const;										// returns a pointer to the list
 	_type_& 		Alloc();											// returns reference to a new data element at the end of the list
@@ -199,7 +202,7 @@ public:
 	// removes the element at the given index and places the last element into its spot - DOES NOT PRESERVE LIST ORDER
 	bool			RemoveIndexFast( int index );
 	bool			Remove( const _type_ & obj );						// remove the element
-	void			Sort( cmp_t *compare = ( cmp_t * )&idListSortCompare<_type_> );
+	void			Sort( cmp_t* compare = ( cmp_t* )&idListSortCompare<_type_> );
 	void			SortWithTemplate( const idSort<_type_>& sort = idSort_QuickDefault<_type_>() );
 //	void			SortSubSection( int startIndex, int endIndex, cmp_t *compare = ( cmp_t * )&idListSortCompare<_type_> );
 	void			Swap( idList& other );								// swap the contents of the lists
@@ -339,7 +342,7 @@ ID_INLINE void idList<_type_, _tag_>::DeleteContents( bool clear )
 template< typename _type_, memTag_t _tag_ >
 ID_INLINE void idList<_type_, _tag_>::Fill( const _type_ & value )
 {
-	for ( int i = 0; i < Num(); ++i )
+	for( int i = 0; i < Num(); ++i )
 		list[ i ] = value;
 }
 
@@ -734,7 +737,7 @@ idList<_type_,_tag_>::First
 template< typename _type_, memTag_t _tag_ >
 ID_INLINE _type_& idList<_type_, _tag_>::Last()
 {
-	return list[ Num()-1 ];
+	return list[ Num() - 1 ];
 }
 
 /*
@@ -1141,14 +1144,16 @@ list, so any pointers to data within the list may no longer be valid.
 ================
 */
 template< typename _type_, memTag_t _tag_ >
-ID_INLINE void idList<_type_,_tag_>::Sort( cmp_t *compare ) {
-	if ( !list ) {
+ID_INLINE void idList<_type_, _tag_>::Sort( cmp_t* compare )
+{
+	if( !list )
+	{
 		return;
 	}
-	typedef int cmp_c(const void *, const void *);
-
-	cmp_c *vCompare = (cmp_c *)compare;
-	qsort( ( void * )list, ( size_t )num, sizeof( _type_ ), vCompare );
+	typedef int cmp_c( const void*, const void* );
+	
+	cmp_c* vCompare = ( cmp_c* )compare;
+	qsort( ( void* )list, ( size_t )num, sizeof( _type_ ), vCompare );
 }
 
 /*
@@ -1245,7 +1250,8 @@ Swaps the contents of two lists
 ================
 */
 template< class type, memTag_t _tag_ >
-ID_INLINE void idList<type, _tag_>::Swap( idList &other ) {
+ID_INLINE void idList<type, _tag_>::Swap( idList& other )
+{
 	idSwap( num, other.num );
 	idSwap( size, other.size );
 	idSwap( granularity, other.granularity );

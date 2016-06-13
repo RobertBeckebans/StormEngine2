@@ -37,12 +37,12 @@ If you have questions concerning this license or the applicable additional terms
 
 // CCommentsDlg dialog
 
-IMPLEMENT_DYNAMIC(CCommentsDlg, CDialog)
-CCommentsDlg::CCommentsDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(CCommentsDlg::IDD, pParent)
-	, strName(_T(""))
-	, strPath(_T(""))
-	, strComments(_T(""))
+IMPLEMENT_DYNAMIC( CCommentsDlg, CDialog )
+CCommentsDlg::CCommentsDlg( CWnd* pParent /*=NULL*/ )
+	: CDialog( CCommentsDlg::IDD, pParent )
+	, strName( _T( "" ) )
+	, strPath( _T( "" ) )
+	, strComments( _T( "" ) )
 {
 }
 
@@ -50,17 +50,17 @@ CCommentsDlg::~CCommentsDlg()
 {
 }
 
-void CCommentsDlg::DoDataExchange(CDataExchange* pDX)
+void CCommentsDlg::DoDataExchange( CDataExchange* pDX )
 {
-	CDialog::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_EDIT_NAME, strName);
-	DDX_Text(pDX, IDC_EDIT_PATH, strPath);
-	DDX_Text(pDX, IDC_EDIT_COMMENTS, strComments);
+	CDialog::DoDataExchange( pDX );
+	DDX_Text( pDX, IDC_EDIT_NAME, strName );
+	DDX_Text( pDX, IDC_EDIT_PATH, strPath );
+	DDX_Text( pDX, IDC_EDIT_COMMENTS, strComments );
 }
 
 
-BEGIN_MESSAGE_MAP(CCommentsDlg, CDialog)
+BEGIN_MESSAGE_MAP( CCommentsDlg, CDialog )
 END_MESSAGE_MAP()
 
-	
+
 // CCommentsDlg message handlers

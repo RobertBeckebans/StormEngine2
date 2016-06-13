@@ -34,7 +34,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "DebuggerApp.h"
 #include "DebuggerServer.h"
 
-DWORD CALLBACK DebuggerThread ( LPVOID param );
+DWORD CALLBACK DebuggerThread( LPVOID param );
 
 rvDebuggerApp					gDebuggerApp;
 HWND							gDebuggerWindow = NULL;
@@ -54,30 +54,30 @@ DebuggerMain
 Main entry point for the debugger application
 ================
 */
-void DebuggerClientInit( const char *cmdline )
+void DebuggerClientInit( const char* cmdline )
 {
 	// See if the debugger is already running
-	if ( rvDebuggerWindow::Activate ( ) )
+	if( rvDebuggerWindow::Activate( ) )
 	{
 		goto DebuggerClientInitDone;
 	}
-
-	if ( !gDebuggerApp.Initialize ( win32.hInstance ) )
+	
+	if( !gDebuggerApp.Initialize( win32.hInstance ) )
 	{
 		goto DebuggerClientInitDone;
 	}
-
+	
 	//gDebuggerApp.Run ( );
-
+	
 DebuggerClientInitDone:
 	;
-
+	
 	//common->Quit();
 }
 
 void DebuggerClientUpdate()
 {
-	gDebuggerApp.RunOnce ( );
+	gDebuggerApp.RunOnce( );
 }
 
 /*
@@ -87,16 +87,16 @@ DebuggerServerThread
 Thread proc for the debugger server
 ================
 */
-DWORD CALLBACK DebuggerServerThread ( LPVOID param )
+DWORD CALLBACK DebuggerServerThread( LPVOID param )
 {
-	assert ( gDebuggerServer );
+	assert( gDebuggerServer );
 	
-	while ( !gDebuggerServerQuit )
+	while( !gDebuggerServerQuit )
 	{
-		gDebuggerServer->ProcessMessages ( );
-		Sleep ( 1 );
+		gDebuggerServer->ProcessMessages( );
+		Sleep( 1 );
 	}
-
+	
 	return 0;
 }
 
@@ -107,27 +107,27 @@ DebuggerServerInit
 Starts up the debugger server
 ================
 */
-bool DebuggerServerInit ( void )
+bool DebuggerServerInit( void )
 {
 	// Allocate the new debugger server
-	if ( gDebuggerServer == NULL )
+	if( gDebuggerServer == NULL )
 		gDebuggerServer = new rvDebuggerServer;
-	
+		
 	// Start the debugger server thread
-	if ( gDebuggerServerThread == NULL )
+	if( gDebuggerServerThread == NULL )
 	{
-		gDebuggerServerThread = CreateThread ( NULL, 0, DebuggerServerThread, 0, 0, &gDebuggerServerThreadID );
-
+		gDebuggerServerThread = CreateThread( NULL, 0, DebuggerServerThread, 0, 0, &gDebuggerServerThreadID );
+		
 		// Initialize the debugger server
-		if ( !gDebuggerServer->Initialize() )
+		if( !gDebuggerServer->Initialize() )
 		{
 			DebuggerServerShutdown();
-
+			
 			delete gDebuggerServer;
 			gDebuggerServer = NULL;
 			return false;
 		}
-	}	
+	}
 	return true;
 }
 
@@ -138,24 +138,24 @@ DebuggerServerShutdown
 Shuts down the debugger server
 ================
 */
-void DebuggerServerShutdown ( void )
+void DebuggerServerShutdown( void )
 {
-	if ( gDebuggerServerThread )
+	if( gDebuggerServerThread )
 	{
 		// Signal the debugger server to quit
 		gDebuggerServerQuit = true;
 		
 		// Wait for the thread to finish
-		WaitForSingleObject ( gDebuggerServerThread, INFINITE );
+		WaitForSingleObject( gDebuggerServerThread, INFINITE );
 		
 		// Shutdown the server now
 		gDebuggerServer->Shutdown();
-
+		
 		delete gDebuggerServer;
 		gDebuggerServer = NULL;
 		
 		// Cleanup the thread handle
-		CloseHandle ( gDebuggerServerThread );
+		CloseHandle( gDebuggerServerThread );
 		gDebuggerServerThread = NULL;
 	}
 }
@@ -167,14 +167,14 @@ DebuggerServerCheckBreakpoint
 Check to see if there is a breakpoint associtated with this statement
 ================
 */
-void DebuggerServerCheckBreakpoint ( idInterpreter* interpreter, idProgram* program, int instructionPointer )
+void DebuggerServerCheckBreakpoint( idInterpreter* interpreter, idProgram* program, int instructionPointer )
 {
-	if ( !gDebuggerServer )
+	if( !gDebuggerServer )
 	{
 		return;
 	}
 	
-	gDebuggerServer->CheckBreakpoints ( interpreter, program, instructionPointer );
+	gDebuggerServer->CheckBreakpoints( interpreter, program, instructionPointer );
 }
 
 bool DebuggerServerIsSuspended()
@@ -189,14 +189,14 @@ DebuggerServerPrint
 Sends a print message to the debugger client
 ================
 */
-void DebuggerServerPrint ( const char* text )
+void DebuggerServerPrint( const char* text )
 {
-	if ( !gDebuggerServer )
+	if( !gDebuggerServer )
 	{
 		return;
 	}
 	
-	gDebuggerServer->Print ( text );
+	gDebuggerServer->Print( text );
 }
 
 idCVar debugger_serverport( "debugger_serverport", "27980", CVAR_GAME | CVAR_INTEGER, "" );

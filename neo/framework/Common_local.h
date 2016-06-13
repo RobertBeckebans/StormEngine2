@@ -152,9 +152,9 @@ public:
 	virtual void				UpdateScreen( bool captureToImage, bool releaseMouse = true );
 	// DG end
 	virtual void				UpdateLevelLoadPacifier();  // Indefinate
-	virtual void				UpdateLevelLoadPacifier(int mProgress);
-	virtual void				UpdateLevelLoadPacifier(bool Secondary);
-	virtual void				UpdateLevelLoadPacifier(bool updateSecondary, int mProgress);
+	virtual void				UpdateLevelLoadPacifier( int mProgress );
+	virtual void				UpdateLevelLoadPacifier( bool Secondary );
+	virtual void				UpdateLevelLoadPacifier( bool updateSecondary, int mProgress );
 	virtual void				StartupVariable( const char* match );
 	virtual void				WriteConfigToFile( const char* filename );
 	virtual void				BeginRedirect( char* buffer, int buffersize, void ( *flush )( const char* ) );
@@ -200,9 +200,9 @@ public:
 	
 	virtual int					ButtonState( int key );
 	virtual int					KeyState( int key );
-	virtual void				InitTool( const toolFlag_t tool, const idDict *dict );
+	virtual void				InitTool( const toolFlag_t tool, const idDict* dict );
 	virtual void				ActivateTool( bool active );
-	virtual void				WriteFlaggedCVarsToFile( const char *filename, int flags, const char *setCmd );
+	virtual void				WriteFlaggedCVarsToFile( const char* filename, int flags, const char* setCmd );
 	
 	virtual idDemoFile* 		ReadDemo()
 	{
@@ -212,7 +212,7 @@ public:
 	{
 		return writeDemo;
 	}
-		
+	
 	virtual idGame* 			Game()
 	{
 		return game;
@@ -283,7 +283,7 @@ public:
 	{
 		gameThread.WaitForThread();
 	}
-
+	
 	int		GetGameThreadTotalTime() const
 	{
 		return gameThread.GetThreadTotalTime();
@@ -316,14 +316,14 @@ public:
 	// some cases, which includes filename and ETA information, note that
 	// the progress function takes 0-1 float, not 0-100, and can be called
 	// very quickly (it will check that enough time has passed when updating)
-	void LoadPacifierBinarizeFilename(const char *filename, const char * reason);
-	void LoadPacifierBinarizeInfo(const char *info);
+	void LoadPacifierBinarizeFilename( const char* filename, const char* reason );
+	void LoadPacifierBinarizeInfo( const char* info );
 	void LoadPacifierBinarizeMiplevel( int level, int maxLevel );
-	void LoadPacifierBinarizeProgress(float progress);
+	void LoadPacifierBinarizeProgress( float progress );
 	void LoadPacifierBinarizeEnd();
 	// for images in particular we can measure more accurately this way (to deal with mipmaps)
-	void LoadPacifierBinarizeProgressTotal(int total);
-	void LoadPacifierBinarizeProgressIncrement(int step);
+	void LoadPacifierBinarizeProgressTotal( int total );
+	void LoadPacifierBinarizeProgressIncrement( int step );
 	
 	frameTiming_t		frameTiming;
 	frameTiming_t		mainFrameTiming;

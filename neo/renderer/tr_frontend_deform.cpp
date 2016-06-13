@@ -834,15 +834,15 @@ static drawSurf_t* R_EyeballDeform( drawSurf_t* surf )
 				
 				//const idVec3 local = newVerts[index].xyz - origin;
 				//newVerts[index].SetTexCoord( 0.5f + local * texVec[0], 0.5f + local * texVec[1] );
-								
+				
 				// SS2 Gavin's temporary fix for eyeBall spinning
 				// foresthale 2014-05-30: corrected the math to use Set/Get functions for proper F16 conversion, added 0.25 scaling factor
-				newVerts[index].SetTexCoordS(srcTri->verts[index].GetTexCoord().x + dir.y * -0.25f);
-				newVerts[index].SetTexCoordT(srcTri->verts[index].GetTexCoord().y + dir.z *  0.25f);
-
+				newVerts[index].SetTexCoordS( srcTri->verts[index].GetTexCoord().x + dir.y * -0.25f );
+				newVerts[index].SetTexCoordT( srcTri->verts[index].GetTexCoord().y + dir.z *  0.25f );
+				
 				// Eluan's eyes fix
 				//newVerts[index].SetTexCoord( 2*srcTri->verts[index].st[0] - 0.5 - dir.y, 2*srcTri->verts[index].st[1] - 0.5 + dir.z );
-                //newVerts[index].xyz = srcTri->verts[index].xyz;
+				//newVerts[index].xyz = srcTri->verts[index].xyz;
 			}
 		}
 	}

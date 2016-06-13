@@ -38,6 +38,6 @@ If you have questions concerning this license or the applicable additional terms
 ===============================================================================
 */
 
-void CreateResourceIDs_f( const idCmdArgs &args );
+void CreateResourceIDs_f( const idCmdArgs& args );
 
 #endif /* !__CREATERESOURCEIDS__ */

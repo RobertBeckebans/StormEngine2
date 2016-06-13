@@ -368,21 +368,21 @@ void idResourceContainer::RemoveResourceFiles( const char* _filename, const idSt
 			rt.Read( &memFile );
 			
 			idLib::Printf( "examining %s\n", rt.filename.c_str() );
-			bool removed=false;
+			bool removed = false;
 			
 			for( int j = filesToRemove.Num() - 1; j >= 0; j-- )
 			{
 				if( filesToRemove[ j ].Icmp( rt.filename ) == 0 )
 				{
-					removed=true;
+					removed = true;
 					break;
 				}
 			}
-
-			if (removed) continue;
-
-			int idx=entries.Append(rt);
-			if (idx<0) continue;
+			
+			if( removed ) continue;
+			
+			int idx = entries.Append( rt );
+			if( idx < 0 ) continue;
 			
 			inFile->Seek( rt.offset, FS_SEEK_SET );
 			byte* fileData = ( byte* )Mem_Alloc( rt.length, TAG_TEMP );

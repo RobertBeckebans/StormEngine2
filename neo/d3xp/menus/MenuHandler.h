@@ -515,7 +515,7 @@ class idMenuHandler_Cinematic : public idMenuHandler
 public:
 
 	idMenuHandler_Cinematic() :
-				hiding( false )
+		hiding( false )
 	{
 	}
 	
@@ -526,7 +526,7 @@ public:
 	virtual idMenuScreen* 	GetMenuScreen( int index );
 	
 	idMenuScreen_Cinematic* 		GetCinematic();
-
+	
 	
 protected:
 

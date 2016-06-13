@@ -93,7 +93,7 @@ public:
 	int						powerupEndTime[ MAX_POWERUPS ];
 	
 	RechargeAmmo_t			rechargeAmmo[ AMMO_NUMTYPES ];
-		
+	
 	int						deplete_armor;
 	float					deplete_rate;
 	int						deplete_ammount;

@@ -95,11 +95,11 @@ void idMenuScreen_Shell_Dev::SetupDevOptions()
 	devOptions.Clear();
 	
 	devOptions.Append( devOption_t( NULL, "- Block #1 -" ) );
-	devOptions.Append( devOption_t( "testmaps/ss2_stairs", "SS2 stairs" ) );	
+	devOptions.Append( devOption_t( "testmaps/ss2_stairs", "SS2 stairs" ) );
 	devOptions.Append( devOption_t( "game/start_chunks2", "Ganymede w/o intro" ) );
 	devOptions.Append( devOption_t( "game/start_chunks2b", "Ganymede w intro" ) );
 	devOptions.Append( devOption_t( NULL, "- Block #2 -" ) );
-	devOptions.Append( devOption_t( "testmaps/black_box", "Space cinematic map" ) );	
+	devOptions.Append( devOption_t( "testmaps/black_box", "Space cinematic map" ) );
 	devOptions.Append( devOption_t( "testmaps/ss2_stairs_reflect", "SS2 stairs 'shiny'" ) );
 	devOptions.Append( devOption_t( "testmaps/features", "Map Features" ) );
 	devOptions.Append( devOption_t( "test_box", "Test Box room" ) );

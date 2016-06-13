@@ -1440,9 +1440,9 @@ byte* idProgram::ReserveDefMemory( int size )
 	{
 		// foresthale 2014-05-19: /analyze fix - was %zd, changed to %d with an int cast on the sizeof, the variables array isn't THAT big
 #if defined(USE_EXCEPTIONS)
-		throw idCompileError( va( "Exceeded global memory size (%d bytes)", (int)sizeof( variables ) ) );
+		throw idCompileError( va( "Exceeded global memory size (%d bytes)", ( int )sizeof( variables ) ) );
 #else
-		gameLocal.Error( "Exceeded global memory size (%d bytes)", (int)sizeof( variables ) );
+		gameLocal.Error( "Exceeded global memory size (%d bytes)", ( int )sizeof( variables ) );
 #endif
 	}
 	
@@ -1640,7 +1640,7 @@ idVarDef* idProgram::GetDef( const idTypeDef* type, const char* name, const idVa
 				continue;
 			}
 		}
-		else if( checkinherit && scope->TypeDef()->Inherits( def->scope->TypeDef() )  )
+		else if( checkinherit && scope->TypeDef()->Inherits( def->scope->TypeDef() ) )
 		{
 			// this should work too
 		}

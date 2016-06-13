@@ -32,7 +32,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "Game_local.h"
 
-#include "gamesys/SysCvar.h"	
+#include "gamesys/SysCvar.h"
 
 #ifdef GAME_DLL
 
@@ -99,7 +99,7 @@ static const char* fastEntityList[] =
 	"projectile_plasma",
 	"weapon_fists",
 	"projectile_rocket",
-	"projectile_bullet_machinegun",	
+	"projectile_bullet_machinegun",
 	NULL
 };
 /*
@@ -273,7 +273,7 @@ void idGameLocal::Clear()
 	
 	lastCmdRunTimeOnClient.Zero();
 	lastCmdRunTimeOnServer.Zero();
-
+	
 	mClientSnapshotRefCount = 0;
 	mSpawningMapEntities = false;
 }
@@ -660,11 +660,11 @@ void idGameLocal::SaveGame( idFile* f, idFile* strings )
 	// shakeSounds
 	
 	savegame.WriteInt( beams.Num() );
-	for ( int i = 0; i < beams.Num(); ++i )
+	for( int i = 0; i < beams.Num(); ++i )
 	{
 		savegame.WriteRenderEntity( beams[ i ].renderEntity );
 	}
-
+	
 	// write out pending events
 	idEvent::Save( &savegame );
 	
@@ -944,7 +944,7 @@ void idGameLocal::LoadMap( const char* mapName, int randseed )
 	bool sameMap = ( mapFile && idStr::Icmp( mapFileName, mapName ) == 0 );
 	
 	gameRenderWorld->DebugReset();
-
+	
 	// clear the sound system
 	gameSoundWorld->ClearAllSoundEmitters();
 	
@@ -983,7 +983,7 @@ void idGameLocal::LoadMap( const char* mapName, int randseed )
 	spawnCount = INITIAL_SPAWN_COUNT;
 	
 	// music volume control begins	## SS2
-	s_bgmusic_volume.ClearModified(); 
+	s_bgmusic_volume.ClearModified();
 	s_bgmusic_volume.SetModified();
 	// music volume control ends
 	
@@ -1048,11 +1048,11 @@ void idGameLocal::LoadMap( const char* mapName, int randseed )
 	
 	clip.Init();
 	
-	common->UpdateLevelLoadPacifier(true,25);
+	common->UpdateLevelLoadPacifier( true, 25 );
 	
 	pvs.Init();
-
-	common->UpdateLevelLoadPacifier(true,50);
+	
+	common->UpdateLevelLoadPacifier( true, 50 );
 	
 	playerPVS.i = -1;
 	playerConnectedAreas.i = -1;
@@ -1066,7 +1066,7 @@ void idGameLocal::LoadMap( const char* mapName, int randseed )
 	// clear the smoke particle free list
 	smokeParticles->Init();
 	
-	common->UpdateLevelLoadPacifier(true,75);
+	common->UpdateLevelLoadPacifier( true, 75 );
 	
 	// cache miscellaneous media references
 	FindEntityDef( "preCacheExtras", false );
@@ -1096,13 +1096,13 @@ void idGameLocal::LoadMap( const char* mapName, int randseed )
 	
 	declManager->FindMaterial( "itemHighlightShell" );
 	
-	common->UpdateLevelLoadPacifier(true,80);
+	common->UpdateLevelLoadPacifier( true, 80 );
 	
 	if( !sameMap )
 	{
 		mapFile->RemovePrimitiveData();
 	}
-	common->UpdateLevelLoadPacifier(true,100);
+	common->UpdateLevelLoadPacifier( true, 100 );
 }
 
 /*
@@ -1184,7 +1184,7 @@ idGameLocal::MapRestart
 void idGameLocal::MapRestart()
 {
 	gameRenderWorld->DebugReset();
-
+	
 	if( common->IsClient() )
 	{
 		LocalMapRestart();
@@ -1280,7 +1280,7 @@ void idGameLocal::InitFromNewMap( const char* mapName, idRenderWorld* renderWorl
 	gameSoundWorld = soundWorld;
 	
 	gameRenderWorld->DebugReset();
-
+	
 	if( common->IsMultiplayer() )
 	{
 		g_skill.SetInteger( 1 );
@@ -1551,13 +1551,13 @@ bool idGameLocal::InitFromSaveGame( const char* mapName, idRenderWorld* renderWo
 	int numBeams = 0;
 	savegame.ReadInt( numBeams );
 	beams.SetNum( numBeams );
-	for ( int i = 0; i < beams.Num(); ++i )
+	for( int i = 0; i < beams.Num(); ++i )
 	{
 		savegame.ReadRenderEntity( beams[ i ].renderEntity );
-
+		
 		beams[ i ].modelHandle = gameRenderWorld->AddEntityDef( &beams[ i ].renderEntity );
 	}
-
+	
 	// Read out pending events
 	idEvent::Restore( &savegame );
 	
@@ -1652,7 +1652,7 @@ void idGameLocal::MapShutdown()
 	
 	MapClear( true );
 	
-	common->UpdateLevelLoadPacifier(true, 25);
+	common->UpdateLevelLoadPacifier( true, 25 );
 	
 	// reset the script to the state it was before the map was started
 	program.Restart();
@@ -1664,16 +1664,16 @@ void idGameLocal::MapShutdown()
 	
 	pvs.Shutdown();
 	
-	common->UpdateLevelLoadPacifier(true, 50);
+	common->UpdateLevelLoadPacifier( true, 50 );
 	
 	clip.Shutdown();
 	idClipModel::ClearTraceModelCache();
 	
-	common->UpdateLevelLoadPacifier(true, 75);
+	common->UpdateLevelLoadPacifier( true, 75 );
 	
 	collisionModelManager->FreeMap();		// Fixes an issue where when maps were reloaded the materials wouldn't get their surfaceFlags re-set.  Now we free the map collision model forcing materials to be reparsed.
 	
-	common->UpdateLevelLoadPacifier(true, 80);
+	common->UpdateLevelLoadPacifier( true, 80 );
 	
 	ShutdownAsyncNetwork();
 	
@@ -1690,7 +1690,7 @@ void idGameLocal::MapShutdown()
 	gamestate = GAMESTATE_NOMAP;
 	
 	Printf( "--------------------------------------\n" );
-	common->UpdateLevelLoadPacifier(true, 100);
+	common->UpdateLevelLoadPacifier( true, 100 );
 }
 
 /*
@@ -1855,7 +1855,7 @@ void idGameLocal::CacheDictionaryMedia( const idDict* dict )
 			{
 				// unfortunate flag names, they aren't actually a gui
 			}
-			else if ( !( com_editors & EDITOR_RADIANT) ) // foresthale 2014-05-28: don't precache gui in radiant, the DeAlloc seems to leave a dangling pointer which crashes later in R_RenderGuiSurf
+			else if( !( com_editors & EDITOR_RADIANT ) ) // foresthale 2014-05-28: don't precache gui in radiant, the DeAlloc seems to leave a dangling pointer which crashes later in R_RenderGuiSurf
 			{
 				declManager->MediaPrint( "Precaching gui %s\n", kv->GetValue().c_str() );
 				idUserInterface* gui = uiManager->Alloc();
@@ -2021,21 +2021,21 @@ void idGameLocal::CacheDictionaryMedia( const idDict* dict )
 		}
 		kv = dict->MatchPrefix( "email", kv );
 	}
-
+	
 	kv = dict->MatchPrefix( "table", NULL );
-	while ( kv != NULL )
+	while( kv != NULL )
 	{
-		if ( kv->GetValue().Length() )
+		if( kv->GetValue().Length() )
 		{
 			declManager->FindType( DECL_TABLE, kv->GetValue().c_str(), false );
 		}
 		kv = dict->MatchPrefix( "table", kv );
 	}
-
+	
 	kv = dict->MatchPrefix( "table2d", NULL );
-	while ( kv != NULL )
+	while( kv != NULL )
 	{
-		if ( kv->GetValue().Length() )
+		if( kv->GetValue().Length() )
 		{
 			declManager->FindType( DECL_TABLE2D, kv->GetValue().c_str(), false );
 		}
@@ -2644,7 +2644,7 @@ void idGameLocal::RunFrame( idUserCmdMgr& cmdMgr, gameReturn_t& ret )
 		smokeParticles->FreeSmokes();
 		
 		UpdateBeams();
-
+		
 		// process events on the server
 		ServerProcessEntityNetworkEventQueue();
 		
@@ -3094,13 +3094,13 @@ bool idGameLocal::Draw( int clientNum )
 	}
 	
 	// music volume control begins	## SS2
-	if ( s_bgmusic_volume.IsModified() )  // set music volume
+	if( s_bgmusic_volume.IsModified() )   // set music volume
 	{
-		for ( int i = 0; i < musicSpeakers.Num(); i++ ) 
+		for( int i = 0; i < musicSpeakers.Num(); i++ )
 		{
-			idSound* ent = static_cast<idSound *>( entities[ musicSpeakers[ i ] ] );
-				if (ent)
-					ent->SetMusicVolume( 0, s_bgmusic_volume.GetFloat(), 0 );
+			idSound* ent = static_cast<idSound*>( entities[ musicSpeakers[ i ] ] );
+			if( ent )
+				ent->SetMusicVolume( 0, s_bgmusic_volume.GetFloat(), 0 );
 		}
 		s_bgmusic_volume.ClearModified();
 	}
@@ -3804,7 +3804,7 @@ bool idGameLocal::SpawnEntityDef( const idDict& args, idEntity** ent, bool setDe
 	// check if we should spawn a class object
 	spawnArgs.GetString( "spawnclass", NULL, &spawn );
 	if( spawn )
-	{	
+	{
 		cls = idClass::GetClass( spawn );
 		if( !cls )
 		{
@@ -3992,11 +3992,11 @@ void idGameLocal::SpawnMapEntities()
 	deleted = 0;
 	
 	mSpawningMapEntities = true;
-
+	
 	for( i = 1 ; i < numEntities ; i++ )
 	{
-		nProgress = i * 100/ numEntities;
-		common->UpdateLevelLoadPacifier(true,nProgress);
+		nProgress = i * 100 / numEntities;
+		common->UpdateLevelLoadPacifier( true, nProgress );
 		
 		
 		mapEnt = mapFile->GetEntity( i );
@@ -4007,15 +4007,15 @@ void idGameLocal::SpawnMapEntities()
 			// precache any media specified in the map entity
 			CacheDictionaryMedia( &args );
 			
-			idEntity * spawnedEntity = NULL;
-			SpawnEntityDef(args, &spawnedEntity);
-
-			if (spawnedEntity && spawnedEntity->removeNode.InList())
+			idEntity* spawnedEntity = NULL;
+			SpawnEntityDef( args, &spawnedEntity );
+			
+			if( spawnedEntity && spawnedEntity->removeNode.InList() )
 			{
 				++deleted;
 				delete spawnedEntity;
 			}
-
+			
 			num++;
 		}
 		else
@@ -4025,8 +4025,8 @@ void idGameLocal::SpawnMapEntities()
 	}
 	
 	mSpawningMapEntities = true;
-
-	Printf("...%i entities spawned, %d deleted, %i inhibited\n\n", num, deleted, inhibit);
+	
+	Printf( "...%i entities spawned, %d deleted, %i inhibited\n\n", num, deleted, inhibit );
 }
 
 /*
@@ -4816,15 +4816,15 @@ idGameLocal::UpdateBeams
 */
 void idGameLocal::UpdateBeams()
 {
-	for ( int i = 0; i < beams.Num(); ++i )
+	for( int i = 0; i < beams.Num(); ++i )
 	{
 		// check for expiration
 		beam_t& bt = beams[ i ];
-
-		if ( MS2SEC( time ) >= bt.renderEntity.shaderParms[ SHADERPARM_BEAM_STARTTIME ] + 5.0 )
+		
+		if( MS2SEC( time ) >= bt.renderEntity.shaderParms[ SHADERPARM_BEAM_STARTTIME ] + 5.0 )
 		{
 			gameRenderWorld->FreeEntityDef( bt.modelHandle );
-
+			
 			beams.RemoveIndexFast( i );
 		}
 	}
@@ -5303,7 +5303,7 @@ idEntity* idGameLocal::SelectInitialSpawnPoint( idPlayer* player )
 			}
 			
 			// sort the list
-			qsort( ( void* )teamSpawnSpots[ team ].Ptr(), teamSpawnSpots[ team ].Num(), sizeof( spawnSpot_t ), ( int (* )( const void*, const void* ) )sortSpawnPoints );
+			qsort( ( void* )teamSpawnSpots[ team ].Ptr(), teamSpawnSpots[ team ].Num(), sizeof( spawnSpot_t ), ( int ( * )( const void*, const void* ) )sortSpawnPoints );
 			
 			// choose a random one in the top half
 			which = random.RandomInt( teamSpawnSpots[ team ].Num() / 2 );
@@ -5336,7 +5336,7 @@ idEntity* idGameLocal::SelectInitialSpawnPoint( idPlayer* player )
 		}
 		
 		// sort the list
-		qsort( ( void* )spawnSpots.Ptr(), spawnSpots.Num(), sizeof( spawnSpot_t ), ( int (* )( const void*, const void* ) )sortSpawnPoints );
+		qsort( ( void* )spawnSpots.Ptr(), spawnSpots.Num(), sizeof( spawnSpot_t ), ( int ( * )( const void*, const void* ) )sortSpawnPoints );
 		
 		// choose a random one in the top half
 		which = random.RandomInt( spawnSpots.Num() / 2 );
@@ -5808,7 +5808,7 @@ void idGameLocal::Shell_SyncWithSession()
 	switch( session->GetState() )
 	{
 		case idSession::PRESS_START:
-			shellHandler->SetShellState( SHELL_STATE_PRESS_START );			
+			shellHandler->SetShellState( SHELL_STATE_PRESS_START );
 			break;
 		case idSession::INGAME:
 			shellHandler->SetShellState( SHELL_STATE_PAUSED );
@@ -5903,7 +5903,7 @@ void idGameLocal::Shell_UpdateLeaderboard( const idLeaderboardCallback* callback
 idGameLocal::StartDemoPlayback
 ========================
 */
-void idGameLocal::StartDemoPlayback( idRenderWorld * renderworld )
+void idGameLocal::StartDemoPlayback( idRenderWorld* renderworld )
 {
 	gameRenderWorld = renderworld;
 	smokeParticles->Init();
@@ -5956,33 +5956,33 @@ idGameLocal::DemoWriteGameInfo
 */
 void idGameLocal::DemoWriteGameInfo()
 {
-	if ( common->WriteDemo() != NULL )
+	if( common->WriteDemo() != NULL )
 	{
 		common->WriteDemo()->WriteInt( DS_GAME );
 		common->WriteDemo()->WriteInt( GCMD_GAMETIME );
-
+		
 		common->WriteDemo()->WriteInt( previousTime );
 		common->WriteDemo()->WriteInt( time );
 		common->WriteDemo()->WriteInt( framenum );
-
+		
 		common->WriteDemo()->WriteInt( fast.previousTime );
 		common->WriteDemo()->WriteInt( fast.time );
 		common->WriteDemo()->WriteInt( fast.realClientTime );
-
+		
 		common->WriteDemo()->WriteInt( slow.previousTime );
 		common->WriteDemo()->WriteInt( slow.time );
 		common->WriteDemo()->WriteInt( slow.realClientTime );
 	}
 }
 
-bool idGameLocal::ProcessDemoCommand( idDemoFile * readDemo )
+bool idGameLocal::ProcessDemoCommand( idDemoFile* readDemo )
 {
 	gameDemoCommand_t cmd = GCMD_UNKNOWN;
-
-	if ( !readDemo->ReadInt( (int&)cmd ) )
+	
+	if( !readDemo->ReadInt( ( int& )cmd ) )
 		return false;
-
-	switch (cmd)
+		
+	switch( cmd )
 	{
 		case GCMD_GAMETIME:
 		{
@@ -5993,18 +5993,18 @@ bool idGameLocal::ProcessDemoCommand( idDemoFile * readDemo )
 			readDemo->ReadInt( fast.previousTime );
 			readDemo->ReadInt( fast.time );
 			readDemo->ReadInt( fast.realClientTime );
-
+			
 			readDemo->ReadInt( slow.previousTime );
 			readDemo->ReadInt( slow.time );
 			readDemo->ReadInt( slow.realClientTime );
 			break;
-		}		
+		}
 		default:
 		{
 			common->Error( "Bad demo game command '%d' in demo stream", cmd );
 			break;
 		}
 	}
-
+	
 	return true;
 }

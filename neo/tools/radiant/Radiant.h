@@ -35,7 +35,7 @@ If you have questions concerning this license or the applicable additional terms
 #endif // _MSC_VER >= 1000
 
 #ifndef __AFXWIN_H__
-	#error include 'stdafx.h' before including this file for PCH
+#error include 'stdafx.h' before including this file for PCH
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
@@ -49,17 +49,17 @@ class CRadiantApp : public CWinApp
 public:
 	CRadiantApp();
 	~CRadiantApp();
-
+	
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CRadiantApp)
-	public:
+public:
 	virtual BOOL InitInstance();
 	virtual int ExitInstance();
-	virtual BOOL OnIdle(LONG lCount);
+	virtual BOOL OnIdle( LONG lCount );
 	virtual int Run( void );
 	//}}AFX_VIRTUAL
-
+	
 // Implementation
 
 	//{{AFX_MSG(CRadiantApp)
@@ -69,7 +69,7 @@ public:
 };
 
 // instantiate static instance for deferred creation
-CRadiantApp & Radiant();
+CRadiantApp& Radiant();
 
 /////////////////////////////////////////////////////////////////////////////
 

@@ -67,9 +67,9 @@ public:
 	
 	// #### SR Moved from protected:
 	float					move_speed;
-	void					MoveToPos( const idVec3 &pos);
+	void					MoveToPos( const idVec3& pos );
 	
-	bool					moving;	// #### SR	
+	bool					moving;	// #### SR
 	void					Swing( float speed, float phase, idAngles& depth ); // ### SR
 	void					Stop_Swinging(); // ### SR
 	

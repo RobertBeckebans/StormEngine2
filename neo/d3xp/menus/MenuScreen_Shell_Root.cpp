@@ -85,9 +85,9 @@ void idMenuScreen_Shell_Root::Initialize( idMenuHandler* data )
 	AddEventAction( WIDGET_EVENT_SCROLL_LEFT ).Set( new( TAG_SWF ) idWidgetActionHandler( this, WIDGET_ACTION_EVENT_SCROLL_LEFT_START_REPEATER, WIDGET_EVENT_SCROLL_LEFT ) );
 	AddEventAction( WIDGET_EVENT_SCROLL_LEFT_RELEASE ).Set( new( TAG_SWF ) idWidgetActionHandler( this, WIDGET_ACTION_EVENT_STOP_REPEATER, WIDGET_EVENT_SCROLL_LEFT_RELEASE ) );
 	AddEventAction( WIDGET_EVENT_PRESS ).Set( WIDGET_ACTION_PRESS_FOCUSED, 0 );
-
-	// Automatically sign-in with default profile for Steel Storm 2	
-	session->GetSignInManager().RegisterLocalUser( 0 );	
+	
+	// Automatically sign-in with default profile for Steel Storm 2
+	session->GetSignInManager().RegisterLocalUser( 0 );
 }
 
 /*
@@ -216,8 +216,8 @@ void idMenuScreen_Shell_Root::ShowScreen( const mainMenuTransition_t transitionT
 		{
 		
 			idMenuWidget_Button* buttonWidget = NULL;
-
-
+			
+			
 #if !defined ( ID_RETAIL )
 			option.Append( "DEV" );	// DEV
 			menuOptions.Append( option );
@@ -229,7 +229,7 @@ void idMenuScreen_Shell_Root::ShowScreen( const mainMenuTransition_t transitionT
 				buttonWidget->SetDescription( "View a list of maps available for play" );
 			}
 			index++;
-#endif 
+#endif
 			
 			option.Clear();
 			option.Append( "#str_swf_campaign" );	// singleplayer
@@ -242,7 +242,7 @@ void idMenuScreen_Shell_Root::ShowScreen( const mainMenuTransition_t transitionT
 				buttonWidget->SetDescription( "#str_swf_campaign_desc" );
 			}
 			index++;
-#if defined ( ID_ENABLE_MULTIPLAYER )			
+#if defined ( ID_ENABLE_MULTIPLAYER )
 			option.Clear();
 			option.Append( "#str_swf_multiplayer" );	// multiplayer
 			menuOptions.Append( option );

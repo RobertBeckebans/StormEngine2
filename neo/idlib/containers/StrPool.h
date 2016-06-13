@@ -171,20 +171,20 @@ ID_INLINE void idStrPool::FreeString( const idPoolStr* poolStr )
 	// foresthale 2014-05-15: it seems that pool can be empty already when we
 	// get here, and poolStr may point to freed memory, the call stack is:
 	// SteelStorm2_bfg.exe!idStrPool::FreeString(const idPoolStr * poolStr) Line 215	C++
- 	// SteelStorm2_bfg.exe!idDict::Clear() Line 235	C++
- 	// SteelStorm2_bfg.exe!idDict::~idDict() Line 225	C++
- 	// SteelStorm2_bfg.exe!idGameLocal::~idGameLocal()	C++
- 	// SteelStorm2_bfg.exe!`dynamic atexit destructor for 'gameLocal''()	C++
- 	// msvcr110d.dll!doexit(int code, int quick, int retcaller) Line 585	C
- 	// msvcr110d.dll!exit(int code) Line 395	C
- 	// SteelStorm2_bfg.exe!idSysThread::ThreadProc(idSysThread * thread) Line 255	C++
+	// SteelStorm2_bfg.exe!idDict::Clear() Line 235	C++
+	// SteelStorm2_bfg.exe!idDict::~idDict() Line 225	C++
+	// SteelStorm2_bfg.exe!idGameLocal::~idGameLocal()	C++
+	// SteelStorm2_bfg.exe!`dynamic atexit destructor for 'gameLocal''()	C++
+	// msvcr110d.dll!doexit(int code, int quick, int retcaller) Line 585	C
+	// msvcr110d.dll!exit(int code) Line 395	C
+	// SteelStorm2_bfg.exe!idSysThread::ThreadProc(idSysThread * thread) Line 255	C++
 	//
 	// foresthale 2014-05-28: several other call stacks can reach this point
 	// as well, so I am putting this code in, it is a ghastly hack and it
 	// would do us well to find the various entry points that lead to it.
 	if( pool.Num() == 0 )
 		return;
-
+		
 	/*
 	 * DG: numUsers can actually be 0 when shutting down the game, because then
 	 * first idCommonLocal::Quit() -> idCommonLocal::Shutdown() -> idLib::Shutdown()

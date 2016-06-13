@@ -111,7 +111,7 @@ public:
 	
 	// Weapon definition management
 	void					Clear();
-	void					GetWeaponDef( const char* objectname, int ammoinclip);
+	void					GetWeaponDef( const char* objectname, int ammoinclip );
 	bool					IsLinked();
 	bool					IsWorldModelReady();
 	
@@ -154,7 +154,7 @@ public:
 	{
 		return status;
 	};
-
+	
 	// Script state management
 	virtual idThread* 		ConstructScriptObject();
 	virtual void			DeconstructScriptObject();
@@ -221,8 +221,14 @@ public:
 	
 	void					GetProjectileLaunchOriginAndAxis( idVec3& origin, idMat3& axis );
 	
-	const idDeclEntityDef* GetDeclEntityDef() { return weaponDef; }
-	const idDict &			GetprojectilDict() const { return projectileDict; };
+	const idDeclEntityDef* GetDeclEntityDef()
+	{
+		return weaponDef;
+	}
+	const idDict& 			GetprojectilDict() const
+	{
+		return projectileDict;
+	};
 	
 	friend class idPlayer;
 private:
@@ -236,46 +242,46 @@ private:
 	idScriptBool			WEAPON_LOWERWEAPON;
 	
 	// ##################################### SR
-
-	idScriptBool			WEAPON_AMMO_SWITCH;	
+	
+	idScriptBool			WEAPON_AMMO_SWITCH;
 	idScriptBool			WEAPON_AMMO_FIRSTLOAD;
 	
 	idDict					brassReloadDict;
 	
-	int						numProjectiles;	
-
-	int						spread;	
-		
-	jointHandle_t			ejectReloadJointView;	
-
-	void					Event_EjectReloadBrass( void );	
+	int						numProjectiles;
+	
+	int						spread;
+	
+	jointHandle_t			ejectReloadJointView;
+	
+	void					Event_EjectReloadBrass( void );
 	void					Event_Start_Attack( int leftright );
-	void					Event_Stop_Attack( void );	
+	void					Event_Stop_Attack( void );
 	void 					Event_NumProjectiles( void );
 	void 					Event_Spread( void );
 	void					Sword_Attack( void );
 	void 					Melee_Attack( void );
 	void 					Event_GetObjective( int objNum );
-
+	
 	void 					Event_MeleeAttackLeft( float angle );
 	void 					Event_MeleeAttackRight( float angle );
-
+	
 	void					Event_GetBarrelJoint( void );
-
-	bool 					EntHit( int entNum );		
+	
+	bool 					EntHit( int entNum );
 	
 	bool					ATTACKING;
 	bool					SWORD_ATTACKING;
 	bool					ATTACK_LEFT;
 	int						ent_hitlist[5];
-	int						ents_hit;	
+	int						ents_hit;
 	
 	const idDeclEntityDef* 	meleeDefL;
 	idStr					meleeDefLName;
 	
 	float					decAngle;
 	
-	// #################################### END SR	
+	// #################################### END SR
 	
 	weaponStatus_t			status;
 	idThread* 				weaponThread;
@@ -374,7 +380,7 @@ private:
 	bool					powerAmmo;			// true if the clip reduction is a factor of the power setting when
 	// a projectile is launched
 	// mp client
-
+	
 	bool					isFiring;
 	
 	// zoom

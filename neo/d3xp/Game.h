@@ -184,10 +184,10 @@ public:
 	virtual void				Shell_UpdateClientCountdown( int countdown ) = 0;
 	virtual void				Shell_UpdateLeaderboard( const idLeaderboardCallback* callback ) = 0;
 	virtual void				Shell_SetGameComplete() = 0;
-
+	
 	// Demo helper functions
-	virtual void				StartDemoPlayback( idRenderWorld * renderworld ) = 0;
-
+	virtual void				StartDemoPlayback( idRenderWorld* renderworld ) = 0;
+	
 	virtual bool				ProcessDemoCommand( idDemoFile* readDemo ) = 0;
 };
 

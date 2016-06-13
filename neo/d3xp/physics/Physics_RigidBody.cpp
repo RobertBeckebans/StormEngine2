@@ -127,7 +127,7 @@ bool idPhysics_RigidBody::CollisionImpulse( const trace_t& collision, idVec3& im
 	ent = gameLocal.entities[collision.c.entityNum];
 	ent->GetImpactInfo( self, collision.c.id, collision.c.point, &info );
 	
-	if ( ( GetClipMask() & CONTENTS_FLUID ) && ( collision.c.contents & CONTENTS_FLUID ) )
+	if( ( GetClipMask() & CONTENTS_FLUID ) && ( collision.c.contents & CONTENTS_FLUID ) )
 	{
 		// todo: do we want to add some slight velocity deflection or velocity reduction when entering fluids?
 	}
@@ -142,11 +142,11 @@ bool idPhysics_RigidBody::CollisionImpulse( const trace_t& collision, idVec3& im
 		velocity = linearVelocity + angularVelocity.Cross( r );
 		// subtract velocity of other entity
 		velocity -= info.velocity;
-
+		
 		// velocity in normal direction
 		vel = velocity * collision.c.normal;
-
-		if ( vel > -STOP_SPEED )
+		
+		if( vel > -STOP_SPEED )
 		{
 			impulseNumerator = STOP_SPEED;
 		}
@@ -155,18 +155,18 @@ bool idPhysics_RigidBody::CollisionImpulse( const trace_t& collision, idVec3& im
 			impulseNumerator = -( 1.0f + bouncyness ) * vel;
 		}
 		impulseDenominator = inverseMass + ( ( inverseWorldInertiaTensor * r.Cross( collision.c.normal ) ).Cross( r ) * collision.c.normal );
-		if ( info.invMass )
+		if( info.invMass )
 		{
 			impulseDenominator += info.invMass + ( ( info.invInertiaTensor * info.position.Cross( collision.c.normal ) ).Cross( info.position ) * collision.c.normal );
 		}
 		impulse = ( impulseNumerator / impulseDenominator ) * collision.c.normal;
-
+		
 		// update linear and angular momentum with impulse
 		current.i.linearMomentum += impulse;
 		current.i.angularMomentum += r.Cross( impulse );
-
+		
 		// if no movement at all don't blow up
-		if ( collision.fraction < 0.0001f )
+		if( collision.fraction < 0.0001f )
 		{
 			current.i.linearMomentum *= 0.5f;
 			current.i.angularMomentum *= 0.5f;
@@ -1612,15 +1612,15 @@ void idPhysics_RigidBody::SetMaster( idEntity* master, BindFlags flags )
 			{
 				current.localAxis = current.i.orientation;
 			}
-
-			if ( (flags&BFL_SNAPXFORM)!= 0 )
+			
+			if( ( flags & BFL_SNAPXFORM ) != 0 )
 			{
 				current.localOrigin.Zero();
 				current.localAxis.Identity();
 			}
-
+			
 			hasMaster = true;
-			isOrientated = (flags & BFL_ORIENTED)!=0;
+			isOrientated = ( flags & BFL_ORIENTED ) != 0;
 			ClearContacts();
 		}
 	}

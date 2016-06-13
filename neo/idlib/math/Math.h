@@ -65,17 +65,17 @@ If you have questions concerning this license or the applicable additional terms
 #define	BYTE2ANGLE(x)			( (x) * ( 360.0f / 256.0f ) )
 
 #if __x86_64__
-	#define FLOATSIGNBITSET(f)		((*(const unsigned long *)&(f)) >> 63)
-	#define FLOATSIGNBITNOTSET(f)	((~(*(const unsigned long *)&(f))) >> 63)
-	#define FLOATNOTZERO(f)			((*(const unsigned long *)&(f)) & ~(1<<63) )
-	#define INTSIGNBITSET(i)		(((const unsigned long)(i)) >> 63)
-	#define INTSIGNBITNOTSET(i)		((~((const unsigned long)(i))) >> 63)
+#define FLOATSIGNBITSET(f)		((*(const unsigned long *)&(f)) >> 63)
+#define FLOATSIGNBITNOTSET(f)	((~(*(const unsigned long *)&(f))) >> 63)
+#define FLOATNOTZERO(f)			((*(const unsigned long *)&(f)) & ~(1<<63) )
+#define INTSIGNBITSET(i)		(((const unsigned long)(i)) >> 63)
+#define INTSIGNBITNOTSET(i)		((~((const unsigned long)(i))) >> 63)
 #else
-	#define FLOATSIGNBITSET(f)		((*(const unsigned long *)&(f)) >> 31)
-	#define FLOATSIGNBITNOTSET(f)	((~(*(const unsigned long *)&(f))) >> 31)
-	#define FLOATNOTZERO(f)			((*(const unsigned long *)&(f)) & ~(1<<31) )
-	#define INTSIGNBITSET(i)		(((const unsigned long)(i)) >> 31)
-	#define INTSIGNBITNOTSET(i)		((~((const unsigned long)(i))) >> 31)
+#define FLOATSIGNBITSET(f)		((*(const unsigned long *)&(f)) >> 31)
+#define FLOATSIGNBITNOTSET(f)	((~(*(const unsigned long *)&(f))) >> 31)
+#define FLOATNOTZERO(f)			((*(const unsigned long *)&(f)) & ~(1<<31) )
+#define INTSIGNBITSET(i)		(((const unsigned long)(i)) >> 31)
+#define INTSIGNBITNOTSET(i)		((~((const unsigned long)(i))) >> 31)
 #endif
 
 #define C_FLOAT_TO_INT( x )		(int)(x)
@@ -380,9 +380,9 @@ class idMath
 public:
 
 	static void					Init();
-
-	static float				RSqrt(float x);			// reciprocal square root, returns huge number when x == 0.0
-
+	
+	static float				RSqrt( float x );			// reciprocal square root, returns huge number when x == 0.0
+	
 	static float				InvSqrt( float x );			// inverse square root with 32 bits precision, returns huge number when x == 0.0
 	static float				InvSqrt16( float x );		// inverse square root with 16 bits precision, returns huge number when x == 0.0
 	
@@ -529,16 +529,17 @@ ID_INLINE byte CLAMP_BYTE( int x )
 idMath::RSqrt
 ========================
 */
-ID_INLINE float idMath::RSqrt(float x) {
+ID_INLINE float idMath::RSqrt( float x )
+{
 
 	int i;
 	float y, r;
-
+	
 	y = x * 0.5f;
-	i = *reinterpret_cast<int *>(&x);
-	i = 0x5f3759df - (i >> 1);
-	r = *reinterpret_cast<float *>(&i);
-	r = r * (1.5f - r * r * y);
+	i = *reinterpret_cast<int*>( &x );
+	i = 0x5f3759df - ( i >> 1 );
+	r = *reinterpret_cast<float*>( &i );
+	r = r * ( 1.5f - r * r * y );
 	return r;
 }
 

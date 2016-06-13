@@ -50,14 +50,14 @@ This should not be done during normal game-play, if you can avoid it.
 void idFramebuffer::AllocFramebuffer()
 {
 	PurgeFramebuffer();
-
+	
 	// if we don't have a rendering context, just return after we
 	// have filled in the parms.
 	if( !R_IsInitialized() )
 	{
 		return;
 	}
-
+	
 }
 
 /*
@@ -85,87 +85,87 @@ void idFramebuffer::Bind()
 {
 	int n = 0;
 	static const GLenum drawbuffers[8] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT5, GL_COLOR_ATTACHMENT6, GL_COLOR_ATTACHMENT7 };
-
-	for (n = 0;n < 8;n++)
-		if (!colorAttachmentImage[n])
+	
+	for( n = 0; n < 8; n++ )
+		if( !colorAttachmentImage[n] )
 			break;
-
-	if (fbo == 0)
+			
+	if( fbo == 0 )
 	{
 		GL_CheckErrors();
-	
-		if (!globalFramebuffers->gotsysfbo)
+		
+		if( !globalFramebuffers->gotsysfbo )
 		{
 			globalFramebuffers->gotsysfbo = true;
-			qglGetIntegerv(GL_FRAMEBUFFER_BINDING, (GLint*)&globalFramebuffers->sysfbo);
+			qglGetIntegerv( GL_FRAMEBUFFER_BINDING, ( GLint* )&globalFramebuffers->sysfbo );
 		}
-
+		
 		// generate the fbo handle
 		qglGenFramebuffers( 1, ( GLuint* )&fbo );
 		assert( fbo != 0 );
-
+		
 		// bind the fbo handle so that we can configure it
-		qglBindFramebuffer(GL_FRAMEBUFFER, fbo);
-
+		qglBindFramebuffer( GL_FRAMEBUFFER, fbo );
+		
 		// attach things
-		if (depthAttachmentImage)
-			depthAttachmentImage->BindAttachmentOnFBO(GL_DEPTH_ATTACHMENT, attachmentImageLayer);
-		if (depthStencilAttachmentImage)
-			depthStencilAttachmentImage->BindAttachmentOnFBO(GL_DEPTH_STENCIL_ATTACHMENT, attachmentImageLayer);
-		for (int i = 0;i < 8;i++)
-			if (colorAttachmentImage[i])
-				colorAttachmentImage[i]->BindAttachmentOnFBO(GL_COLOR_ATTACHMENT0 + i, attachmentImageLayer);
-
+		if( depthAttachmentImage )
+			depthAttachmentImage->BindAttachmentOnFBO( GL_DEPTH_ATTACHMENT, attachmentImageLayer );
+		if( depthStencilAttachmentImage )
+			depthStencilAttachmentImage->BindAttachmentOnFBO( GL_DEPTH_STENCIL_ATTACHMENT, attachmentImageLayer );
+		for( int i = 0; i < 8; i++ )
+			if( colorAttachmentImage[i] )
+				colorAttachmentImage[i]->BindAttachmentOnFBO( GL_COLOR_ATTACHMENT0 + i, attachmentImageLayer );
+				
 		// configure the drawbuffers/readbuffer correctly so we can use it
-		if (n > 1)
+		if( n > 1 )
 		{
-			qglDrawBuffers(n, drawbuffers);
-			qglReadBuffer(GL_NONE);
+			qglDrawBuffers( n, drawbuffers );
+			qglReadBuffer( GL_NONE );
 		}
-		else if (n == 1)
+		else if( n == 1 )
 		{
-			qglDrawBuffer(GL_COLOR_ATTACHMENT0);
-			qglReadBuffer(GL_COLOR_ATTACHMENT0);
+			qglDrawBuffer( GL_COLOR_ATTACHMENT0 );
+			qglReadBuffer( GL_COLOR_ATTACHMENT0 );
 		}
 		else
 		{
-			qglDrawBuffer(GL_NONE);
-			qglReadBuffer(GL_NONE);
+			qglDrawBuffer( GL_NONE );
+			qglReadBuffer( GL_NONE );
 		}
-
+		
 		// check if the framebuffer looks okay to the driver
-		int status = qglCheckFramebufferStatus(GL_FRAMEBUFFER);
+		int status = qglCheckFramebufferStatus( GL_FRAMEBUFFER );
 		assert( status == GL_FRAMEBUFFER_COMPLETE );
-
+		
 		// see if we messed anything up
 		GL_CheckErrors();
 	}
 	else
 	{
-		qglBindFramebuffer(GL_FRAMEBUFFER, fbo);
-
+		qglBindFramebuffer( GL_FRAMEBUFFER, fbo );
+		
 		GLenum status = qglCheckFramebufferStatus( GL_FRAMEBUFFER );
 		
 		// check for errors
 		GL_CheckErrors();
-
+		
 		// configure the drawbuffers/readbuffer correctly so we can use it
-		if (n > 1)
+		if( n > 1 )
 		{
-			qglDrawBuffers(n, drawbuffers);
-			qglReadBuffer(GL_NONE);
+			qglDrawBuffers( n, drawbuffers );
+			qglReadBuffer( GL_NONE );
 		}
-		else if (n == 1)
+		else if( n == 1 )
 		{
-			qglDrawBuffer(GL_COLOR_ATTACHMENT0);
-			qglReadBuffer(GL_COLOR_ATTACHMENT0);
+			qglDrawBuffer( GL_COLOR_ATTACHMENT0 );
+			qglReadBuffer( GL_COLOR_ATTACHMENT0 );
 		}
 		else
 		{
-			qglDrawBuffer(GL_NONE);
-			qglReadBuffer(GL_NONE);
+			qglDrawBuffer( GL_NONE );
+			qglReadBuffer( GL_NONE );
 		}
-
+		
 		// check for errors
 		GL_CheckErrors();
 	}
@@ -176,7 +176,7 @@ void idFramebuffer::Bind()
 idFramebuffer::SetDepthStencilAttachment
 ========================
 */
-void idFramebuffer::SetDepthStencilAttachment(idImage* image)
+void idFramebuffer::SetDepthStencilAttachment( idImage* image )
 {
 	PurgeFramebuffer();
 	depthStencilAttachmentImage = image;
@@ -187,7 +187,7 @@ void idFramebuffer::SetDepthStencilAttachment(idImage* image)
 idFramebuffer::SetDepthAttachment
 ========================
 */
-void idFramebuffer::SetDepthAttachment(idImage* image)
+void idFramebuffer::SetDepthAttachment( idImage* image )
 {
 	PurgeFramebuffer();
 	depthAttachmentImage = image;
@@ -198,7 +198,7 @@ void idFramebuffer::SetDepthAttachment(idImage* image)
 idFramebuffer::SetColorAttachment
 ========================
 */
-void idFramebuffer::SetColorAttachment(int index, idImage* image)
+void idFramebuffer::SetColorAttachment( int index, idImage* image )
 {
 	PurgeFramebuffer();
 	colorAttachmentImage[index] = image;
@@ -294,12 +294,12 @@ void idFramebufferManager::PurgeAllFramebuffers()
 		framebuffer = framebuffers[i];
 		framebuffer->PurgeFramebuffer();
 	}
-
-	if (gotsysfbo)
+	
+	if( gotsysfbo )
 	{
 		// return to the system fbo
 		BindSystemFramebuffer();
-
+		
 		// we'll get the system fbo again on first Bind after reload
 		gotsysfbo = false;
 		sysfbo = 0;
@@ -326,19 +326,19 @@ BindSystemFramebuffer
 */
 void idFramebufferManager::BindSystemFramebuffer()
 {
-	if ( gotsysfbo )
+	if( gotsysfbo )
 	{
 		qglBindFramebuffer( GL_FRAMEBUFFER, sysfbo );
 	}
-
+	
 	GLenum status = qglCheckFramebufferStatus( GL_FRAMEBUFFER );
-
+	
 	// check for errors
 	GL_CheckErrors();
-
-	qglDrawBuffer(GL_BACK);
-	qglReadBuffer(GL_BACK);
-
+	
+	qglDrawBuffer( GL_BACK );
+	qglReadBuffer( GL_BACK );
+	
 	// check for errors
 	GL_CheckErrors();
 }
@@ -356,7 +356,7 @@ void idFramebufferManager::Init()
 	viewFramebuffer = AllocFramebuffer( "_viewFramebuffer" );
 	viewFramebuffer->SetDepthStencilAttachment( globalImages->viewFramebufferDepthImage );
 	viewFramebuffer->SetColorAttachment( 0, globalImages->viewFramebufferRenderImage16 );
-
+	
 	// foresthale 2014-04-08: r_glow
 //	glowFramebuffer8[0] = AllocFramebuffer( "_glowFramebuffer0" );
 //	glowFramebuffer8[0]->SetColorAttachment( 0, globalImages->glowFramebufferImage[0] );
@@ -376,10 +376,10 @@ void idFramebufferManager::Init()
 	glowFramebuffer16[2]->SetColorAttachment( 0, globalImages->glowFramebufferImage16[2] );
 	glowFramebuffer16[3] = AllocFramebuffer( "_glowFramebufferHDR3" );
 	glowFramebuffer16[3]->SetColorAttachment( 0, globalImages->glowFramebufferImage16[3] );
-
-	for ( int i = 0;i < 5;i++ )
+	
+	for( int i = 0; i < 5; i++ )
 	{
-		for ( int j = 0;j < 6;j++ )
+		for( int j = 0; j < 6; j++ )
 		{
 			shadowMapFramebuffer[i][j] = AllocFramebuffer( va( "_shadowMapFramebuffer%i_%i", i, j ), j );
 			shadowMapFramebuffer[i][j]->SetDepthAttachment( globalImages->shadowImage[i] );

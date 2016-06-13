@@ -520,10 +520,10 @@ int idFile::ReadWinding( idWinding& winding )
 	int numPts = 0;
 	ReadInt( numPts );
 	winding.SetNumPoints( numPts );
-
-	for ( int i = 0; i < numPts; ++i )
+	
+	for( int i = 0; i < numPts; ++i )
 		ReadVec5( winding[ i ] );
-
+		
 	return 1;
 }
 
@@ -717,7 +717,7 @@ idFile::WriteWinding
 int idFile::WriteWinding( const idWinding& winding )
 {
 	WriteInt( winding.GetNumPoints() );
-	for ( int i = 0; i < winding.GetNumPoints(); ++i )
+	for( int i = 0; i < winding.GetNumPoints(); ++i )
 		WriteVec5( winding[ i ] );
 	return 1;
 }

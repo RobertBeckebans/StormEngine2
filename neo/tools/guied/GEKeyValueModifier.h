@@ -38,14 +38,14 @@ class rvGEKeyValueModifier : public rvGEModifier
 {
 public:
 
-	rvGEKeyValueModifier ( const char* name, idWindow* window, const char* key, const char* value );
-
-	virtual bool		Apply		( void );
-	virtual bool		Undo		( void );
-
-	virtual bool		CanMerge	( rvGEModifier* merge );
-	virtual bool		Merge		( rvGEModifier* merge );
-
+	rvGEKeyValueModifier( const char* name, idWindow* window, const char* key, const char* value );
+	
+	virtual bool		Apply( void );
+	virtual bool		Undo( void );
+	
+	virtual bool		CanMerge( rvGEModifier* merge );
+	virtual bool		Merge( rvGEModifier* merge );
+	
 protected:
 
 	idStr		mKey;
@@ -53,9 +53,9 @@ protected:
 	idStr		mUndoValue;
 };
 
-ID_INLINE bool rvGEKeyValueModifier::CanMerge ( rvGEModifier* merge )
+ID_INLINE bool rvGEKeyValueModifier::CanMerge( rvGEModifier* merge )
 {
-	return !((rvGEKeyValueModifier*)merge)->mKey.Icmp ( mKey );
+	return !( ( rvGEKeyValueModifier* )merge )->mKey.Icmp( mKey );
 }
 
 #endif // GEKEYVALUEMODIFIER_H_

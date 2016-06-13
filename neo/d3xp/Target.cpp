@@ -65,7 +65,7 @@ void idTarget_Remove::Event_Activate( idEntity* activator )
 {
 	for( int i = 0; i < targets.Num(); i++ )
 	{
-		idEntity*ent = targets[ i ].GetEntity();
+		idEntity* ent = targets[ i ].GetEntity();
 		if( ent )
 		{
 			ent->Remove();
@@ -95,7 +95,7 @@ idTarget_Show::Event_Activate
 ================
 */
 void idTarget_Show::Event_Activate( idEntity* activator )
-{	
+{
 	for( int i = 0; i < targets.Num(); i++ )
 	{
 		idEntity* ent = targets[ i ].GetEntity();
@@ -128,7 +128,7 @@ idTarget_Damage::Event_Activate
 ================
 */
 void idTarget_Damage::Event_Activate( idEntity* activator )
-{	
+{
 	const char* damage = spawnArgs.GetString( "def_damage", "damage_generic" );
 	for( int i = 0; i < targets.Num(); i++ )
 	{
@@ -408,14 +408,14 @@ idTarget_SetShaderParm::Event_Activate
 ================
 */
 void idTarget_SetShaderParm::Event_Activate( idEntity* activator )
-{		
+{
 	// set the color on the targets
 	idVec3		color;
 	if( spawnArgs.GetVector( "_color", "1 1 1", color ) )
 	{
 		for( int i = 0; i < targets.Num(); i++ )
 		{
-			idEntity * ent = targets[ i ].GetEntity();
+			idEntity* ent = targets[ i ].GetEntity();
 			if( ent )
 			{
 				ent->SetColor( color[ 0 ], color[ 1 ], color[ 2 ] );
@@ -431,7 +431,7 @@ void idTarget_SetShaderParm::Event_Activate( idEntity* activator )
 		{
 			for( int i = 0; i < targets.Num(); i++ )
 			{
-				idEntity * ent = targets[ i ].GetEntity();
+				idEntity* ent = targets[ i ].GetEntity();
 				if( ent )
 				{
 					ent->SetShaderParm( parmnum, value );
@@ -467,7 +467,7 @@ idTarget_SetShaderTime::Event_Activate
 ================
 */
 void idTarget_SetShaderTime::Event_Activate( idEntity* activator )
-{	
+{
 	float time = -MS2SEC( gameLocal.time );
 	for( int i = 0; i < targets.Num(); i++ )
 	{
@@ -547,7 +547,7 @@ void idTarget_FadeEntity::Event_Activate( idEntity* activator )
 	cinematic = true;
 	BecomeActive( TH_THINK );
 	
-	idEntity * ent = this;
+	idEntity* ent = this;
 	for( int i = 0; i < targets.Num(); i++ )
 	{
 		idEntity* ent = targets[ i ].GetEntity();
@@ -623,14 +623,14 @@ idTarget_LightFadeIn::Event_Activate
 ================
 */
 void idTarget_LightFadeIn::Event_Activate( idEntity* activator )
-{	
+{
 	if( !targets.Num() )
 	{
 		return;
 	}
 	
 	float time = spawnArgs.GetFloat( "fadetime" );
-	idEntity * ent = this;
+	idEntity* ent = this;
 	for( int i = 0; i < targets.Num(); i++ )
 	{
 		ent = targets[ i ].GetEntity();
@@ -675,7 +675,7 @@ void idTarget_LightFadeOut::Event_Activate( idEntity* activator )
 	}
 	
 	float time = spawnArgs.GetFloat( "fadetime" );
-	idEntity * ent = this;
+	idEntity* ent = this;
 	for( int i = 0; i < targets.Num(); i++ )
 	{
 		ent = targets[ i ].GetEntity();
@@ -1693,7 +1693,7 @@ void idTarget_CallObjectFunction::Event_Activate( idEntity* activator )
 	const char*	funcName = spawnArgs.GetString( "call" );
 	for( int i = 0; i < targets.Num(); i++ )
 	{
-		idEntity*ent = targets[ i ].GetEntity();
+		idEntity* ent = targets[ i ].GetEntity();
 		if( ent != NULL && ent->scriptObject.HasObject() )
 		{
 			const function_t* func = ent->scriptObject.GetFunction( funcName );
@@ -1710,9 +1710,9 @@ void idTarget_CallObjectFunction::Event_Activate( idEntity* activator )
 			{
 				gameLocal.Error( "Function '%s' on entity '%s' is the wrong type for function call from '%s'", funcName, ent->name.c_str(), name.c_str() );
 			}
-
+			
 			// create a thread and call the function
-			idThread * thread = new idThread( va( "%s_%s", GetName(), func->Name() ) );
+			idThread* thread = new idThread( va( "%s_%s", GetName(), func->Name() ) );
 			thread->CallFunction( ent, func, true );
 			thread->Start();
 		}
@@ -1738,7 +1738,7 @@ idTarget_EnableLevelWeapons::Event_Activate
 ================
 */
 void idTarget_EnableLevelWeapons::Event_Activate( idEntity* activator )
-{		
+{
 	gameLocal.world->spawnArgs.SetBool( "no_Weapons", spawnArgs.GetBool( "disable" ) );
 	
 	if( spawnArgs.GetBool( "disable" ) )
@@ -1753,7 +1753,7 @@ void idTarget_EnableLevelWeapons::Event_Activate( idEntity* activator )
 	}
 	else
 	{
-		const char *weap = spawnArgs.GetString( "weapon" );
+		const char* weap = spawnArgs.GetString( "weapon" );
 		for( int i = 0; i < gameLocal.numClients; i++ )
 		{
 			if( gameLocal.entities[ i ] )

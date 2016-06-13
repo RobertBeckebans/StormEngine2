@@ -298,7 +298,7 @@ void idThread::EndMultiFrameEvent( idEntity* ent, const idEventDef* event )
 idThread::idThread
 ================
 */
-idThread::idThread( const char * name )
+idThread::idThread( const char* name )
 {
 	Init();
 	SetThreadName( name ? name : va( "thread_%d", threadIndex ) );
@@ -581,18 +581,18 @@ void idThread::DisplayInfo()
 idThread::DebugInfo
 ================
 */
-void idThread::DebugInfo( msg_t & threadMsg )
+void idThread::DebugInfo( msg_t& threadMsg )
 {
 	int waitTime = 0;
 	idStr waitMsg;
-
-	const function_t * func = interpreter.GetCurrentFunction();
+	
+	const function_t* func = interpreter.GetCurrentFunction();
 	threadMsg.WriteString( func ? func->Name() : "" );
-
+	
 	if( interpreter.doneProcessing && !interpreter.threadDying )
 	{
 		// paused time
-		waitTime = gameLocal.time - lastExecuteTime;		
+		waitTime = gameLocal.time - lastExecuteTime;
 		if( waitingForThread )
 			waitMsg.Format( "Waiting for thread #%3i '%s'\n", waitingForThread->GetThreadNum(), waitingForThread->GetThreadName() );
 		else if( ( waitingFor != ENTITYNUM_NONE ) && ( waitingFor < MAX_GENTITIES ) && ( gameLocal.entities[ waitingFor ] ) )
@@ -600,7 +600,7 @@ void idThread::DebugInfo( msg_t & threadMsg )
 		else if( waitingUntil )
 			waitMsg.Format( "Waiting until %d (%d ms total wait time)\n", waitingUntil, waitingUntil - lastExecuteTime );
 	}
-
+	
 	threadMsg.Write<int>( waitTime );
 	threadMsg.WriteString( waitMsg.c_str() );
 }
@@ -1272,25 +1272,25 @@ void idThread::Event_RandomInt( int range ) const
 
 void idThread::Event_RandomRange( float rangeMin, float rangeMax ) const
 {
-	const int result = gameLocal.random.RandomFloat() * (rangeMax-rangeMin);
+	const int result = gameLocal.random.RandomFloat() * ( rangeMax - rangeMin );
 	ReturnFloat( rangeMin + result );
 }
 
 void idThread::Event_Wrap( float value, float rangeMin, float rangeMax ) const
 {
 	const float range = rangeMax - rangeMin;
-	while ( value > rangeMax )
+	while( value > rangeMax )
 		value -= range;
-	while ( value > rangeMax )
+	while( value > rangeMax )
 		value += range;
 	ReturnFloat( value );
 }
 
 void idThread::Event_Clamp( float value, float rangeMin, float rangeMax ) const
 {
-	if ( value > rangeMax )
+	if( value > rangeMax )
 		ReturnFloat( rangeMax );
-	if ( value < rangeMin )
+	if( value < rangeMin )
 		ReturnFloat( rangeMin );
 	else
 		ReturnFloat( value );
@@ -1665,7 +1665,7 @@ void idThread::Event_RotateVector( idVec3& vec, idVec3& ang )
 	idAngles tempAng( ang );
 	idMat3 axis = tempAng.ToMat3();
 	idVec3 ret = vec * axis;
-	ReturnVector( ret );	
+	ReturnVector( ret );
 }
 
 void idThread::Event_CalculateSkyAngles( float skyAngle, float wobbleDegrees, float wobbleSpeed )
@@ -1677,51 +1677,51 @@ void idThread::Event_CalculateSkyAngles( float skyAngle, float wobbleDegrees, fl
 		// very ad-hoc "wobble" transform
 		float s, c;
 		idMath::SinCos( DEG2RAD( wobbleSpeed ) * gameLocal.time * 0.001f, s, c );
-
+		
 		float ws, wc;
 		idMath::SinCos( DEG2RAD( wobbleDegrees ), ws, wc );
-
+		
 		axis[ 2 ][ 0 ] = ws * c;
 		axis[ 2 ][ 1 ] = ws * s;
 		axis[ 2 ][ 2 ] = wc;
-
+		
 		axis[ 1 ][ 0 ] = -s * s * ws;
 		axis[ 1 ][ 2 ] = -s * ws * ws;
 		axis[ 1 ][ 1 ] = idMath::Sqrt( idMath::Fabs( 1.0f - ( axis[ 1 ][ 0 ] * axis[ 1 ][ 0 ] + axis[ 1 ][ 2 ] * axis[ 1 ][ 2 ] ) ) );
-
+		
 		// make the second vector exactly perpendicular to the first
 		axis[ 1 ] -= ( axis[ 2 ] * axis[ 1 ] ) * axis[ 2 ];
 		axis[ 1 ].Normalize();
-
+		
 		// construct the third with a cross
 		axis[ 0 ].Cross( axis[ 1 ], axis[ 2 ] );
 	}
-
+	
 	// add the rotate
 	float rs, rc;
 	idMath::SinCos( skyAngle, rs, rc );
-
+	
 	float transform[ 12 ];
 	transform[ 0 * 4 + 0 ] = axis[ 0 ][ 0 ] * rc + axis[ 1 ][ 0 ] * rs;
 	transform[ 0 * 4 + 1 ] = axis[ 0 ][ 1 ] * rc + axis[ 1 ][ 1 ] * rs;
 	transform[ 0 * 4 + 2 ] = axis[ 0 ][ 2 ] * rc + axis[ 1 ][ 2 ] * rs;
 	transform[ 0 * 4 + 3 ] = 0.0f;
-
+	
 	transform[ 1 * 4 + 0 ] = axis[ 1 ][ 0 ] * rc - axis[ 0 ][ 0 ] * rs;
 	transform[ 1 * 4 + 1 ] = axis[ 1 ][ 1 ] * rc - axis[ 0 ][ 1 ] * rs;
 	transform[ 1 * 4 + 2 ] = axis[ 1 ][ 2 ] * rc - axis[ 0 ][ 2 ] * rs;
 	transform[ 1 * 4 + 3 ] = 0.0f;
-
+	
 	transform[ 2 * 4 + 0 ] = axis[ 2 ][ 0 ];
 	transform[ 2 * 4 + 1 ] = axis[ 2 ][ 1 ];
 	transform[ 2 * 4 + 2 ] = axis[ 2 ][ 2 ];
 	transform[ 2 * 4 + 3 ] = 0.0f;
-
+	
 	idMat3 mat(
 		transform[ 0 * 4 + 0 ], transform[ 0 * 4 + 1 ], transform[ 0 * 4 + 2 ],
 		transform[ 1 * 4 + 0 ], transform[ 1 * 4 + 1 ], transform[ 1 * 4 + 2 ],
 		transform[ 2 * 4 + 0 ], transform[ 2 * 4 + 1 ], transform[ 2 * 4 + 2 ] );
-
+		
 	ReturnVector( mat.ToAngles().ToVec3() );
 }
 
@@ -2278,7 +2278,7 @@ idThread::Event_DrawText
 */
 void idThread::Event_DrawText( const char* text, const idVec3& origin, float scale, const idVec3& color, const int align, const float lifetime )
 {
- 	gameRenderWorld->DrawText( text, origin, scale, idVec4( color.x, color.y, color.z, 1.0f ), gameLocal.GetLocalPlayer()->viewAngles.ToMat3(), align, SEC2MS( lifetime ) );
+	gameRenderWorld->DrawText( text, origin, scale, idVec4( color.x, color.y, color.z, 1.0f ), gameLocal.GetLocalPlayer()->viewAngles.ToMat3(), align, SEC2MS( lifetime ) );
 }
 
 /*
@@ -2319,7 +2319,8 @@ void idThread::Event_PrecacheSkin( const char* skinName )
 idThread::Event_PrecacheParticle
 ================
 */
-void idThread::Event_PrecacheParticle( const char* particleName ) {
+void idThread::Event_PrecacheParticle( const char* particleName )
+{
 	declManager->FindParticle( particleName );
 }
 
@@ -2329,7 +2330,8 @@ void idThread::Event_PrecacheParticle( const char* particleName ) {
 idThread::Event_PrecacheModelDef
 ================
 */
-void idThread::Event_PrecacheModelDef( const char* modelDefName ) {
+void idThread::Event_PrecacheModelDef( const char* modelDefName )
+{
 	declManager->FindModelDef( modelDefName );
 }
 
@@ -2341,17 +2343,17 @@ void idThread::Event_GetNextEntity( const char* key, const char* value, const id
 	
 	// Step 1: Work out where to start in the gameLocal.entities index
 	int i = lastMatch ? lastMatch->entityNumber + 1 : 0;
-
+	
 	// Step 2: Advance i to the next matching entity
-	for ( ; i < MAX_GENTITIES ; ++i )
+	for( ; i < MAX_GENTITIES ; ++i )
 	{
 		idEntity* ent = gameLocal.entities[i];
 		
-		if ( !ent )
+		if( !ent )
 		{
 			continue;	// skip past nulls in the index
 		}
-		else if ( noKeyFilter && noValueFilter )
+		else if( noKeyFilter && noValueFilter )
 		{
 			break;		// any entity will do
 		}
@@ -2359,21 +2361,21 @@ void idThread::Event_GetNextEntity( const char* key, const char* value, const id
 		// Search spawnargs for a matching value. If key is empty, all keys will be tested.
 		bool foundMatch = false;
 		const idKeyValue* kv = NULL;
-		while ( (kv = ent->spawnArgs.MatchPrefix(key, kv)) != NULL )
+		while( ( kv = ent->spawnArgs.MatchPrefix( key, kv ) ) != NULL )
 		{
-			if ( noValueFilter || kv->GetValue() == value )
+			if( noValueFilter || kv->GetValue() == value )
 			{
 				foundMatch = true;
 				break;
 			}
 		}
-
-		if ( foundMatch )
+		
+		if( foundMatch )
 		{
 			break;
 		}
 	}
-
+	
 	// Step 3: Return a value
 	idThread::ReturnEntity( i < MAX_GENTITIES ? gameLocal.entities[i] : NULL );
 }

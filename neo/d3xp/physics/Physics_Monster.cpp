@@ -834,8 +834,8 @@ void idPhysics_Monster::SetMaster( idEntity* master, BindFlags flags )
 			current.localOrigin = ( current.origin - masterOrigin ) * masterAxis.Transpose();
 			masterEntity = master;
 			masterYaw = masterAxis[0].ToYaw();
-
-			if ( (flags&BFL_SNAPXFORM)!= 0 )
+			
+			if( ( flags & BFL_SNAPXFORM ) != 0 )
 			{
 				current.localOrigin.Zero();
 			}

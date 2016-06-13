@@ -38,7 +38,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #define	ID_ALLOW_TOOLS
 
-#ifdef _MSC_VER 
+#ifdef _MSC_VER
 #pragma warning( disable: 4005 )  /* macro redefinition */
 #endif
 #include <afxwin.h>
@@ -46,7 +46,7 @@ If you have questions concerning this license or the applicable additional terms
 #include <afxdlgs.h>
 #include <afxext.h>
 
-#ifdef _MSC_VER 
+#ifdef _MSC_VER
 #pragma warning( default: 4005 )  /* macro redefinition */
 #endif
 #define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS	// prevent auto literal to string conversion

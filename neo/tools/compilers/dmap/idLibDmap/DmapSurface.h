@@ -46,14 +46,14 @@ class idDmapSurface
 {
 public:
 	idDmapSurface();
-	explicit idDmapSurface(const idDmapSurface& surf);
-	explicit idDmapSurface(const idDmapDrawVert* verts, const int numVerts, const int* indexes, const int numIndexes);
+	explicit idDmapSurface( const idDmapSurface& surf );
+	explicit idDmapSurface( const idDmapDrawVert* verts, const int numVerts, const int* indexes, const int numIndexes );
 	~idDmapSurface();
-
-	const idDmapDrawVert& 		operator[](const int index) const;
-	idDmapDrawVert& 			operator[](const int index);
-	idDmapSurface& 				operator+=(const idDmapSurface& surf);
-
+	
+	const idDmapDrawVert& 		operator[]( const int index ) const;
+	idDmapDrawVert& 			operator[]( const int index );
+	idDmapSurface& 				operator+=( const idDmapSurface& surf );
+	
 	int						GetNumIndexes() const
 	{
 		return indexes.Num();
@@ -78,43 +78,43 @@ public:
 	{
 		return edges.Ptr();
 	}
-
+	
 	void					Clear();
-	void					TranslateSelf(const idVec3& translation);
-	void					RotateSelf(const idMat3& rotation);
-
+	void					TranslateSelf( const idVec3& translation );
+	void					RotateSelf( const idMat3& rotation );
+	
 	// splits the surface into a front and back surface, the surface itself stays unchanged
 	// frontOnPlaneEdges and backOnPlaneEdges optionally store the indexes to the edges that lay on the split plane
 	// returns a SIDE_?
-	int						Split(const idPlane& plane, const float epsilon, idDmapSurface** front, idDmapSurface** back, int* frontOnPlaneEdges = NULL, int* backOnPlaneEdges = NULL) const;
+	int						Split( const idPlane& plane, const float epsilon, idDmapSurface** front, idDmapSurface** back, int* frontOnPlaneEdges = NULL, int* backOnPlaneEdges = NULL ) const;
 	// cuts off the part at the back side of the plane, returns true if some part was at the front
 	// if there is nothing at the front the number of points is set to zero
-	bool					ClipInPlace(const idPlane& plane, const float epsilon = ON_EPSILON, const bool keepOn = false);
-
+	bool					ClipInPlace( const idPlane& plane, const float epsilon = ON_EPSILON, const bool keepOn = false );
+	
 	// returns true if each triangle can be reached from any other triangle by a traversal
 	bool					IsConnected() const;
 	// returns true if the surface is closed
 	bool					IsClosed() const;
 	// returns true if the surface is a convex hull
-	bool					IsPolytope(const float epsilon = 0.1f) const;
-
-	float					PlaneDistance(const idPlane& plane) const;
-	int						PlaneSide(const idPlane& plane, const float epsilon = ON_EPSILON) const;
-
+	bool					IsPolytope( const float epsilon = 0.1f ) const;
+	
+	float					PlaneDistance( const idPlane& plane ) const;
+	int						PlaneSide( const idPlane& plane, const float epsilon = ON_EPSILON ) const;
+	
 	// returns true if the line intersects one of the surface triangles
-	bool					LineIntersection(const idVec3& start, const idVec3& end, bool backFaceCull = false) const;
+	bool					LineIntersection( const idVec3& start, const idVec3& end, bool backFaceCull = false ) const;
 	// intersection point is start + dir * scale
-	bool					RayIntersection(const idVec3& start, const idVec3& dir, float& scale, bool backFaceCull = false) const;
-
+	bool					RayIntersection( const idVec3& start, const idVec3& dir, float& scale, bool backFaceCull = false ) const;
+	
 protected:
 	idList<idDmapDrawVert, TAG_IDLIB_LIST_SURFACE>	verts;			// vertices
 	idList<int, TAG_IDLIB_LIST_SURFACE>				indexes;		// 3 references to vertices for each triangle
 	idList<surfaceEdge_t, TAG_IDLIB_LIST_SURFACE>	edges;			// edges
 	idList<int, TAG_IDLIB_LIST_SURFACE>				edgeIndexes;	// 3 references to edges for each triangle, may be negative for reversed edge
-
+	
 protected:
 	void					GenerateEdgeIndexes();
-	int						FindEdge(int v1, int v2) const;
+	int						FindEdge( int v1, int v2 ) const;
 };
 
 /*
@@ -131,13 +131,13 @@ ID_INLINE idDmapSurface::idDmapSurface()
 idDmapSurface::idDmapSurface
 =================
 */
-ID_INLINE idDmapSurface::idDmapSurface(const idDmapDrawVert* verts, const int numVerts, const int* indexes, const int numIndexes)
+ID_INLINE idDmapSurface::idDmapSurface( const idDmapDrawVert* verts, const int numVerts, const int* indexes, const int numIndexes )
 {
-	assert(verts != NULL && indexes != NULL && numVerts > 0 && numIndexes > 0);
-	this->verts.SetNum(numVerts);
-	memcpy(this->verts.Ptr(), verts, numVerts * sizeof(verts[0]));
-	this->indexes.SetNum(numIndexes);
-	memcpy(this->indexes.Ptr(), indexes, numIndexes * sizeof(indexes[0]));
+	assert( verts != NULL && indexes != NULL && numVerts > 0 && numIndexes > 0 );
+	this->verts.SetNum( numVerts );
+	memcpy( this->verts.Ptr(), verts, numVerts * sizeof( verts[0] ) );
+	this->indexes.SetNum( numIndexes );
+	memcpy( this->indexes.Ptr(), indexes, numIndexes * sizeof( indexes[0] ) );
 	GenerateEdgeIndexes();
 }
 
@@ -146,7 +146,7 @@ ID_INLINE idDmapSurface::idDmapSurface(const idDmapDrawVert* verts, const int nu
 idDmapSurface::idDmapSurface
 ====================
 */
-ID_INLINE idDmapSurface::idDmapSurface(const idDmapSurface& surf)
+ID_INLINE idDmapSurface::idDmapSurface( const idDmapSurface& surf )
 {
 	this->verts = surf.verts;
 	this->indexes = surf.indexes;
@@ -168,7 +168,7 @@ ID_INLINE idDmapSurface::~idDmapSurface()
 idDmapSurface::operator[]
 =================
 */
-ID_INLINE const idDmapDrawVert& idDmapSurface::operator[](const int index) const
+ID_INLINE const idDmapDrawVert& idDmapSurface::operator[]( const int index ) const
 {
 	return verts[index];
 };
@@ -178,7 +178,7 @@ ID_INLINE const idDmapDrawVert& idDmapSurface::operator[](const int index) const
 idDmapSurface::operator[]
 =================
 */
-ID_INLINE idDmapDrawVert& idDmapSurface::operator[](const int index)
+ID_INLINE idDmapDrawVert& idDmapSurface::operator[]( const int index )
 {
 	return verts[index];
 };
@@ -188,14 +188,14 @@ ID_INLINE idDmapDrawVert& idDmapSurface::operator[](const int index)
 idDmapSurface::operator+=
 =================
 */
-ID_INLINE idDmapSurface& idDmapSurface::operator+=(const idDmapSurface& surf)
+ID_INLINE idDmapSurface& idDmapSurface::operator+=( const idDmapSurface& surf )
 {
 	int i, m, n;
 	n = verts.Num();
 	m = indexes.Num();
-	verts.Append(surf.verts);			// merge verts where possible ?
-	indexes.Append(surf.indexes);
-	for (i = m; i < indexes.Num(); i++)
+	verts.Append( surf.verts );			// merge verts where possible ?
+	indexes.Append( surf.indexes );
+	for( i = m; i < indexes.Num(); i++ )
 	{
 		indexes[i] += n;
 	}
@@ -221,9 +221,9 @@ ID_INLINE void idDmapSurface::Clear()
 idDmapSurface::TranslateSelf
 =================
 */
-ID_INLINE void idDmapSurface::TranslateSelf(const idVec3& translation)
+ID_INLINE void idDmapSurface::TranslateSelf( const idVec3& translation )
 {
-	for (int i = 0; i < verts.Num(); i++)
+	for( int i = 0; i < verts.Num(); i++ )
 	{
 		verts[i].xyz += translation;
 	}
@@ -234,9 +234,10 @@ ID_INLINE void idDmapSurface::TranslateSelf(const idVec3& translation)
 idDmapSurface::RotateSelf
 =================
 */
-ID_INLINE void idDmapSurface::RotateSelf(const idMat3& rotation)
+ID_INLINE void idDmapSurface::RotateSelf( const idMat3& rotation )
 {
-	for (int i = 0; i < verts.Num(); i++) {
+	for( int i = 0; i < verts.Num(); i++ )
+	{
 		verts[i].xyz *= rotation;
 		verts[i].normal *= rotation;
 		verts[i].tangents[0] *= rotation;

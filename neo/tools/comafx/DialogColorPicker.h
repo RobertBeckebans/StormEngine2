@@ -53,18 +53,24 @@ If you have questions concerning this license or the applicable additional terms
 
 struct HSVType;
 
-struct RGBType {
-	COLORREF		color() { return RGB( r, g, b ); }
+struct RGBType
+{
+	COLORREF		color()
+	{
+		return RGB( r, g, b );
+	}
 	HSVType			toHSV();
 	int				r, g, b;
 };
 
-struct HSVType {
+struct HSVType
+{
 	RGBType			toRGB();
 	int				h, s, v;
 };
 
-struct LineDesc {
+struct LineDesc
+{
 	double			x, y;
 	double			slope;
 	double			c;
@@ -75,34 +81,40 @@ class CDialogColorPicker : public CDialog
 {
 // Construction
 public:
-					CDialogColorPicker(COLORREF c,CWnd* pParent = NULL);   // standard constructor
-					~CDialogColorPicker();
-
-	COLORREF		GetColor() { return color.color();};
-	float			GetOverBright() { return overBright; };
-
-
+	CDialogColorPicker( COLORREF c, CWnd* pParent = NULL ); // standard constructor
+	~CDialogColorPicker();
+	
+	COLORREF		GetColor()
+	{
+		return color.color();
+	};
+	float			GetOverBright()
+	{
+		return overBright;
+	};
+	
+	
 	// Dialog Data
 	//{{AFX_DATA(CDialogColorPicker)
 	enum { IDD = IDD_DIALOG_COLORS };
 	float			m_overBright;
 	//}}AFX_DATA
-
-	void			(*UpdateParent)( float r, float g, float b, float a );
-
+	
+	void	( *UpdateParent )( float r, float g, float b, float a );
+	
 	// Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CDialogColorPicker)
 	//}}AFX_VIRTUAL
-
+	
 // Implementation
 protected:
 
 	// Generated message map functions
 	//{{AFX_MSG(CDialogColorPicker)
-	afx_msg void	OnLButtonDown(UINT nFlags, CPoint point);
-	afx_msg void	OnLButtonUp(UINT nFlags, CPoint point);
-	afx_msg void	OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void	OnLButtonDown( UINT nFlags, CPoint point );
+	afx_msg void	OnLButtonUp( UINT nFlags, CPoint point );
+	afx_msg void	OnMouseMove( UINT nFlags, CPoint point );
 	afx_msg void	OnSysColorChange();
 	afx_msg void	OnPaint();
 	virtual BOOL	OnInitDialog();
@@ -117,51 +129,51 @@ protected:
 	afx_msg void	OnBtnColor();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
-
-	void			DrawFilledColor(CDC *pDC,CRect cr,COLORREF c);
-	void			DrawLines(CDC *pDC);
-	void			DrawXorRect(CDC *pDC,CRect& cr);
+	
+	void			DrawFilledColor( CDC* pDC, CRect cr, COLORREF c );
+	void			DrawLines( CDC* pDC );
+	void			DrawXorRect( CDC* pDC, CRect& cr );
 	void			CalcSlopes();
 	void			CalcCuboid();
-
+	
 	void			CreateBrightDIB();
 	void			SetDIBPalette();
-	void			DrawMarkers(CDC *pDC);
-	void			TrackPoint(CPoint pt);
+	void			DrawMarkers( CDC* pDC );
+	void			TrackPoint( CPoint pt );
 	void			CalcRects();
-		
-	BOOL			InCircle(CPoint pt);
-	BOOL			InBright(CPoint pt);
-	BOOL			InOverBright(CPoint pt);
-
-
+	
+	BOOL			InCircle( CPoint pt );
+	BOOL			InBright( CPoint pt );
+	BOOL			InOverBright( CPoint pt );
+	
+	
 	void			SetSpinVals();
 	void			SetEditVals();
 	void			DrawAll();
-
-	void			DrawRGB(CDC *pDC);
-	void			DrawHSB(CDC *pDC);
-
-	void			LoadMappedBitmap(CBitmap& bitmap,UINT nIdResource,CSize& size);
-
-	CBitmap			m_RgbBitmap,m_HsbBitmap;
-
+	
+	void			DrawRGB( CDC* pDC );
+	void			DrawHSB( CDC* pDC );
+	
+	void			LoadMappedBitmap( CBitmap& bitmap, UINT nIdResource, CSize& size );
+	
+	CBitmap			m_RgbBitmap, m_HsbBitmap;
+	
 	CDC				memDC;
 	CPoint			m_Centre;
 	CDIB			m_BrightDIB;
-
+	
 	int				rgbWidth;
 	int				rgbHeight;
 	int				hsbWidth;
 	int				hsbHeight;
-
+	
 	int				m_nMouseIn;
-	CRect			m_CurrentRect,brightMark;
+	CRect			m_CurrentRect, brightMark;
 	CRect			brightRect;
 	CRect			overBrightRect;
-
-	HSVType			hsvColor;	
-
+	
+	HSVType			hsvColor;
+	
 	RGBType			color;
 	RGBType			m_OldColor;
 	CPoint			Vertex;
@@ -176,19 +188,19 @@ protected:
 	int				GreenLen;
 	int				BlueLen;
 	LineDesc		lines[3];
-
-
+	
+	
 	CRect			rgbRect;
 	CRect			hsbRect;
 	CRect			OldColorRect;
 	CRect			NewColorRect;
-
+	
 	BOOL			m_bInitOver;
 	BOOL			m_bInDrawAll;
-
+	
 	float			overBright;
 };
 
-bool DoNewColor( int* i1, int* i2, int* i3, float *overBright, void (*Update)( float, float, float, float ) = NULL );
+bool DoNewColor( int* i1, int* i2, int* i3, float* overBright, void ( *Update )( float, float, float, float ) = NULL );
 
 #endif /* !__DIALOGCOLORPICKER__ */

@@ -74,10 +74,16 @@ public:
 	virtual void			AddDamageEffect( const trace_t& collision, const idVec3& velocity, const char* damageDefName );
 	void					AddLocalDamageEffect( jointHandle_t jointNum, const idVec3& localPoint, const idVec3& localNormal, const idVec3& localDir, const idDeclEntityDef* def, const idMaterial* collisionMaterial );
 	void					UpdateDamageEffects();
-
+	
 	virtual void			SetAnimState( int channel, const char* statename, int blendFrames ) {}
-	virtual const char*		GetAnimState( int channel ) const { return ""; }
-	virtual bool			InAnimState( int channel, const char* statename ) const { return false; }
+	virtual const char*		GetAnimState( int channel ) const
+	{
+		return "";
+	}
+	virtual bool			InAnimState( int channel, const char* statename ) const
+	{
+		return false;
+	}
 	
 	virtual bool			ClientReceiveEvent( int event, int time, const idBitMsg& msg );
 	

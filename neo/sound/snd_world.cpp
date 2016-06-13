@@ -201,9 +201,9 @@ void idSoundWorldLocal::PlaceListener( const idVec3& origin, const idMat3& axis,
 idSoundWorldLocal::PlaceListener
 ========================
 */
-void idSoundWorldLocal::WriteSoundShaderLoad( const idSoundShader * snd )
+void idSoundWorldLocal::WriteSoundShaderLoad( const idSoundShader* snd )
 {
-	if ( writeDemo )
+	if( writeDemo )
 	{
 		writeDemo->WriteInt( DS_SOUND );
 		writeDemo->WriteInt( SCMD_CACHESOUNDSHADER );
@@ -909,71 +909,71 @@ void idSoundWorldLocal::ProcessDemoCommand( idDemoFile* readDemo )
 {
 	if( !readDemo )
 		return;
-	
+		
 	int index;
 	soundDemoCommand_t	dc;
 	
 	if( !readDemo->ReadInt( ( int& )dc ) )
 		return;
-	
+		
 	switch( dc )
 	{
-	case SCMD_CACHESOUNDSHADER:
+		case SCMD_CACHESOUNDSHADER:
 		{
-			int numCaches = 0;			
+			int numCaches = 0;
 			readDemo->ReadInt( numCaches );
-			for ( int i = 0; i < numCaches; ++i )
+			for( int i = 0; i < numCaches; ++i )
 			{
-				const char * declName = readDemo->ReadHashString();
+				const char* declName = readDemo->ReadHashString();
 				declManager->FindSound( declName );
 			}
 			break;
 		}
-	case SCMD_STATE:
+		case SCMD_STATE:
 		{
 			ReadFromSaveGame( readDemo );
 			UnPause();
 			break;
 		}
-	case SCMD_PLACE_LISTENER:
+		case SCMD_PLACE_LISTENER:
 		{
 			idVec3	origin;
 			idMat3	axis;
 			int		listenerId;
-
+			
 			readDemo->ReadVec3( origin );
 			readDemo->ReadMat3( axis );
 			readDemo->ReadInt( listenerId );
-
+			
 			PlaceListener( origin, axis, listenerId );
 		};
 		break;
-	case SCMD_ALLOC_EMITTER:
+		case SCMD_ALLOC_EMITTER:
 		{
 			readDemo->ReadInt( index );
-
-			while ( emitters.Num() <= index )
+			
+			while( emitters.Num() <= index )
 			{
 				// append a brand new one
 				AllocSoundEmitter();
 			}
 		}
 		break;
-	case SCMD_FREE:
+		case SCMD_FREE:
 		{
 			int	immediate;
-
+			
 			readDemo->ReadInt( index );
 			readDemo->ReadInt( immediate );
 			EmitterForIndex( index )->Free( immediate != 0 );
 		}
 		break;
-	case SCMD_UPDATE:
+		case SCMD_UPDATE:
 		{
 			idVec3 origin;
 			int listenerId;
 			soundShaderParms_t parms;
-
+			
 			readDemo->ReadInt( index );
 			readDemo->ReadVec3( origin );
 			readDemo->ReadInt( listenerId );
@@ -986,13 +986,13 @@ void idSoundWorldLocal::ProcessDemoCommand( idDemoFile* readDemo )
 			EmitterForIndex( index )->UpdateEmitter( origin, listenerId, &parms );
 		}
 		break;
-	case SCMD_START:
+		case SCMD_START:
 		{
 			const idSoundShader* shader;
 			int			channel;
 			float		diversity;
 			int			shaderFlags;
-
+			
 			readDemo->ReadInt( index );
 			shader = declManager->FindSound( readDemo->ReadHashString() );
 			readDemo->ReadInt( channel );
@@ -1001,11 +1001,11 @@ void idSoundWorldLocal::ProcessDemoCommand( idDemoFile* readDemo )
 			EmitterForIndex( index )->StartSound( shader, ( s_channelType )channel, diversity, shaderFlags );
 		}
 		break;
-	case SCMD_MODIFY:
+		case SCMD_MODIFY:
 		{
 			int		channel;
 			soundShaderParms_t parms;
-
+			
 			readDemo->ReadInt( index );
 			readDemo->ReadInt( channel );
 			readDemo->ReadFloat( parms.minDistance );
@@ -1017,20 +1017,20 @@ void idSoundWorldLocal::ProcessDemoCommand( idDemoFile* readDemo )
 			EmitterForIndex( index )->ModifySound( ( s_channelType )channel, &parms );
 		}
 		break;
-	case SCMD_STOP:
+		case SCMD_STOP:
 		{
 			int		channel;
-
+			
 			readDemo->ReadInt( index );
 			readDemo->ReadInt( channel );
 			EmitterForIndex( index )->StopSound( ( s_channelType )channel );
 		}
 		break;
-	case SCMD_FADE:
+		case SCMD_FADE:
 		{
 			int		channel;
 			float	to, over;
-
+			
 			readDemo->ReadInt( index );
 			readDemo->ReadInt( channel );
 			readDemo->ReadFloat( to );
@@ -1038,9 +1038,9 @@ void idSoundWorldLocal::ProcessDemoCommand( idDemoFile* readDemo )
 			EmitterForIndex( index )->FadeSound( ( s_channelType )channel, to, over );
 		}
 		break;
-	default:
-		common->Error( "Bad demo sound command '%d' in demo stream", dc );
-		break;
+		default:
+			common->Error( "Bad demo sound command '%d' in demo stream", dc );
+			break;
 	}
 }
 

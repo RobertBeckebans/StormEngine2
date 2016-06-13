@@ -226,7 +226,7 @@ typedef struct
 	bool				ignoreAlphaTest;	// this stage should act as translucent, even
 	// if the surface is alpha tested
 	float				privatePolygonOffset;	// a per-stage polygon offset
-
+	
 	bool				noMotionBlur;		// sikk - Added - When set, stage will draw after the motionblur pass
 	bool				glowStage;			// foresthale 20140403: glowStage
 	
@@ -249,11 +249,11 @@ typedef enum
 	SS_BAD = -1,
 	SS_OPAQUE,			// opaque
 	
-	// motorsep 01-24-2015; for whatever reason iD Software forced SS_GUI to be sorted before opaque surfaces. 
+	// motorsep 01-24-2015; for whatever reason iD Software forced SS_GUI to be sorted before opaque surfaces.
 	// That resulted in ink outlines to be drawn over the GUI (whether gui was opaque or translucent).
 	// Sorting it after opaque surfaces seems to fix the issue and cause no other issues.
-	SS_GUI, 
-
+	SS_GUI,
+	
 	SS_PORTAL_SKY,
 	
 	SS_DECAL,			// scorch marks, etc.
@@ -808,22 +808,24 @@ public:
 		return portalSky;
 	};
 	void				AddReference();
-
+	
 	// motorsep 11-23-2014; material LOD keys that define what LOD iteration the surface falls into
 	// lod1 - lod4 defines several levels of LOD
 	// persistentLOD specifies the LOD iteration that still being rendered, even after the camera is beyond the distance at which LOD iteration should not be rendered
 	
-	bool				IsLOD() const {
+	bool				IsLOD() const
+	{
 		return ( materialFlags & ( MF_LOD1 | MF_LOD2 | MF_LOD3 | MF_LOD4 ) ) != 0;
 	}
 	// foresthale 2014-11-24: added IsLODVisibleForDistance method
-	bool				IsLODVisibleForDistance( float distance, float lodBase ) const {
+	bool				IsLODVisibleForDistance( float distance, float lodBase ) const
+	{
 		int bit = ( materialFlags & ( MF_LOD1 | MF_LOD2 | MF_LOD3 | MF_LOD4 ) ) >> MF_LOD1_SHIFT;
-		float m1 = lodBase * (bit >> 1);
+		float m1 = lodBase * ( bit >> 1 );
 		float m2 = lodBase * bit;
-		return distance >= m1 && (distance < m2 || ( materialFlags & ( MF_LOD_PERSISTENT ) ) );
+		return distance >= m1 && ( distance < m2 || ( materialFlags & ( MF_LOD_PERSISTENT ) ) );
 	}
-
+	
 	
 private:
 	// parse the entire material

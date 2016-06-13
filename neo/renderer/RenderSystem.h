@@ -332,7 +332,7 @@ public:
 	
 	// consoles switch stereo 3D eye views each 60 hz frame
 	virtual int				GetFrameCount() const = 0;
-
+	
 	virtual void OnFrame() = 0;
 };
 
@@ -343,7 +343,7 @@ extern idRenderSystem* 			renderSystem;
 //
 
 // returns the frustum planes in world space
-void R_RenderLightFrustum( const struct renderLight_s &renderLight, idPlane lightFrustum[6] );
+void R_RenderLightFrustum( const struct renderLight_s& renderLight, idPlane lightFrustum[6] );
 
 // for use by dmap to do the carving-on-light-boundaries and for the editor for display
 void R_LightProjectionMatrix( const idVec3& origin, const idPlane& rearPlane, idVec4 mat[4] );

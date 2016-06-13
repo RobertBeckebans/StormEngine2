@@ -387,7 +387,7 @@ byte* R_MipMapWithGamma( const byte* in, int width, int height )
 		}
 		return out;
 	}
-	for( i = 0 ; i < height ; i++, row_p += row*2 )
+	for( i = 0 ; i < height ; i++, row_p += row * 2 )
 	{
 		for( j = 0, in_p = row_p ; j < width ; j++, out_p += 4, in_p += 8 )
 		{
@@ -459,7 +459,7 @@ byte* R_MipMap( const byte* in, int width, int height )
 		return out;
 	}
 	
-	for( i = 0 ; i < height ; i++, row_p += row*2 )
+	for( i = 0 ; i < height ; i++, row_p += row * 2 )
 	{
 		for( j = 0, in_p = row_p ; j < width ; j++, out_p += 4, in_p += 8 )
 		{

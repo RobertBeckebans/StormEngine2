@@ -60,21 +60,21 @@ void WriteDeclCache( idDemoFile* f, int demoCategory, int demoCode, declType_t  
 {
 	f->WriteInt( demoCategory );
 	f->WriteInt( demoCode );
-
+	
 	int numDecls = 0;
-
-	for ( int i = 0; i < declManager->GetNumDecls( declType ); i++ )
+	
+	for( int i = 0; i < declManager->GetNumDecls( declType ); i++ )
 	{
-		const idDecl *decl = declManager->DeclByIndex( declType, i, false );
-		if ( decl && decl->IsValid() )
+		const idDecl* decl = declManager->DeclByIndex( declType, i, false );
+		if( decl && decl->IsValid() )
 			++numDecls;
 	}
-
+	
 	f->WriteInt( numDecls );
-	for ( int i = 0; i < declManager->GetNumDecls( declType ); i++ )
+	for( int i = 0; i < declManager->GetNumDecls( declType ); i++ )
 	{
-		const idDecl *decl = declManager->DeclByIndex( declType, i, false );
-		if ( decl && decl->IsValid() )
+		const idDecl* decl = declManager->DeclByIndex( declType, i, false );
+		if( decl && decl->IsValid() )
 			f->WriteHashString( decl->GetName() );
 	}
 }
@@ -102,7 +102,7 @@ void idCommonLocal::StartRecordingRenderDemo( const char* demoName )
 	console->Close();
 	
 	com_smp.SetInteger( 0 );
-
+	
 	writeDemo = new( TAG_SYSTEM ) idDemoFile;
 	if( !writeDemo->OpenForWriting( demoName ) )
 	{
@@ -141,7 +141,7 @@ void idCommonLocal::StopRecordingRenderDemo()
 	common->Printf( "stopped recording %s.\n", writeDemo->GetName() );
 	delete writeDemo;
 	writeDemo = NULL;
-	com_smp.SetInteger(1); // motorsep 12-30-2014; turn multithreading back on
+	com_smp.SetInteger( 1 ); // motorsep 12-30-2014; turn multithreading back on
 }
 
 /*
@@ -170,7 +170,7 @@ void idCommonLocal::StopPlayingRenderDemo()
 	soundSystem->SetPlayingSoundWorld( menuSoundWorld );
 	
 	common->Printf( "stopped playing %s.\n", readDemo->GetName() );
-
+	
 	delete readDemo;
 	readDemo = NULL;
 	
@@ -188,8 +188,8 @@ void idCommonLocal::StopPlayingRenderDemo()
 		}
 		timeDemo = TD_NO;
 	}
-
-	com_smp.SetInteger(1); // motorsep 12-30-2014; turn multithreading back on
+	
+	com_smp.SetInteger( 1 ); // motorsep 12-30-2014; turn multithreading back on
 }
 
 /*
@@ -224,7 +224,7 @@ void idCommonLocal::StartPlayingRenderDemo( idStr demoName )
 	}
 	
 	com_smp.SetInteger( 0 );
-
+	
 	// make sure localSound / GUI intro music shuts up
 	soundWorld->StopAllSounds();
 	soundWorld->PlayShaderDirectly( "", 0 );
@@ -251,32 +251,32 @@ void idCommonLocal::StartPlayingRenderDemo( idStr demoName )
 	
 	int opcode = -1, demoVersion = -1;
 	readDemo->ReadInt( opcode );
-	if ( opcode != DS_VERSION )
+	if( opcode != DS_VERSION )
 	{
 		common->Printf( "StartPlayingRenderDemo invalid demo file\n" );
-
+		
 		Stop();
 		StartMenu();
 		return;
 	}
-
+	
 	readDemo->ReadInt( demoVersion );
-	if ( demoVersion != RENDERDEMO_VERSION )
+	if( demoVersion != RENDERDEMO_VERSION )
 	{
 		common->Printf( "StartPlayingRenderDemo got version %d, expected version %d\n", demoVersion, RENDERDEMO_VERSION );
-
+		
 		Stop();
 		StartMenu();
 		return;
 	}
 	
 	AdvanceRenderDemo( true );
-
+	
 	Game()->StartDemoPlayback( renderWorld );
-
+	
 	const bool captureToImage = false;
 	UpdateScreen( captureToImage );
-		
+	
 	numDemoFrames = 1;
 	
 	timeDemoStartTime = Sys_Milliseconds();
@@ -489,36 +489,36 @@ void idCommonLocal::AdvanceRenderDemo( bool singleFrameOnly )
 	{
 		int	ds = DS_FINISHED;
 		readDemo->ReadInt( ds );
-
+		
 		switch( ds )
 		{
-		case DS_FINISHED:
-			if( numDemoFrames != 1 )
-			{
-				// if the demo has a single frame (a demoShot), continuously replay
-				// the renderView that has already been read
-				Stop();
-				StartMenu();
-			}
-			return;
-		case DS_RENDER:
-			if ( renderWorld->ProcessDemoCommand( readDemo, &currentDemoRenderView, &demoTimeOffset ) )
-			{
-				// a view is ready to render
-				numDemoFrames++;
+			case DS_FINISHED:
+				if( numDemoFrames != 1 )
+				{
+					// if the demo has a single frame (a demoShot), continuously replay
+					// the renderView that has already been read
+					Stop();
+					StartMenu();
+				}
 				return;
-			}
-			break;
-		case DS_SOUND:
-			soundWorld->ProcessDemoCommand( readDemo );
-			break;
-		case DS_GAME:
-			Game()->ProcessDemoCommand( readDemo );
-			break;
-		default:
-			common->Error( "Bad render demo token %d", ds );
+			case DS_RENDER:
+				if( renderWorld->ProcessDemoCommand( readDemo, &currentDemoRenderView, &demoTimeOffset ) )
+				{
+					// a view is ready to render
+					numDemoFrames++;
+					return;
+				}
+				break;
+			case DS_SOUND:
+				soundWorld->ProcessDemoCommand( readDemo );
+				break;
+			case DS_GAME:
+				Game()->ProcessDemoCommand( readDemo );
+				break;
+			default:
+				common->Error( "Bad render demo token %d", ds );
 		}
-	}	
+	}
 }
 
 /*

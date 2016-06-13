@@ -138,8 +138,8 @@ idMenuHandler_PDA::ActivateMenu
 void idMenuHandler_PDA::ActivateMenu( bool show )
 {
 
-	
-	
+
+
 	idMenuHandler::ActivateMenu( show );
 	
 	if( show )
@@ -164,7 +164,7 @@ void idMenuHandler_PDA::ActivateMenu( bool show )
 		{
 			pdaList->SetListData( pdaNames );
 		}
-
+		
 		navOptions.Clear();
 		navOptions.Append( idLocalization::GetString( "#str_04190" ) );
 		navOptions.Append( idLocalization::GetString( "#str_01442" ) );
@@ -268,7 +268,7 @@ void idMenuHandler_PDA::Initialize( const char* swfFile, idSoundWorld* sw )
 	// SetButtonSpacing( Left Spacer, Right Spacer, Selected Spacer )
 	// navBar.SetButtonSpacing( 25.0f, 25.0f, 75.0f );
 	navBar.SetButtonSpacing( 20.0f, 20.0f, 25.0f );
-	navBar.SetInitialXPos( 40.0f );	
+	navBar.SetInitialXPos( 40.0f );
 	navBar.SetNoAutoFree( true );
 	for( int count = 0; count < ( MAX_NAV_OPTIONS * 2 - 1 ); ++count )
 	{

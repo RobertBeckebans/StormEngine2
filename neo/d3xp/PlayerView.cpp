@@ -507,18 +507,19 @@ void idPlayerView::SingleView( const renderView_t* view, idMenuHandler_HUD* hudM
 			return;
 		}
 		
-		if ( !g_skipViewEffects.GetBool() ) {	// ######################## SR fix3
+		if( !g_skipViewEffects.GetBool() )  	// ######################## SR fix3
+		{
 		
 			// armor impulse feedback
 			float armorPulse = ( gameLocal.fast.time - player->lastArmorPulse ) / 250.0f;
-		
+			
 			if( armorPulse > 0.0f && armorPulse < 1.0f )
 			{
 				renderSystem->SetColor4( 1.0f, 1.0f, 1.0f, 1.0f - armorPulse );
 				renderSystem->DrawStretchPic( 0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f, 1.0f, armorMaterial );
 			}
-		
-		
+			
+			
 			// tunnel vision
 			float health = 0.0f;
 			if( g_testHealthVision.GetFloat() != 0.0f )
@@ -538,13 +539,13 @@ void idPlayerView::SingleView( const renderView_t* view, idMenuHandler_HUD* hudM
 			{
 				alpha = 1.0f;
 			}
-		
+			
 			if( alpha < 1.0f )
 			{
 				renderSystem->SetColor4( ( player->health <= 0.0f ) ? MS2SEC( gameLocal.slow.time ) : lastDamageTime, 1.0f, 1.0f, ( player->health <= 0.0f ) ? 0.0f : alpha );
 				renderSystem->DrawStretchPic( 0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f, 1.0f, tunnelMaterial );
 			}
-		
+			
 			if( bfgVision )
 			{
 				renderSystem->SetColor4( 1.0f, 1.0f, 1.0f, 1.0f );
@@ -1405,7 +1406,8 @@ void FullscreenFX_Warp::HighQuality()
 FullscreenFX_Underwater::Initialize
 ==================
 */
-void FullscreenFX_Underwater::Initialize() {
+void FullscreenFX_Underwater::Initialize()
+{
 	material = declManager->FindMaterial( "textures/phaeton/underwater" );
 }
 
@@ -1414,21 +1416,23 @@ void FullscreenFX_Underwater::Initialize() {
 FullscreenFX_Underwater::Active
 ==================
 */
-bool FullscreenFX_Underwater::Active() {
+bool FullscreenFX_Underwater::Active()
+{
 
 	waterLevel_t waterLevel;
-
+	
 	idPlayer* player = fxman->GetPlayer();
 	idPhysics* physics = player->GetPlayerPhysics();
-		
+	
 	idPhysics_Player* waterPhysics = static_cast<idPhysics_Player*>( physics );
 	
 	waterLevel = waterPhysics->GetWaterLevel();
-
-	if( player != NULL && waterLevel == WATERLEVEL_HEAD ) {
+	
+	if( player != NULL && waterLevel == WATERLEVEL_HEAD )
+	{
 		return true;
 	}
-
+	
 	return false;
 }
 
@@ -1437,7 +1441,8 @@ bool FullscreenFX_Underwater::Active() {
 FullscreenFX_Underwater::HighQuality
 ==================
 */
-void FullscreenFX_Underwater::HighQuality() {
+void FullscreenFX_Underwater::HighQuality()
+{
 	renderSystem->SetColor4( 1.0f, 1.0f, 1.0f, 1.0f );
 	float s0 = 0.0f;
 	float t0 = 1.0f;
@@ -1466,7 +1471,7 @@ FullscreenFX_EnviroSuit::Active
 bool FullscreenFX_EnviroSuit::Active()
 {
 	idPlayer* player = fxman->GetPlayer();
-
+	
 	if( player != NULL && player->PowerUpActive( ENVIROSUIT ) )
 	{
 		return true;
@@ -1607,7 +1612,7 @@ FullscreenFX_InfluenceVision::Active
 bool FullscreenFX_InfluenceVision::Active()
 {
 	idPlayer* player = fxman->GetPlayer();
-		
+	
 	if( player != NULL && ( player->GetInfluenceMaterial() || player->GetInfluenceEntity() ) )
 	{
 		return true;
@@ -1625,15 +1630,15 @@ void FullscreenFX_InfluenceVision::HighQuality()
 {
 	float distance = 0.0f;
 	float pct = 1.0f;
-	idPlayer* player = fxman->GetPlayer();			
-
+	idPlayer* player = fxman->GetPlayer();
+	
 	if( player == NULL )
 	{
 		return;
 	}
 	
 	if( player->GetInfluenceEntity() )
-	{		
+	{
 		distance = ( player->GetInfluenceEntity()->GetPhysics()->GetOrigin() - player->GetPhysics()->GetOrigin() ).Length();
 		if( player->GetInfluenceRadius() != 0.0f && distance < player->GetInfluenceRadius() )
 		{
@@ -1643,7 +1648,7 @@ void FullscreenFX_InfluenceVision::HighQuality()
 	}
 	
 	if( player->GetInfluenceMaterial() )
-	{		
+	{
 		renderSystem->SetColor4( 1.0f, 1.0f, 1.0f, pct );
 		renderSystem->DrawStretchPic( 0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f, 1.0f, player->GetInfluenceMaterial() );
 	}
@@ -1655,7 +1660,7 @@ void FullscreenFX_InfluenceVision::HighQuality()
 	{
 //		int offset =  25 + sinf( gameLocal.slow.time );
 //		DoubleVision( hud, view, pct * offset );
-	}		
+	}
 }
 
 
@@ -1853,9 +1858,10 @@ void FullscreenFXManager::CreateFX( idStr name, idStr fxtype, int fade )
 	else if( fxtype == "warp" )
 	{
 		pfx = new( TAG_FX ) FullscreenFX_Warp;
-	}	
-	else if( fxtype == "underwater" ) { // motorsep 03-21-2015; Underwater view warping
-		pfx = new(TAG_FX)FullscreenFX_Underwater;
+	}
+	else if( fxtype == "underwater" )   // motorsep 03-21-2015; Underwater view warping
+	{
+		pfx = new( TAG_FX )FullscreenFX_Underwater;
 	}
 	else if( fxtype == "envirosuit" )
 	{

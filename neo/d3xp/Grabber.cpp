@@ -135,7 +135,7 @@ idGrabber::Restore
 ==============
 */
 void idGrabber::Restore( idRestoreGame* savefile )
-{	
+{
 	dragEnt.Restore( savefile );
 	savefile->ReadStaticObject( drag );
 	
@@ -316,7 +316,7 @@ void idGrabber::StartDrag( idEntity* grabEnt, int id )
 	idVec3 viewPos;
 	idMat3 viewAxis;
 	thePlayer->GetViewPos( viewPos, viewAxis );
-
+	
 	// hold it directly in front of player
 	localPlayerPoint = ( viewAxis[0] * HOLD_DISTANCE ) * viewAxis.Transpose();
 	
@@ -408,7 +408,7 @@ void idGrabber::StopDrag( bool dropOnly )
 			idVec3 viewPos;
 			idMat3 viewAxis;
 			thePlayer->GetViewPos( viewPos, viewAxis );
-
+			
 			// Shoot the object forward
 			ent->ApplyImpulse( thePlayer, 0, ent->GetPhysics()->GetOrigin(), viewAxis[0] * THROW_SCALE * ent->GetPhysics()->GetMass() );
 			thePlayer->StartSoundShader( declManager->FindSound( "grabber_release" ), SND_CHANNEL_WEAPON, 0, false, NULL );
@@ -479,9 +479,9 @@ int idGrabber::Update( idEntity* player, bool hide )
 	trace_t trace;
 	idEntity* newEnt;
 	
-	if ( owner && owner->GetUserCmd() == NULL )
+	if( owner && owner->GetUserCmd() == NULL )
 		return 3;
-
+		
 	// pause before allowing refire
 	if( lastFiredTime + FIRING_DELAY > gameLocal.time )
 	{
@@ -538,7 +538,7 @@ int idGrabber::Update( idEntity* player, bool hide )
 		idVec3 viewPos;
 		idMat3 viewAxis;
 		owner->GetViewPos( viewPos, viewAxis );
-
+		
 		idBounds bounds;
 		idVec3 end = viewPos + viewAxis[0] * dragTraceDist;
 		
@@ -665,7 +665,7 @@ int idGrabber::Update( idEntity* player, bool hide )
 		idVec3 viewPos;
 		idMat3 viewAxis;
 		owner->GetViewPos( viewPos, viewAxis );
-
+		
 		// Set and evaluate drag force
 		goalPos = viewPos + localPlayerPoint * viewAxis;
 		
@@ -765,9 +765,9 @@ void idGrabber::UpdateBeams()
 		return;
 	}
 	
-	idEntity * thePlayer = owner.GetEntity();
+	idEntity* thePlayer = owner.GetEntity();
 	if( dragEnt.IsValid() && thePlayer->GetCurrentWeapon() )
-	{	
+	{
 		if( beamTarget )
 		{
 			beamTarget->SetOrigin( dragEnt.GetEntity()->GetPhysics()->GetAbsBounds().GetCenter() );

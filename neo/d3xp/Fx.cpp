@@ -539,7 +539,7 @@ void idEntityFx::Run( int time )
 					// foresthale 20140402: orient the decal toward the collision surface, not gravity
 					// note that this must be negative (into the surface) for the decal depth to work right
 					idVec3 dir = decalDir * -1.0f;
-					if (dir.LengthSqr() < 0.0001f) // if no dir, we use gravity
+					if( dir.LengthSqr() < 0.0001f ) // if no dir, we use gravity
 						dir = GetPhysics()->GetGravity();
 					dir.Normalize();
 					gameLocal.ProjectDecal( GetPhysics()->GetOrigin(), dir, 8.0f, true, fxaction.size, fxaction.data );
@@ -871,11 +871,11 @@ idEntityFx* idEntityFx::StartFx( const char* fx, const idVec3* useOrigin, const 
 		nfx->SetAxis( ( useAxis ) ? *useAxis : ent->GetPhysics()->GetAxis() );
 	}
 	// foresthale 20140402: added decalDir so that StartFx can pass it to FX_DECAL
-	if (useDecalDir)
+	if( useDecalDir )
 		nfx->decalDir = *useDecalDir;
 	else
-		nfx->decalDir = idVec3(0.0f, 0.0f, 0.0f); // no decalDir specified, we check for this in FX_DECAL
-	
+		nfx->decalDir = idVec3( 0.0f, 0.0f, 0.0f ); // no decalDir specified, we check for this in FX_DECAL
+		
 	if( bind )
 	{
 		// never bind to world spawn

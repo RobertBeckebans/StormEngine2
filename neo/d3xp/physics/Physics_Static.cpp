@@ -882,15 +882,15 @@ void idPhysics_Static::SetMaster( idEntity* master, BindFlags flags )
 			{
 				current.localAxis = current.axis;
 			}
-
-			if ( (flags&BFL_SNAPXFORM)!= 0 )
+			
+			if( ( flags & BFL_SNAPXFORM ) != 0 )
 			{
 				current.localOrigin.Zero();
 				current.localAxis.Identity();
 			}
-
+			
 			hasMaster = true;
-			isOrientated = (flags & BFL_ORIENTED);
+			isOrientated = ( flags & BFL_ORIENTED );
 		}
 	}
 	else

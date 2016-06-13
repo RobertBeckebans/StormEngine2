@@ -645,19 +645,27 @@ bool idCollisionModelManagerLocal::LoadCollisionModelFile( const char* name, uns
 		file->ReadString( fileVersion );
 		if( fileID == CM_FILEID && fileVersion == CM_FILEVERSION && crc == mapFileCRC && numEntries > 0 )
 		{
-			bool failed=false;
+			bool failed = false;
 			for( int i = 0; i < numEntries; i++ )
 			{
 				cm_model_t* model = LoadBinaryModelFromFile( file, currentTimeStamp );
-				if (!model) { failed=true; break; }
+				if( !model )
+				{
+					failed = true;
+					break;
+				}
 				models[ numModels ] = model;
 				numModels++;
 			}
-
-			if (failed)
+			
+			if( failed )
 			{
-				for (int i=0; i<numModels; ++i) { delete models[i]; models[i]=NULL; }
-				numModels=0;
+				for( int i = 0; i < numModels; ++i )
+				{
+					delete models[i];
+					models[i] = NULL;
+				}
+				numModels = 0;
 			}
 			else
 				loaded = true;

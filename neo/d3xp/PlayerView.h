@@ -292,7 +292,7 @@ FullscreenFX_Underwater
 class FullscreenFX_Underwater : public FullscreenFX
 {
 	const idMaterial*		material;
-
+	
 public:
 	virtual void			Initialize();
 	virtual bool			Active();
@@ -398,8 +398,8 @@ public:
 	idPlayer*				GetPlayer()
 	{
 		return gameLocal.GetLocalPlayer();
-	};	
-
+	};
+	
 	int						GetNum()
 	{
 		return fx.Num();
@@ -411,7 +411,7 @@ public:
 	FullscreenFX*			FindFX( idStr name );
 	
 	void					Save( idSaveGame* savefile );
-	void					Restore( idRestoreGame* savefile );			
+	void					Restore( idRestoreGame* savefile );
 };
 
 
@@ -460,7 +460,7 @@ private:
 	screenBlob_t* 		GetScreenBlob();
 	
 	screenBlob_t		screenBlobs[MAX_SCREEN_BLOBS];
-
+	
 public:
 	int					dvFinishTime;		// double vision will be stopped at this time
 	
@@ -483,8 +483,8 @@ public:
 	float				fadeRate;			// fade rate
 	int					fadeTime;			// fade time
 	
-	idAngles			shakeAng;			// from the sound sources	
-
+	idAngles			shakeAng;			// from the sound sources
+	
 	idPlayer* 			player;
 	renderView_t		view;
 	

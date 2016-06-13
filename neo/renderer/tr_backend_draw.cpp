@@ -46,7 +46,7 @@ idCVar r_glowEnable( "r_glowEnable", "1", CVAR_RENDERER | CVAR_BOOL | CVAR_ARCHI
 idCVar r_glowSingleViewportOptimized( "r_glowSingleViewportOptimized", "1", CVAR_RENDERER | CVAR_BOOL | CVAR_ARCHIVE, "use the smallest texture sizes possible for efficiency (bad idea if using multiple viewports)" );
 idCVar r_glowHeight( "r_glowHeight", "360", CVAR_RENDERER | CVAR_INTEGER | CVAR_ARCHIVE, "height of glow buffer (width will be derived automatically using aspect ratio)" );
 idCVar r_glowIntensity( "r_glowIntensity", "2.0", CVAR_RENDERER | CVAR_FLOAT | CVAR_ARCHIVE, "blending intensity of the blurred glow buffer" );
-idCVar r_waterHazeFix("r_waterHazeFix", "1", CVAR_RENDERER | CVAR_BOOL, "perform the water / haze obtuse projection matrix fix");
+idCVar r_waterHazeFix( "r_waterHazeFix", "1", CVAR_RENDERER | CVAR_BOOL, "perform the water / haze obtuse projection matrix fix" );
 
 extern idCVar stereoRender_swapEyes;
 
@@ -55,7 +55,7 @@ extern idCVar r_useHightQualitySky;
 backEndState_t	backEnd;
 
 // foresthale 2014-04-08: r_glow
-static void RB_PostProcessHDRGlowProcess(int textureSizes[4][6]);
+static void RB_PostProcessHDRGlowProcess( int textureSizes[4][6] );
 static void RB_ShadowMapPass( const drawSurf_t* drawSurfs, const viewLight_t* vLight, int side );
 
 static void MatrixOrthogonalProjectionRH( float m[16], float left, float right, float bottom, float top, float zNear, float zFar );
@@ -423,7 +423,7 @@ static void RB_BindVariableStageImage( const textureStage_t* texture, const floa
 		if( cin.image != NULL )
 		{
 			//idColorSpace::ConvertRGBToYCbCr(cin.image, cin.image, cin.imageWidth, cin.imageHeight);
-
+			
 			globalImages->cinematicImage->UploadScratch( cin.image, cin.imageHeight, cin.imageWidth );
 			globalImages->cinematicImage->Bind();
 			//GL_SelectTexture( 0 );
@@ -512,89 +512,91 @@ static void RB_PrepareStageTexturing( const shaderStage_t* pStage,  const drawSu
 		//cubemapColorSpace[0]; // 0.0f - YCoCg ; 1.0f - RGB
 		cubemapColorSpace[1] = 0.0f; // unused
 		cubemapColorSpace[2] = 0.0f; // unused
-		cubemapColorSpace[3] = 0.0f; // unused		
-
-		if( skyboxRGBswap == false ) {
-		//if( !r_useHightQualitySky.GetBool()) {
+		cubemapColorSpace[3] = 0.0f; // unused
+		
+		if( skyboxRGBswap == false )
+		{
+			//if( !r_useHightQualitySky.GetBool()) {
 			cubemapColorSpace[0] = 0.0f;
 		}
-		if( skyboxRGBswap == true ) {
-		//if(r_useHightQualitySky.GetBool()) {
+		if( skyboxRGBswap == true )
+		{
+			//if(r_useHightQualitySky.GetBool()) {
 			cubemapColorSpace[0] = 1.0f;
 		}
-
+		
 		SetFragmentParm( RENDERPARM_CUBEMAPCOLORSPACE, cubemapColorSpace ); // rpCubemapColorSpace
 		// motorsep ends
-
+		
 		renderProgManager.BindShader_SkyBox();
 		
 	}
-	else if( pStage->texture.texgen == TG_WOBBLESKY_CUBE ) 
+	else if( pStage->texture.texgen == TG_WOBBLESKY_CUBE )
 	{
 		const int* parms = surf->material->GetTexGenRegisters();
-
+		
 		float wobbleDegrees = surf->shaderRegisters[parms[0]] * ( idMath::PI / 180.0f );
 		float wobbleSpeed = surf->shaderRegisters[parms[1]] * ( 2.0f * idMath::PI / 60.0f );
 		float rotateSpeed = surf->shaderRegisters[parms[2]] * ( 2.0f * idMath::PI / 60.0f );
-
+		
 		idVec3 axis[3];
 		{
 			// very ad-hoc "wobble" transform
 			float s, c;
 			idMath::SinCos( wobbleSpeed * backEnd.viewDef->renderView.time[0] * 0.001f, s, c );
-
+			
 			float ws, wc;
 			idMath::SinCos( wobbleDegrees, ws, wc );
-
+			
 			axis[2][0] = ws * c;
 			axis[2][1] = ws * s;
 			axis[2][2] = wc;
-
+			
 			axis[1][0] = -s * s * ws;
 			axis[1][2] = -s * ws * ws;
 			axis[1][1] = idMath::Sqrt( idMath::Fabs( 1.0f - ( axis[1][0] * axis[1][0] + axis[1][2] * axis[1][2] ) ) );
-
+			
 			// make the second vector exactly perpendicular to the first
 			axis[1] -= ( axis[2] * axis[1] ) * axis[2];
 			axis[1].Normalize();
-
+			
 			// construct the third with a cross
 			axis[0].Cross( axis[1], axis[2] );
 		}
-
+		
 		// add the rotate
 		float rs, rc;
 		idMath::SinCos( rotateSpeed * backEnd.viewDef->renderView.time[0] * 0.001f, rs, rc );
-
+		
 		float transform[12];
 		transform[0 * 4 + 0] = axis[0][0] * rc + axis[1][0] * rs;
 		transform[0 * 4 + 1] = axis[0][1] * rc + axis[1][1] * rs;
 		transform[0 * 4 + 2] = axis[0][2] * rc + axis[1][2] * rs;
 		transform[0 * 4 + 3] = 0.0f;
-
+		
 		transform[1 * 4 + 0] = axis[1][0] * rc - axis[0][0] * rs;
 		transform[1 * 4 + 1] = axis[1][1] * rc - axis[0][1] * rs;
 		transform[1 * 4 + 2] = axis[1][2] * rc - axis[0][2] * rs;
 		transform[1 * 4 + 3] = 0.0f;
-
+		
 		transform[2 * 4 + 0] = axis[2][0];
 		transform[2 * 4 + 1] = axis[2][1];
 		transform[2 * 4 + 2] = axis[2][2];
 		transform[2 * 4 + 3] = 0.0f;
-
+		
 		SetVertexParms( RENDERPARM_WOBBLESKY_X, transform, 3 );
 		renderProgManager.BindShader_WobbleSky();
-
+		
 	}
-	else if ( pStage->texture.texgen == TG_SCRIPTSKY_CUBE )
+	else if( pStage->texture.texgen == TG_SCRIPTSKY_CUBE )
 	{
 		// script driven sky transforms, so it can be synced with light sources
 		const float skyAnglesX = surf->shaderRegisters[ EXP_REG_GLOBAL5 ];
 		const float skyAnglesY = surf->shaderRegisters[ EXP_REG_GLOBAL6 ];
 		const float skyAnglesZ = surf->shaderRegisters[ EXP_REG_GLOBAL7 ];
-
+		
 		idMat3 skyMat = idAngles( skyAnglesX, skyAnglesY, skyAnglesZ ).ToMat3();
-
+		
 		float transform[ 12 ] = {};
 		transform[ 0 * 4 + 0 ] = skyMat[ 0 ].x;
 		transform[ 0 * 4 + 1 ] = skyMat[ 0 ].y;
@@ -605,7 +607,7 @@ static void RB_PrepareStageTexturing( const shaderStage_t* pStage,  const drawSu
 		transform[ 2 * 4 + 0 ] = skyMat[ 2 ].x;
 		transform[ 2 * 4 + 1 ] = skyMat[ 2 ].y;
 		transform[ 2 * 4 + 2 ] = skyMat[ 2 ].z;
-
+		
 		SetVertexParms( RENDERPARM_WOBBLESKY_X, transform, 3 );
 		renderProgManager.BindShader_WobbleSky();
 	}
@@ -992,7 +994,7 @@ static void RB_FillDepthBufferFast( drawSurf_t** drawSurfs, int numDrawSurfs )
 		{
 			break;
 		}
-
+		
 		RB_FillDepthBufferGeneric( &drawSurfs[surfNum], 1 );
 	}
 	
@@ -1008,7 +1010,7 @@ static void RB_FillDepthBufferFast( drawSurf_t** drawSurfs, int numDrawSurfs )
 	{
 		const drawSurf_t* surf = drawSurfs[ surfNum ];
 		const idMaterial* shader = surf->material;
-
+		
 		// translucent surfaces don't put anything in the depth buffer
 		if( shader->Coverage() == MC_TRANSLUCENT )
 		{
@@ -1195,7 +1197,7 @@ static void RB_DrawSingleInteraction( drawInteraction_t* din )
 	// gloss matrix
 	SetVertexParm( RENDERPARM_GLOSSMATRIX_S, din->glossMatrix[0].ToFloatPtr() );
 	SetVertexParm( RENDERPARM_GLOSSMATRIX_T, din->glossMatrix[1].ToFloatPtr() );
-
+	
 	RB_SetVertexColorParms( din->vertexColor );
 	
 	SetFragmentParm( RENDERPARM_DIFFUSEMODIFIER, din->diffuseColor.ToFloatPtr() );
@@ -1212,7 +1214,7 @@ static void RB_DrawSingleInteraction( drawInteraction_t* din )
 	// texture 4 is the per-surface specular map
 	GL_SelectTexture( INTERACTION_TEXUNIT_SPECULAR );
 	din->specularImage->Bind();
-
+	
 	// texture 8 is the per-surface specular map
 	GL_SelectTexture( INTERACTION_TEXUNIT_GLOSS );
 	din->glossImage->Bind();
@@ -1227,7 +1229,7 @@ RB_SetupForFastPathInteractions
 These are common for all fast path surfaces
 =================
 */
-static void RB_SetupForFastPathInteractions( const idVec4& diffuseColor, const idVec4& specularColor)
+static void RB_SetupForFastPathInteractions( const idVec4& diffuseColor, const idVec4& specularColor )
 {
 	const idVec4 sMatrix( 1, 0, 0, 0 );
 	const idVec4 tMatrix( 0, 1, 0, 0 );
@@ -1347,7 +1349,7 @@ static void RB_RenderInteractions( const drawSurf_t* surfList, const viewLight_t
 	}
 	
 	bool lightDepthBoundsDisabled = false;
-
+	
 	// RB begin
 	if( r_useShadowMapping.GetBool() )
 	{
@@ -1434,7 +1436,7 @@ static void RB_RenderInteractions( const drawSurf_t* surfList, const viewLight_t
 		// texture 2 will be the light projection texture
 		GL_SelectTexture( INTERACTION_TEXUNIT_PROJECTION );
 		lightStage->texture.image->Bind();
-
+		
 		if( r_useShadowMapping.GetBool() )
 		{
 			// texture 5 will be the shadow maps array
@@ -1619,7 +1621,7 @@ static void RB_RenderInteractions( const drawSurf_t* surfList, const viewLight_t
 				SetVertexParm( RENDERPARM_LIGHTPROJECTION_T, lightProjection[1].ToFloatPtr() );
 				SetVertexParm( RENDERPARM_LIGHTPROJECTION_Q, lightProjection[2].ToFloatPtr() );
 				SetVertexParm( RENDERPARM_LIGHTFALLOFF_S, lightProjection[3].ToFloatPtr() );
-
+				
 				// RB begin
 				if( useShadowmaps )
 				{
@@ -1679,7 +1681,7 @@ static void RB_RenderInteractions( const drawSurf_t* surfList, const viewLight_t
 					SetVertexParms( RENDERPARM_MODELMATRIX_X, modelMatrixTranspose, 4 );
 // <--- sikk - Added: used for ambient lighting
 				}
-
+				
 			}
 			
 			// check for the fast path
@@ -1698,7 +1700,7 @@ static void RB_RenderInteractions( const drawSurf_t* surfList, const viewLight_t
 				// texture 4 is the per-surface specular map
 				GL_SelectTexture( INTERACTION_TEXUNIT_SPECULAR );
 				surfaceShader->GetFastPathSpecularImage()->Bind();
-
+				
 				// texture 8 is the per-surface gloss map
 				GL_SelectTexture( INTERACTION_TEXUNIT_GLOSS );
 				surfaceShader->GetFastPathGlossImage()->Bind();
@@ -2442,7 +2444,7 @@ static void RB_ShadowMapPass( const drawSurf_t* drawSurfs, const viewLight_t* vL
 		}
 		
 		float lightProjectionMatrix[16];
-		MatrixOrthogonalProjectionRH( lightProjectionMatrix, lightBounds[0][0]*10, lightBounds[1][0]*10, lightBounds[0][1]*10, lightBounds[1][1]*10, -lightBounds[1][2]*10, -lightBounds[0][2]*10 );
+		MatrixOrthogonalProjectionRH( lightProjectionMatrix, lightBounds[0][0] * 10, lightBounds[1][0] * 10, lightBounds[0][1] * 10, lightBounds[1][1] * 10, -lightBounds[1][2] * 10, -lightBounds[0][2] * 10 );
 		idRenderMatrix::Transpose( *( idRenderMatrix* )lightProjectionMatrix, lightProjectionRenderMatrix );
 		
 		
@@ -2552,7 +2554,7 @@ static void RB_ShadowMapPass( const drawSurf_t* drawSurfs, const viewLight_t* vL
 		cropBounds[1][0] += width;
 		cropBounds[0][1] -= height;
 		cropBounds[1][1] += height;
-
+		
 		MatrixOrthogonalProjectionRH( lightProjectionMatrix, cropBounds[0][0], cropBounds[1][0], cropBounds[0][1], cropBounds[1][1], -cropBounds[1][2], -cropBounds[0][2] );
 		idRenderMatrix::Transpose( *( idRenderMatrix* )lightProjectionMatrix, lightProjectionRenderMatrix );
 		
@@ -2693,7 +2695,7 @@ static void RB_ShadowMapPass( const drawSurf_t* drawSurfs, const viewLight_t* vL
 	}
 	
 	/*globalImages->shadowMapFramebufferImage[vLight->shadowLOD]->Bind();
-
+	
 	
 	if( side < 0 )
 	{
@@ -2703,9 +2705,9 @@ static void RB_ShadowMapPass( const drawSurf_t* drawSurfs, const viewLight_t* vL
 	{
 		globalFramebuffers->shadowMapFramebuffer[vLight->shadowLOD]->Bind( side );
 	}*/
-
+	
 	globalFramebuffers->shadowMapFramebuffer[vLight->shadowLOD][side < 0 ? 0 : side]->Bind();
-
+	
 	GL_ViewportAndScissor( 0, 0, shadowMapResolutions[vLight->shadowLOD], shadowMapResolutions[vLight->shadowLOD] );
 	
 	glClear( GL_DEPTH_BUFFER_BIT );
@@ -2737,25 +2739,25 @@ static void RB_ShadowMapPass( const drawSurf_t* drawSurfs, const viewLight_t* vL
 		{
 			continue;	// a job may have created an empty shadow geometry
 		}
-
+		
 		if( r_shadowMapMaxDistance.GetFloat() < 0 )
 		{
-			idLib::Warning("r_shadowMapMaxDistance should be a positive number");
-			r_shadowMapMaxDistance.SetFloat(0);
+			idLib::Warning( "r_shadowMapMaxDistance should be a positive number" );
+			r_shadowMapMaxDistance.SetFloat( 0 );
 		}
-
+		
 		// don't shadow objects too far away
 		idVec3 viewCoordinate;
 		idRenderMatrix modelViewMatrix;
 		idRenderMatrix::Transpose( *( idRenderMatrix* )drawSurf->space->modelViewMatrix, modelViewMatrix );
-		modelViewMatrix.TransformPoint( idVec3(0, 0, 0), viewCoordinate );
+		modelViewMatrix.TransformPoint( idVec3( 0, 0, 0 ), viewCoordinate );
 		/*if( drawSurf->space->entityDef->parms.hModel->IsStaticWorldModel() && r_shadowMapStaticShadowsDistance.GetFloat() < viewCoordinate.LengthFast() )
 		{
 			continue;
 		} */
 		// motorsep 11-19-2014; moved check for world models (brushes) here so that the world always cast shadows, and only shadows from models obey Max Distance setting
 		// Dandel - 12-29-2014; The order of the comparison is critical for preventing pointer errors in access on demo playback.
-		if (r_shadowMapMaxDistance.GetFloat() < viewCoordinate.LengthFast() && !drawSurf->space->entityDef->parms.hModel->IsStaticWorldModel())
+		if( r_shadowMapMaxDistance.GetFloat() < viewCoordinate.LengthFast() && !drawSurf->space->entityDef->parms.hModel->IsStaticWorldModel() )
 		{
 			continue;
 		}
@@ -2928,7 +2930,7 @@ static void RB_ShadowMapPass( const drawSurf_t* drawSurfs, const viewLight_t* vL
 	// cleanup the shadow specific rendering state
 	
 	// switch back to the view framebuffer (or system framebuffer)
-	if ( r_useHDR.GetBool() && !( com_editors ) && backEnd.viewDef->viewEntitys )
+	if( r_useHDR.GetBool() && !( com_editors ) && backEnd.viewDef->viewEntitys )
 	{
 		globalFramebuffers->viewFramebuffer->Bind();
 	}
@@ -3198,10 +3200,10 @@ static int RB_DrawShaderPasses( const drawSurf_t* const* const drawSurfs, const 
 	}
 	
 	renderLog.OpenBlock( "RB_DrawShaderPasses" );
-
+	
 	// foresthale 2014-05-10: also skip ink in editors
-	bool bSkipInk = r_skipInk.GetBool() || (com_editors & (EDITOR_RADIANT | EDITOR_MATERIAL)) != 0;
-
+	bool bSkipInk = r_skipInk.GetBool() || ( com_editors & ( EDITOR_RADIANT | EDITOR_MATERIAL ) ) != 0;
+	
 	GL_SelectTexture( 1 );
 	globalImages->BindNull();
 	
@@ -3220,7 +3222,7 @@ static int RB_DrawShaderPasses( const drawSurf_t* const* const drawSurfs, const 
 		{
 			continue;
 		}
-
+		
 		if( shader->IsPortalSky() )
 		{
 			continue;
@@ -3256,8 +3258,8 @@ static int RB_DrawShaderPasses( const drawSurf_t* const* const drawSurfs, const 
 		// the current view's eye index then we skip the surface
 		// if the stereoEye value of a surface is 0 then we need to draw it for both eyes.
 		const int shaderStereoEye = shader->GetStereoEye();
-		const bool isEyeValid = stereoRender_swapEyes.GetBool() ? (shaderStereoEye == stereoEye) : (shaderStereoEye != stereoEye);
-		if( (stereoEye != 0) && (shaderStereoEye != 0) && (isEyeValid) )
+		const bool isEyeValid = stereoRender_swapEyes.GetBool() ? ( shaderStereoEye == stereoEye ) : ( shaderStereoEye != stereoEye );
+		if( ( stereoEye != 0 ) && ( shaderStereoEye != 0 ) && ( isEyeValid ) )
 		{
 			continue;
 		}
@@ -3279,11 +3281,11 @@ static int RB_DrawShaderPasses( const drawSurf_t* const* const drawSurfs, const 
 			
 			if( guiStereoScreenOffset != 0.0f )
 			{
-				RB_SetMVPWithStereoOffset(space->mvp, currentGuiStereoOffset);
+				RB_SetMVPWithStereoOffset( space->mvp, currentGuiStereoOffset );
 			}
 			else
 			{
-				RB_SetMVP(space->mvp);
+				RB_SetMVP( space->mvp );
 			}
 			
 			// set eye position in local space
@@ -3343,13 +3345,14 @@ static int RB_DrawShaderPasses( const drawSurf_t* const* const drawSurfs, const 
 			{
 				continue;
 			}
-
+			
 // ---> sikk - Added - No Motionblur Material Stage Flag
-			if ( r_motionBlur.GetInteger() > 0 && ( pStage->noMotionBlur == skipNoBlur ) ) {
+			if( r_motionBlur.GetInteger() > 0 && ( pStage->noMotionBlur == skipNoBlur ) )
+			{
 				continue;
 			}
 // <--- sikk - Added - No Motionblur Material Stage Flag
-			
+
 			// skip the stages involved in lighting
 			if( pStage->lighting != SL_AMBIENT )
 			{
@@ -3388,7 +3391,7 @@ static int RB_DrawShaderPasses( const drawSurf_t* const* const drawSurfs, const 
 					continue;
 				}
 				// foresthale 2014-04-27: skip ink shader passes when rendering envShot
-				if ( bSkipInk && pStage->newStage->fragmentProgramImages[0] == globalImages->currentDepthImage )
+				if( bSkipInk && pStage->newStage->fragmentProgramImages[0] == globalImages->currentDepthImage )
 				{
 					continue;
 				}
@@ -3428,12 +3431,12 @@ static int RB_DrawShaderPasses( const drawSurf_t* const* const drawSurfs, const 
 						image->Bind();
 					}
 				}
-
+				
 				// draw it
-				RB_DrawElementsWithCounters(surf);
+				RB_DrawElementsWithCounters( surf );
 				
 				// unbind texture units
-				for ( int j = 0; j < newStage->numFragmentProgramImages; j++ )
+				for( int j = 0; j < newStage->numFragmentProgramImages; j++ )
 				{
 					idImage* image = newStage->fragmentProgramImages[j];
 					if( image != NULL )
@@ -3444,7 +3447,7 @@ static int RB_DrawShaderPasses( const drawSurf_t* const* const drawSurfs, const 
 				}
 				
 				// clear rpEnableSkinning if it was set
-				if ( surf->jointCache && renderProgManager.ShaderHasOptionalSkinning() )
+				if( surf->jointCache && renderProgManager.ShaderHasOptionalSkinning() )
 				{
 					const idVec4 skinningParm( 0.0f );
 					SetVertexParm( RENDERPARM_ENABLE_SKINNING, skinningParm.ToFloatPtr() );
@@ -3471,15 +3474,15 @@ static int RB_DrawShaderPasses( const drawSurf_t* const* const drawSurfs, const 
 			color[3] = regs[ pStage->color.registers[3] ];
 			
 			// skip the entire stage if an add would be black
-			if( (stageGLState & ( GLS_SRCBLEND_BITS | GLS_DSTBLEND_BITS ) ) == ( GLS_SRCBLEND_ONE | GLS_DSTBLEND_ONE )
-				&& color[0] <= 0 && color[1] <= 0 && color[2] <= 0 )
+			if( ( stageGLState & ( GLS_SRCBLEND_BITS | GLS_DSTBLEND_BITS ) ) == ( GLS_SRCBLEND_ONE | GLS_DSTBLEND_ONE )
+					&& color[0] <= 0 && color[1] <= 0 && color[2] <= 0 )
 			{
 				continue;
 			}
 			
 			// skip the entire stage if a blend would be completely transparent
-			if( (stageGLState & (GLS_SRCBLEND_BITS | GLS_DSTBLEND_BITS)) == (GLS_SRCBLEND_SRC_ALPHA | GLS_DSTBLEND_ONE_MINUS_SRC_ALPHA)
-				&& color[3] <= 0 )
+			if( ( stageGLState & ( GLS_SRCBLEND_BITS | GLS_DSTBLEND_BITS ) ) == ( GLS_SRCBLEND_SRC_ALPHA | GLS_DSTBLEND_ONE_MINUS_SRC_ALPHA )
+					&& color[3] <= 0 )
 			{
 				continue;
 			}
@@ -3706,7 +3709,7 @@ static void RB_BlendLight( const drawSurf_t* drawSurfs, const drawSurf_t* drawSu
 		lightColor[2] = regs[ stage->color.registers[2] ];
 		lightColor[3] = regs[ stage->color.registers[3] ];
 		// foresthale 2014-04-07: r_glow
-		if (glowStage)
+		if( glowStage )
 			lightColor[0] = lightColor[1] = lightColor[2] = 0.0f;
 		GL_Color( lightColor );
 		
@@ -3822,9 +3825,9 @@ static void RB_FogPass( const drawSurf_t* drawSurfs,  const drawSurf_t* drawSurf
 	lightColor[2] = regs[ stage->color.registers[2] ];
 	lightColor[3] = regs[ stage->color.registers[3] ];
 	// foresthale 2014-04-07: r_glow
-	if (glowStage)
+	if( glowStage )
 		lightColor[0] = lightColor[1] = lightColor[2] = 0.0f;
-	
+		
 	GL_Color( lightColor );
 	
 	// calculate the falloff planes
@@ -3912,7 +3915,7 @@ static void RB_FogPass( const drawSurf_t* drawSurfs,  const drawSurf_t* drawSurf
 RB_FogAllLights
 ==================
 */
-static void RB_FogAllLights(bool glowStage)
+static void RB_FogAllLights( bool glowStage )
 {
 	if( r_skipFogLights.GetBool() || r_showOverDraw.GetInteger() != 0
 			|| backEnd.viewDef->isXraySubview /* don't fog in xray mode*/ )
@@ -3974,131 +3977,132 @@ void RB_DrawViewInternal( const viewDef_t* viewDef, const int stereoEye, const b
 			const_cast<idMaterial*>( ds->material )->EnsureNotPurged();
 		}
 	}
-
-	if ( skipNoBlur ) {	// sikk - Added - No Motionblur Material Stage Flag
-
-	//-------------------------------------------------
-	// RB_BeginDrawingView
-	//
-	// Any mirrored or portaled views have already been drawn, so prepare
-	// to actually render the visible surfaces for this view
-	//
-	// clear the z buffer, set the projection matrix, etc
-	//-------------------------------------------------
 	
-	// set the window clipping
-	GL_Viewport( viewDef->viewport.x1,
-				 viewDef->viewport.y1,
-				 viewDef->viewport.x2 + 1 - viewDef->viewport.x1,
-				 viewDef->viewport.y2 + 1 - viewDef->viewport.y1 );
-
-	// the scissor may be smaller than the viewport for subviews
-	GL_Scissor( backEnd.viewDef->viewport.x1 + viewDef->scissor.x1,
-				backEnd.viewDef->viewport.y1 + viewDef->scissor.y1,
-				viewDef->scissor.x2 + 1 - viewDef->scissor.x1,
-				viewDef->scissor.y2 + 1 - viewDef->scissor.y1 );
-
-	backEnd.currentScissor = viewDef->scissor;
+	if( skipNoBlur )  	// sikk - Added - No Motionblur Material Stage Flag
+	{
 	
-	backEnd.glState.faceCulling = -1;		// force face culling to set next time
-	
-	// ensures that depth writes are enabled for the depth clear
-	GL_State( GLS_DEFAULT );
-	
-	
-	// Clear the depth buffer and clear the stencil to 128 for stencil shadows as well as gui masking
-	GL_Clear( false, true, true, STENCIL_SHADOW_TEST_VALUE, 0.0f, 0.0f, 0.0f, 0.0f );
-	
-	// normal face culling
-	GL_Cull( CT_FRONT_SIDED );
-	
+		//-------------------------------------------------
+		// RB_BeginDrawingView
+		//
+		// Any mirrored or portaled views have already been drawn, so prepare
+		// to actually render the visible surfaces for this view
+		//
+		// clear the z buffer, set the projection matrix, etc
+		//-------------------------------------------------
+		
+		// set the window clipping
+		GL_Viewport( viewDef->viewport.x1,
+					 viewDef->viewport.y1,
+					 viewDef->viewport.x2 + 1 - viewDef->viewport.x1,
+					 viewDef->viewport.y2 + 1 - viewDef->viewport.y1 );
+					 
+		// the scissor may be smaller than the viewport for subviews
+		GL_Scissor( backEnd.viewDef->viewport.x1 + viewDef->scissor.x1,
+					backEnd.viewDef->viewport.y1 + viewDef->scissor.y1,
+					viewDef->scissor.x2 + 1 - viewDef->scissor.x1,
+					viewDef->scissor.y2 + 1 - viewDef->scissor.y1 );
+					
+		backEnd.currentScissor = viewDef->scissor;
+		
+		backEnd.glState.faceCulling = -1;		// force face culling to set next time
+		
+		// ensures that depth writes are enabled for the depth clear
+		GL_State( GLS_DEFAULT );
+		
+		
+		// Clear the depth buffer and clear the stencil to 128 for stencil shadows as well as gui masking
+		GL_Clear( false, true, true, STENCIL_SHADOW_TEST_VALUE, 0.0f, 0.0f, 0.0f, 0.0f );
+		
+		// normal face culling
+		GL_Cull( CT_FRONT_SIDED );
+		
 #ifdef USE_CORE_PROFILE
-	// bind one global Vertex Array Object (VAO)
-	qglBindVertexArray( glConfig.global_vao );
+		// bind one global Vertex Array Object (VAO)
+		qglBindVertexArray( glConfig.global_vao );
 #endif
-	
-	//------------------------------------
-	// sets variables that can be used by all programs
-	//------------------------------------
-	{
-		//
-		// set eye position in global space
-		//
-		float parm[4];
-		parm[0] = backEnd.viewDef->renderView.vieworg[0];
-		parm[1] = backEnd.viewDef->renderView.vieworg[1];
-		parm[2] = backEnd.viewDef->renderView.vieworg[2];
-		parm[3] = 1.0f;
 		
-		SetVertexParm( RENDERPARM_GLOBALEYEPOS, parm ); // rpGlobalEyePos
-		
-		// sets overbright to make world brighter
-		// This value is baked into the specularScale and diffuseScale values so
-		// the interaction programs don't need to perform the extra multiply,
-		// but any other renderprogs that want to obey the brightness value
-		// can reference this.
-		float overbright = r_lightScale.GetFloat() * 0.5f;
-		parm[0] = overbright;
-		parm[1] = overbright;
-		parm[2] = overbright;
-		parm[3] = overbright;
-		SetFragmentParm( RENDERPARM_OVERBRIGHT, parm );
-		
-		// Set Projection Matrix
-		float projMatrixTranspose[16];
-		R_MatrixTranspose( backEnd.viewDef->projectionMatrix, projMatrixTranspose );
-		SetVertexParms( RENDERPARM_PROJMATRIX_X, projMatrixTranspose, 4 );
-	}
-	
-	//-------------------------------------------------
-	// fill the depth buffer and clear color buffer to black except on subviews
-	//-------------------------------------------------
-	RB_FillDepthBufferFast( drawSurfs, numDrawSurfs );
-	
-	// ---------- ink begins -----------------------
-	const idScreenRect& viewport = backEnd.viewDef->viewport;
-	globalImages->currentDepthImage->CopyDepthbuffer( viewport.x1, viewport.y1, viewport.GetWidth(), viewport.GetHeight() );
-
-	// window coord to 0.0 to 1.0 conversion
-	float windowCoordParm[4];
-	windowCoordParm[0] = 1.0f / viewport.GetWidth();
-	windowCoordParm[1] = 1.0f / viewport.GetHeight();
-	windowCoordParm[2] = -viewport.x1 * windowCoordParm[0];
-	windowCoordParm[3] = -viewport.y1 * windowCoordParm[1];
-	SetFragmentParm( RENDERPARM_WINDOWCOORD, windowCoordParm ); // rpWindowCoord
-	
-	// ---------- ink ends -----------------------
-
-	// foresthale 2014-04-07: r_glow
-	// foresthale 2014-05-10: in editors do not use glow
-	if ( r_glowEnable.GetBool() && numDrawSurfs && backEnd.viewDef->viewEntitys && !( com_editors ))
-	{
-		renderLog.OpenMainBlock( MRB_DRAW_SHADER_PASSES );
-		RB_DrawShaderPasses( drawSurfs, numDrawSurfs, 0.0f /* definitely not a gui */, stereoEye, SS_POST_PROCESS, false, true );
-		renderLog.CloseMainBlock();
-
-		RB_FogAllLights(true);
-
-		if ( r_useHDR.GetBool() && !( com_editors ) )
+		//------------------------------------
+		// sets variables that can be used by all programs
+		//------------------------------------
 		{
-			globalImages->glowFramebufferImage16[0]->CopyFramebuffer( backEnd.viewDef->viewport.x1, backEnd.viewDef->viewport.y1, backEnd.viewDef->viewport.x2 -  backEnd.viewDef->viewport.x1 + 1, backEnd.viewDef->viewport.y2 -  backEnd.viewDef->viewport.y1 + 1 );
+			//
+			// set eye position in global space
+			//
+			float parm[4];
+			parm[0] = backEnd.viewDef->renderView.vieworg[0];
+			parm[1] = backEnd.viewDef->renderView.vieworg[1];
+			parm[2] = backEnd.viewDef->renderView.vieworg[2];
+			parm[3] = 1.0f;
+			
+			SetVertexParm( RENDERPARM_GLOBALEYEPOS, parm ); // rpGlobalEyePos
+			
+			// sets overbright to make world brighter
+			// This value is baked into the specularScale and diffuseScale values so
+			// the interaction programs don't need to perform the extra multiply,
+			// but any other renderprogs that want to obey the brightness value
+			// can reference this.
+			float overbright = r_lightScale.GetFloat() * 0.5f;
+			parm[0] = overbright;
+			parm[1] = overbright;
+			parm[2] = overbright;
+			parm[3] = overbright;
+			SetFragmentParm( RENDERPARM_OVERBRIGHT, parm );
+			
+			// Set Projection Matrix
+			float projMatrixTranspose[16];
+			R_MatrixTranspose( backEnd.viewDef->projectionMatrix, projMatrixTranspose );
+			SetVertexParms( RENDERPARM_PROJMATRIX_X, projMatrixTranspose, 4 );
 		}
-		else
+		
+		//-------------------------------------------------
+		// fill the depth buffer and clear color buffer to black except on subviews
+		//-------------------------------------------------
+		RB_FillDepthBufferFast( drawSurfs, numDrawSurfs );
+		
+		// ---------- ink begins -----------------------
+		const idScreenRect& viewport = backEnd.viewDef->viewport;
+		globalImages->currentDepthImage->CopyDepthbuffer( viewport.x1, viewport.y1, viewport.GetWidth(), viewport.GetHeight() );
+		
+		// window coord to 0.0 to 1.0 conversion
+		float windowCoordParm[4];
+		windowCoordParm[0] = 1.0f / viewport.GetWidth();
+		windowCoordParm[1] = 1.0f / viewport.GetHeight();
+		windowCoordParm[2] = -viewport.x1 * windowCoordParm[0];
+		windowCoordParm[3] = -viewport.y1 * windowCoordParm[1];
+		SetFragmentParm( RENDERPARM_WINDOWCOORD, windowCoordParm ); // rpWindowCoord
+		
+		// ---------- ink ends -----------------------
+		
+		// foresthale 2014-04-07: r_glow
+		// foresthale 2014-05-10: in editors do not use glow
+		if( r_glowEnable.GetBool() && numDrawSurfs && backEnd.viewDef->viewEntitys && !( com_editors ) )
 		{
-			globalImages->glowFramebufferImage8[0]->CopyFramebuffer( backEnd.viewDef->viewport.x1, backEnd.viewDef->viewport.y1, backEnd.viewDef->viewport.x2 -  backEnd.viewDef->viewport.x1 + 1, backEnd.viewDef->viewport.y2 -  backEnd.viewDef->viewport.y1 + 1 );
+			renderLog.OpenMainBlock( MRB_DRAW_SHADER_PASSES );
+			RB_DrawShaderPasses( drawSurfs, numDrawSurfs, 0.0f /* definitely not a gui */, stereoEye, SS_POST_PROCESS, false, true );
+			renderLog.CloseMainBlock();
+			
+			RB_FogAllLights( true );
+			
+			if( r_useHDR.GetBool() && !( com_editors ) )
+			{
+				globalImages->glowFramebufferImage16[0]->CopyFramebuffer( backEnd.viewDef->viewport.x1, backEnd.viewDef->viewport.y1, backEnd.viewDef->viewport.x2 -  backEnd.viewDef->viewport.x1 + 1, backEnd.viewDef->viewport.y2 -  backEnd.viewDef->viewport.y1 + 1 );
+			}
+			else
+			{
+				globalImages->glowFramebufferImage8[0]->CopyFramebuffer( backEnd.viewDef->viewport.x1, backEnd.viewDef->viewport.y1, backEnd.viewDef->viewport.x2 -  backEnd.viewDef->viewport.x1 + 1, backEnd.viewDef->viewport.y2 -  backEnd.viewDef->viewport.y1 + 1 );
+			}
+			
+			// set a flag indicating the glow buffer is valid this frame
+			backEnd.glowRenderCopied = true;
+			qglClear( GL_COLOR_BUFFER_BIT );
 		}
-
-		// set a flag indicating the glow buffer is valid this frame
-		backEnd.glowRenderCopied = true;
-		qglClear( GL_COLOR_BUFFER_BIT );
-	}
-
-	//-------------------------------------------------
-	// main light renderer
-	//-------------------------------------------------
-	RB_DrawInteractions(viewDef);
+		
+		//-------------------------------------------------
+		// main light renderer
+		//-------------------------------------------------
+		RB_DrawInteractions( viewDef );
 	}	// sikk - Added - No Motionblur Material Stage Flag
-
+	
 	//-------------------------------------------------
 	// now draw any non-light dependent shading passes
 	//-------------------------------------------------
@@ -4118,96 +4122,97 @@ void RB_DrawViewInternal( const viewDef_t* viewDef, const int stereoEye, const b
 			guiScreenOffset = stereoEye * viewDef->renderView.stereoScreenSeparation;
 		}
 		processed = RB_DrawShaderPasses( drawSurfs, numDrawSurfs, guiScreenOffset, stereoEye, SS_FAR, skipNoBlur, false );	// sikk - Added 'skipNoBlur' arg - No Motionblur Material Stage Flag
-
+		
 		renderLog.CloseMainBlock();
 	}
-
-
-	if ( skipNoBlur ) {	// sikk - Added - No Motionblur Material Stage Flag
 	
-	//-------------------------------------------------
-	// fog and blend lights, drawn after emissive surfaces
-	// so they are properly dimmed down
-	//-------------------------------------------------
-	RB_FogAllLights( false );
-
-	// foresthale 2014-04-25: draw the transparent surfaces after fog
-	// now that fog has been drawn, we can draw the transparent surfaces
-	if( !r_skipShaderPasses.GetBool() )
-	{
-		renderLog.OpenMainBlock( MRB_DRAW_SHADER_PASSES );
-		float guiScreenOffset;
-		if( viewDef->viewEntitys != NULL )
-		{
-			// guiScreenOffset will be 0 in non-gui views
-			guiScreenOffset = 0.0f;
-		}
-		else
-		{
-			guiScreenOffset = stereoEye * viewDef->renderView.stereoScreenSeparation;
-		}
-		processed += RB_DrawShaderPasses( drawSurfs + processed, numDrawSurfs - processed, guiScreenOffset, stereoEye, SS_POST_PROCESS, skipNoBlur, false );	// sikk - Added 'skipNoBlur' arg - No Motionblur Material Stage Flag
-
-		renderLog.CloseMainBlock();
-	}
-
-	//-------------------------------------------------
-	// capture the depth for the motion blur before rendering any post process surfaces that may contribute to the depth
-	//-------------------------------------------------
-	//if( r_motionBlur.GetInteger() > 0 ) // ELUAN - inks need this
-	//{
-	//	const idScreenRect& viewport = backEnd.viewDef->viewport;
-	//	globalImages->currentDepthImage->CopyDepthbuffer( viewport.x1, viewport.y1, viewport.GetWidth(), viewport.GetHeight() );					
-	//}
 	
-	//-------------------------------------------------
-	// now draw any screen warping post-process effects using _currentRender
-	//-------------------------------------------------
-	if( processed < numDrawSurfs && !r_skipPostProcess.GetBool() )
+	if( skipNoBlur )  	// sikk - Added - No Motionblur Material Stage Flag
 	{
-		int x = backEnd.viewDef->viewport.x1;
-		int y = backEnd.viewDef->viewport.y1;
-		int	w = backEnd.viewDef->viewport.x2 - backEnd.viewDef->viewport.x1 + 1;
-		int	h = backEnd.viewDef->viewport.y2 - backEnd.viewDef->viewport.y1 + 1;
+	
+		//-------------------------------------------------
+		// fog and blend lights, drawn after emissive surfaces
+		// so they are properly dimmed down
+		//-------------------------------------------------
+		RB_FogAllLights( false );
 		
-		RENDERLOG_PRINTF( "Resolve to %i x %i buffer\n", w, h );
+		// foresthale 2014-04-25: draw the transparent surfaces after fog
+		// now that fog has been drawn, we can draw the transparent surfaces
+		if( !r_skipShaderPasses.GetBool() )
+		{
+			renderLog.OpenMainBlock( MRB_DRAW_SHADER_PASSES );
+			float guiScreenOffset;
+			if( viewDef->viewEntitys != NULL )
+			{
+				// guiScreenOffset will be 0 in non-gui views
+				guiScreenOffset = 0.0f;
+			}
+			else
+			{
+				guiScreenOffset = stereoEye * viewDef->renderView.stereoScreenSeparation;
+			}
+			processed += RB_DrawShaderPasses( drawSurfs + processed, numDrawSurfs - processed, guiScreenOffset, stereoEye, SS_POST_PROCESS, skipNoBlur, false );	// sikk - Added 'skipNoBlur' arg - No Motionblur Material Stage Flag
+			
+			renderLog.CloseMainBlock();
+		}
 		
-		GL_SelectTexture( 0 );
+		//-------------------------------------------------
+		// capture the depth for the motion blur before rendering any post process surfaces that may contribute to the depth
+		//-------------------------------------------------
+		//if( r_motionBlur.GetInteger() > 0 ) // ELUAN - inks need this
+		//{
+		//	const idScreenRect& viewport = backEnd.viewDef->viewport;
+		//	globalImages->currentDepthImage->CopyDepthbuffer( viewport.x1, viewport.y1, viewport.GetWidth(), viewport.GetHeight() );
+		//}
 		
-		// resolve the screen
-		globalImages->currentRenderImage->CopyFramebuffer( x, y, w, h );
-		backEnd.currentRenderCopied = true;
-		
-		// RENDERPARM_SCREENCORRECTIONFACTOR amd RENDERPARM_WINDOWCOORD overlap
-		// diffuseScale and specularScale
-		
-		// screen power of two correction factor (no longer relevant now)
-		float screenCorrectionParm[4];
-		screenCorrectionParm[0] = 1.0f;
-		screenCorrectionParm[1] = 1.0f;
-		screenCorrectionParm[2] = 0.0f;
-		screenCorrectionParm[3] = 1.0f;
-		SetFragmentParm( RENDERPARM_SCREENCORRECTIONFACTOR, screenCorrectionParm ); // rpScreenCorrectionFactor
-		
-		// window coord to 0.0 to 1.0 conversion
-		//float windowCoordParm[4];
-		//windowCoordParm[0] = 1.0f / w;
-		//windowCoordParm[1] = 1.0f / h;
-		//windowCoordParm[2] = 0.0f;
-		//windowCoordParm[3] = 1.0f;
-		//SetFragmentParm( RENDERPARM_WINDOWCOORD, windowCoordParm ); // rpWindowCoord
-		
-		// render the remaining surfaces
-		renderLog.OpenMainBlock( MRB_DRAW_SHADER_PASSES_POST );
-		RB_DrawShaderPasses( drawSurfs + processed, numDrawSurfs - processed, 0.0f /* definitely not a gui */, stereoEye, SS_POST_PROCESS + 1, false, false );
-		renderLog.CloseMainBlock();
-	}
+		//-------------------------------------------------
+		// now draw any screen warping post-process effects using _currentRender
+		//-------------------------------------------------
+		if( processed < numDrawSurfs && !r_skipPostProcess.GetBool() )
+		{
+			int x = backEnd.viewDef->viewport.x1;
+			int y = backEnd.viewDef->viewport.y1;
+			int	w = backEnd.viewDef->viewport.x2 - backEnd.viewDef->viewport.x1 + 1;
+			int	h = backEnd.viewDef->viewport.y2 - backEnd.viewDef->viewport.y1 + 1;
+			
+			RENDERLOG_PRINTF( "Resolve to %i x %i buffer\n", w, h );
+			
+			GL_SelectTexture( 0 );
+			
+			// resolve the screen
+			globalImages->currentRenderImage->CopyFramebuffer( x, y, w, h );
+			backEnd.currentRenderCopied = true;
+			
+			// RENDERPARM_SCREENCORRECTIONFACTOR amd RENDERPARM_WINDOWCOORD overlap
+			// diffuseScale and specularScale
+			
+			// screen power of two correction factor (no longer relevant now)
+			float screenCorrectionParm[4];
+			screenCorrectionParm[0] = 1.0f;
+			screenCorrectionParm[1] = 1.0f;
+			screenCorrectionParm[2] = 0.0f;
+			screenCorrectionParm[3] = 1.0f;
+			SetFragmentParm( RENDERPARM_SCREENCORRECTIONFACTOR, screenCorrectionParm ); // rpScreenCorrectionFactor
+			
+			// window coord to 0.0 to 1.0 conversion
+			//float windowCoordParm[4];
+			//windowCoordParm[0] = 1.0f / w;
+			//windowCoordParm[1] = 1.0f / h;
+			//windowCoordParm[2] = 0.0f;
+			//windowCoordParm[3] = 1.0f;
+			//SetFragmentParm( RENDERPARM_WINDOWCOORD, windowCoordParm ); // rpWindowCoord
+			
+			// render the remaining surfaces
+			renderLog.OpenMainBlock( MRB_DRAW_SHADER_PASSES_POST );
+			RB_DrawShaderPasses( drawSurfs + processed, numDrawSurfs - processed, 0.0f /* definitely not a gui */, stereoEye, SS_POST_PROCESS + 1, false, false );
+			renderLog.CloseMainBlock();
+		}
 	}	// sikk - Added - No Motionblur Material Stage Flag
 	//-------------------------------------------------
 	// render debug tools
 	//-------------------------------------------------
 	RB_RenderDebugTools( drawSurfs, numDrawSurfs );
-
+	
 	renderLog.CloseBlock();
 }
 
@@ -4357,8 +4362,8 @@ void RB_DrawView( const void* data, const int stereoEye )
 	
 	// foresthale 2014-02-19: HDR view rendering
 	// check if the screen size has changed
-	if ( globalImages->viewFramebufferRenderImage16->GetUploadWidth() != glConfig.nativeScreenWidth
-	 ||  globalImages->viewFramebufferRenderImage16->GetUploadHeight() != glConfig.nativeScreenHeight )
+	if( globalImages->viewFramebufferRenderImage16->GetUploadWidth() != glConfig.nativeScreenWidth
+			||  globalImages->viewFramebufferRenderImage16->GetUploadHeight() != glConfig.nativeScreenHeight )
 	{
 		globalImages->viewFramebufferRenderImage16->Resize( glConfig.nativeScreenWidth, glConfig.nativeScreenHeight );
 		globalImages->viewFramebufferDepthImage->Resize( glConfig.nativeScreenWidth, glConfig.nativeScreenHeight );
@@ -4366,11 +4371,11 @@ void RB_DrawView( const void* data, const int stereoEye )
 		globalFramebuffers->viewFramebuffer->PurgeFramebuffer();
 	}
 	// now we bind the framebuffer so that all rendering goes into it instead of the window, later we'll switch back to the window and draw a fullscreen quad that sources this texture
-	if ( r_useHDR.GetBool() && !( com_editors ) && backEnd.viewDef->viewEntitys )
+	if( r_useHDR.GetBool() && !( com_editors ) && backEnd.viewDef->viewEntitys )
 	{
 		globalFramebuffers->viewFramebuffer->Bind();
 	}
-
+	
 	// skip render context sets the wgl context to NULL,
 	// which should factor out the API cost, under the assumption
 	// that all gl calls just return if the context isn't valid
@@ -4390,9 +4395,10 @@ void RB_DrawView( const void* data, const int stereoEye )
 	RB_DrawViewInternal( cmd->viewDef, stereoEye );
 	
 	RB_MotionBlur();
-
+	
 // ---> sikk - Added - No Motionblur Material Stage Flag
-	if ( r_motionBlur.GetInteger() > 0 ) {
+	if( r_motionBlur.GetInteger() > 0 )
+	{
 		RB_DrawViewInternal( cmd->viewDef, stereoEye, false );
 	}
 // <--- sikk - Added - No Motionblur Material Stage Flag
@@ -4456,7 +4462,7 @@ void RB_CopyRender( const void* data )
 }
 
 // foresthale 2014-04-20: r_glow
-void RB_GetGlowTextureSizes(int textureSizes[4][6]);
+void RB_GetGlowTextureSizes( int textureSizes[4][6] );
 
 /*
 ==================
@@ -4472,13 +4478,13 @@ void RB_PostProcess( const void* data )
 	// corresponding full screen quad pass.
 	// foresthale 2014-02-23: if r_useHDR is on, we need this to run
 	// foresthale 2014-04-21: r_glow also needs this to run
-	if( rs_enable.GetInteger() == 0 && !(r_useHDR.GetBool() && !( com_editors ) ) && !backEnd.glowRenderCopied )
+	if( rs_enable.GetInteger() == 0 && !( r_useHDR.GetBool() && !( com_editors ) ) && !backEnd.glowRenderCopied )
 	{
 		return;
 	}
-
+	
 	// foressthale 2014-05-10: in editors, do not use HDR
-	if ((com_editors & (EDITOR_RADIANT | EDITOR_MATERIAL)) != 0)
+	if( ( com_editors & ( EDITOR_RADIANT | EDITOR_MATERIAL ) ) != 0 )
 	{
 		return;
 	}
@@ -4487,7 +4493,7 @@ void RB_PostProcess( const void* data )
 	postProcessCommand_t* cmd = ( postProcessCommand_t* )data;
 	const idScreenRect& viewport = cmd->viewDef->viewport;
 	// foresthale 2014-02-23 HDR view rendering does not need a copy
-	if ( !( r_useHDR.GetBool() && !( com_editors ) ) )
+	if( !( r_useHDR.GetBool() && !( com_editors ) ) )
 	{
 		globalImages->currentRenderImage->CopyFramebuffer( viewport.x1, viewport.y1, viewport.GetWidth(), viewport.GetHeight() );
 	}
@@ -4501,23 +4507,23 @@ void RB_PostProcess( const void* data )
 	// set the window clipping
 	GL_Viewport( 0, 0, screenWidth, screenHeight );
 	GL_Scissor( 0, 0, screenWidth, screenHeight );
-
+	
 	float screenCorrectionParm[4];
 	int textureSizes[4][6];
-
-	if ( backEnd.glowRenderCopied )
+	
+	if( backEnd.glowRenderCopied )
 	{
 		// scale image with dithering, add glow on top
 		// the dither doesn't do anything useful if we don't have r_useHDR on, but it also isn't very noticeable
-		RB_PostProcessHDRGlowProcess(textureSizes);
+		RB_PostProcessHDRGlowProcess( textureSizes );
 		renderProgManager.BindShader_HDRDitherWithGlow();
 		// we reuse this outdated renderparm to pass the viewport info
 		float glowTextureParm[4];
 		float glowParm[4];
-		glowTextureParm[0] = ( textureSizes[3][2]      ) / (float)textureSizes[3][0];
-		glowTextureParm[1] = ( textureSizes[3][3]      ) / (float)textureSizes[3][1];
-		glowTextureParm[2] = ( textureSizes[3][4]      ) / (float)textureSizes[3][0];
-		glowTextureParm[3] = ( textureSizes[3][5]      ) / (float)textureSizes[3][1];
+		glowTextureParm[0] = ( textureSizes[3][2] ) / ( float )textureSizes[3][0];
+		glowTextureParm[1] = ( textureSizes[3][3] ) / ( float )textureSizes[3][1];
+		glowTextureParm[2] = ( textureSizes[3][4] ) / ( float )textureSizes[3][0];
+		glowTextureParm[3] = ( textureSizes[3][5] ) / ( float )textureSizes[3][1];
 		glowParm[0] = r_glowIntensity.GetFloat();
 		glowParm[1] = 0.0f; // unused
 		glowParm[2] = 0.0f; // unused
@@ -4527,7 +4533,7 @@ void RB_PostProcess( const void* data )
 		SetFragmentParm( RENDERPARM_DIFFUSEMODIFIER, glowParm ); // rpDiffuseModifier
 		// bind the texture
 		GL_SelectTexture( 2 );
-		if ( r_useHDR.GetBool() && !( com_editors ) )
+		if( r_useHDR.GetBool() && !( com_editors ) )
 		{
 			globalImages->glowFramebufferImage16[3]->Bind();
 		}
@@ -4536,7 +4542,7 @@ void RB_PostProcess( const void* data )
 			globalImages->glowFramebufferImage8[3]->Bind();
 		}
 	}
-	else if ( r_useHDR.GetBool() && !( com_editors ) )
+	else if( r_useHDR.GetBool() && !( com_editors ) )
 	{
 		// scale image with dithering
 		renderProgManager.BindShader_HDRDither();
@@ -4546,18 +4552,18 @@ void RB_PostProcess( const void* data )
 		// scale image
 		renderProgManager.BindShader_PostProcess();
 	}
-
+	
 	GL_SelectTexture( 1 );
 	globalImages->ditherImage->Bind();
 	GL_SelectTexture( 0 );
-	if ( r_useHDR.GetBool() && !( com_editors ) )
+	if( r_useHDR.GetBool() && !( com_editors ) )
 	{
 		// use the HDR rendered framebuffer
 		globalImages->viewFramebufferRenderImage16->Bind();
-		screenCorrectionParm[0] = ( viewport.GetWidth()  ) / (float)glConfig.nativeScreenWidth;
-		screenCorrectionParm[1] = ( viewport.GetHeight() ) / (float)glConfig.nativeScreenHeight;
-		screenCorrectionParm[2] = ( viewport.x1          ) / (float)glConfig.nativeScreenWidth;
-		screenCorrectionParm[3] = ( viewport.y1          ) / (float)glConfig.nativeScreenHeight;
+		screenCorrectionParm[0] = ( viewport.GetWidth() ) / ( float )glConfig.nativeScreenWidth;
+		screenCorrectionParm[1] = ( viewport.GetHeight() ) / ( float )glConfig.nativeScreenHeight;
+		screenCorrectionParm[2] = ( viewport.x1 ) / ( float )glConfig.nativeScreenWidth;
+		screenCorrectionParm[3] = ( viewport.y1 ) / ( float )glConfig.nativeScreenHeight;
 	}
 	else
 	{
@@ -4568,12 +4574,12 @@ void RB_PostProcess( const void* data )
 		screenCorrectionParm[2] = 0.0f;
 		screenCorrectionParm[3] = 0.0f;
 	}
-
+	
 	// switch back to the system framebuffer
 	globalFramebuffers->BindSystemFramebuffer();
 	GL_Viewport( 0, 0, screenWidth, screenHeight );
 	GL_Scissor( 0, 0, screenWidth, screenHeight );
-
+	
 	// we reuse this outdated renderparm to pass the viewport info
 	SetFragmentParm( RENDERPARM_SCREENCORRECTIONFACTOR, screenCorrectionParm ); // rpScreenCorrectionFactor
 	
@@ -4584,13 +4590,13 @@ void RB_PostProcess( const void* data )
 }
 
 // foresthale 2014-04-08: r_glow
-void RB_PostProcessHDRGlowProcess(int textureSizes[4][6])
+void RB_PostProcessHDRGlowProcess( int textureSizes[4][6] )
 {
 	float screenCorrectionParm[4];
 	float screenBlurStep[4];
-
+	
 	// [0] and [1] are the literal texture size, [2] and [3] are the portion we're currently using for this view (we don't want to constantly reallocate if there are multiple views), and [4] and [5] are the offset within that texture
-	if ( r_useHDR.GetBool() && !( com_editors ) )
+	if( r_useHDR.GetBool() && !( com_editors ) )
 	{
 		textureSizes[0][0] = globalImages->glowFramebufferImage16[0]->GetUploadWidth();
 		textureSizes[0][1] = globalImages->glowFramebufferImage16[0]->GetUploadHeight();
@@ -4611,8 +4617,8 @@ void RB_PostProcessHDRGlowProcess(int textureSizes[4][6])
 	// now we derive the glow buffer size from that...
 	textureSizes[1][0] = glConfig.nativeScreenWidth;
 	textureSizes[1][1] = glConfig.nativeScreenHeight;
-	textureSizes[1][3] = Max(1, Min(r_glowHeight.GetInteger(), glConfig.nativeScreenHeight));
-	textureSizes[1][2] = Max(1, Min((int)floor(textureSizes[1][3] / (float)glConfig.nativeScreenHeight * glConfig.nativeScreenWidth + 0.5f), glConfig.nativeScreenWidth));
+	textureSizes[1][3] = Max( 1, Min( r_glowHeight.GetInteger(), glConfig.nativeScreenHeight ) );
+	textureSizes[1][2] = Max( 1, Min( ( int )floor( textureSizes[1][3] / ( float )glConfig.nativeScreenHeight * glConfig.nativeScreenWidth + 0.5f ), glConfig.nativeScreenWidth ) );
 	textureSizes[1][4] = 0;
 	textureSizes[1][5] = 0;
 	// same size
@@ -4629,25 +4635,25 @@ void RB_PostProcessHDRGlowProcess(int textureSizes[4][6])
 	textureSizes[3][3] = textureSizes[2][3];
 	textureSizes[3][4] = 0;
 	textureSizes[3][5] = 0;
-
+	
 	// choose your tradeoff
-	if ( r_glowSingleViewportOptimized.GetBool() )
+	if( r_glowSingleViewportOptimized.GetBool() )
 	{
 		// if there is only one viewport, this is the best way to go, saving a lot of vram
-		for (int i = 0;i < 4;i++)
+		for( int i = 0; i < 4; i++ )
 		{
 			textureSizes[i][0] = textureSizes[i][2];
 			textureSizes[i][1] = textureSizes[i][3];
 		}
 	}
-
+	
 	// reallocate the images if sizes changed
-	if ( r_useHDR.GetBool() && !( com_editors ) )
+	if( r_useHDR.GetBool() && !( com_editors ) )
 	{
-		for (int i = 1;i < 4;i++)
+		for( int i = 1; i < 4; i++ )
 		{
-			if ( globalImages->glowFramebufferImage16[i]->GetUploadWidth()  != textureSizes[i][0]
-			 ||  globalImages->glowFramebufferImage16[i]->GetUploadHeight() != textureSizes[i][1] )
+			if( globalImages->glowFramebufferImage16[i]->GetUploadWidth()  != textureSizes[i][0]
+					||  globalImages->glowFramebufferImage16[i]->GetUploadHeight() != textureSizes[i][1] )
 			{
 				globalImages->glowFramebufferImage16[i]->Resize( textureSizes[i][0], textureSizes[i][1] );
 				// we have to purge the fbo also because the original textures no longer exist, it will be recreated
@@ -4657,10 +4663,10 @@ void RB_PostProcessHDRGlowProcess(int textureSizes[4][6])
 	}
 	else
 	{
-		for (int i = 1;i < 4;i++)
+		for( int i = 1; i < 4; i++ )
 		{
-			if ( globalImages->glowFramebufferImage8[i]->GetUploadWidth()  != textureSizes[i][0]
-			 ||  globalImages->glowFramebufferImage8[i]->GetUploadHeight() != textureSizes[i][1] )
+			if( globalImages->glowFramebufferImage8[i]->GetUploadWidth()  != textureSizes[i][0]
+					||  globalImages->glowFramebufferImage8[i]->GetUploadHeight() != textureSizes[i][1] )
 			{
 				globalImages->glowFramebufferImage8[i]->Resize( textureSizes[i][0], textureSizes[i][1] );
 				// we have to purge the fbo also because the original textures no longer exist, it will be recreated
@@ -4668,43 +4674,43 @@ void RB_PostProcessHDRGlowProcess(int textureSizes[4][6])
 			}
 		}
 	}
-
+	
 	// now we do process the image in multiple stages
 	GL_CheckErrors();
 	GL_SelectTexture( 0 );
-	for (int curBuffer = 0;curBuffer < 3;curBuffer++)
+	for( int curBuffer = 0; curBuffer < 3; curBuffer++ )
 	{
 		int nextBuffer = curBuffer + 1;
 		float sx = 1.0f / textureSizes[curBuffer][0];
 		float sy = 1.0f / textureSizes[curBuffer][1];
-		switch(curBuffer)
+		switch( curBuffer )
 		{
-		case 0:
-			// down scale with multiple samples
-			renderProgManager.BindShader_HDRGlowDownScale();
-			screenBlurStep[0] =  0.5f * sx;
-			screenBlurStep[1] =  0.5f * sy;
-			screenBlurStep[2] = -0.5f * sx;
-			screenBlurStep[3] = -0.5f * sy;
-			break;
-		case 1:
-			// vertical blur
-			renderProgManager.BindShader_HDRGlowBlurDirectional();
-			screenBlurStep[0] =  0.0f;
-			screenBlurStep[1] =  1.0f * sy;
-			screenBlurStep[2] =  0.0f;
-			screenBlurStep[3] = -1.0f * sy;
-			break;
-		case 2:
-			// horizontal blur
-			renderProgManager.BindShader_HDRGlowBlurDirectional();
-			screenBlurStep[0] =  1.0f * sx;
-			screenBlurStep[1] =  0.0f;
-			screenBlurStep[2] = -1.0f * sx;
-			screenBlurStep[3] =  0.0f;
-			break;
+			case 0:
+				// down scale with multiple samples
+				renderProgManager.BindShader_HDRGlowDownScale();
+				screenBlurStep[0] =  0.5f * sx;
+				screenBlurStep[1] =  0.5f * sy;
+				screenBlurStep[2] = -0.5f * sx;
+				screenBlurStep[3] = -0.5f * sy;
+				break;
+			case 1:
+				// vertical blur
+				renderProgManager.BindShader_HDRGlowBlurDirectional();
+				screenBlurStep[0] =  0.0f;
+				screenBlurStep[1] =  1.0f * sy;
+				screenBlurStep[2] =  0.0f;
+				screenBlurStep[3] = -1.0f * sy;
+				break;
+			case 2:
+				// horizontal blur
+				renderProgManager.BindShader_HDRGlowBlurDirectional();
+				screenBlurStep[0] =  1.0f * sx;
+				screenBlurStep[1] =  0.0f;
+				screenBlurStep[2] = -1.0f * sx;
+				screenBlurStep[3] =  0.0f;
+				break;
 		}
-		if ( r_useHDR.GetBool() && !( com_editors ) )
+		if( r_useHDR.GetBool() && !( com_editors ) )
 		{
 			globalImages->glowFramebufferImage16[curBuffer]->Bind();
 			globalFramebuffers->glowFramebuffer16[nextBuffer]->Bind();
@@ -4716,7 +4722,7 @@ void RB_PostProcessHDRGlowProcess(int textureSizes[4][6])
 		}
 		// clear whole buffer before we draw, to ensure that we have black in any padding areas around it
 		GL_Scissor( 0, 0, textureSizes[nextBuffer][0], textureSizes[nextBuffer][1] );
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear( GL_COLOR_BUFFER_BIT );
 		// set our viewport
 		GL_ViewportAndScissor( textureSizes[nextBuffer][4], textureSizes[nextBuffer][5], textureSizes[nextBuffer][2], textureSizes[nextBuffer][3] );
 		// we reuse the rpScreenCorrectionFactor and rpDiffuseModifier renderparms to pass the viewport and blur info
@@ -4729,7 +4735,7 @@ void RB_PostProcessHDRGlowProcess(int textureSizes[4][6])
 		RB_DrawElementsWithCounters( &backEnd.unitSquareSurface );
 		GL_CheckErrors();
 	}
-
+	
 	// we now have glow layers 1-3 computed, the actual composite will be done in the hdrdither shader...
 	// note that we don't need to switch framebuffer here because the caller does it
 }

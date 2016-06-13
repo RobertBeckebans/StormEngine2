@@ -62,14 +62,14 @@ void idMenuScreen_Shell_Credits::SetupCreditList()
 	if( GetSWFObject() )
 	{
 		GetSWFObject()->SetGlobal( "updateCredits", new( TAG_SWF ) idRefreshCredits( this ) );
-	}	
+	}
 	
 	creditList.Clear();
-
+	
 	creditList.Append( creditInfo_t( 3,	"Storm Engine 2"	) );
 	creditList.Append( creditInfo_t() );
 	creditList.Append( creditInfo_t( 2,	"DEVELOPMENT TEAM"	) );
-	creditList.Append( creditInfo_t() );	
+	creditList.Append( creditInfo_t() );
 	creditList.Append( creditInfo_t( 1,	"Project Manager"	) );
 	creditList.Append( creditInfo_t( 0,	"Alexander 'motorsep' Zubov"	) );
 	creditList.Append( creditInfo_t() );
@@ -80,32 +80,32 @@ void idMenuScreen_Shell_Credits::SetupCreditList()
 	creditList.Append( creditInfo_t( 0,	"David Partouche"	) );
 	creditList.Append( creditInfo_t( 0,	"Alexey Volynskov"	) );
 	creditList.Append( creditInfo_t( 0,	"Ken Phillis Jr."	) );
-	creditList.Append( creditInfo_t( 0,	"Eluan Costa Miranda"	) );	
+	creditList.Append( creditInfo_t( 0,	"Eluan Costa Miranda"	) );
 	creditList.Append( creditInfo_t() );
 	creditList.Append( creditInfo_t( 1,	"Gameplay Programming"	) );
-	creditList.Append( creditInfo_t( 0,	"Daniel 'SirRandom' Morris"	) );	
-	creditList.Append( creditInfo_t( 0,	"David 'Jechs' O'Rourke"	) );	
+	creditList.Append( creditInfo_t( 0,	"Daniel 'SirRandom' Morris"	) );
+	creditList.Append( creditInfo_t( 0,	"David 'Jechs' O'Rourke"	) );
 	creditList.Append( creditInfo_t() );
 	creditList.Append( creditInfo_t( 1,	"Gameplay Scripting"	) );
-	creditList.Append( creditInfo_t( 0,	"Daniel 'SirRandom' Morris"	) );	
-	creditList.Append( creditInfo_t( 0,	"Steve 'TheHappyFriar' Howe"	) );	
+	creditList.Append( creditInfo_t( 0,	"Daniel 'SirRandom' Morris"	) );
+	creditList.Append( creditInfo_t( 0,	"Steve 'TheHappyFriar' Howe"	) );
 	creditList.Append( creditInfo_t( 0, "Alexander 'motorsep' Zubov" ) );
-	creditList.Append( creditInfo_t() );	
+	creditList.Append( creditInfo_t() );
 	creditList.Append( creditInfo_t( 1,	"Art and Animation"	) );
-	creditList.Append( creditInfo_t( 0,	"Alexander 'motorsep' Zubov"	) );	
-	creditList.Append( creditInfo_t() );	
+	creditList.Append( creditInfo_t( 0,	"Alexander 'motorsep' Zubov"	) );
+	creditList.Append( creditInfo_t() );
 	creditList.Append( creditInfo_t( 1,	"Special Thanks"	) );
 	creditList.Append( creditInfo_t( 0,	"God"	) );
 	creditList.Append( creditInfo_t( 0,	"Our Families"	) );
-	creditList.Append( creditInfo_t( 0,	"id Software"	) );	
+	creditList.Append( creditInfo_t( 0,	"id Software"	) );
 	creditList.Append( creditInfo_t( 0,	"DarkRadiant Team"	) );
 	creditList.Append( creditInfo_t( 0,	"Shawn Kirst, Arne Reuter and GIMP DDS"	) );
 	creditList.Append( creditInfo_t( 0,	"Robert 'Tr3b' Beckebans"	) );
-	creditList.Append( creditInfo_t( 0,	"Pavel 'VorteX' Timofeyev"	) );	
-	creditList.Append( creditInfo_t( 0,	"Keith Astoria"	) );		
-	creditList.Append( creditInfo_t( 0,	"TRaK"	) );	
-	creditList.Append( creditInfo_t( 0,	"rebb"	) );	
-	creditList.Append( creditInfo_t( 0,	"sikkpin"	) );	
+	creditList.Append( creditInfo_t( 0,	"Pavel 'VorteX' Timofeyev"	) );
+	creditList.Append( creditInfo_t( 0,	"Keith Astoria"	) );
+	creditList.Append( creditInfo_t( 0,	"TRaK"	) );
+	creditList.Append( creditInfo_t( 0,	"rebb"	) );
+	creditList.Append( creditInfo_t( 0,	"sikkpin"	) );
 	creditList.Append( creditInfo_t( 0,	"Gavin"	) );
 	creditList.Append( creditInfo_t( 0,	"Zbyl"	) );
 	creditList.Append( creditInfo_t( 0,	"... and anyone else who helped making this engine possible"	) );

@@ -333,7 +333,7 @@ void idMenuScreen_Shell_Load::LoadDamagedGame( int index )
 			if( accept )
 			{
 				screen->DeleteGame( index );
-                screen->UpdateSavePreviews();
+				screen->UpdateSavePreviews();
 			}
 			return idSWFScriptVar();
 		}
@@ -363,9 +363,9 @@ idMenuScreen_Shell_Load::LoadGame
 void idMenuScreen_Shell_Load::UpdateSavePreviews()
 {
 	if( saveInfo != NULL )
-    {
-        saveInfo->UpdateSavePreviews();
-    }
+	{
+		saveInfo->UpdateSavePreviews();
+	}
 }
 
 /*
@@ -468,7 +468,7 @@ void idMenuScreen_Shell_Load::DeleteGame( int index )
 				{
 					session->DeleteSaveGameSync( screen->GetSortedSaves()[ index ].slotName );
 				}
-                screen->UpdateSavePreviews();
+				screen->UpdateSavePreviews();
 			}
 			return idSWFScriptVar();
 		}

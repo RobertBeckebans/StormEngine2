@@ -81,7 +81,7 @@ typedef enum
 {
 	SCMD_STATE,				// followed by a load game state
 	SCMD_PLACE_LISTENER,
-	SCMD_ALLOC_EMITTER,	
+	SCMD_ALLOC_EMITTER,
 	SCMD_FREE,
 	SCMD_UPDATE,
 	SCMD_START,
@@ -131,7 +131,7 @@ ID_INLINE_EXTERN ALCenum CheckALCErrors_( ALCdevice* device, const char* filenam
 
 #define OPERATION_SET 1
 
-#ifdef _MSC_VER 
+#ifdef _MSC_VER
 #pragma warning( disable: 4005 )  /* macro redefinition */
 #endif
 // RB: not available on Windows 8 SDK
@@ -150,7 +150,7 @@ ID_INLINE_EXTERN ALCenum CheckALCErrors_( ALCdevice* device, const char* filenam
 #endif
 // RB end
 
-#ifdef _MSC_VER 
+#ifdef _MSC_VER
 #pragma warning( enable: 4005 )  /* macro redefinition */
 #endif
 #include "XAudio2/XA2_SoundSample.h"
@@ -278,8 +278,8 @@ public:
 	
 	// where is the camera
 	virtual void			PlaceListener( const idVec3& origin, const idMat3& axis, const int listenerId );
-
-	virtual void			WriteSoundShaderLoad( const idSoundShader * snd );
+	
+	virtual void			WriteSoundShaderLoad( const idSoundShader* snd );
 	
 	// fade all sounds in the world with a given shader soundClass
 	// to is in Db, over is in seconds

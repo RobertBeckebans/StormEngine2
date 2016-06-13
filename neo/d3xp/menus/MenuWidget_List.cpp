@@ -500,53 +500,53 @@ idMenuWidget_ControlList::Update
 void idMenuWidget_ControlList::Update()
 {
 
-	if (GetSWFObject() == NULL)
+	if( GetSWFObject() == NULL )
 	{
 		return;
 	}
 	
 	idSWFScriptObject& root = GetSWFObject()->GetRootObject();
 	
-	if (!BindSprite(root))
+	if( !BindSprite( root ) )
 	{
 		return;
 	}
 	
-	for (int optionIndex = 0; optionIndex < GetNumVisibleOptions(); ++optionIndex)
+	for( int optionIndex = 0; optionIndex < GetNumVisibleOptions(); ++optionIndex )
 	{
 		const int childIndex = GetViewOffset() + optionIndex;
 		bool shown = false;
-		if (optionIndex < GetChildren().Num())
+		if( optionIndex < GetChildren().Num() )
 		{
-			idMenuWidget& child = GetChildByIndex(optionIndex);
-			child.SetSpritePath(GetSpritePath(), va("item%d", optionIndex));
-			if (child.BindSprite(root))
+			idMenuWidget& child = GetChildByIndex( optionIndex );
+			child.SetSpritePath( GetSpritePath(), va( "item%d", optionIndex ) );
+			if( child.BindSprite( root ) )
 			{
-				shown = PrepareListElement(child, childIndex);
-				if (shown)
+				shown = PrepareListElement( child, childIndex );
+				if( shown )
 				{
-					child.SetState(WIDGET_STATE_NORMAL);
-					child.GetSprite()->SetVisible(true);
+					child.SetState( WIDGET_STATE_NORMAL );
+					child.GetSprite()->SetVisible( true );
 					child.Update();
 				}
 				else
 				{
-					child.GetSprite()->SetVisible(false);
+					child.GetSprite()->SetVisible( false );
 				}
 			}
 		}
 	}
 	
-	idSWFSpriteInstance* const upSprite = GetSprite()->GetScriptObject()->GetSprite("upIndicator");
-	if (upSprite != NULL)
+	idSWFSpriteInstance* const upSprite = GetSprite()->GetScriptObject()->GetSprite( "upIndicator" );
+	if( upSprite != NULL )
 	{
-		upSprite->SetVisible(GetViewOffset() > 0);
+		upSprite->SetVisible( GetViewOffset() > 0 );
 	}
 	
-	idSWFSpriteInstance* const downSprite = GetSprite()->GetScriptObject()->GetSprite("downIndicator");
-	if (downSprite != NULL)
+	idSWFSpriteInstance* const downSprite = GetSprite()->GetScriptObject()->GetSprite( "downIndicator" );
+	if( downSprite != NULL )
 	{
-		downSprite->SetVisible(GetViewOffset() + GetNumVisibleOptions() < GetTotalNumberOfOptions());
+		downSprite->SetVisible( GetViewOffset() + GetNumVisibleOptions() < GetTotalNumberOfOptions() );
 	}
 }
 
@@ -555,36 +555,36 @@ void idMenuWidget_ControlList::Update()
 idMenuWidget_ControlList::PrepareListElement
 ========================
 */
-bool idMenuWidget_ControlList::PrepareListElement(idMenuWidget& widget, const int childIndex)
+bool idMenuWidget_ControlList::PrepareListElement( idMenuWidget& widget, const int childIndex )
 {
 
-	if (childIndex >= controls.Num())
+	if( childIndex >= controls.Num() )
 	{
 		return false;
 	}
-
-	idMenuWidget_ControlButton* const button = dynamic_cast< idMenuWidget_ControlButton* >(&widget);
-	if (button == NULL)
+	
+	idMenuWidget_ControlButton* const button = dynamic_cast< idMenuWidget_ControlButton* >( &widget );
+	if( button == NULL )
 	{
 		return false;
 	}
-
-	if (controls[childIndex].label.IsEmpty())
+	
+	if( controls[childIndex].label.IsEmpty() )
 	{
 		return false;
 	}
-
+	
 	const idControlEntry_t entry = controls[childIndex];
-
+	
 	//button->SetButtonInfo( entry.serverName, entry.mapName, entry.modeName, entry.index, entry.players, entry.maxPlayers, entry.joinable, entry.validMap );
 	button->ClearEventActions();
-	button->SetLabel(entry.label);
-	button->SetOptionType(entry.type);
-	button->SetDataSource(entry.dataSource, entry.fieldIndex);
-	button->SetupEvents(entry.repeat, entry.fieldIndex);
-	button->AddEventAction(WIDGET_EVENT_PRESS).Set(WIDGET_ACTION_ADJUST_FIELD, 1, entry.repeat, entry.fieldIndex);
+	button->SetLabel( entry.label );
+	button->SetOptionType( entry.type );
+	button->SetDataSource( entry.dataSource, entry.fieldIndex );
+	button->SetupEvents( entry.repeat, entry.fieldIndex );
+	button->AddEventAction( WIDGET_EVENT_PRESS ).Set( WIDGET_ACTION_ADJUST_FIELD, 1, entry.repeat, entry.fieldIndex );
 	return true;
-
+	
 }
 
 /*
@@ -602,87 +602,87 @@ void idMenuWidget_ControlList::ClearControls()
 idMenuWidget_ControlList::PrepareListElement
 ========================
 */
-void idMenuWidget_ControlList::AddButton(idStr label_, idMenuDataSource* dataSource_, int fieldIndex_, int repeat_)
+void idMenuWidget_ControlList::AddButton( idStr label_, idMenuDataSource* dataSource_, int fieldIndex_, int repeat_ )
 {
 
 	idControlEntry_t entry;
-
+	
 	entry.label = label_;
 	entry.type = OPTION_BUTTON_TEXT;
 	entry.dataSource = dataSource_;
 	entry.repeat = repeat_;
 	entry.fieldIndex = fieldIndex_;
-
-	controls.Append(entry);
+	
+	controls.Append( entry );
 }
 
-void idMenuWidget_ControlList::AddButtonInfo(idStr label_, idMenuDataSource* dataSource_, int fieldIndex_, int repeat_)
+void idMenuWidget_ControlList::AddButtonInfo( idStr label_, idMenuDataSource* dataSource_, int fieldIndex_, int repeat_ )
 {
 	// TODO: Possibly Remove This.
 	idControlEntry_t entry;
-
+	
 	entry.label = label_;
 	entry.type = OPTION_BUTTON_INFO;
 	entry.dataSource = dataSource_;
 	entry.repeat = repeat_;
 	entry.fieldIndex = fieldIndex_;
-
-	controls.Append(entry);
+	
+	controls.Append( entry );
 }
 
-void idMenuWidget_ControlList::AddFullTextSlider(idStr label_, idMenuDataSource* dataSource_, int fieldIndex_, int repeat_)
+void idMenuWidget_ControlList::AddFullTextSlider( idStr label_, idMenuDataSource* dataSource_, int fieldIndex_, int repeat_ )
 {
 
 	idControlEntry_t entry;
-
+	
 	entry.label = label_;
 	entry.type = OPTION_BUTTON_FULL_TEXT_SLIDER;
 	entry.dataSource = dataSource_;
 	entry.repeat = repeat_;
 	entry.fieldIndex = fieldIndex_;
-
-	controls.Append(entry);
+	
+	controls.Append( entry );
 }
-void idMenuWidget_ControlList::AddTextSlider(idStr label_, idMenuDataSource* dataSource_, int fieldIndex_, int repeat_)
+void idMenuWidget_ControlList::AddTextSlider( idStr label_, idMenuDataSource* dataSource_, int fieldIndex_, int repeat_ )
 {
 
 	idControlEntry_t entry;
-
+	
 	entry.label = label_;
 	entry.type = OPTION_SLIDER_TEXT;
 	entry.dataSource = dataSource_;
 	entry.repeat = repeat_;
 	entry.fieldIndex = fieldIndex_;
-
-	controls.Append(entry);
+	
+	controls.Append( entry );
 }
 
-void idMenuWidget_ControlList::AddSliderBar(idStr label_, idMenuDataSource* dataSource_, int fieldIndex_, int repeat_)
+void idMenuWidget_ControlList::AddSliderBar( idStr label_, idMenuDataSource* dataSource_, int fieldIndex_, int repeat_ )
 {
 
 	idControlEntry_t entry;
-
+	
 	entry.label = label_;
 	entry.type = OPTION_SLIDER_BAR;
 	entry.dataSource = dataSource_;
 	entry.repeat = repeat_;
 	entry.fieldIndex = fieldIndex_;
-
-	controls.Append(entry);
+	
+	controls.Append( entry );
 }
 
-void idMenuWidget_ControlList::AddSliderToggle(idStr label_, idMenuDataSource* dataSource_, int fieldIndex_, int repeat_)
+void idMenuWidget_ControlList::AddSliderToggle( idStr label_, idMenuDataSource* dataSource_, int fieldIndex_, int repeat_ )
 {
 
 	idControlEntry_t entry;
-
+	
 	entry.label = label_;
 	entry.type = OPTION_SLIDER_TOGGLE;
 	entry.dataSource = dataSource_;
 	entry.repeat = repeat_;
 	entry.fieldIndex = fieldIndex_;
-
-	controls.Append(entry);
+	
+	controls.Append( entry );
 }
 /*
 ========================

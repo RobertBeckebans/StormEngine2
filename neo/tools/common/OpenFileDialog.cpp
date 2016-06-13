@@ -59,16 +59,16 @@ rvOpenFileDialog::~rvOpenFileDialog
 destructor
 ================
 */
-rvOpenFileDialog::~rvOpenFileDialog ( void )
+rvOpenFileDialog::~rvOpenFileDialog( void )
 {
-	if ( mImageList )
+	if( mImageList )
 	{
-		ImageList_Destroy ( mImageList );
+		ImageList_Destroy( mImageList );
 	}
-
-	if ( mBackBitmap )
+	
+	if( mBackBitmap )
 	{
-		DeleteObject ( mBackBitmap );
+		DeleteObject( mBackBitmap );
 	}
 }
 
@@ -79,17 +79,17 @@ rvOpenFileDialog::DoModal
 Opens the dialog and returns true if a filename was found
 ================
 */
-bool rvOpenFileDialog::DoModal ( HWND parent )
+bool rvOpenFileDialog::DoModal( HWND parent )
 {
 	mInstance = win32.hInstance;
-
+	
 	INITCOMMONCONTROLSEX ex;
 	ex.dwICC = ICC_USEREX_CLASSES | ICC_LISTVIEW_CLASSES;
-	ex.dwSize = sizeof(INITCOMMONCONTROLSEX);
-
-	InitCommonControlsEx ( &ex );
-
-	return DialogBoxParam ( mInstance, MAKEINTRESOURCE(IDD_TOOLS_OPEN), parent, DlgProc, (LPARAM)this ) ? true : false;
+	ex.dwSize = sizeof( INITCOMMONCONTROLSEX );
+	
+	InitCommonControlsEx( &ex );
+	
+	return DialogBoxParam( mInstance, MAKEINTRESOURCE( IDD_TOOLS_OPEN ), parent, DlgProc, ( LPARAM )this ) ? true : false;
 }
 
 /*
@@ -99,52 +99,52 @@ rvOpenFileDialog::UpdateLookIn
 Updates the lookin combo box with the current lookin state
 ================
 */
-void rvOpenFileDialog::UpdateLookIn ( void )
+void rvOpenFileDialog::UpdateLookIn( void )
 {
 	COMBOBOXEXITEM	item;
 	idStr			file;
 	idStr			path;
-
+	
 	// Reset the combo box
-	SendMessage ( mWndLookin, CB_RESETCONTENT, 0, 0 );
+	SendMessage( mWndLookin, CB_RESETCONTENT, 0, 0 );
 	
 	// Setup the common item structure components
-	ZeroMemory ( &item, sizeof(item) );
+	ZeroMemory( &item, sizeof( item ) );
 	item.mask = CBEIF_TEXT | CBEIF_INDENT | CBEIF_IMAGE | CBEIF_SELECTEDIMAGE;
-
+	
 	// Add the top left folder
-	item.pszText = (LPSTR)"base";
-	SendMessage ( mWndLookin, CBEM_INSERTITEM, 0, (LPARAM)&item );
-
+	item.pszText = ( LPSTR )"base";
+	SendMessage( mWndLookin, CBEM_INSERTITEM, 0, ( LPARAM )&item );
+	
 	// Break the lookin path up into its individual components and add them
 	// to the combo box
 	path = mLookin;
-
-	while ( path.Length ( ) )
+	
+	while( path.Length( ) )
 	{
-		int slash = path.Find ( "/" );
+		int slash = path.Find( "/" );
 		
 		// Parse out the next subfolder
-		if ( slash != -1 )
+		if( slash != -1 )
 		{
-			file = path.Left ( slash );
-			path = path.Right ( path.Length ( ) - slash - 1 );
+			file = path.Left( slash );
+			path = path.Right( path.Length( ) - slash - 1 );
 		}
 		else
 		{
 			file = path;
-			path.Empty ( );
+			path.Empty( );
 		}
-
-		// Add the sub folder				
-		item.pszText = (LPSTR)file.c_str();
+		
+		// Add the sub folder
+		item.pszText = ( LPSTR )file.c_str();
 		item.iIndent++;
 		item.iItem = item.iIndent;
-		SendMessage ( mWndLookin, CBEM_INSERTITEM, 0, (LPARAM)&item );		
+		SendMessage( mWndLookin, CBEM_INSERTITEM, 0, ( LPARAM )&item );
 	}
 	
 	// Set the selection to the last one since thats the deepest folder
-	SendMessage ( mWndLookin, CB_SETCURSEL, item.iIndent, 0 );
+	SendMessage( mWndLookin, CB_SETCURSEL, item.iIndent, 0 );
 }
 
 /*
@@ -155,55 +155,55 @@ Updates the file list with the files that match the filter in the current
 look in directory
 ================
 */
-void rvOpenFileDialog::UpdateFileList ( void )
+void rvOpenFileDialog::UpdateFileList( void )
 {
-	const char *basepath = mLookin;
-	idFileList *files;
-	HWND		list = GetDlgItem ( mWnd, IDC_TOOLS_FILELIST );
+	const char* basepath = mLookin;
+	idFileList* files;
+	HWND		list = GetDlgItem( mWnd, IDC_TOOLS_FILELIST );
 	int			i;
 	int			filter;
-		
-	ListView_DeleteAllItems ( list );
+	
+	ListView_DeleteAllItems( list );
 	
 	// Add all the folders first
-	files = fileSystem->ListFiles ( basepath, "/", true );
-	for ( i = 0; i < files->GetNumFiles(); i ++ )
+	files = fileSystem->ListFiles( basepath, "/", true );
+	for( i = 0; i < files->GetNumFiles(); i ++ )
 	{
-		if ( files->GetFile( i )[0] == '.' )
+		if( files->GetFile( i )[0] == '.' )
 		{
 			continue;
 		}
-	
+		
 		LVITEM item;
-		memset(&item,0,sizeof(item));
+		memset( &item, 0, sizeof( item ) );
 		item.mask = LVIF_TEXT;
-		item.iItem = ListView_GetItemCount ( list );
-		item.pszText = (LPSTR)files->GetFile( i );
+		item.iItem = ListView_GetItemCount( list );
+		item.pszText = ( LPSTR )files->GetFile( i );
 		item.iSubItem = 0;
-		ListView_InsertItem ( list, &item );
+		ListView_InsertItem( list, &item );
 	}
 	fileSystem->FreeFileList( files );
 	
 	// Add all the files in the current lookin directory that match the
 	// current filters.
-	for ( filter = 0; filter < mFilters.Num(); filter ++ )
-	{	
+	for( filter = 0; filter < mFilters.Num(); filter ++ )
+	{
 		files = fileSystem->ListFiles( basepath, mFilters[filter], true );
-		for ( i = 0; i < files->GetNumFiles(); i ++ )
+		for( i = 0; i < files->GetNumFiles(); i ++ )
 		{
-			if ( files->GetFile( i )[0] == '.' )
+			if( files->GetFile( i )[0] == '.' )
 			{
 				continue;
 			}
-	
+			
 			LVITEM item;
-			memset(&item,0,sizeof(item));
-			item.mask = LVIF_TEXT|LVIF_IMAGE;
+			memset( &item, 0, sizeof( item ) );
+			item.mask = LVIF_TEXT | LVIF_IMAGE;
 			item.iImage = 2;
 			item.iItem = ListView_GetItemCount( list );
-			item.pszText = (LPSTR)files->GetFile( i );
+			item.pszText = ( LPSTR )files->GetFile( i );
 			item.iSubItem = 0;
-			ListView_InsertItem ( list, &item );
+			ListView_InsertItem( list, &item );
 		}
 		fileSystem->FreeFileList( files );
 	}
@@ -217,17 +217,17 @@ Handles the pressing of the OK button but either opening a selected folder
 or closing the dialog with the resulting filename
 ================
 */
-void rvOpenFileDialog::HandleCommandOK ( void )
+void rvOpenFileDialog::HandleCommandOK( void )
 {
 	char	temp[256];
 	LVITEM	item;
-
+	
 	// If nothing is selected then there is nothing to open
-	int sel = ListView_GetNextItem ( mWndFileList, -1, LVNI_SELECTED );
-	if ( sel == -1 )
+	int sel = ListView_GetNextItem( mWndFileList, -1, LVNI_SELECTED );
+	if( sel == -1 )
 	{
-		GetWindowText ( GetDlgItem ( mWnd, IDC_TOOLS_FILENAME ), temp, sizeof(temp)-1 );
-		if ( !temp[0] )
+		GetWindowText( GetDlgItem( mWnd, IDC_TOOLS_FILENAME ), temp, sizeof( temp ) - 1 );
+		if( !temp[0] )
 		{
 			return;
 		}
@@ -237,52 +237,54 @@ void rvOpenFileDialog::HandleCommandOK ( void )
 	else
 	{
 		// Get the currently selected item
-		item.mask = LVIF_IMAGE|LVIF_TEXT;
+		item.mask = LVIF_IMAGE | LVIF_TEXT;
 		item.iImage = sel;
 		item.iSubItem = 0;
 		item.pszText = temp;
 		item.cchTextMax = 256;
 		item.iItem = sel;
-		ListView_GetItem ( mWndFileList, &item );
+		ListView_GetItem( mWndFileList, &item );
 	}
 	
 	// If the item is a folder then just open that folder
-	if ( item.iImage == 0 )
+	if( item.iImage == 0 )
 	{
-		if ( strlen( mLookin ) )
+		if( strlen( mLookin ) )
 		{
 			idStr::snPrintf( mLookin, sizeof( mLookin ), "%s/%s", mLookin, temp );
-		} else {
+		}
+		else
+		{
 			idStr::Copynz( mLookin, temp, sizeof( mLookin ) );
 		}
-		UpdateLookIn ( );
-		UpdateFileList ( );									
+		UpdateLookIn( );
+		UpdateFileList( );
 	}
 	// If the item is a file then build the filename and end the dialog
-	else if ( item.iImage == 2 )
+	else if( item.iImage == 2 )
 	{
 		mFilename = mLookin;
-		if ( mFilename.Length ( ) )
+		if( mFilename.Length( ) )
 		{
-			mFilename.Append ( "/" );
+			mFilename.Append( "/" );
 		}
-		mFilename.Append ( temp );
+		mFilename.Append( temp );
 		
 		// Make sure the file exists
-		if ( mFlags & OFD_MUSTEXIST )
+		if( mFlags & OFD_MUSTEXIST )
 		{
-			idFile*	file;				
-			file = fileSystem->OpenFileRead ( mFilename );
-			if ( !file )
+			idFile*	file;
+			file = fileSystem->OpenFileRead( mFilename );
+			if( !file )
 			{
-				MessageBox ( mWnd, va("%s\nFile not found.\nPlease verify the correct file name was given", mFilename.c_str() ), "Open", MB_ICONERROR|MB_OK );
+				MessageBox( mWnd, va( "%s\nFile not found.\nPlease verify the correct file name was given", mFilename.c_str() ), "Open", MB_ICONERROR | MB_OK );
 				return;
 			}
-			fileSystem->CloseFile ( file );
+			fileSystem->CloseFile( file );
 		}
-				
-		EndDialog ( mWnd, 1 );
-	}		
+		
+		EndDialog( mWnd, 1 );
+	}
 	
 	return;
 }
@@ -294,47 +296,47 @@ rvOpenFileDialog::HandleInitDialog
 Handles the init dialog message
 ================
 */
-void rvOpenFileDialog::HandleInitDialog ( void )
+void rvOpenFileDialog::HandleInitDialog( void )
 {
 	// Cache the more used window handles
-	mWndFileList = GetDlgItem ( mWnd, IDC_TOOLS_FILELIST );
-	mWndLookin   = GetDlgItem ( mWnd, IDC_TOOLS_LOOKIN );
-
+	mWndFileList = GetDlgItem( mWnd, IDC_TOOLS_FILELIST );
+	mWndLookin   = GetDlgItem( mWnd, IDC_TOOLS_LOOKIN );
+	
 	// Load the custom resources used by the controls
-	mImageList  = ImageList_LoadBitmap ( mInstance, MAKEINTRESOURCE(IDB_TOOLS_OPEN),16,1,RGB(255,255,255) );
-	mBackBitmap = (HBITMAP)LoadImage ( mInstance, MAKEINTRESOURCE(IDB_TOOLS_BACK), IMAGE_BITMAP, 16, 16, LR_DEFAULTCOLOR|LR_LOADMAP3DCOLORS );
-
-	// Attach the image list to the file list and lookin controls		
-	ListView_SetImageList ( mWndFileList, mImageList, LVSIL_SMALL );
-	SendMessage( mWndLookin,CBEM_SETIMAGELIST,0,(LPARAM) mImageList );
+	mImageList  = ImageList_LoadBitmap( mInstance, MAKEINTRESOURCE( IDB_TOOLS_OPEN ), 16, 1, RGB( 255, 255, 255 ) );
+	mBackBitmap = ( HBITMAP )LoadImage( mInstance, MAKEINTRESOURCE( IDB_TOOLS_BACK ), IMAGE_BITMAP, 16, 16, LR_DEFAULTCOLOR | LR_LOADMAP3DCOLORS );
+	
+	// Attach the image list to the file list and lookin controls
+	ListView_SetImageList( mWndFileList, mImageList, LVSIL_SMALL );
+	SendMessage( mWndLookin, CBEM_SETIMAGELIST, 0, ( LPARAM ) mImageList );
 	
 	// Back button is a bitmap button
-	SendMessage( GetDlgItem ( mWnd, IDC_TOOLS_BACK ), BM_SETIMAGE, IMAGE_BITMAP, (LONG) mBackBitmap );
+	SendMessage( GetDlgItem( mWnd, IDC_TOOLS_BACK ), BM_SETIMAGE, IMAGE_BITMAP, ( LONG ) mBackBitmap );
 	
 	// Allow custom titles
-	SetWindowText ( mWnd, mTitle );
+	SetWindowText( mWnd, mTitle );
 	
 	// Custom ok button title
-	if ( mOKTitle.Length ( ) )
+	if( mOKTitle.Length( ) )
 	{
-		SetWindowText ( GetDlgItem ( mWnd, IDOK ), mOKTitle );
+		SetWindowText( GetDlgItem( mWnd, IDOK ), mOKTitle );
 	}
-
+	
 	// See if there is a filename in the lookin
 	idStr temp;
 	idStr filename = mLookin;
-	filename.ExtractFileExtension ( temp );
-	if ( temp.Length ( ) )
+	filename.ExtractFileExtension( temp );
+	if( temp.Length( ) )
 	{
-		filename.ExtractFileName ( temp );
-		SetWindowText ( GetDlgItem ( mWnd, IDC_TOOLS_FILENAME ), temp );
-		filename.StripFilename ( );
+		filename.ExtractFileName( temp );
+		SetWindowText( GetDlgItem( mWnd, IDC_TOOLS_FILENAME ), temp );
+		filename.StripFilename( );
 		idStr::snPrintf( mLookin, sizeof( mLookin ), "%s", filename.c_str() );
 	}
-
+	
 	// Update our controls
-	UpdateLookIn ( );
-	UpdateFileList ( );
+	UpdateLookIn( );
+	UpdateFileList( );
 }
 
 /*
@@ -344,37 +346,37 @@ rvOpenFileDialog::HandleLookInChange
 Handles a selection change within the lookin control
 ================
 */
-void rvOpenFileDialog::HandleLookInChange ( void )
+void rvOpenFileDialog::HandleLookInChange( void )
 {
 	char	temp[256];
-	int		sel;						
+	int		sel;
 	int		i;
 	idStr	lookin;
 	
 	temp[0] = 0;
 	
-	sel = SendMessage ( mWndLookin, CB_GETCURSEL, 0, 0 );
+	sel = SendMessage( mWndLookin, CB_GETCURSEL, 0, 0 );
 	
 	// If something other than base is selected then walk up the list
 	// and build the new lookin path
-	if ( sel >= 1 )
+	if( sel >= 1 )
 	{
-		SendMessage ( mWndLookin, CB_GETLBTEXT, 1, (LPARAM)temp );
+		SendMessage( mWndLookin, CB_GETLBTEXT, 1, ( LPARAM )temp );
 		idStr::snPrintf( mLookin, sizeof( mLookin ), "%s", temp );
-		for ( i = 2; i <= sel; i ++ )
+		for( i = 2; i <= sel; i ++ )
 		{
-			SendMessage ( mWndLookin, CB_GETLBTEXT, i, (LPARAM)temp );
+			SendMessage( mWndLookin, CB_GETLBTEXT, i, ( LPARAM )temp );
 			idStr::snPrintf( mLookin, sizeof( mLookin ), "%s/%s", mLookin, temp );
-		}			
+		}
 	}
 	else
 	{
 		mLookin[0] = 0;
-	}	
-
+	}
+	
 	// Update the controls with the new lookin path
-	UpdateLookIn ( );									
-	UpdateFileList ( );	
+	UpdateLookIn( );
+	UpdateFileList( );
 }
 
 /*
@@ -384,27 +386,27 @@ rvOpenFileDialog::SetFilter
 Set the extensions available in the dialog
 ================
 */
-void rvOpenFileDialog::SetFilter ( const char* s )
+void rvOpenFileDialog::SetFilter( const char* s )
 {
-	idStr filters = s;	
-	while ( filters.Length ( ) )
+	idStr filters = s;
+	while( filters.Length( ) )
 	{
 		idStr filter;
-
-		const int semi = filters.Find ( ';' );
-		if ( semi != -1 )
+		
+		const int semi = filters.Find( ';' );
+		if( semi != -1 )
 		{
-			filter  = filters.Left ( semi );
-			filters = filters.Right ( filters.Length ( ) - semi - 1 );
+			filter  = filters.Left( semi );
+			filters = filters.Right( filters.Length( ) - semi - 1 );
 		}
 		else
 		{
 			filter = filters;
-			filters.Empty ( );
+			filters.Empty( );
 		}
-
-		if ( !filter.IsEmpty() )
-			mFilters.Append ( filter.c_str() + (filter[0] == '*' ? 1 : 0) );
+		
+		if( !filter.IsEmpty() )
+			mFilters.Append( filter.c_str() + ( filter[0] == '*' ? 1 : 0 ) );
 	}
 }
 
@@ -415,89 +417,89 @@ rvOpenFileDialog::DlgProc
 Dialog Procedure for the open file dialog
 ================
 */
-INT_PTR rvOpenFileDialog::DlgProc ( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam )
+INT_PTR rvOpenFileDialog::DlgProc( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam )
 {
-	rvOpenFileDialog* dlg = (rvOpenFileDialog*) GetWindowLongPtr ( wnd, GWLP_USERDATA );
+	rvOpenFileDialog* dlg = ( rvOpenFileDialog* ) GetWindowLongPtr( wnd, GWLP_USERDATA );
 	
-	switch ( msg )
+	switch( msg )
 	{
-		case WM_INITDIALOG:			
-			dlg = (rvOpenFileDialog*) lparam;
-			SetWindowLongPtr ( wnd, GWLP_USERDATA, lparam );
+		case WM_INITDIALOG:
+			dlg = ( rvOpenFileDialog* ) lparam;
+			SetWindowLongPtr( wnd, GWLP_USERDATA, lparam );
 			dlg->mWnd = wnd;
-			dlg->HandleInitDialog ( );
+			dlg->HandleInitDialog( );
 			return TRUE;
-
+			
 		case WM_NOTIFY:
 		{
-			NMHDR* nm = (NMHDR*) lparam;
-			switch ( nm->idFrom )
+			NMHDR* nm = ( NMHDR* ) lparam;
+			switch( nm->idFrom )
 			{
 				case IDC_TOOLS_FILELIST:
-					switch ( nm->code )
+					switch( nm->code )
 					{
 						case LVN_ITEMCHANGED:
 						{
-							NMLISTVIEW* nmlv = (NMLISTVIEW*)nm;
-							if ( nmlv->uNewState & LVIS_SELECTED )
-							{	
+							NMLISTVIEW* nmlv = ( NMLISTVIEW* )nm;
+							if( nmlv->uNewState & LVIS_SELECTED )
+							{
 								// Get the currently selected item
 								LVITEM item;
 								char   temp[256];
-								item.mask = LVIF_IMAGE|LVIF_TEXT;
+								item.mask = LVIF_IMAGE | LVIF_TEXT;
 								item.iSubItem = 0;
 								item.pszText = temp;
-								item.cchTextMax = sizeof(temp)-1;
+								item.cchTextMax = sizeof( temp ) - 1;
 								item.iItem = nmlv->iItem;
-								ListView_GetItem ( dlg->mWndFileList, &item );				
+								ListView_GetItem( dlg->mWndFileList, &item );
 								
-								if ( item.iImage == 2 )
+								if( item.iImage == 2 )
 								{
-									SetWindowText ( GetDlgItem ( wnd, IDC_TOOLS_FILENAME ), temp );
+									SetWindowText( GetDlgItem( wnd, IDC_TOOLS_FILENAME ), temp );
 								}
 							}
 							break;
 						}
 						
 						case NM_DBLCLK:
-							dlg->HandleCommandOK ( );
+							dlg->HandleCommandOK( );
 							break;
 					}
 					break;
 			}
 			break;
 		}
-			
+		
 		case WM_COMMAND:
-			switch ( LOWORD ( wparam ) )
+			switch( LOWORD( wparam ) )
 			{
 				case IDOK:
 				{
-					dlg->HandleCommandOK ( );
+					dlg->HandleCommandOK( );
 					break;
 				}
 				
 				case IDCANCEL:
-					EndDialog ( wnd, 0 );
+					EndDialog( wnd, 0 );
 					break;
 					
 				case IDC_TOOLS_BACK:
 				{
-					int sel = SendMessage ( GetDlgItem ( wnd, IDC_TOOLS_LOOKIN ), CB_GETCURSEL, 0, 0 );
-					if ( sel > 0 )
+					int sel = SendMessage( GetDlgItem( wnd, IDC_TOOLS_LOOKIN ), CB_GETCURSEL, 0, 0 );
+					if( sel > 0 )
 					{
 						sel--;
-						SendMessage ( GetDlgItem ( wnd, IDC_TOOLS_LOOKIN ), CB_SETCURSEL, sel, 0 );
-						dlg->HandleLookInChange ( );
+						SendMessage( GetDlgItem( wnd, IDC_TOOLS_LOOKIN ), CB_SETCURSEL, sel, 0 );
+						dlg->HandleLookInChange( );
 					}
 					
 					break;
 				}
-					
+				
 				case IDC_TOOLS_LOOKIN:
-					if ( HIWORD ( wparam ) == CBN_SELCHANGE )
+					if( HIWORD( wparam ) == CBN_SELCHANGE )
 					{
-						dlg->HandleLookInChange ( );								
+						dlg->HandleLookInChange( );
 					}
 					break;
 			}

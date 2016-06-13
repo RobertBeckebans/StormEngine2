@@ -37,21 +37,21 @@ class rvGEModifier
 {
 public:
 
-	rvGEModifier ( const char* name, idWindow* window );
-	virtual ~rvGEModifier ( ) { }
-
-	virtual bool		Apply		( void ) = 0;
-	virtual bool		Undo		( void ) = 0;
-	virtual const char*	GetName		( void );
-	virtual bool		CanMerge	( rvGEModifier* merge );
-
-	virtual bool		IsValid		( void );
-
-	virtual bool		Merge		( rvGEModifier* merge );
-
-	idWindow*			GetWindow	( void );
-
-
+	rvGEModifier( const char* name, idWindow* window );
+	virtual ~rvGEModifier( ) { }
+	
+	virtual bool		Apply( void ) = 0;
+	virtual bool		Undo( void ) = 0;
+	virtual const char*	GetName( void );
+	virtual bool		CanMerge( rvGEModifier* merge );
+	
+	virtual bool		IsValid( void );
+	
+	virtual bool		Merge( rvGEModifier* merge );
+	
+	idWindow*			GetWindow( void );
+	
+	
 protected:
 
 	idWindow*			mWindow;
@@ -59,27 +59,27 @@ protected:
 	idStr				mName;
 };
 
-ID_INLINE bool rvGEModifier::IsValid ( void )
+ID_INLINE bool rvGEModifier::IsValid( void )
 {
 	return true;
 }
 
-ID_INLINE idWindow* rvGEModifier::GetWindow ( void )
+ID_INLINE idWindow* rvGEModifier::GetWindow( void )
 {
 	return mWindow;
 }
 
-ID_INLINE const char* rvGEModifier::GetName ( void )
+ID_INLINE const char* rvGEModifier::GetName( void )
 {
 	return mName;
 }
 
-ID_INLINE bool rvGEModifier::CanMerge ( rvGEModifier* merge )
+ID_INLINE bool rvGEModifier::CanMerge( rvGEModifier* merge )
 {
 	return false;
 }
 
-ID_INLINE bool rvGEModifier::Merge ( rvGEModifier* merge )
+ID_INLINE bool rvGEModifier::Merge( rvGEModifier* merge )
 {
 	return false;
 }

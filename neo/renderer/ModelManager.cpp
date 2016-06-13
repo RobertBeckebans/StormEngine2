@@ -616,9 +616,9 @@ void idRenderModelManagerLocal::BeginLevelLoad()
 	insideLevelLoad = true;
 	
 	// foresthale 2014-05-28: Brian Harris suggested the editors should never purge assets, because of potential for crashes on improperly refcounted assets
-	if ( com_editors )
+	if( com_editors )
 		return;
-
+		
 	for( int i = 0; i < models.Num(); i++ )
 	{
 		idRenderModel* model = models[i];
@@ -733,7 +733,7 @@ void idRenderModelManagerLocal::EndLevelLoad()
 	for( int i = 0; i < models.Num(); i++ )
 	{
 		idRenderModel* model = models[i];
-		modelProgress = 9 + (i * 3) / modelCount;
+		modelProgress = 9 + ( i * 3 ) / modelCount;
 		// foresthale 2014-05-28: Brian Harris suggested the editors should never purge assets, because of potential for crashes on improperly refcounted assets
 		if( !model->IsLevelLoadReferenced() && model->IsLoaded() && model->IsReloadable() && !( com_editors ) )
 		{
@@ -754,14 +754,14 @@ void idRenderModelManagerLocal::EndLevelLoad()
 
 			keepCount++;
 		}
-		commonLocal.UpdateLevelLoadPacifier(false,modelProgress);
+		commonLocal.UpdateLevelLoadPacifier( false, modelProgress );
 	}
 	modelProgress = 1;
 	// load any new ones
 	for( int i = 0; i < models.Num(); i++ )
 	{
-		modelProgress = 12 + (i * 16) / modelCount;
-		commonLocal.UpdateLevelLoadPacifier(false,modelProgress);
+		modelProgress = 12 + ( i * 16 ) / modelCount;
+		commonLocal.UpdateLevelLoadPacifier( false, modelProgress );
 		
 		
 		idRenderModel* model = models[i];
@@ -776,8 +776,8 @@ void idRenderModelManagerLocal::EndLevelLoad()
 	// create static vertex/index buffers for all models
 	for( int i = 0; i < models.Num(); i++ )
 	{
-		modelProgress = 28 + (i * 16) / modelCount;
-		commonLocal.UpdateLevelLoadPacifier(false,modelProgress);
+		modelProgress = 28 + ( i * 16 ) / modelCount;
+		commonLocal.UpdateLevelLoadPacifier( false, modelProgress );
 		
 		
 		idRenderModel* model = models[i];
@@ -798,7 +798,9 @@ void idRenderModelManagerLocal::EndLevelLoad()
 	if( loadCount )
 	{
 		common->Printf( "%5i new models loaded in %5.1f seconds\n", loadCount, ( end - start ) * 0.001 );
-	} else {
+	}
+	else
+	{
 		common->Printf( "Finished loading Models in %5.1f seconds\n", ( end - start ) * 0.001 );
 	}
 	common->Printf( "---------------------------------------------------\n" );

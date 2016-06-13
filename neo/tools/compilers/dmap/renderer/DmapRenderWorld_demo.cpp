@@ -40,21 +40,22 @@ If you have questions concerning this license or the applicable additional terms
 StartWritingDemo
 ==============
 */
-void		idDmapRenderWorldLocal::StartWritingDemo(idDemoFile *demo) {
-	assert(0);
+void		idDmapRenderWorldLocal::StartWritingDemo( idDemoFile* demo )
+{
+	assert( 0 );
 	/*int		i;
-
+	
 	// FIXME: we should track the idDemoFile locally, instead of snooping into session for it
-
+	
 	WriteLoadMap();
-
+	
 	// write the door portal state
 	for (i = 0; i < numInterAreaPortals; i++) {
 		if (doublePortals[i].blockingBits) {
 			SetPortalState(i + 1, doublePortals[i].blockingBits);
 		}
 	}
-
+	
 	// clear the archive counter on all defs
 	for (i = 0; i < lightDefs.Num(); i++) {
 		if (lightDefs[i]) {
@@ -68,7 +69,8 @@ void		idDmapRenderWorldLocal::StartWritingDemo(idDemoFile *demo) {
 	}*/
 }
 
-void idDmapRenderWorldLocal::StopWritingDemo() {
+void idDmapRenderWorldLocal::StopWritingDemo()
+{
 	//	writeDemo = NULL;
 }
 
@@ -77,28 +79,29 @@ void idDmapRenderWorldLocal::StopWritingDemo() {
 ProcessDemoCommand
 ==============
 */
-bool		idDmapRenderWorldLocal::ProcessDemoCommand(idDemoFile *readDemo, dmapRenderView_t *renderView, int *demoTimeOffset) {
-	
-	assert(0);
-	/*bool	newMap = false;
+bool		idDmapRenderWorldLocal::ProcessDemoCommand( idDemoFile* readDemo, dmapRenderView_t* renderView, int* demoTimeOffset )
+{
 
+	assert( 0 );
+	/*bool	newMap = false;
+	
 	if (!readDemo) {
 		return false;
 	}
-
+	
 	int				dc;
 	qhandle_t		h;
-
+	
 	if (!readDemo->ReadInt(dc)) {
 		// a demoShot may not have an endFrame, but it is still valid
 		return false;
 	}
-
+	
 	switch ((demoCommand_t)dc) {
 	case DC_LOADMAP:
 		// read the initial data
 		demoHeader_t	header;
-
+	
 		readDemo->ReadInt(header.version);
 		readDemo->ReadInt(header.sizeofRenderEntity);
 		readDemo->ReadInt(header.sizeofRenderLight);
@@ -108,16 +111,16 @@ bool		idDmapRenderWorldLocal::ProcessDemoCommand(idDemoFile *readDemo, dmapRende
 		if (header.version != 4) {
 			common->Error("Demo version mismatch.\n");
 		}
-
+	
 		if (r_showDemo.GetBool()) {
 			common->Printf("DC_LOADMAP: %s\n", header.mapname);
 		}
 		InitFromMap(header.mapname);
-
+	
 		newMap = true;		// we will need to set demoTimeOffset
-
+	
 		break;
-
+	
 	case DC_RENDERVIEW:
 		readDemo->ReadInt(renderView->viewID);
 		readDemo->ReadInt(renderView->x);
@@ -138,22 +141,22 @@ bool		idDmapRenderWorldLocal::ProcessDemoCommand(idDemoFile *readDemo, dmapRende
 		readDemo->ReadInt(renderView->time);
 		for (i = 0; i < MAX_GLOBAL_SHADER_PARMS; i++)
 			readDemo->ReadFloat(renderView->shaderParms[i]);
-
+	
 		renderView->globalMaterial = NULL;
 		if (!readDemo->ReadInt(i)) {
 			return false;
 		}
-
+	
 		if (r_showDemo.GetBool()) {
 			common->Printf("DC_RENDERVIEW: %i\n", renderView->time);
 		}
-
+	
 		// possibly change the time offset if this is from a new map
 		if (newMap && demoTimeOffset) {
 			*demoTimeOffset = renderView->time - eventLoop->Milliseconds();
 		}
 		return false;
-
+	
 	case DC_UPDATE_ENTITYDEF:
 		ReadRenderEntity();
 		break;
@@ -178,14 +181,14 @@ bool		idDmapRenderWorldLocal::ProcessDemoCommand(idDemoFile *readDemo, dmapRende
 		}
 		FreeLightDef(h);
 		break;
-
+	
 	case DC_CAPTURE_RENDER:
 		if (r_showDemo.GetBool()) {
 			common->Printf("DC_CAPTURE_RENDER\n");
 		}
 		renderSystem->CaptureRenderToImage(readDemo->ReadHashString());
 		break;
-
+	
 	case DC_CROP_RENDER:
 		if (r_showDemo.GetBool()) {
 			common->Printf("DC_CROP_RENDER\n");
@@ -196,31 +199,31 @@ bool		idDmapRenderWorldLocal::ProcessDemoCommand(idDemoFile *readDemo, dmapRende
 		readDemo->ReadInt(size[2]);
 		renderSystem->CropRenderSize(size[0], size[1], size[2] != 0);
 		break;
-
+	
 	case DC_UNCROP_RENDER:
 		if (r_showDemo.GetBool()) {
 			common->Printf("DC_UNCROP\n");
 		}
 		renderSystem->UnCrop();
 		break;
-
+	
 	case DC_GUI_MODEL:
 		if (r_showDemo.GetBool()) {
 			common->Printf("DC_GUI_MODEL\n");
 		}
 		dmap_tr.demoGuiModel->ReadFromDemo(readDemo);
 		break;
-
+	
 	case DC_DEFINE_MODEL:
 	{
 							idDmapRenderModel	*model = dmapRenderModelManager->AllocModel();
 							model->ReadFromDemoFile(session->readDemo);
 							// add to model manager, so we can find it
 							dmapRenderModelManager->AddModel(model);
-
+	
 							// save it in the list to free when clearing this map
 							localModels.Append(model);
-
+	
 							if (r_showDemo.GetBool()) {
 								common->Printf("DC_DEFINE_MODEL\n");
 							}
@@ -236,15 +239,15 @@ bool		idDmapRenderWorldLocal::ProcessDemoCommand(idDemoFile *readDemo, dmapRende
 									common->Printf("DC_SET_PORTAL_STATE: %i %i\n", data[0], data[1]);
 								}
 	}
-
+	
 		break;
 	case DC_END_FRAME:
 		return true;
-
+	
 	default:
 		common->Error("Bad token in demo stream");
 	}*/
-
+	
 	return false;
 }
 
@@ -253,18 +256,19 @@ bool		idDmapRenderWorldLocal::ProcessDemoCommand(idDemoFile *readDemo, dmapRende
 WriteLoadMap
 ================
 */
-void	idDmapRenderWorldLocal::WriteLoadMap() {
+void	idDmapRenderWorldLocal::WriteLoadMap()
+{
 
-	assert(0);
+	assert( 0 );
 	// only the main renderWorld writes stuff to demos, not the wipes or
 	// menu renders
 	/*if (this != session->rw) {
 		return;
 	}
-
+	
 	session->writeDemo->WriteInt(DS_RENDER);
 	session->writeDemo->WriteInt(DC_LOADMAP);
-
+	
 	demoHeader_t	header;
 	strncpy(header.mapname, mapName.c_str(), sizeof(header.mapname) - 1);
 	header.version = 4;
@@ -275,7 +279,7 @@ void	idDmapRenderWorldLocal::WriteLoadMap() {
 	session->writeDemo->WriteInt(header.sizeofRenderLight);
 	for (int i = 0; i < 256; i++)
 		session->writeDemo->WriteChar(header.mapname[i]);
-
+	
 	if (r_showDemo.GetBool()) {
 		common->Printf("write DC_DELETE_LIGHTDEF: %s\n", mapName.c_str());
 	}*/
@@ -287,31 +291,32 @@ WriteVisibleDefs
 
 ================
 */
-void	idDmapRenderWorldLocal::WriteVisibleDefs(const dmapViewDef_t *viewDef) {
-	assert(0);
+void	idDmapRenderWorldLocal::WriteVisibleDefs( const dmapViewDef_t* viewDef )
+{
+	assert( 0 );
 	// only the main renderWorld writes stuff to demos, not the wipes or
 	// menu renders
 	/*if (this != session->rw) {
 		return;
 	}
-
+	
 	// make sure all necessary entities and lights are updated
 	for (viewEntity_t *viewEnt = viewDef->viewEntitys; viewEnt; viewEnt = viewEnt->next) {
 		idRenderEntityLocal *ent = viewEnt->entityDef;
-
+	
 		if (ent->archived) {
 			// still up to date
 			continue;
 		}
-
+	
 		// write it out
 		WriteRenderEntity(ent->index, &ent->parms);
 		ent->archived = true;
 	}
-
+	
 	for (viewLight_t *viewLight = viewDef->viewLights; viewLight; viewLight = viewLight->next) {
 		idRenderLightLocal *light = viewLight->lightDef;
-
+	
 		if (light->archived) {
 			// still up to date
 			continue;
@@ -328,16 +333,17 @@ void	idDmapRenderWorldLocal::WriteVisibleDefs(const dmapViewDef_t *viewDef) {
 WriteRenderView
 ================
 */
-void	idDmapRenderWorldLocal::WriteRenderView(const dmapRenderView_t *renderView) {
-	assert(0);
+void	idDmapRenderWorldLocal::WriteRenderView( const dmapRenderView_t* renderView )
+{
+	assert( 0 );
 	/*int i;
-
+	
 	// only the main renderWorld writes stuff to demos, not the wipes or
 	// menu renders
 	if (this != session->rw) {
 		return;
 	}
-
+	
 	// write the actual view command
 	session->writeDemo->WriteInt(DS_RENDER);
 	session->writeDemo->WriteInt(DC_RENDERVIEW);
@@ -359,7 +365,7 @@ void	idDmapRenderWorldLocal::WriteRenderView(const dmapRenderView_t *renderView)
 	for (i = 0; i < MAX_GLOBAL_SHADER_PARMS; i++)
 		session->writeDemo->WriteFloat(renderView->shaderParms[i]);
 	session->writeDemo->WriteInt(0); //renderView->globalMaterial
-
+	
 	if (r_showDemo.GetBool()) {
 		common->Printf("write DC_RENDERVIEW: %i\n", renderView->time);
 	*/
@@ -370,19 +376,20 @@ void	idDmapRenderWorldLocal::WriteRenderView(const dmapRenderView_t *renderView)
 WriteFreeEntity
 ================
 */
-void	idDmapRenderWorldLocal::WriteFreeEntity(qhandle_t handle) {
+void	idDmapRenderWorldLocal::WriteFreeEntity( qhandle_t handle )
+{
 
-	assert(0);
+	assert( 0 );
 	// only the main renderWorld writes stuff to demos, not the wipes or
 	// menu renders
 	/*if (this != session->rw) {
 		return;
 	}
-
+	
 	session->writeDemo->WriteInt(DS_RENDER);
 	session->writeDemo->WriteInt(DC_DELETE_ENTITYDEF);
 	session->writeDemo->WriteInt(handle);
-
+	
 	if (r_showDemo.GetBool()) {
 		common->Printf("write DC_DELETE_ENTITYDEF: %i\n", handle);
 	}*/
@@ -393,19 +400,20 @@ void	idDmapRenderWorldLocal::WriteFreeEntity(qhandle_t handle) {
 WriteFreeLightEntity
 ================
 */
-void	idDmapRenderWorldLocal::WriteFreeLight(qhandle_t handle) {
-	
-	assert(0);
+void	idDmapRenderWorldLocal::WriteFreeLight( qhandle_t handle )
+{
+
+	assert( 0 );
 	// only the main renderWorld writes stuff to demos, not the wipes or
 	// menu renders
 	/*if (this != session->rw) {
 		return;
 	}
-
+	
 	session->writeDemo->WriteInt(DS_RENDER);
 	session->writeDemo->WriteInt(DC_DELETE_LIGHTDEF);
 	session->writeDemo->WriteInt(handle);
-
+	
 	if (r_showDemo.GetBool()) {
 		common->Printf("write DC_DELETE_LIGHTDEF: %i\n", handle);
 	}*/
@@ -416,19 +424,20 @@ void	idDmapRenderWorldLocal::WriteFreeLight(qhandle_t handle) {
 WriteRenderLight
 ================
 */
-void	idDmapRenderWorldLocal::WriteRenderLight(qhandle_t handle, const renderLight_t *light) {
+void	idDmapRenderWorldLocal::WriteRenderLight( qhandle_t handle, const renderLight_t* light )
+{
 
-	assert(0);
+	assert( 0 );
 	// only the main renderWorld writes stuff to demos, not the wipes or
 	// menu renders
 	/*if (this != session->rw) {
 		return;
 	}
-
+	
 	session->writeDemo->WriteInt(DS_RENDER);
 	session->writeDemo->WriteInt(DC_UPDATE_LIGHTDEF);
 	session->writeDemo->WriteInt(handle);
-
+	
 	session->writeDemo->WriteMat3(light->axis);
 	session->writeDemo->WriteVec3(light->origin);
 	session->writeDemo->WriteInt(light->suppressLightInViewID);
@@ -450,7 +459,7 @@ void	idDmapRenderWorldLocal::WriteRenderLight(qhandle_t handle, const renderLigh
 	for (int i = 0; i < MAX_ENTITY_SHADER_PARMS; i++)
 		session->writeDemo->WriteFloat(light->shaderParms[i]);
 	session->writeDemo->WriteInt(light->referenceSound ? 1 : 0);
-
+	
 	if (light->prelightModel) {
 		session->writeDemo->WriteHashString(light->prelightModel->Name());
 	}
@@ -461,7 +470,7 @@ void	idDmapRenderWorldLocal::WriteRenderLight(qhandle_t handle, const renderLigh
 		int	index = light->referenceSound->Index();
 		session->writeDemo->WriteInt(index);
 	}
-
+	
 	if (r_showDemo.GetBool()) {
 		common->Printf("write DC_UPDATE_LIGHTDEF: %i\n", handle);
 	}*/
@@ -472,18 +481,19 @@ void	idDmapRenderWorldLocal::WriteRenderLight(qhandle_t handle, const renderLigh
 ReadRenderLight
 ================
 */
-void	idDmapRenderWorldLocal::ReadRenderLight() {
-	
-	assert(0);
+void	idDmapRenderWorldLocal::ReadRenderLight()
+{
+
+	assert( 0 );
 	/*renderLight_t	light;
 	int				index, i;
 	int				prelightModel, shader, referenceSound;
-
+	
 	session->readDemo->ReadInt(index);
 	if (index < 0) {
 		common->Error("ReadRenderLight: index < 0 ");
 	}
-
+	
 	session->readDemo->ReadMat3(light.axis);
 	session->readDemo->ReadVec3(light.origin);
 	session->readDemo->ReadInt(light.suppressLightInViewID);
@@ -520,9 +530,9 @@ void	idDmapRenderWorldLocal::ReadRenderLight() {
 	else {
 		light.referenceSound = NULL;
 	}
-
+	
 	UpdateLightDef(index, &light);
-
+	
 	if (r_showDemo.GetBool()) {
 		common->Printf("DC_UPDATE_LIGHTDEF: %i\n", index);
 	}*/
@@ -533,19 +543,20 @@ void	idDmapRenderWorldLocal::ReadRenderLight() {
 WriteRenderEntity
 ================
 */
-void	idDmapRenderWorldLocal::WriteRenderEntity(qhandle_t handle, const dmapRenderEntity_t *ent) {
+void	idDmapRenderWorldLocal::WriteRenderEntity( qhandle_t handle, const dmapRenderEntity_t* ent )
+{
 
-	assert(0);
+	assert( 0 );
 	// only the main renderWorld writes stuff to demos, not the wipes or
 	// menu renders
 	/*if (this != session->rw) {
 		return;
 	}
-
+	
 	session->writeDemo->WriteInt(DS_RENDER);
 	session->writeDemo->WriteInt(DC_UPDATE_ENTITYDEF);
 	session->writeDemo->WriteInt(handle);
-
+	
 	session->writeDemo->WriteInt(ent->hModel ? 1 : 0);
 	session->writeDemo->WriteInt(ent->entityNum);
 	session->writeDemo->WriteInt(ent->bodyId);
@@ -576,7 +587,7 @@ void	idDmapRenderWorldLocal::WriteRenderEntity(qhandle_t handle, const dmapRende
 	session->writeDemo->WriteBool(ent->noDynamicInteractions);
 	session->writeDemo->WriteBool(ent->weaponDepthHack);
 	session->writeDemo->WriteInt(ent->forceUpdate);
-
+	
 	if (ent->customShader) {
 		session->writeDemo->WriteHashString(ent->customShader->GetName());
 	}
@@ -600,8 +611,8 @@ void	idDmapRenderWorldLocal::WriteRenderEntity(qhandle_t handle, const dmapRende
 				session->writeDemo->WriteFloat(data[j]);
 		}
 	}
-
-#ifdef WRITE_GUIS
+	
+	#ifdef WRITE_GUIS
 	if (ent->gui) {
 		ent->gui->WriteToDemoFile(session->writeDemo);
 	}
@@ -611,12 +622,12 @@ void	idDmapRenderWorldLocal::WriteRenderEntity(qhandle_t handle, const dmapRende
 	if (ent->gui3) {
 		ent->gui3->WriteToDemoFile(session->writeDemo);
 	}
-#endif
-
+	#endif
+	
 	// RENDERDEMO_VERSION >= 2 ( Doom3 1.2 )
 	session->writeDemo->WriteInt(ent->timeGroup);
 	session->writeDemo->WriteInt(ent->xrayIndex);
-
+	
 	if (r_showDemo.GetBool()) {
 		common->Printf("write DC_UPDATE_ENTITYDEF: %i = %s\n", handle, ent->hModel ? ent->hModel->Name() : "NULL");
 	}*/
@@ -627,18 +638,19 @@ void	idDmapRenderWorldLocal::WriteRenderEntity(qhandle_t handle, const dmapRende
 ReadRenderEntity
 ================
 */
-void	idDmapRenderWorldLocal::ReadRenderEntity() {
-	
-	assert(0);
+void	idDmapRenderWorldLocal::ReadRenderEntity()
+{
+
+	assert( 0 );
 	/*renderEntity_t		ent;
 	int					index, i, tmp, hModel, customShader, referenceShader;
 	int					customSkin, referenceSound, gui[MAX_RENDERENTITY_GUI];
-
+	
 	session->readDemo->ReadInt(index);
 	if (index < 0) {
 		common->Error("ReadRenderEntity: index < 0");
 	}
-
+	
 	session->readDemo->ReadInt(hModel);
 	session->readDemo->ReadInt(ent.entityNum);
 	session->readDemo->ReadInt(ent.bodyId);
@@ -708,19 +720,19 @@ void	idDmapRenderWorldLocal::ReadRenderEntity() {
 		ent.joints = NULL;
 	}
 	ent.callbackData = NULL;
-
+	
 	for (i = 0; i < MAX_RENDERENTITY_GUI; i++) {
 		if (gui[i]) {
 			ent.gui[i] = uiManager->Alloc();
-#ifdef WRITE_GUIS
+	#ifdef WRITE_GUIS
 			ent.gui[i]->ReadFromDemoFile(session->readDemo);
-#endif
+	#endif
 		}
 		else {
 			ent.gui[i] = NULL;
 		}
 	}
-
+	
 	// >= Doom3 v1.2 only
 	if (session->renderdemoVersion >= 2) {
 		session->readDemo->ReadInt(ent.timeGroup);
@@ -730,9 +742,9 @@ void	idDmapRenderWorldLocal::ReadRenderEntity() {
 		ent.timeGroup = 0;
 		ent.xrayIndex = 0;
 	}
-
+	
 	UpdateEntityDef(index, &ent);
-
+	
 	if (r_showDemo.GetBool()) {
 		common->Printf("DC_UPDATE_ENTITYDEF: %i = %s\n", index, ent.hModel ? ent.hModel->Name() : "NULL");
 	}*/

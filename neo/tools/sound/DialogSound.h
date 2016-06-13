@@ -37,23 +37,24 @@ If you have questions concerning this license or the applicable additional terms
 /////////////////////////////////////////////////////////////////////////////
 // CDialogSound dialog
 
-class CDialogSound : public CDialog {
+class CDialogSound : public CDialog
+{
 public:
-							CDialogSound(CWnd* pParent = NULL);   // standard constructor\
-
-	void					Set( const idDict *source );
-	void					Get( idDict *dest );
-
+	CDialogSound( CWnd* pParent = NULL ); // standard constructor\
+	
+	void					Set( const idDict* source );
+	void					Get( idDict* dest );
+	
 	enum { NONE, SOUNDS, SOUNDPARENT, WAVES, WAVEDIR, INUSESOUNDS };
-
+	
 	//{{AFX_VIRTUAL(CDialogSound)
 	virtual BOOL			OnInitDialog();
-	virtual void			DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual void			DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	//}}AFX_VIRTUAL
-
+	
 protected:
 	//{{AFX_MSG(CDialogSound)
-	afx_msg void			OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);
+	afx_msg void			OnActivate( UINT nState, CWnd* pWndOther, BOOL bMinimized );
 	afx_msg void			OnMove( int x, int y );
 	afx_msg void			OnDestroy();
 	afx_msg void			OnBtnSavemap();
@@ -62,8 +63,8 @@ protected:
 	afx_msg void			OnChangeEditVolume();
 	afx_msg void			OnBtnRefresh();
 	afx_msg void			OnBtnPlaysound();
-	afx_msg void			OnDblclkTreeSounds(NMHDR* pNMHDR, LRESULT* pResult);
-	afx_msg void			OnSelchangedTreeSounds(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void			OnDblclkTreeSounds( NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void			OnSelchangedTreeSounds( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void			OnCheckPlay();
 	afx_msg void			OnBtnEdit();
 	afx_msg void			OnBtnDrop();
@@ -76,7 +77,7 @@ protected:
 	afx_msg void			OnBtnZup();
 	afx_msg void			OnBtnZdn();
 	afx_msg void			OnBtnTrigger();
-	afx_msg void			OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+	afx_msg void			OnHScroll( UINT nSBCode, UINT nPos, CScrollBar* pScrollBar );
 	afx_msg void			OnCheckGrouponly();
 	afx_msg void			OnSelchangeComboGroups();
 	afx_msg void			OnSelchangeComboSpeakers();
@@ -85,9 +86,9 @@ protected:
 	afx_msg void			OnBtnRefreshspeakers();
 	afx_msg void			OnBtnRefreshwave();
 	//}}AFX_MSG
-
+	
 	DECLARE_MESSAGE_MAP()
-
+	
 private:
 	//{{AFX_DATA(CDialogSound)
 	enum					{ IDD = IDD_DIALOG_SOUND };
@@ -114,23 +115,23 @@ private:
 	BOOL					looping;
 	BOOL					unclamped;
 	//}}AFX_DATA
-
+	
 	CString					playSound;
 	idHashTable<HTREEITEM>	quickTree;
 	HTREEITEM				inUseTree;
 private:
-	void					AddSounds(bool rootItem);
-	HTREEITEM				AddStrList(const char *root, const idStrList &list, int id);
-	HTREEITEM				InsertTreeItem(const char *name, const char *fullName, HTREEITEM item);
-	idStr					RebuildItemName(const char *root, HTREEITEM item);
-	void					UpdateSelectedOrigin(float x, float y, float z);
+	void					AddSounds( bool rootItem );
+	HTREEITEM				AddStrList( const char* root, const idStrList& list, int id );
+	HTREEITEM				InsertTreeItem( const char* name, const char* fullName, HTREEITEM item );
+	idStr					RebuildItemName( const char* root, HTREEITEM item );
+	void					UpdateSelectedOrigin( float x, float y, float z );
 	void					AddGroups();
 	void					AddSpeakers();
 	void					AddInUseSounds();
 	void					ApplyChanges( bool volumeOnly = false , bool updateInUseTree = true );
-	void					SetWaveSize( const char *p = NULL );
+	void					SetWaveSize( const char* p = NULL );
 	void					SetVolume( float f );
-	virtual BOOL			PreTranslateMessage(MSG* pMsg);
+	virtual BOOL			PreTranslateMessage( MSG* pMsg );
 };
 
 //{{AFX_INSERT_LOCATION}}

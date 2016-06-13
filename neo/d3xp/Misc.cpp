@@ -242,16 +242,16 @@ void idPlayerStart::Event_TeleportPlayer( idEntity* activator )
 	{
 		player = gameLocal.GetLocalPlayer();
 	}
-
+	
 	if( player )
 	{
 		if( spawnArgs.GetBool( "visualFx" ) )
-		{		
+		{
 			teleportStage = 0;
-			Event_TeleportStage( player );			
+			Event_TeleportStage( player );
 		}
 		else
-		{		
+		{
 			if( common->IsServer() )
 			{
 				idBitMsg	msg;
@@ -682,7 +682,7 @@ idExplodable::Event_Explode
 */
 void idExplodable::Event_Explode( idEntity* activator )
 {
-	const char* temp;	
+	const char* temp;
 	if( spawnArgs.GetString( "def_damage", "damage_explosion", &temp ) )
 	{
 		gameLocal.RadiusDamage( GetPhysics()->GetOrigin(), activator, activator, this, this, temp );
@@ -1060,8 +1060,8 @@ idAnimated::idAnimated()
 	current_anim_index = 0;
 	num_anims = 0;
 	achievement = -1;
-
-	num_cycleanims = 0;	// ########## SR	
+	
+	num_cycleanims = 0;	// ########## SR
 	
 }
 
@@ -1284,12 +1284,13 @@ void idAnimated::PlayNextAnim()
 	
 	// ########################################### SR
 	
-	if ( current_anim_index >= num_cycleanims) {
+	if( current_anim_index >= num_cycleanims )
+	{
 		return;
 	}
 	
 	// ########################################### END SR
-
+	
 	
 	Show();
 	current_anim_index++;
@@ -1345,28 +1346,31 @@ void idAnimated::PlayNextAnim()
 idAnimated::Event_StartAnim
 ================
 */
-void idAnimated::Event_StartAnim( const char *startanim ) {
+void idAnimated::Event_StartAnim( const char* startanim )
+{
 	int cycle;
 	int len;
 	int anim;
-
+	
 	spawnArgs.GetInt( "cycle", "1", cycle );
 	anim = animator.GetAnim( startanim );
-	if ( !anim ) {
+	if( !anim )
+	{
 		gameLocal.Warning( "missing anim '%s' ", startanim );
 		return;
 	}
 	animator.CycleAnim( ANIMCHANNEL_ALL, anim, gameLocal.time, FRAME2MS( blendFrames ) );
 	animator.CurrentAnim( ANIMCHANNEL_ALL )->SetCycleCount( cycle );
-
+	
 	len = animator.CurrentAnim( ANIMCHANNEL_ALL )->PlayLength();
-	if ( len >= 0 ) {
+	if( len >= 0 )
+	{
 		PostEventMS( &EV_AnimDone, len, 1 );
 	}
-
+	
 	// offset the start time of the shader to sync it to the game time
 	renderEntity.shaderParms[ SHADERPARM_TIMEOFFSET ] = -MS2SEC( gameLocal.time );
-
+	
 	animator.ForceUpdate();
 	UpdateAnimation();
 	UpdateVisuals();
@@ -1378,7 +1382,8 @@ void idAnimated::Event_StartAnim( const char *startanim ) {
 idAnimated::Event_GetAName
 ================
 */
-void idAnimated::Event_GetAName( void ) {
+void idAnimated::Event_GetAName( void )
+{
 	idThread::ReturnString( name.c_str() );
 }
 
@@ -1413,7 +1418,7 @@ void idAnimated::Event_AnimDone( int animindex )
 		Hide();
 		Remove();
 	}
-	else if( spawnArgs.GetBool( "auto_advance" ) && animindex <= num_cycleanims)	// ################## SR + && animindex <= num_cycleanims
+	else if( spawnArgs.GetBool( "auto_advance" ) && animindex <= num_cycleanims )	// ################## SR + && animindex <= num_cycleanims
 	{
 		PlayNextAnim();
 	}
@@ -1719,35 +1724,35 @@ idStaticEntity::Spawn
 */
 void idStaticEntity::Spawn()
 {
-	bool solid = spawnArgs.GetBool("solid");
-	bool hidden = spawnArgs.GetBool("hide");
-
-	if (solid && !hidden)
+	bool solid = spawnArgs.GetBool( "solid" );
+	bool hidden = spawnArgs.GetBool( "hide" );
+	
+	if( solid && !hidden )
 	{
-		GetPhysics()->SetContents(CONTENTS_SOLID);
+		GetPhysics()->SetContents( CONTENTS_SOLID );
 	}
 	else
 	{
-		GetPhysics()->SetContents(0);
+		GetPhysics()->SetContents( 0 );
 	}
 	
 	// an inline static model will not do anything at all
 	if( spawnArgs.GetBool( "inline" ) || gameLocal.world->spawnArgs.GetBool( "inlineAllStatics" ) )
 	{
 		// inlined entities will reference the world
-		for (int c = 0; c < GetPhysics()->GetNumClipModels(); ++c)
+		for( int c = 0; c < GetPhysics()->GetNumClipModels(); ++c )
 		{
-			GetPhysics()->GetClipModel(c)->SetEntity(gameLocal.world);
-
+			GetPhysics()->GetClipModel( c )->SetEntity( gameLocal.world );
+			
 			// if the collision is disabled, just delete the clip
 			// rather than leave it allocated with collision disabled
-			const bool deleteClip = GetPhysics()->GetContents(c) == 0;
-
+			const bool deleteClip = GetPhysics()->GetContents( c ) == 0;
+			
 			// break the entity association with the clip model
 			// so when the entity is deleted, it remains if its active
-			GetPhysics()->SetClipModel(NULL, 1.0f, c, deleteClip);
-		}		
-
+			GetPhysics()->SetClipModel( NULL, 1.0f, c, deleteClip );
+		}
+		
 		// remove the entity
 		Remove();
 		return;
@@ -1877,7 +1882,7 @@ idStaticEntity::Event_Activate
 ================
 */
 void idStaticEntity::Event_Activate( idEntity* activator )
-{	
+{
 	spawnTime = gameLocal.time;
 	active = !active;
 	
@@ -1910,8 +1915,8 @@ idStaticEntity::WriteToSnapshot
 */
 void idStaticEntity::WriteToSnapshot( idBitMsg& msg ) const
 {
-	msg.WriteBits( GetPhysics()!= NULL, 1 );
-	if ( GetPhysics()!= NULL )
+	msg.WriteBits( GetPhysics() != NULL, 1 );
+	if( GetPhysics() != NULL )
 		GetPhysics()->WriteToSnapshot( msg );
 	WriteBindToSnapshot( msg );
 	WriteColorToSnapshot( msg );
@@ -1928,10 +1933,10 @@ void idStaticEntity::ReadFromSnapshot( const idBitMsg& msg )
 {
 	bool hidden;
 	
-	if ( msg.ReadBits( 1 ) != 0 )
-		if ( GetPhysics() )
+	if( msg.ReadBits( 1 ) != 0 )
+		if( GetPhysics() )
 			GetPhysics()->ReadFromSnapshot( msg );
-
+			
 	ReadBindFromSnapshot( msg );
 	ReadColorFromSnapshot( msg );
 	ReadGUIFromSnapshot( msg );
@@ -2405,7 +2410,7 @@ void idFuncSmoke::Event_Activate( idEntity* activator )
 		return;
 	}
 	else
-	{		
+	{
 		BecomeActive( TH_UPDATEPARTICLES );
 		restart = true;
 		smokeTime = gameLocal.time;
@@ -2599,7 +2604,7 @@ void idVacuumSeparatorEntity::Event_Activate( idEntity* activator )
 {
 	if( !portal )
 		return;
-
+		
 	gameLocal.SetPortalState( portal, PS_BLOCK_NONE );
 }
 
@@ -2776,7 +2781,7 @@ idBeam::Think
 ================
 */
 void idBeam::Think()
-{	
+{
 	if( !IsHidden() && !target.GetEntity() )
 	{
 		// hide if our target is removed
@@ -2785,7 +2790,7 @@ void idBeam::Think()
 	
 	RunPhysics();
 	
-	idBeam * masterEnt = master.GetEntity();
+	idBeam* masterEnt = master.GetEntity();
 	if( masterEnt )
 	{
 		const idVec3& origin = GetPhysics()->GetOrigin();
@@ -2845,13 +2850,13 @@ idBeam::Event_MatchTarget
 ================
 */
 void idBeam::Event_MatchTarget()
-{	
+{
 	if( !targets.Num() )
 	{
 		return;
 	}
 	
-	idBeam * targetBeam = NULL;
+	idBeam* targetBeam = NULL;
 	for( int i = 0; i < targets.Num(); i++ )
 	{
 		idEntity* targetEnt = targets[ i ].GetEntity();
@@ -4277,7 +4282,7 @@ void idFuncMountedObject::Event_Activate( idEntity* activator )
 	if( !isMounted && activator->IsType( idPlayer::Type ) )
 	{
 		idPlayer* client = static_cast<idPlayer*>( activator );
-	
+		
 		mountedPlayer = client;
 		
 		/*

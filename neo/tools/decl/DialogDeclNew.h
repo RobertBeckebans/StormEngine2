@@ -35,38 +35,54 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogDeclNew dialog
 
-class DialogDeclNew : public CDialog {
+class DialogDeclNew : public CDialog
+{
 
-	DECLARE_DYNAMIC(DialogDeclNew)
-
+	DECLARE_DYNAMIC( DialogDeclNew )
+	
 public:
-						DialogDeclNew( CWnd* pParent = NULL );   // standard constructor
+	DialogDeclNew( CWnd* pParent = NULL );   // standard constructor
 	virtual				~DialogDeclNew();
-
-	void				SetDeclTree( CPathTreeCtrl *tree ) { declTree = tree; }
-	void				SetDefaultType( const char *type ) { defaultType = type; }
-	void				SetDefaultName( const char *name ) { defaultName = name; }
-	void				SetDefaultFile( const char *file ) { defaultFile = file; }
-	idDecl *			GetNewDecl( void ) const { return newDecl; }
-
+	
+	void				SetDeclTree( CPathTreeCtrl* tree )
+	{
+		declTree = tree;
+	}
+	void				SetDefaultType( const char* type )
+	{
+		defaultType = type;
+	}
+	void				SetDefaultName( const char* name )
+	{
+		defaultName = name;
+	}
+	void				SetDefaultFile( const char* file )
+	{
+		defaultFile = file;
+	}
+	idDecl* 			GetNewDecl( void ) const
+	{
+		return newDecl;
+	}
+	
 	//{{AFX_VIRTUAL(DialogDeclNew)
 	virtual BOOL		OnInitDialog();
 	virtual void		DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
 	//}}AFX_VIRTUAL
-
+	
 protected:
 	//{{AFX_MSG(DialogDeclNew)
-	afx_msg BOOL		OnToolTipNotify( UINT id, NMHDR *pNMHDR, LRESULT *pResult );
-	afx_msg void		OnSetFocus( CWnd *pOldWnd );
+	afx_msg BOOL		OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void		OnSetFocus( CWnd* pOldWnd );
 	afx_msg void		OnDestroy();
-	afx_msg void		OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);
+	afx_msg void		OnActivate( UINT nState, CWnd* pWndOther, BOOL bMinimized );
 	afx_msg void		OnBnClickedFile();
 	afx_msg void		OnBnClickedOk();
 	afx_msg void		OnBnClickedCancel();
 	//}}AFX_MSG
-
+	
 	DECLARE_MESSAGE_MAP()
-
+	
 private:
 
 	//{{AFX_DATA(DialogDeclNew)
@@ -78,15 +94,15 @@ private:
 	CButton				okButton;
 	CButton				cancelButton;
 	//}}AFX_DATA
-
+	
 	static toolTip_t	toolTips[];
-
-	CPathTreeCtrl *		declTree;
+	
+	CPathTreeCtrl* 		declTree;
 	idStr				defaultType;
 	idStr				defaultName;
 	idStr				defaultFile;
-	idDecl *			newDecl;
-
+	idDecl* 			newDecl;
+	
 private:
 	void				InitTypeList( void );
 };

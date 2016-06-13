@@ -41,17 +41,17 @@ If you have questions concerning this license or the applicable additional terms
 
 class CWaveOpen : public CFileDialog
 {
-	DECLARE_DYNAMIC(CWaveOpen)
-
+	DECLARE_DYNAMIC( CWaveOpen )
+	
 public:
-	CWaveOpen(BOOL bOpenFileDialog, // TRUE for FileOpen, FALSE for FileSaveAs
-		LPCTSTR lpszDefExt = NULL,
-		LPCTSTR lpszFileName = NULL,
-		DWORD dwFlags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-		LPCTSTR lpszFilter = NULL,
-		CWnd* pParentWnd = NULL);
-
-  virtual void OnFileNameChange( );
+	CWaveOpen( BOOL bOpenFileDialog, // TRUE for FileOpen, FALSE for FileSaveAs
+			   LPCTSTR lpszDefExt = NULL,
+			   LPCTSTR lpszFileName = NULL,
+			   DWORD dwFlags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
+			   LPCTSTR lpszFilter = NULL,
+			   CWnd* pParentWnd = NULL );
+			   
+	virtual void OnFileNameChange( );
 protected:
 	//{{AFX_MSG(CWaveOpen)
 	afx_msg void OnBtnPlay();

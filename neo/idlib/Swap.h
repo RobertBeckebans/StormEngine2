@@ -69,14 +69,14 @@ class idSwap
 public:
 	//#define SwapBytes( x, y )		(x) ^= (y) ^= (x) ^= (y)
 #define SwapBytes( x, y )		{ byte t = (x); (x) = (y); (y) = t; }
-
-	template<class type> static void Swap( type &a, type &b )
+	
+	template<class type> static void Swap( type& a, type& b )
 	{
 		type c = a;
 		a = b;
 		b = c;
 	}
-
+	
 	template<class type> static void Little( type& c )
 	{
 		// byte swapping pointers is pointless because we should never store pointers on disk

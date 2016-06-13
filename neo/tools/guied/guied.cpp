@@ -51,7 +51,7 @@ Start the gui editor
 void GUIEditorInit( void )
 {
 	InitAfx();
-
+	
 	gApp.Initialize();
 }
 
@@ -60,7 +60,8 @@ void GUIEditorInit( void )
 GUIEditorShutdown
 ================
 */
-void GUIEditorShutdown( void ) {
+void GUIEditorShutdown( void )
+{
 }
 
 /*
@@ -70,14 +71,14 @@ GUIEditorHandleMessage
 Handle translator messages
 ================
 */
-bool GUIEditorHandleMessage ( void *msg )
+bool GUIEditorHandleMessage( void* msg )
 {
-	if ( !gApp.IsActive ( ) )
+	if( !gApp.IsActive( ) )
 	{
 		return false;
 	}
-
-	return gApp.TranslateAccelerator( reinterpret_cast<LPMSG>(msg) );
+	
+	return gApp.TranslateAccelerator( reinterpret_cast<LPMSG>( msg ) );
 }
 
 /*
@@ -90,37 +91,37 @@ Run a frame
 void GUIEditorRun()
 {
 	MSG			msg;
-
+	
 	// pump the message loop
-	while (PeekMessage (&msg, NULL, 0, 0, PM_NOREMOVE))
+	while( PeekMessage( &msg, NULL, 0, 0, PM_NOREMOVE ) )
 	{
-		if ( !GetMessage (&msg, NULL, 0, 0) )
+		if( !GetMessage( &msg, NULL, 0, 0 ) )
 		{
 			common->Quit();
 		}
-
+		
 		// save the msg time, because wndprocs don't have access to the timestamp
-		if ( win32.sysMsgTime && win32.sysMsgTime > (int)msg.time )
+		if( win32.sysMsgTime && win32.sysMsgTime > ( int )msg.time )
 		{
 		}
 		else
 		{
 			win32.sysMsgTime = msg.time;
 		}
-
-		if ( gApp.TranslateAccelerator ( &msg ) )
+		
+		if( gApp.TranslateAccelerator( &msg ) )
 		{
 			continue;
 		}
-
-		TranslateMessage (&msg);
-		DispatchMessage (&msg);
+		
+		TranslateMessage( &msg );
+		DispatchMessage( &msg );
 	}
-
-	gApp.RunFrame ( );
-
+	
+	gApp.RunFrame( );
+	
 	// The GUI editor runs too hot so we need to slow it down a bit.
-	Sleep ( 1 );
+	Sleep( 1 );
 }
 
 /*
@@ -130,13 +131,13 @@ StringFromVec4
 Returns a clean string version of the given vec4
 ================
 */
-const char *StringFromVec4 ( idVec4& v )
+const char* StringFromVec4( idVec4& v )
 {
 	return va( "%s,%s,%s,%s",
-		idStr::FloatArrayToString( &v[0], 1, 8 ),
-		idStr::FloatArrayToString( &v[1], 1, 8 ),
-		idStr::FloatArrayToString( &v[2], 1, 8 ),
-		idStr::FloatArrayToString( &v[3], 1, 8 ) );
+			   idStr::FloatArrayToString( &v[0], 1, 8 ),
+			   idStr::FloatArrayToString( &v[1], 1, 8 ),
+			   idStr::FloatArrayToString( &v[2], 1, 8 ),
+			   idStr::FloatArrayToString( &v[3], 1, 8 ) );
 }
 
 /*
@@ -146,57 +147,57 @@ IsExpression
 Returns true if the given string is an expression
 ================
 */
-bool IsExpression ( const char* s )
+bool IsExpression( const char* s )
 {
-	idParser src( s, strlen ( s ), "",
+	idParser src( s, strlen( s ), "",
 				  LEXFL_ALLOWMULTICHARLITERALS		|
 				  LEXFL_NOSTRINGCONCAT				|
 				  LEXFL_ALLOWBACKSLASHSTRINGCONCAT	|
 				  LEXFL_NOFATALERRORS );
-
+				  
 	idToken token;
 	bool	needComma = false;
 	bool	needNumber = false;
-	while ( src.ReadToken ( &token ) )
+	while( src.ReadToken( &token ) )
 	{
-		switch ( token.type )
+		switch( token.type )
 		{
 			case TT_NUMBER:
 				needComma = true;
 				needNumber = false;
 				break;
-
+				
 			case TT_PUNCTUATION:
-				if ( needNumber )
+				if( needNumber )
 				{
 					return true;
 				}
-				if ( token[0] == ',' )
+				if( token[0] == ',' )
 				{
-					if ( !needComma )
+					if( !needComma )
 					{
 						return true;
 					}
-
+					
 					needComma = false;
 					break;
 				}
-
-				if ( needComma )
+				
+				if( needComma )
 				{
 					return true;
 				}
-
-				if ( token[0] == '-' )
+				
+				if( token[0] == '-' )
 				{
 					needNumber = true;
 				}
 				break;
-
+				
 			default:
 				return true;
 		}
 	}
-
+	
 	return false;
 }

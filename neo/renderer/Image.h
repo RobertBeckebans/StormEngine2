@@ -74,10 +74,10 @@ typedef enum
 
 inline bool IsToolUsage( textureUsage_t usage )
 {
-	return usage == TD_EDITOR_DEFAULT || 
-		usage == TD_EDITOR_DIFFUSE || 
-		usage == TD_EDITOR_BUMP || 
-		usage == TD_EDITOR_COVERAGE;
+	return usage == TD_EDITOR_DEFAULT ||
+		   usage == TD_EDITOR_DIFFUSE ||
+		   usage == TD_EDITOR_BUMP ||
+		   usage == TD_EDITOR_COVERAGE;
 }
 
 textureUsage_t CheckEditorUsage( textureUsage_t usage );
@@ -159,7 +159,7 @@ public:
 	{
 		return opts.height;
 	}
-
+	
 	GLuint		GetTexnum() const
 	{
 		return texnum;
@@ -216,8 +216,8 @@ public:
 	{
 		return texnum != TEXTURE_NOT_LOADED;
 	}
-
-	void		BindAttachmentOnFBO(int attachmentType, int layer = -1);
+	
+	void		BindAttachmentOnFBO( int attachmentType, int layer = -1 );
 	
 	static void			GetGeneratedName( idStr& _name, const textureUsage_t& _usage, const cubeFiles_t& _cube );
 	

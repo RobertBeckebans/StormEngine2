@@ -35,29 +35,29 @@ If you have questions concerning this license or the applicable additional terms
 
 int rvDebuggerBreakpoint::mNextID = 1;
 
-rvDebuggerBreakpoint::rvDebuggerBreakpoint ( const char* filename, int linenumber, int id )
+rvDebuggerBreakpoint::rvDebuggerBreakpoint( const char* filename, int linenumber, int id )
 {
 	mFilename = filename;
 	mLineNumber = linenumber;
 	mEnabled = true;
 	
-	if ( id == -1 )
-	{	
+	if( id == -1 )
+	{
 		mID = mNextID++;
-	}	
-	else 
+	}
+	else
 	{
 		mID = id;
 	}
 }
 
-rvDebuggerBreakpoint::rvDebuggerBreakpoint ( rvDebuggerBreakpoint& bp )
+rvDebuggerBreakpoint::rvDebuggerBreakpoint( rvDebuggerBreakpoint& bp )
 {
 	mFilename = bp.mFilename;
 	mEnabled = bp.mEnabled;
 	mLineNumber = bp.mLineNumber;
 }
 
-rvDebuggerBreakpoint::~rvDebuggerBreakpoint ( void )
+rvDebuggerBreakpoint::~rvDebuggerBreakpoint( void )
 {
 }

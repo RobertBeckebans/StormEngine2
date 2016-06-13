@@ -2821,11 +2821,11 @@ void idMover_Binary::UpdateMoverSound( moverState_t state )
 				break;
 			case MOVER_1TO2:
 				StartSound( "snd_start", SND_CHANNEL_ANY, 0, false, NULL );
-				StartSound( "snd_move", SND_CHANNEL_BODY2, 0, false, NULL );	// ########## SR	
+				StartSound( "snd_move", SND_CHANNEL_BODY2, 0, false, NULL );	// ########## SR
 				break;
 			case MOVER_2TO1:
 				StartSound( "snd_start", SND_CHANNEL_ANY, 0, false, NULL );
-				StartSound( "snd_move", SND_CHANNEL_BODY2, 0, false, NULL );	// ########## SR	
+				StartSound( "snd_move", SND_CHANNEL_BODY2, 0, false, NULL );	// ########## SR
 				break;
 		}
 	}
@@ -2839,18 +2839,26 @@ idMover_Binary::SetMoverState
 void idMover_Binary::SetMoverState( moverState_t newstate, int time )
 {
 	idVec3 	delta;
-
+	
 #if 1
 	// foresthale 2014-04-28: trigger several things based on moverState changes
 	if( moveMaster == this && moverState != newstate )
 	{
-		const char *search = "triggerMoverUnknown";
-		switch (newstate)
+		const char* search = "triggerMoverUnknown";
+		switch( newstate )
 		{
-		case MOVER_POS1: search = "triggerMoverClosed";break;
-		case MOVER_POS2: search = "triggerMoverOpened";break;
-		case MOVER_1TO2: search = "triggerMoverOpening";break;
-		case MOVER_2TO1: search = "triggerMoverClosing";break;
+			case MOVER_POS1:
+				search = "triggerMoverClosed";
+				break;
+			case MOVER_POS2:
+				search = "triggerMoverOpened";
+				break;
+			case MOVER_1TO2:
+				search = "triggerMoverOpening";
+				break;
+			case MOVER_2TO1:
+				search = "triggerMoverClosing";
+				break;
 		}
 		const idKeyValue* kv = spawnArgs.MatchPrefix( search );
 		while( kv )
@@ -4517,15 +4525,16 @@ void idDoor::Event_Touch( idEntity* other, trace_t* trace )
 		return;
 	}
 	
-	// ################### SR	
+	// ################### SR
 	
-	idPlayer	*p;								
-	p = static_cast< idPlayer * >( other );		
-	if ( IsNoTouch() && moverState == MOVER_POS1 && p->showhints ) {
+	idPlayer*	p;
+	p = static_cast< idPlayer* >( other );
+	if( IsNoTouch() && moverState == MOVER_POS1 && p->showhints )
+	{
 		p->ShowTip( "Press", "_use", "to open unlocked doors", true );
 	}
 	
-	// ################### END SR	
+	// ################### END SR
 	
 	if( trigger && trace->c.id == trigger->GetId() )
 	{
@@ -4594,7 +4603,7 @@ idDoor::Event_Activate
 */
 void idDoor::Event_Activate( idEntity* activator )
 {
-	int old_lock;	
+	int old_lock;
 	if( spawnArgs.GetInt( "locked" ) )
 	{
 		if( !trigger )
@@ -4611,7 +4620,7 @@ void idDoor::Event_Activate( idEntity* activator )
 			}
 		}
 		
-
+		
 		old_lock = spawnArgs.GetInt( "locked" );
 		Lock( 0 );
 		if( old_lock == 2 )

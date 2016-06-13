@@ -47,48 +47,48 @@ class	idInterpreter;
 void	RadiantInit( void );
 void	RadiantShutdown( void );
 void	RadiantRun( void );
-void	RadiantPrint( const char *text );
-void	RadiantSync( const char *mapName, const idVec3 &viewOrg, const idAngles &viewAngles );
+void	RadiantPrint( const char* text );
+void	RadiantSync( const char* mapName, const idVec3& viewOrg, const idAngles& viewAngles );
 
 
 // in-game Light Editor
-void	LightEditorInit( const idDict *spawnArgs );
+void	LightEditorInit( const idDict* spawnArgs );
 void	LightEditorShutdown( void );
 void	LightEditorRun( void );
 
 
 // in-game Sound Editor
-void	SoundEditorInit( const idDict *spawnArgs );
+void	SoundEditorInit( const idDict* spawnArgs );
 void	SoundEditorShutdown( void );
 void	SoundEditorRun( void );
 
 
 // in-game Articulated Figure Editor
-void	AFEditorInit( const idDict *spawnArgs );
+void	AFEditorInit( const idDict* spawnArgs );
 void	AFEditorShutdown( void );
 void	AFEditorRun( void );
 
 
 // in-game Particle Editor
-void	ParticleEditorInit( const idDict *spawnArgs );
+void	ParticleEditorInit( const idDict* spawnArgs );
 void	ParticleEditorShutdown( void );
 void	ParticleEditorRun( void );
 
 
 // in-game PDA Editor
-void	PDAEditorInit( const idDict *spawnArgs );
+void	PDAEditorInit( const idDict* spawnArgs );
 void	PDAEditorShutdown( void );
 void	PDAEditorRun( void );
 
 
 // in-game Script Editor
-void	ScriptEditorInit( const idDict *spawnArgs );
+void	ScriptEditorInit( const idDict* spawnArgs );
 void	ScriptEditorShutdown( void );
 void	ScriptEditorRun( void );
 
 
 // in-game Declaration Browser
-void	DeclBrowserInit( const idDict *spawnArgs );
+void	DeclBrowserInit( const idDict* spawnArgs );
 void	DeclBrowserShutdown( void );
 void	DeclBrowserRun( void );
 void	DeclBrowserReloadDeclarations( void );
@@ -98,23 +98,23 @@ void	DeclBrowserReloadDeclarations( void );
 void	GUIEditorInit( void );
 void	GUIEditorShutdown( void );
 void	GUIEditorRun( void );
-bool	GUIEditorHandleMessage( void *msg );
+bool	GUIEditorHandleMessage( void* msg );
 
 
 // Script Debugger
-void	DebuggerClientInit( const char *cmdline );
+void	DebuggerClientInit( const char* cmdline );
 void	DebuggerClientUpdate();
 
 bool	DebuggerServerInit( void );
 void	DebuggerServerShutdown( void );
-void	DebuggerServerPrint( const char *text );
-void	DebuggerServerCheckBreakpoint( idInterpreter *interpreter, idProgram *program, int instructionPointer );
+void	DebuggerServerPrint( const char* text );
+void	DebuggerServerCheckBreakpoint( idInterpreter* interpreter, idProgram* program, int instructionPointer );
 bool	DebuggerServerIsSuspended();
 
 //Material Editor
 void	MaterialEditorInit( void );
 void	MaterialEditorRun( void );
 void	MaterialEditorShutdown( void );
-void	MaterialEditorPrintConsole( const char *msg );
+void	MaterialEditorPrintConsole( const char* msg );
 
 #endif /* !__EDIT_PUBLIC_H__ */

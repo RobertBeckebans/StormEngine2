@@ -390,27 +390,28 @@ idPlayer::idPlayer():
 	
 	// ################################################### SR
 	
-	buggy_thirdPerson		= false;	
+	buggy_thirdPerson		= false;
 	currentVehicle			= NULL;
 	grapple					= NULL;
 	grappleMover			= NULL;
 	
-	// ################################################### END	
+	// ################################################### END
 	
 }
 
 // motorsep 03-22-2015; Check for water level and return waterLevel variable; Call this in other functions where water level check is desired.
 
-int idPlayer::GetWaterLevelLocal() {	
+int idPlayer::GetWaterLevelLocal()
+{
 
 	waterLevel_t waterLevel;
 	idPlayer* player = gameLocal.GetLocalPlayer();
 	idPhysics* physics = player->GetPlayerPhysics();
-
+	
 	idPhysics_Player* waterPhysics = static_cast<idPhysics_Player*>( physics );
-
+	
 	waterLevel = waterPhysics->GetWaterLevel();
-
+	
 	return waterLevel;
 }
 
@@ -504,7 +505,7 @@ void idPlayer::Init()
 	pause					= 0;
 	wipetime				= 0;
 	
-	buggy_thirdPerson 		= false;	
+	buggy_thirdPerson 		= false;
 	currentVehicle 			= NULL;
 	grapple					= NULL;
 	swingAngle.Zero();
@@ -513,11 +514,11 @@ void idPlayer::Init()
 	maxViewDist 			= spawnArgs.GetFloat( "maxViewDist", "400" );	// zoomed-out distance
 	minViewDist 			= spawnArgs.GetFloat( "minViewDist", "230" );	// zoomed-in distance
 	maxViewHeight 			= spawnArgs.GetFloat( "maxViewHeight", "85" );	// zoomed-out height
-	minViewHeight 			= spawnArgs.GetFloat( "minViewHeight", "50" );	
-	zoomStep 				= spawnArgs.GetFloat( "zoomStep", "15" );	
-
+	minViewHeight 			= spawnArgs.GetFloat( "minViewHeight", "50" );
+	zoomStep 				= spawnArgs.GetFloat( "zoomStep", "15" );
+	
 	zooming					= false;
-	viewStep 				= ( maxViewDist - minViewDist ) / zoomStep;	
+	viewStep 				= ( maxViewDist - minViewDist ) / zoomStep;
 	viewStepH 				= ( maxViewHeight - minViewHeight ) / zoomStep;
 	
 	viewDist 				= minViewDist;
@@ -525,8 +526,9 @@ void idPlayer::Init()
 	
 	//cvarSystem->SetCVarFloat( "pm_thirdPerson", 0.0f );	// ### always start in FP
 	
-	const idDict *LODdict = gameLocal.FindEntityDefDict( "sr_particleLOD", false );
-	if ( LODdict ) {
+	const idDict* LODdict = gameLocal.FindEntityDefDict( "sr_particleLOD", false );
+	if( LODdict )
+	{
 		probe 	= LODdict->GetFloat( "LODdistance" );
 		probeh 	= LODdict->GetFloat( "LODheight" );
 	}
@@ -534,7 +536,7 @@ void idPlayer::Init()
 	weather = cvarSystem->GetCVarFloat( "g_showWeather" );
 	
 	
-	float ladderJump		= spawnArgs.GetFloat(  "ladder_jump", 200.0f );
+	float ladderJump		= spawnArgs.GetFloat( "ladder_jump", 200.0f );
 	float ladderJumpHeight	= spawnArgs.GetFloat( "ladder_jumpheight", 64.0f );
 	float ladderWeaponAng	= spawnArgs.GetFloat( "ladder_noweapon_angle", 45.0f );
 	ladderWeaponAng 		= 180.0f - ladderWeaponAng;
@@ -549,25 +551,26 @@ void idPlayer::Init()
 	grapple_disconnect_distance 	= spawnArgs.GetFloat( "grapple_disconnect_distance", "60" );
 	grapple_distance 				= spawnArgs.GetFloat( "grapple_distance", "1400.0" );
 	grapple_accel_time				= spawnArgs.GetFloat( "grapple_accel_time", "0.25" ) * 1000.0f;
-	const idSoundShader* temp_gsnd = declManager->FindSound ( "guisounds_keypad_decline" );
-	temp_gsnd = declManager->FindSound ( "grapple_fire" );
+	const idSoundShader* temp_gsnd = declManager->FindSound( "guisounds_keypad_decline" );
+	temp_gsnd = declManager->FindSound( "grapple_fire" );
 	const idDeclSkin* temp_skin_grapple = declManager->FindSkin( "skins/grappling_socket" );
 	temp_skin_grapple = declManager->FindSkin( "skins/grappling_socket_empty" );
-			
-	showhints 		= true; 	// ###!!!!!!!!!!!!!!!!!!!! 
+	
+	showhints 		= true; 	// ###!!!!!!!!!!!!!!!!!!!!
 	
 	dodger 			= NULL;
 	
-	for ( int i = 0; i < 128; i++ ) {
+	for( int i = 0; i < 128; i++ )
+	{
 		achievements[i] = 0;
-	}	
+	}
 	
 	compassObjective_1 = "";
 	compassObjective_2 = "";
 	compassObjective_3 = "";
 	
-	// ################################################### END	
-		
+	// ################################################### END
+	
 	
 	noclip					= false;
 	godmode					= false;
@@ -869,7 +872,7 @@ void idPlayer::Spawn()
 	{
 	
 		// ##################################### SR
-	
+		
 		// load GUI HUD
 		/*
 		if ( spawnArgs.GetString( "hud", "", temp ) ) {
@@ -887,12 +890,12 @@ void idPlayer::Spawn()
 			cinematicManager->ActivateMenu( true );
 			cinema = cinematicManager->GetCinematic();
 		}
-	
-	
+		
+		
 		// ##################################### END SR
-	
-	
-	
+		
+		
+		
 		// load HUD
 		if( hudManager != NULL )
 		{
@@ -1129,7 +1132,7 @@ void idPlayer::Spawn()
 	args.SetVector( "origin", vec3_origin );
 	args.SetBool( "start_off", true );
 	grappleBeamTarget = gameLocal.SpawnEntity<idBeam>( &args );
-
+	
 	args.Clear();
 	args.Set( "target", grappleBeamTarget->GetName() );
 	args.SetVector( "origin", vec3_origin );
@@ -1139,7 +1142,7 @@ void idPlayer::Spawn()
 	args.Set( "skin", "textures/beams/beam_basic_rope" );
 	args.Set( "_color", "1.0 1.0 1.0 1.0" );
 	grappleBeam = gameLocal.SpawnEntity<idBeam>( &args );
-	grappleBeam->SetShaderParm( 6, 1.0f );	
+	grappleBeam->SetShaderParm( 6, 1.0f );
 }
 
 /*
@@ -1160,7 +1163,7 @@ idPlayer::~idPlayer()
 	if( enviroSuitLight.IsValid() )
 	{
 		//enviroSuitLight.GetEntity()->ProcessEvent( &EV_Remove );
-
+		
 		// this work?
 		enviroSuitLight.GetEntity()->Remove();
 	}
@@ -1174,7 +1177,7 @@ idPlayer::~idPlayer()
 	
 	delete cinematicManager;
 	cinematicManager = NULL;
-
+	
 	// ############################# END
 	
 	
@@ -1376,12 +1379,12 @@ void idPlayer::Save( idSaveGame* savefile ) const
 	focusGUIent.Save( savefile );
 	focusAI.Save( savefile );
 	focusVehicle.Save( savefile );
-
+	
 	// can't save focusUI
 	savefile->WriteInt( talkCursor );
 	savefile->WriteInt( focusTime );
 	savefile->WriteUserInterface( cursor, false );
-
+	
 	savefile->WriteInt( oldMouseX );
 	savefile->WriteInt( oldMouseY );
 	
@@ -1458,32 +1461,32 @@ void idPlayer::Save( idSaveGame* savefile ) const
 	}
 	
 	// ################################################### SR
-
+	
 	savefile->WriteFloat( viewStep );
 	savefile->WriteFloat( viewStepH );
 	savefile->WriteFloat( zoomStep );
 	savefile->WriteFloat( viewDist );
 	savefile->WriteFloat( viewHeight );
 	savefile->WriteFloat( maxViewDist );
-	savefile->WriteFloat( minViewDist );	
+	savefile->WriteFloat( minViewDist );
 	savefile->WriteFloat( maxViewHeight );
-	savefile->WriteFloat( minViewHeight );	
-	savefile->WriteFloat( maxBuggyYaw );	
-	savefile->WriteFloat( probe );	
-	savefile->WriteFloat( probeh );	
-	savefile->WriteFloat( weather );	
+	savefile->WriteFloat( minViewHeight );
+	savefile->WriteFloat( maxBuggyYaw );
+	savefile->WriteFloat( probe );
+	savefile->WriteFloat( probeh );
+	savefile->WriteFloat( weather );
 	savefile->WriteFloat( GrappleRopeLength );
 	savefile->WriteInt( grappling );
 	savefile->WriteBool( skyHook );
 	savefile->WriteAngles( swingAngle );
 	savefile->WriteVec3( swingDir );
 	currentVehicle.Save( savefile );
-
+	
 	savefile->WriteObject( grapple );
 	savefile->WriteObject( grappleMover );
 	savefile->WriteObject( grappleBeam );
 	savefile->WriteObject( grappleBeamTarget );
-
+	
 	// motorsep 01-15-2015; saving compass's dots-objectives (quests)
 	savefile->WriteString( compassObjective_1 );
 	savefile->WriteString( compassObjective_2 );
@@ -1537,7 +1540,8 @@ void idPlayer::Restore( idRestoreGame* savefile )
 	// ################################# SR
 	
 	// load Flash Cinematic gui
-	if( cinematicManager != NULL ) {
+	if( cinematicManager != NULL )
+	{
 		cinematicManager->Initialize( "cinematics", common->SW() );
 		cinematicManager->ActivateMenu( true );
 		cinema = cinematicManager->GetCinematic();
@@ -1730,13 +1734,13 @@ void idPlayer::Restore( idRestoreGame* savefile )
 		savefile->ReadVec3( loggedAccel[ i ].dir );
 	}
 	savefile->ReadInt( currentLoggedAccel );
-
+	
 	focusPlayer.Restore( savefile );
 	focusDoor.Restore( savefile );
 	focusGUIent.Restore( savefile );
 	focusAI.Restore( savefile );
 	focusVehicle.Restore( savefile );
-		
+	
 	// can't save focusUI
 	savefile->ReadInt( talkCursor );
 	savefile->ReadInt( focusTime );
@@ -1853,12 +1857,12 @@ void idPlayer::Restore( idRestoreGame* savefile )
 	savefile->ReadFloat( viewDist );
 	savefile->ReadFloat( viewHeight );
 	savefile->ReadFloat( maxViewDist );
-	savefile->ReadFloat( minViewDist );	
+	savefile->ReadFloat( minViewDist );
 	savefile->ReadFloat( maxViewHeight );
-	savefile->ReadFloat( minViewHeight );	
+	savefile->ReadFloat( minViewHeight );
 	savefile->ReadFloat( maxBuggyYaw );
-	savefile->ReadFloat( probe );	
-	savefile->ReadFloat( probeh );	
+	savefile->ReadFloat( probe );
+	savefile->ReadFloat( probeh );
 	savefile->ReadFloat( weather );
 	savefile->ReadFloat( GrappleRopeLength );
 	savefile->ReadInt( grappling );
@@ -1871,7 +1875,7 @@ void idPlayer::Restore( idRestoreGame* savefile )
 	savefile->ReadObject( reinterpret_cast<idClass*&>( grappleMover ) );
 	savefile->ReadObject( reinterpret_cast<idClass*&>( grappleBeam ) );
 	savefile->ReadObject( reinterpret_cast<idClass*&>( grappleBeamTarget ) );
-
+	
 	// motorsep 01-15-2015; loading compass's dots-objectives (quests)
 	savefile->ReadString( compassObjective_1 );
 	savefile->ReadString( compassObjective_2 );
@@ -1884,10 +1888,10 @@ void idPlayer::Restore( idRestoreGame* savefile )
 	grapple_flyspeed				= spawnArgs.GetFloat( "grapple_flyspeed", "1000" );
 	grapple_disconnect_distance 	= spawnArgs.GetFloat( "grapple_disconnect_distance", "60" );
 	grapple_distance 				= spawnArgs.GetFloat( "grapple_distance", "1400.0" );
-
 	
 	
-	// ##################################################### END SR	
+	
+	// ##################################################### END SR
 	
 	// Update the soul cube HUD indicator
 	if( hud )
@@ -1900,7 +1904,7 @@ void idPlayer::Restore( idRestoreGame* savefile )
 				hud->SetShowSoulCubeOnLoad( true );
 			}
 		}
-	}	
+	}
 }
 
 /*
@@ -2454,9 +2458,9 @@ void idPlayer::AddChatMessage( int index, int alpha, const idStr& message )
 	}
 	
 	idSWFScriptObject* mpChat = mpMessages->GetRootObject().GetNestedObj( "_left", "mpChat" );
-	if ( mpChat == NULL )
+	if( mpChat == NULL )
 		return;
-	
+		
 	idSWFSpriteInstance* info = mpChat->GetNestedSprite( va( "info%i", index ) );
 	idSWFTextInstance* txtVal = mpChat->GetNestedText( va( "info%i", index ), "txtVal" );
 	if( info )
@@ -2507,9 +2511,9 @@ void idPlayer::ClearChatMessage( int index )
 	}
 	
 	idSWFScriptObject* mpChat = mpMessages->GetRootObject().GetNestedObj( "_left", "mpChat" );
-	if ( mpChat == NULL )
+	if( mpChat == NULL )
 		return;
-	
+		
 	idSWFSpriteInstance* info = mpChat->GetNestedSprite( va( "info%i", index ) );
 	idSWFTextInstance* txtVal = mpChat->GetNestedText( va( "info%i", index ), "txtVal" );
 	if( info )
@@ -2533,26 +2537,27 @@ void idPlayer::DrawHUD( idMenuHandler_HUD* _hudManager )
 {
 	SCOPED_PROFILE_EVENT( "idPlayer::DrawHUD" );
 	
-
+	
 	// #################################### SR
-
+	
 	// GUI HUD always active
 	/*
 	if( hudgui ) {
-		//hudgui->SetStateInt( "player_health", health ); 
+		//hudgui->SetStateInt( "player_health", health );
 		hudgui->Redraw( gameLocal.time );	//realClientTime );
 	}
 	*/
 	
-	if ( cinematicManager && gameLocal.GetCamera() ) {
+	if( cinematicManager && gameLocal.GetCamera() )
+	{
 		idMenuScreen_Cinematic* cinema = cinematicManager->GetCinematic();
 		cinema->ShowCinematicHint();
 		cinematicManager->Update();
-	}	
+	}
 	
-	 // #################################### END SR
-
-	 
+	// #################################### END SR
+	
+	
 	if( !weapon.GetEntity() || influenceActive != INFLUENCE_NONE || privateCameraView || gameLocal.GetCamera() || !g_showHud.GetBool() )	// ######## || gameLocal.GetCamera() ### !!!
 	{
 		return;
@@ -2572,7 +2577,7 @@ void idPlayer::DrawHUD( idMenuHandler_HUD* _hudManager )
 		localPlayer->mpMessages->Render( renderSystem, Sys_Milliseconds() );
 	}
 	
-		UpdateHudStats( _hudManager );
+	UpdateHudStats( _hudManager );
 	
 	if( spectating )
 	{
@@ -2584,9 +2589,9 @@ void idPlayer::DrawHUD( idMenuHandler_HUD* _hudManager )
 		_hudManager->Update();
 	}
 	
-	if ( !weaponGone )
+	if( !weaponGone )
 		weapon.GetEntity()->UpdateGUI();
-	
+		
 	// weapon targeting crosshair
 	if( !GuiActive() )
 	{
@@ -2774,7 +2779,8 @@ WeaponFireFeedback
 Called when a weapon fires, generates head twitches, etc
 ==================
 */
-void idPlayer::WeaponFireFeedback( const idDict* weaponDef ) { // ####### SR added hitEnt, dodgeTime, headshot
+void idPlayer::WeaponFireFeedback( const idDict* weaponDef )   // ####### SR added hitEnt, dodgeTime, headshot
+{
 
 	// force a blink
 	blink_time = 0;
@@ -3508,11 +3514,11 @@ void idPlayer::ClearPowerup( int i )
 				StopSound( SND_CHANNEL_DEMONIC, false );
 			}
 		}
-		/*case HASTE: {
-			if(common->IsMultiplayer()) {
-				StopSound( SND_CHANNEL_DEMONIC, false );
-			}
-		}*/
+			/*case HASTE: {
+				if(common->IsMultiplayer()) {
+					StopSound( SND_CHANNEL_DEMONIC, false );
+				}
+			}*/
 	}
 }
 
@@ -3744,11 +3750,16 @@ void idPlayer::GiveObjective( const char* title, const char* text, const idMater
 	
 	// ############################ SR
 	// add Objective to compass
-	if ( compassObjective_1 == "" ) {
+	if( compassObjective_1 == "" )
+	{
 		compassObjective_1 = target;
-	} else if ( compassObjective_2 == "" ) {
+	}
+	else if( compassObjective_2 == "" )
+	{
 		compassObjective_2 = target;
-	} else if ( compassObjective_3 == "" ) {
+	}
+	else if( compassObjective_3 == "" )
+	{
 		compassObjective_3 = target;
 	}
 	// ############################ END
@@ -3899,7 +3910,7 @@ void idPlayer::GivePDA( const idDeclPDA* pda, const char* securityItem )
 				break;
 		}
 	}
-
+	
 	// Copy any videos over
 	for( int i = 0; i < pda->GetNumVideos(); i++ )
 	{
@@ -3924,7 +3935,7 @@ void idPlayer::GivePDA( const idDeclPDA* pda, const char* securityItem )
 			GetPDA()->RemoveAddedEmailsAndVideos();
 			if( !objectiveSystemOpen )
 			{
-				TogglePDA();	
+				TogglePDA();
 			}
 			//ShowTip( spawnArgs.GetString( "text_infoTitle" ), spawnArgs.GetString( "text_firstPDA" ), true );
 		}
@@ -4063,7 +4074,8 @@ int idPlayer::SlotForWeapon( const char* weaponName )
 idPlayer::Reload
 ===============
 */
-void idPlayer::Reload() {
+void idPlayer::Reload()
+{
 
 	if( spectating || gameLocal.inCinematic || influenceActive )
 	{
@@ -4134,13 +4146,14 @@ idPlayer::NextWeapon
 ===============
 */
 void idPlayer::NextWeapon()
-{	
-	
-	// motorsep 03-22-2015; get water level 
-	if( GetWaterLevelLocal() == WATERLEVEL_HEAD ) {
+{
+
+	// motorsep 03-22-2015; get water level
+	if( GetWaterLevelLocal() == WATERLEVEL_HEAD )
+	{
 		return;
 	}
-
+	
 	if( !weaponEnabled || spectating || hiddenWeapon || gameLocal.inCinematic || gameLocal.world->spawnArgs.GetBool( "no_Weapons" ) || health < 0 )
 	{
 		return;
@@ -4199,12 +4212,13 @@ idPlayer::PrevWeapon
 ===============
 */
 void idPlayer::PrevWeapon()
-{		
-	// motorsep 03-22-2015; get water level 
-	if( GetWaterLevelLocal() == WATERLEVEL_HEAD ) {
+{
+	// motorsep 03-22-2015; get water level
+	if( GetWaterLevelLocal() == WATERLEVEL_HEAD )
+	{
 		return;
 	}
-
+	
 	if( !weaponEnabled || spectating || hiddenWeapon || gameLocal.inCinematic || gameLocal.world->spawnArgs.GetBool( "no_Weapons" ) || health < 0 )
 	{
 		return;
@@ -4262,7 +4276,7 @@ idPlayer::SelectWeapon
 ===============
 */
 void idPlayer::SelectWeapon( int num, bool force )
-{	
+{
 	const char* weap;
 	
 	if( !weaponEnabled || spectating || gameLocal.inCinematic || health < 0 )
@@ -4289,8 +4303,8 @@ void idPlayer::SelectWeapon( int num, bool force )
 			weapon.GetEntity()->LowerWeapon();
 		}
 		else
-		{			
-				weapon.GetEntity()->RaiseWeapon();
+		{
+			weapon.GetEntity()->RaiseWeapon();
 		}
 	}
 	
@@ -4480,7 +4494,7 @@ steal the target player's current weapon
 void idPlayer::StealWeapon( idEntity* player )
 {
 	assert( !common->IsClient() );
-	
+
 	// make sure there's something to steal
 	idWeapon* player_weapon = static_cast< idWeapon* >( player->GetCurrentWeapon() );
 	if( !player_weapon || !player_weapon->CanDrop() || weaponGone )
@@ -4503,9 +4517,9 @@ void idPlayer::StealWeapon( idEntity* player )
 	assert( weapon_classname );
 	int ammoavailable = player->weapon.GetEntity()->AmmoAvailable();
 	int inclip = player->weapon.GetEntity()->AmmoInClip();
-	
+
 	ammoavailable += inclip;
-	
+
 	if( ( ammoavailable != -1 ) && ( ammoavailable < 0 ) )
 	{
 		// see DropWeapon
@@ -4518,14 +4532,14 @@ void idPlayer::StealWeapon( idEntity* player )
 		assert( keypair );
 		ammoavailable = atoi( keypair->GetValue() );
 	}
-	
+
 	player->weapon.GetEntity()->WeaponStolen();
 	player->inventory.Drop( player->spawnArgs, NULL, newweap );
 	player->SelectWeapon( weapon_fists, false );
 	// in case the robbed player is firing rounds with a continuous fire weapon like the chaingun/plasma etc.
 	// this will ensure the firing actually stops
 	player->weaponGone = true;
-	
+
 	// give weapon, setup the ammo count
 	Give( "weapon", weapon_classname, ITEM_GIVE_FEEDBACK | ITEM_GIVE_UPDATE_STATE );
 	ammo_t ammo_i = player->inventory.AmmoIndexForWeaponClass( weapon_classname, NULL );
@@ -4609,9 +4623,9 @@ void idPlayer::Weapon_Combat()
 				clipType = 3;
 			}
 			*/
-			// ####################################################### 
-
-			weapon.GetEntity()->GetWeaponDef(animPrefix, inventory.GetClipAmmoForWeapon(currentWeapon));
+			// #######################################################
+			
+			weapon.GetEntity()->GetWeaponDef( animPrefix, inventory.GetClipAmmoForWeapon( currentWeapon ) );
 			animPrefix.Strip( "weapon_" );
 			
 			weapon.GetEntity()->NetCatchup();
@@ -4642,8 +4656,8 @@ void idPlayer::Weapon_Combat()
 				currentWeapon = idealWeapon.Get();
 				weaponGone = false;
 				animPrefix = spawnArgs.GetString( va( "def_weapon%d", currentWeapon ) );
-			
-				weapon.GetEntity()->GetWeaponDef(animPrefix, inventory.GetClipAmmoForWeapon(currentWeapon));
+				
+				weapon.GetEntity()->GetWeaponDef( animPrefix, inventory.GetClipAmmoForWeapon( currentWeapon ) );
 				animPrefix.Strip( "weapon_" );
 				
 				weapon.GetEntity()->Raise();
@@ -4730,7 +4744,8 @@ void idPlayer::Weapon_DOOR()
 	bool isDown = ( usercmd.buttons & ( BUTTON_ATTACK | BUTTON_USE ) ) != 0;
 	if( isDown && !wasDown )
 	{
-		if(focusDoor->IsLocked() < 1) {
+		if( focusDoor->IsLocked() < 1 )
+		{
 			focusDoor->Open();
 		}
 	}
@@ -4740,15 +4755,17 @@ void idPlayer::Weapon_VEHICLE()
 {
 	StopFiring();
 	bool wasUseDown = ( oldButtons & ( BUTTON_USE ) ) != 0;
-	bool isUseDown = ( usercmd.buttons & (  BUTTON_USE ) ) != 0;
-	if( currentVehicle ) {
-		if( isUseDown && !wasUseDown ) {
+	bool isUseDown = ( usercmd.buttons & ( BUTTON_USE ) ) != 0;
+	if( currentVehicle )
+	{
+		if( isUseDown && !wasUseDown )
+		{
 			if( currentVehicle.IsValid() )
 			{
 				currentVehicle->Use( this );
 			}
 			currentVehicle = NULL;
-
+			
 			physicsObj.EnableClip();
 			Show();
 			Event_EnableWeapon();
@@ -4757,11 +4774,12 @@ void idPlayer::Weapon_VEHICLE()
 	else
 	{
 		//weapon.GetEntity()->LowerWeapon();
-		if( isUseDown && !wasUseDown ) {
+		if( isUseDown && !wasUseDown )
+		{
 			focusVehicle->Use( this );
 			SetPhysics( &physicsObj );
 			physicsObj.DisableClip();
-			Hide();	
+			Hide();
 			Event_DisableWeapon();
 			currentVehicle = focusVehicle;
 		}
@@ -4800,7 +4818,7 @@ void idPlayer::RaiseWeapon()
 idPlayer::WeaponLoweringCallback
 ===============
 */
-void idPlayer::WeaponLoweringCallback( idWeapon * weapon )
+void idPlayer::WeaponLoweringCallback( idWeapon* weapon )
 {
 	SetState( "LowerWeapon" );
 	UpdateScript();
@@ -4811,7 +4829,7 @@ void idPlayer::WeaponLoweringCallback( idWeapon * weapon )
 idPlayer::WeaponRisingCallback
 ===============
 */
-void idPlayer::WeaponRisingCallback( idWeapon * weapon )
+void idPlayer::WeaponRisingCallback( idWeapon* weapon )
 {
 	SetState( "RaiseWeapon" );
 	UpdateScript();
@@ -4919,7 +4937,7 @@ void idPlayer::UpdateWeapon()
 			// motorsep 03-28-2015; apparently when spawning with a weapon that consumes ammo, an extra clipSize amount of ammo is taken from the inventory.
 			// Having ammoInClip set to 0 here should fix the issue, but it's uncetain if it can create issues somewhere else.
 			// Considering this a HACK :)
-
+			
 			/*int ammoInClip = inventory.GetClipAmmoForWeapon( idealWeapon.Get() );
 			
 			if( common->IsMultiplayer() && respawning )
@@ -4929,11 +4947,11 @@ void idPlayer::UpdateWeapon()
 				// a clip of ammo for their initial weapon upon respawn.
 				ammoInClip = 0;
 			} */
-
+			
 			// motorsep ends
-
+			
 			int ammoInClip = 0;
-			//weapon.GetEntity()->GetWeaponDef(animPrefix, inventory.GetClipAmmoForWeapon(currentWeapon));		
+			//weapon.GetEntity()->GetWeaponDef(animPrefix, inventory.GetClipAmmoForWeapon(currentWeapon));
 			weapon.GetEntity()->GetWeaponDef( animPrefix, ammoInClip );
 			assert( weapon.GetEntity()->IsLinked() );
 		}
@@ -4963,7 +4981,7 @@ void idPlayer::UpdateWeapon()
 	{
 		Weapon_NPC();
 	}
-	else if( ( focusVehicle && ( focusVehicle->health > 0 )) || currentVehicle.IsValid() )
+	else if( ( focusVehicle && ( focusVehicle->health > 0 ) ) || currentVehicle.IsValid() )
 	{
 		Weapon_VEHICLE();
 	}
@@ -4983,7 +5001,8 @@ void idPlayer::UpdateWeapon()
 	
 	// ############################################################## SR
 	
-	if ( physicsObj.OnLadder() && !physicsObj.ladderWeapon ) {
+	if( physicsObj.OnLadder() && !physicsObj.ladderWeapon )
+	{
 		StopFiring();
 		weapon.GetEntity()->LowerWeapon();
 	}
@@ -4991,15 +5010,16 @@ void idPlayer::UpdateWeapon()
 	// ############################################################## END SR
 	
 	// motorsep 03-22-2015; lower weapon (unless it's fists) and and raise fists
-
-	if( GetWaterLevelLocal() == WATERLEVEL_HEAD && currentWeapon != player->weapon_fists ) { // motorsep 03-22-2015; get water level 
+	
+	if( GetWaterLevelLocal() == WATERLEVEL_HEAD && currentWeapon != player->weapon_fists )   // motorsep 03-22-2015; get water level
+	{
 		//StopFiring();
 		weapon.GetEntity()->LowerWeapon();
-		player->SelectWeapon( player->weapon_fists, true );		
+		player->SelectWeapon( player->weapon_fists, true );
 		weapon.GetEntity()->RaiseWeapon();
-	} 
+	}
 	
-
+	
 	// update weapon state, particles, dlights, etc
 	weapon.GetEntity()->PresentWeapon( CanShowWeaponViewmodel() );
 }
@@ -5018,17 +5038,17 @@ void idPlayer::UpdateFlashlight()
 		// force classic flashlight to go away
 		NextWeapon();
 	}
-	
+
 	if( !flashlight.IsValid() )
 	{
 		return;
 	}
-	
+
 	if( !flashlight.GetEntity()->GetOwner() )
 	{
 		return;
 	}
-	
+
 	// Don't update the flashlight if dead in MP.
 	// Otherwise you can see a floating flashlight worldmodel near player's skeletons.
 	if( common->IsMultiplayer() )
@@ -5038,7 +5058,7 @@ void idPlayer::UpdateFlashlight()
 			return;
 		}
 	}
-	
+
 	// Flashlight has an infinite battery in multiplayer.
 	if( !common->IsMultiplayer() )
 	{
@@ -5066,12 +5086,12 @@ void idPlayer::UpdateFlashlight()
 			}
 		}
 	}
-	
+
 	if( hud )
 	{
 		hud->UpdateFlashlight( this );
 	}
-	
+
 	if( common->IsClient() )
 	{
 		// clients need to wait till the weapon and it's world model entity
@@ -5081,23 +5101,23 @@ void idPlayer::UpdateFlashlight()
 			return;
 		}
 	}
-	
+
 	// always make sure the weapon is correctly setup before accessing it
 	if( !flashlight.GetEntity()->IsLinked() )
 	{
 		// no Flashlight given on start in Steel Storm 2
 		flashlight.GetEntity()->GetWeaponDef( "weapon_flashlight_new", 0 );
 		flashlight.GetEntity()->SetIsPlayerFlashlight( true );
-		
+
 		// adjust position / orientation of flashlight
 		idAnimatedEntity* worldModel = flashlight.GetEntity()->GetWorldModel();
 		worldModel->BindToJoint( this, "Chest", true );
 		// Don't interpolate the flashlight world model in mp, let it bind like normal.
 		worldModel->SetUseClientInterpolation( false );
-		
+
 		assert( flashlight.GetEntity()->IsLinked() );
 	}
-	
+
 	// this positions the third person flashlight model! (as seen in the mirror)
 	idAnimatedEntity* worldModel = flashlight.GetEntity()->GetWorldModel();
 	static const idVec3 fl_pos = idVec3( 3.0f, 9.0f, 2.0f );
@@ -5108,7 +5128,7 @@ void idPlayer::UpdateFlashlight()
 	static idAngles ang = ang_zero;
 	ang.Set( fl_pitch, fl_yaw, fl_roll );
 	worldModel->GetPhysics()->SetAxis( ang.ToMat3() );
-	
+
 	if( flashlight.GetEntity()->lightOn )
 	{
 		if( ( flashlightBattery < flashlight_batteryChargeTimeMS.GetInteger() / 2 ) && ( gameLocal.random.RandomFloat() < flashlight_batteryFlickerPercent.GetFloat() ) )
@@ -5120,9 +5140,9 @@ void idPlayer::UpdateFlashlight()
 			flashlight.GetEntity()->MuzzleFlashLight();
 		}
 	}
-	
+
 	flashlight.GetEntity()->PresentWeapon( true );
-	
+
 	if( gameLocal.world->spawnArgs.GetBool( "no_Weapons" ) || gameLocal.inCinematic || spectating || fl.hidden )
 	{
 		worldModel->Hide();
@@ -5165,7 +5185,7 @@ void idPlayer::FlashlightOn()
 	{
 		return;
 	}
-	
+
 	flashlight->FlashlightOn();
 }
 */
@@ -5569,7 +5589,8 @@ void idPlayer::UpdateFocus()
 	start = GetEyePosition();
 	end = start + firstPersonViewAxis[0] * 80.0f;
 	// foresthale 2014-02-15: when using r_showSkel, suppress view-related TracePoint calls that would cause models to be cached every frame, as r_showSkel only works when the first cache of the model each frame is in the renderer
-	if( r_showSkel.GetBool() ) {
+	if( r_showSkel.GetBool() )
+	{
 		end = start;
 	}
 	
@@ -5578,7 +5599,8 @@ void idPlayer::UpdateFocus()
 	{
 		idVec3 end = start + viewAngles.ToForward() * 768.0f;
 		// foresthale 2014-02-15: when using r_showSkel, suppress view-related TracePoint calls that would cause models to be cached every frame, as r_showSkel only works when the first cache of the model each frame is in the renderer
-		if( r_showSkel.GetBool() ) {
+		if( r_showSkel.GetBool() )
+		{
 			end = start;
 		}
 		gameLocal.clip.TracePoint( trace, start, end, MASK_SHOT_BOUNDINGBOX, this );
@@ -5661,12 +5683,13 @@ void idPlayer::UpdateFocus()
 				}
 				continue;
 			}
-			if(ent->IsType( idDoor::Type )) {
+			if( ent->IsType( idDoor::Type ) )
+			{
 				gameLocal.clip.TracePoint( trace, start, end, MASK_SHOT_RENDERMODEL, this );
 				if( ( trace.fraction < 1.0f ) && ( trace.c.entityNum == ent->entityNumber ) )
 				{
 					ClearFocus();
-					focusDoor = static_cast< idDoor * >( ent );	
+					focusDoor = static_cast< idDoor* >( ent );
 					focusTime = gameLocal.time + FOCUS_TIME;
 					break;
 				}
@@ -5938,16 +5961,19 @@ void idPlayer::CrashLand( const idVec3& oldOrigin, const idVec3& oldVelocity )
 	}*/
 	
 	// ################################## SR
-	if ( common->IsMultiplayer() ) {
+	if( common->IsMultiplayer() )
+	{
 		fatalDelta	= 75.0f;
 		hardDelta	= 50.0f;
 		softDelta	= 30.0f;
-	} else {
-		fatalDelta	= spawnArgs.GetFloat( "fall_fatal", 75.0f);
-		hardDelta	= spawnArgs.GetFloat( "fall_hard", 50.0f);
-		softDelta	= spawnArgs.GetFloat( "fall_soft", 30.0f);
-	}	
-	// ################################## END SR	
+	}
+	else
+	{
+		fatalDelta	= spawnArgs.GetFloat( "fall_fatal", 75.0f );
+		hardDelta	= spawnArgs.GetFloat( "fall_hard", 50.0f );
+		softDelta	= spawnArgs.GetFloat( "fall_soft", 30.0f );
+	}
+	// ################################## END SR
 	
 	if( delta > fatalDelta )
 	{
@@ -6281,11 +6307,15 @@ void idPlayer::UpdateViewAngles()
 	
 	// ######################################################################## SR
 	
-	if ( currentVehicle.IsValid() ) {
+	if( currentVehicle.IsValid() )
+	{
 		// don't let the player aim too high or low while driving
-		if ( viewAngles.pitch > 10.0f ) {
+		if( viewAngles.pitch > 10.0f )
+		{
 			viewAngles.pitch = 10.0f;
-		} else if ( viewAngles.pitch < -25.0f ) {
+		}
+		else if( viewAngles.pitch < -25.0f )
+		{
 			viewAngles.pitch = -25.0f;
 		}
 		// don't let the player look more than 'maxBuggyYaw' degrees left/right while driving
@@ -6295,7 +6325,7 @@ void idPlayer::UpdateViewAngles()
 		//delta = viewAngles;
 		//float playerang = delta.Normalize360().yaw;
 		//float bugang = 0;
-		//playerang.Normalize360();	
+		//playerang.Normalize360();
 		/*
 		if ( ( playerang > bugyaw && playerang - bugyaw < 180.0f ) || (	playerang < bugyaw && bugyaw - playerang > 180.0f ) ) {// looking right
 			bugang = bugyaw + maxBuggyYaw;
@@ -6306,7 +6336,7 @@ void idPlayer::UpdateViewAngles()
 				gameLocal.Printf( "Player ang  %.1f\n", playerang );
 				gameLocal.Printf( "Buggy ang %.1f\n", bugang );
 				viewAngles.yaw = bugang;	// idMath::AngleNormalize180( bugang );
-			}	
+			}
 		} else if ( ( playerang < bugyaw && bugyaw - playerang < 180.0f ) || (	playerang > bugyaw && playerang - bugyaw > 180.0f ) ){
 			bugang = bugyaw - maxBuggyYaw;
 			if ( bugang < 0.0f ) {
@@ -6315,7 +6345,7 @@ void idPlayer::UpdateViewAngles()
 			if ( playerang < bugang ) {
 				viewAngles.yaw = bugang;	//idMath::AngleNormalize180( bugang );
 			}
-		}	
+		}
 		*/
 		/*
 		idRotation turretRotation;
@@ -6323,16 +6353,16 @@ void idPlayer::UpdateViewAngles()
 		idMat3 axis;
 		buggy->GetAnimator()->GetJointTransform( buggy->eyesJoint, gameLocal.time, origin, axis );
 		float gunang = axis.ToAngles().yaw;
-
+		
 		if ( gunang > maxBuggyYaw ) {
 			turretRotation.SetAngle( maxBuggyYaw );
 			turretRotation.SetVec( -1, 0, 0 );
-			animator.SetJointAxis( buggy->eyesJoint, JOINTMOD_LOCAL, turretRotation.ToMat3() ); 	
+			animator.SetJointAxis( buggy->eyesJoint, JOINTMOD_LOCAL, turretRotation.ToMat3() );
 		}
 		if ( gunang < -maxBuggyYaw ) {
 			turretRotation.SetAngle( -maxBuggyYaw );
 			turretRotation.SetVec( -1, 0, 0 );
-			animator.SetJointAxis( buggy->eyesJoint, JOINTMOD_LOCAL, turretRotation.ToMat3() ); 	
+			animator.SetJointAxis( buggy->eyesJoint, JOINTMOD_LOCAL, turretRotation.ToMat3() );
 		}
 		// buggy->GetPhysics()->GetAxis().ToAngles().yaw;
 		float ang = 0;
@@ -6352,20 +6382,20 @@ void idPlayer::UpdateViewAngles()
 			gameLocal.Printf( "Player yaw %.1f\n\n", playeryaw );
 		}
 		*/
-
+		
 		/*
-		if ( playeryaw >= 0.0f || buggyyaw < 0.0f ) {		
+		if ( playeryaw >= 0.0f || buggyyaw < 0.0f ) {
 			if ( buggyyaw - playeryaw > maxBuggyYaw ) {	// looking right
-				viewAngles.yaw = buggyyaw - maxBuggyYaw; 
+				viewAngles.yaw = buggyyaw - maxBuggyYaw;
 			}
 		} else if ( buggyyaw >= 0.0f && playeryaw < 0.0f ) {	// looking right
 			if ( buggyyaw - playeryaw > maxBuggyYaw ) {
-				viewAngles.yaw = buggyyaw - maxBuggyYaw; 
-			}		
-
+				viewAngles.yaw = buggyyaw - maxBuggyYaw;
+			}
+		
 			if ( playeryaw - buggyyaw > maxBuggyYaw ) {
 				//ang = idMath::AngleNormalize180( ang );
-				viewAngles.yaw = buggyyaw + maxBuggyYaw; 
+				viewAngles.yaw = buggyyaw + maxBuggyYaw;
 				//gameLocal.Printf( "Gun ang << %.1f\n", gunang );
 				//gameLocal.Printf( "Buggy %.1f\n", buggyyaw );
 				//gameLocal.Printf( "Player %.1f\n\n", playeryaw );
@@ -6373,7 +6403,7 @@ void idPlayer::UpdateViewAngles()
 		}*/
 	}
 	
-	// ######################################################################### END SR		
+	// ######################################################################### END SR
 	
 	UpdateDeltaViewAngles( viewAngles );
 	
@@ -6527,10 +6557,11 @@ void idPlayer::UpdateAir()
 	bool	newAirless = false;
 	
 	// motorsep 03-22-2015; get water level to turn on oxygen consumption when underwater
-	if( GetWaterLevelLocal() == WATERLEVEL_HEAD ) {
+	if( GetWaterLevelLocal() == WATERLEVEL_HEAD )
+	{
 		newAirless = true;
 	}
-
+	
 	if( gameLocal.vacuumAreaNum != -1 )
 	{
 		int	num = GetNumPVSAreas();
@@ -6796,14 +6827,19 @@ void idPlayer::SetClipModel()
 idPlayer::SwapView	// Swap first person / third person views (IMPULSE_16)
 ==============
 */
-void idPlayer::SwapView( void ) {
-	if ( currentVehicle.IsValid() ) {
-		if ( buggy_thirdPerson ) {	
+void idPlayer::SwapView( void )
+{
+	if( currentVehicle.IsValid() )
+	{
+		if( buggy_thirdPerson )
+		{
 			buggy_thirdPerson = false;
-		} else {
+		}
+		else
+		{
 			buggy_thirdPerson = true;
 		}
-	}	
+	}
 }
 
 /*
@@ -6811,23 +6847,27 @@ void idPlayer::SwapView( void ) {
 idPlayer::ZoomView	// change view pos in buggy third person  (IMPULSE_21)
 ==============
 */
-void idPlayer::ZoomView( void ) {
-	if ( buggy_thirdPerson && !zooming ) {	
-		if ( ( viewDist >= maxViewDist && viewStep > 0 ) || ( viewDist <= minViewDist && viewStep < 0 ) ) {
+void idPlayer::ZoomView( void )
+{
+	if( buggy_thirdPerson && !zooming )
+	{
+		if( ( viewDist >= maxViewDist && viewStep > 0 ) || ( viewDist <= minViewDist && viewStep < 0 ) )
+		{
 			viewStep *= -1.0f;
 		}
 		zooming = true;
-	}	
+	}
 }
 /*
 ==============
 idPlayer::Flashlight	// buggy headlight (IMPULSE_24)
 ==============
 */
-void idPlayer::Flashlight( void ) 
+void idPlayer::Flashlight( void )
 {
-	if(currentVehicle.IsValid()) {
-		currentVehicle->LightOnOff( !currentVehicle->lightOn );	
+	if( currentVehicle.IsValid() )
+	{
+		currentVehicle->LightOnOff( !currentVehicle->lightOn );
 	}
 }
 
@@ -6837,72 +6877,77 @@ void idPlayer::Flashlight( void )
 idPlayer::LaunchHook	// Launch Grapple Hook (IMPULSE_23)
 ==============
 */
-void idPlayer::LaunchHook( void ) {
-	if ( grappling == 2 ) 		// player is ascending, so start swinging
+void idPlayer::LaunchHook( void )
+{
+	if( grappling == 2 ) 		// player is ascending, so start swinging
 	{
 		StopSound( 1, false );
 		idVec3 		origin = physicsObj.GetOrigin();
 		idVec3 		grappleOrigin = grapple->GetPhysics()->GetOrigin();
 		idMat3 		axis = grapple->GetPhysics()->GetAxis();
-		axis[0] = idVec3(  0.0f, 0.0f, 1.0f );
+		axis[0] = idVec3( 0.0f, 0.0f, 1.0f );
 		gameLocal.Printf( "SWING angle >> %.1f\n", swingAngle[0] );	// ### !!!!!!!!!!!!!!
-
+		
 		grapple->GetPhysics()->SetAxis( axis );
 		GrappleRopeLength = ( grappleOrigin - origin ).Length();
-
+		
 		gameLocal.Printf( "ROPE >> %.1f\n", GrappleRopeLength );	// ### !!!!!!!!!!!!!!
-
+		
 		//grappleMover->GetPhysics()->SetOrigin( origin );
 		//idVec3 targetpos = grappleOrigin - ( idVec3(  0.0f, 0.0f, 1.0f ) * GrappleRopeLength );
 		//grappleMover->MoveToPos( targetpos );
 		//physicsObj.SetGravity( vec3_zero );
 		float speed = swingAngle[0];
-		if ( speed > 70.0f ) 
+		if( speed > 70.0f )
 		{
 			speed = 70.0f;
-		} else if ( speed < 30.0f ) 
+		}
+		else if( speed < 30.0f )
 		{
 			speed = 30.0f;
 		}
-		grapple->Swing( speed, 0.0f, swingAngle );	// ################### adjust 
+		grapple->Swing( speed, 0.0f, swingAngle );	// ################### adjust
 		physicsObj.SetGravity( vec3_zero );
 		grappling = 4;
-		return;	
-	}	else if ( grappling > 2 )
+		return;
+	}
+	else if( grappling > 2 )
 	{
 		physicsObj.SetGravity( gameLocal.GetGravity() );
 		float vel = swingAngle[0] * 8.0f;
-		if ( vel < 0.0f )
+		if( vel < 0.0f )
 		{
 			vel = -vel;
-		}	
+		}
 		physicsObj.SetLinearVelocity( swingDir * vel );
 		grappleBeam->Hide();
 		grappleBeamTarget->Hide();
 		grapple->Stop_Swinging();
 		grappling = 0;
-		return;	
+		return;
 	}
 	
-	if ( grappling || physicsObj.laddering ) 
+	if( grappling || physicsObj.laddering )
 	{
 		return;
-	}	
+	}
 	
 	idVec3 		dir, origin, porigin, gorigin, gbase;
 	idMat3 		axis;
 	trace_t 	trace;
-	idStr 		gsnd;	
-		
+	idStr 		gsnd;
+	
 	gsnd = spawnArgs.GetString( "snd_grapple_bad", "" );
-	origin = firstPersonViewOrigin;	
+	origin = firstPersonViewOrigin;
 	origin.z -= 5.0f;
 	dir = firstPersonViewAxis[0];
 	dir.Normalize();
 	gameLocal.clip.TracePoint( trace, origin, origin + dir * grapple_distance, MASK_SHOT_RENDERMODEL, this );
-	if( ( trace.fraction < 1.0f ) ) {
+	if( ( trace.fraction < 1.0f ) )
+	{
 		hooksocket = gameLocal.entities[ trace.c.entityNum ];
-		if ( hooksocket && hooksocket->spawnArgs.GetBool( "grapple_socket", "0" ) ) {
+		if( hooksocket && hooksocket->spawnArgs.GetBool( "grapple_socket", "0" ) )
+		{
 			grappling = 1;
 			grapple->SetOrigin( origin );
 			grapple->SetAxis( firstPersonViewAxis );
@@ -6915,24 +6960,27 @@ void idPlayer::LaunchHook( void ) {
 			gbase[2] = porigin[2];
 			float hypotenuse = ( gorigin - porigin ).Length();
 			float opposite = ( gbase - porigin ).Length();
-			swingAngle[0] = asin( opposite/hypotenuse ) * 180.0f / 3.14159265358979323846f;
+			swingAngle[0] = asin( opposite / hypotenuse ) * 180.0f / 3.14159265358979323846f;
 			
 			
 			grapple->MoveToPos( hooksocket->GetPhysics()->GetOrigin() );
 			gsnd = spawnArgs.GetString( "snd_grapple_fire" );
 			const char* skinName = hooksocket->spawnArgs.GetString( "skin" );
-			if( skinName[0] ) {
+			if( skinName[0] )
+			{
 				skin_grapple = declManager->FindSkin( skinName );
-			}	
+			}
 			skinName = hooksocket->spawnArgs.GetString( "skin_attached" );
-			if( skinName[0] ) {
+			if( skinName[0] )
+			{
 				skin_grapple_attached = declManager->FindSkin( skinName );
-			}			
+			}
 		}
 	}
-	if ( hud && !grappling ) {
+	if( hud && !grappling )
+	{
 		hud->ShowGrappleText();
-	}	
+	}
 	StartSoundShader( declManager->FindSound( gsnd ), SND_CHANNEL_ANY, 0, false, NULL );
 }
 
@@ -6941,42 +6989,49 @@ void idPlayer::LaunchHook( void ) {
 idPlayer::FlyHook	// Grapple Hook flying to socket
 ==============
 */
-void idPlayer::FlyHook( void ) {
+void idPlayer::FlyHook( void )
+{
 	ShowGrappleRope();
-	if ( !grapple->moving )
+	if( !grapple->moving )
 	{
 		grappling = 2;
 		physicsObj.laddering = false;
-		//grapple->Hide();	
+		//grapple->Hide();
 		grapple->SetOrigin( hooksocket->GetPhysics()->GetOrigin() );
 		//grapple->SetAxis( firstPersonViewAxis );
 		hooksocket->SetSkin( skin_grapple_attached );
 		grapple_accel_end = gameLocal.time + grapple_accel_time;
 		StartSoundShader( declManager->FindSound( spawnArgs.GetString( "snd_grapple_playerfly" ) ), 1, 0, false, NULL );
 	}
-}	
+}
 
 /*
 ==============
 idPlayer::GrappleAscend	// Player ascend Grapple rope
 ==============
 */
-void idPlayer::GrappleAscend( void ) {
-	const idVec3 origin = firstPersonViewOrigin - idVec3(0.f,0.f,-5.f);
-					
+void idPlayer::GrappleAscend( void )
+{
+	const idVec3 origin = firstPersonViewOrigin - idVec3( 0.f, 0.f, -5.f );
+	
 	idVec3 hookTarget = hooksocket->GetPhysics()->GetOrigin();
 	idVec3 hookDir = hookTarget - origin;
 	hookDir.Normalize();
-
-	float  flyspeed;				
-	if ( gameLocal.time < grapple_accel_end ) {
+	
+	float  flyspeed;
+	if( gameLocal.time < grapple_accel_end )
+	{
 		flyspeed = grapple_flyspeed * ( 1.0f - ( grapple_accel_end - gameLocal.time ) / grapple_accel_time );
-	} else flyspeed = grapple_flyspeed;	
-			
-	if ( ( hookTarget - origin ).Length() > grapple_disconnect_distance  && !( usercmd.buttons & BUTTON_JUMP ) ) {
+	}
+	else flyspeed = grapple_flyspeed;
+	
+	if( ( hookTarget - origin ).Length() > grapple_disconnect_distance  && !( usercmd.buttons & BUTTON_JUMP ) )
+	{
 		ShowGrappleRope();
 		physicsObj.SetLinearVelocity( hookDir * flyspeed );
-	} else {
+	}
+	else
+	{
 		grappling = 0;
 		StopSound( 1, false );
 		grappleBeam->Hide();
@@ -6990,90 +7045,96 @@ void idPlayer::GrappleAscend( void ) {
 idPlayer::AscentToSwing	// Player swing on Grapple rope
 ==============
 */
-void idPlayer::AscentToSwing( void ) {
+void idPlayer::AscentToSwing( void )
+{
 
-	if ( !grappleMover->moving )
+	if( !grappleMover->moving )
 	{
 		float speed = swingAngle[0];
-		if ( speed > 70.0f ) 
+		if( speed > 70.0f )
 		{
 			speed = 70.0f;
-		} else if ( speed < 30.0f ) 
+		}
+		else if( speed < 30.0f )
 		{
 			speed = 30.0f;
 		}
 		grapple->Swing( speed, 0.0f, swingAngle );	// ################### adjust
 		physicsObj.SetGravity( vec3_zero );
 		grappling = 4;
-	} else if ( !( usercmd.buttons & BUTTON_JUMP ) )
+	}
+	else if( !( usercmd.buttons & BUTTON_JUMP ) )
 	{
 		idVec3 origin = grappleMover->GetPhysics()->GetOrigin();
 		physicsObj.SetOrigin( origin );
-	} else
+	}
+	else
 	{
 		physicsObj.SetGravity( gameLocal.GetGravity() );
 		grappleBeam->Hide();
 		grappleBeamTarget->Hide();
 		grappling = 0;
-	}		
-}	
+	}
+}
 
 /*
 ==============
 idPlayer::GrappleSwing	// Player swing on Grapple rope
 ==============
 */
-void idPlayer::GrappleSwing( void ) {
-	if ( !( usercmd.buttons & BUTTON_JUMP ) )
+void idPlayer::GrappleSwing( void )
+{
+	if( !( usercmd.buttons & BUTTON_JUMP ) )
 	{
 		ShowGrappleRope();
 		idMat3 	axis = grapple->GetPhysics()->GetAxis();
 		idVec3 	grappleOrigin = grapple->GetPhysics()->GetOrigin();
 		
-		idVec3 dir = axis[0]; 
+		idVec3 dir = axis[0];
 		dir.Normalize();
 		idVec3 targetpos = grappleOrigin - ( dir * GrappleRopeLength );
 		swingDir = physicsObj.GetOrigin() - targetpos;
 		swingDir.Normalize();
 		physicsObj.SetOrigin( targetpos );
-	} else
+	}
+	else
 	{
 		physicsObj.SetGravity( gameLocal.GetGravity() );
 		gameLocal.Printf( "SWING dir >> %.1f\n", swingDir[0] );	// ### !!!!!!!!!!!!!!
 		float vel = swingAngle[0] * 8.0f;
-		if ( vel < 0.0f )
+		if( vel < 0.0f )
 		{
 			vel = -vel;
-		}	
+		}
 		physicsObj.SetLinearVelocity( swingDir * vel );
 		grappleBeam->Hide();
 		grappleBeamTarget->Hide();
 		grapple->Stop_Swinging();
 		grappling = 0;
-	}	
-}	
-	
-	
-/*				
+	}
+}
+
+
+/*
 ==================
-idPlayer::ShowGrappleRope	
+idPlayer::ShowGrappleRope
 ==================
 */
-void idPlayer::ShowGrappleRope( void ) 
+void idPlayer::ShowGrappleRope( void )
 {
 	idVec3 	origin, dir, target;
 	idMat3 	axis;
 	int 	numsegs;
-
-	origin = firstPersonViewOrigin;	
+	
+	origin = firstPersonViewOrigin;
 	origin.z -= 5.0f;
 	target = grapple->GetPhysics()->GetOrigin();
 	dir = ( target - origin );
 	numsegs = int( dir.Length() );
 	dir.Normalize();
 	//axis = dir.ToMat3();
-	//grapple->SetAxis( axis ); 
-
+	//grapple->SetAxis( axis );
+	
 	grappleBeam->SetOrigin( origin );
 	grappleBeamTarget->SetOrigin( target );
 	grappleBeam->Show();
@@ -7104,7 +7165,7 @@ void idPlayer::PerformImpulse( int impulse )
 	}
 	
 	switch( impulse )
-	{		
+	{
 		case IMPULSE_13:
 		{
 			Reload();
@@ -7112,18 +7173,20 @@ void idPlayer::PerformImpulse( int impulse )
 		}
 		case IMPULSE_14:
 		{
-			if( !isIntroMap ) {
+			if( !isIntroMap )
+			{
 				NextWeapon();
 			}
 			break;
 		}
 		case IMPULSE_15:
 		{
-			if( !isIntroMap ) {
+			if( !isIntroMap )
+			{
 				PrevWeapon();
 			}
 			break;
-		}	
+		}
 		/*case IMPULSE_16:
 		{
 			if( flashlight.IsValid() )
@@ -7139,32 +7202,39 @@ void idPlayer::PerformImpulse( int impulse )
 			}
 			break;
 		}*/
-		
+	
 		// ########################## SR
-		
-		case IMPULSE_16: {
+	
+		case IMPULSE_16:
+		{
 			SwapView();
 			break;
 		}
-		case IMPULSE_21: {		
-			ZoomView();	
+		case IMPULSE_21:
+		{
+			ZoomView();
 			break;
 		}
-		case IMPULSE_23: {		// ALT FIRE
-			if(currentVehicle.IsValid()) {
+		case IMPULSE_23:  		// ALT FIRE
+		{
+			if( currentVehicle.IsValid() )
+			{
 				currentVehicle->FireBomb();
-			} else if ( skyHook ) {
+			}
+			else if( skyHook )
+			{
 				LaunchHook();
-			}		
+			}
 			break;
 		}
-		case IMPULSE_24: {		
+		case IMPULSE_24:
+		{
 			Flashlight();
 			break;
 		}
 		
-		// ##################### END				
-		
+		// ##################### END
+	
 		case IMPULSE_19:
 		{
 			// when we're not in single player, IMPULSE_19 is used for showScores
@@ -7286,13 +7356,16 @@ void idPlayer::EvaluateControls()
 				gameLocal.sessionCommand = "died";
 			}
 		}
-	// ################################################################################################# SR
-	} else if ( currentVehicle.IsValid() ) {
-		if ( usercmd.buttons & BUTTON_ATTACK ) {
-			currentVehicle->FireBullet();
-		}	
+		// ################################################################################################# SR
 	}
-	// ################################################################################################## END	
+	else if( currentVehicle.IsValid() )
+	{
+		if( usercmd.buttons & BUTTON_ATTACK )
+		{
+			currentVehicle->FireBullet();
+		}
+	}
+	// ################################################################################################## END
 	
 	if( usercmd.impulseSequence != oldImpulseSequence )
 	{
@@ -8420,12 +8493,13 @@ void idPlayer::Think()
 		
 		// ######################################## SR
 		
-		if( gameLocal.inCinematic && ( usercmd.buttons & BUTTON_JUMP ) ) {
+		if( gameLocal.inCinematic && ( usercmd.buttons & BUTTON_JUMP ) )
+		{
 			gameLocal.SetCamera( NULL );
-		}	
+		}
 		
 		// ####################################### END SR
-				
+		
 		usercmd.forwardmove = 0;
 		usercmd.rightmove = 0;
 		usercmd.buttons &= ~( BUTTON_JUMP | BUTTON_CROUCH );
@@ -8466,29 +8540,36 @@ void idPlayer::Think()
 	
 	// ############ SR
 	// zooming
-	if ( ( usercmd.buttons ^ oldCmd.buttons ) & BUTTON_ZOOM ) {
-		if ( ( usercmd.buttons & BUTTON_ZOOM ) && currentVehicle.IsValid() ) {
-			zoomFov.Init( gameLocal.time, 200.0f, CalcFov( false ), currentVehicle->GetZoomFov() );	
-		} else if ( ( usercmd.buttons & BUTTON_ZOOM ) && weapon.GetEntity() ) {
+	if( ( usercmd.buttons ^ oldCmd.buttons ) & BUTTON_ZOOM )
+	{
+		if( ( usercmd.buttons & BUTTON_ZOOM ) && currentVehicle.IsValid() )
+		{
+			zoomFov.Init( gameLocal.time, 200.0f, CalcFov( false ), currentVehicle->GetZoomFov() );
+		}
+		else if( ( usercmd.buttons & BUTTON_ZOOM ) && weapon.GetEntity() )
+		{
 			zoomFov.Init( gameLocal.time, 200.0f, CalcFov( false ), weapon.GetEntity()->GetZoomFov() );
-		} else {
+		}
+		else
+		{
 			zoomFov.Init( gameLocal.time, 200.0f, zoomFov.GetCurrentValue( gameLocal.time ), DefaultFov() );
 		}
 	}
-
-	// switch LOD particles		
-	if ( weather ) {
-		idClipModel *clipModelList[ MAX_GENTITIES ];
-		idClipModel *clip;
-		idEntity *ent;
+	
+	// switch LOD particles
+	if( weather )
+	{
+		idClipModel* clipModelList[ MAX_GENTITIES ];
+		idClipModel* clip;
+		idEntity* ent;
 		int			listedClipModels;
 		idVec3		start, frontleft, frontright, rearleft, rearright;
 		idVec3		vecForward, vecRight;
 		idMat3 		axis;
-
+		
 		start = GetPhysics()->GetOrigin();
 		axis = GetPhysics()->GetAxis();
-
+		
 		vecForward 		= axis.ToAngles().ToForward();
 		vecRight 		= axis.ToAngles().ToRight();
 		frontleft		= start + vecForward * probe - vecRight * probe;
@@ -8502,20 +8583,22 @@ void idPlayer::Think()
 		idBounds bounds( frontleft );
 		bounds.AddPoint( frontright );
 		bounds.AddPoint( rearright );
-		bounds.AddPoint( rearleft );	
+		bounds.AddPoint( rearleft );
 		//gameRenderWorld->DebugBounds( colorGreen, bounds, vec3_zero, 1 );
 		listedClipModels = gameLocal.clip.ClipModelsTouchingBounds( bounds, -1, clipModelList, MAX_GENTITIES );
-		for ( int i = 0; i < listedClipModels; i++ ) {
+		for( int i = 0; i < listedClipModels; i++ )
+		{
 			clip = clipModelList[ i ];
 			ent = clip->GetEntity();
-			if ( ent->IsType( idItem::Type ) ) {
-				static_cast<idItem *>( ent )->RunScriptFunc( "checkdist" );
+			if( ent->IsType( idItem::Type ) )
+			{
+				static_cast<idItem*>( ent )->RunScriptFunc( "checkdist" );
 			}
-		}	
-	}	
-
+		}
+	}
 	
-	// grapple 
+	
+	// grapple
 	
 	switch( grappling )
 	{
@@ -8527,9 +8610,9 @@ void idPlayer::Think()
 		case 2:
 			GrappleAscend();
 			break;
-		case 3:	
+		case 3:
 			AscentToSwing();
-			break;	
+			break;
 		case 4:
 			GrappleSwing();
 			break;
@@ -8544,31 +8627,36 @@ void idPlayer::Think()
 	trace_t 	trace;
 	idVec3 dir = firstPersonViewAxis[0];
 	dir.Normalize();
-
+	
 	// foresthale 2014-02-15: when using r_showSkel, suppress view-related TracePoint calls that would cause models to be cached every frame, as r_showSkel only works when the first cache of the model each frame is in the renderer
-	if( !r_showSkel.GetBool() && hud ) 
+	if( !r_showSkel.GetBool() && hud )
 	{
-		gameLocal.clip.TracePoint(trace, firstPersonViewOrigin, firstPersonViewOrigin + dir * grapple_distance, MASK_PLAYERSOLID, this);
-		if( ( trace.fraction < 1.0f ) ) {
-			idEntity * ent = gameLocal.entities[ trace.c.entityNum ];
-			if ( ent && ent->spawnArgs.GetBool( "grapple_socket", "0" ) ) {
-				if ( hooksocket == NULL )
+		gameLocal.clip.TracePoint( trace, firstPersonViewOrigin, firstPersonViewOrigin + dir * grapple_distance, MASK_PLAYERSOLID, this );
+		if( ( trace.fraction < 1.0f ) )
+		{
+			idEntity* ent = gameLocal.entities[ trace.c.entityNum ];
+			if( ent && ent->spawnArgs.GetBool( "grapple_socket", "0" ) )
+			{
+				if( hooksocket == NULL )
 					hooksocket = ent;
 				hud->ShowGrappleCursor();
 				hud->HideGrappleText();
-			} else {
+			}
+			else
+			{
 				hud->HideGrappleCursor();
-			}	
+			}
 		}
 	}
-
 	
-	if ( currentVehicle.IsValid() ) {
+	
+	if( currentVehicle.IsValid() )
+	{
 		BuggyThink();
-	}	
+	}
 	
-
-	// ################ END SR	
+	
+	// ################ END SR
 	
 	
 	// if we have an active gui, we will unrotate the view angles as
@@ -8827,39 +8915,48 @@ void idPlayer::Think()
 	}
 }
 
-	// ################################################################### SR
+// ################################################################### SR
 
 /*
 ==============
 idPlayer::BuggyThink
 ==============
 */
-void idPlayer::BuggyThink( void ) {
-	
+void idPlayer::BuggyThink( void )
+{
+
 	// If the player is driving a vehicle, aim the vehicle's weapon
 	// and do camera zoom if needed
-	if ( currentVehicle.IsValid() ) {
+	if( currentVehicle.IsValid() )
+	{
 		currentVehicle->Aim();
-		if ( zooming ) {
+		if( zooming )
+		{
 			viewDist += viewStep;
-			if ( viewStep > 0 ) {
+			if( viewStep > 0 )
+			{
 				viewHeight += viewStepH;
-			} else {
+			}
+			else
+			{
 				viewHeight -= viewStepH;
 			}
-			if ( viewDist >= maxViewDist ) {
+			if( viewDist >= maxViewDist )
+			{
 				viewDist = maxViewDist;
 				viewHeight = maxViewHeight;
 				zooming = false;
-			} else if ( viewDist <= minViewDist ) {
+			}
+			else if( viewDist <= minViewDist )
+			{
 				viewDist = minViewDist;
 				viewHeight = minViewHeight;
 				zooming = false;
 			}
 		}
 	}
-}	
-	// ######################################################################### END SR		
+}
+// ######################################################################### END SR
 
 
 
@@ -9910,14 +10007,19 @@ float idPlayer::CalcFov( bool honorZoom )
 	if( zoomFov.IsDone( gameLocal.time ) )
 	{
 		fov = g_fov.GetFloat();	//( honorZoom && usercmd.buttons & BUTTON_ZOOM ) && weapon.GetEntity() ? weapon.GetEntity()->GetZoomFov() : DefaultFov();
-		if( honorZoom && usercmd.buttons & BUTTON_ZOOM ) {
+		if( honorZoom && usercmd.buttons & BUTTON_ZOOM )
+		{
 		
 			// ######################### SR
-		
-			if ( currentVehicle.IsValid() ) {
-				fov = currentVehicle->GetZoomFov();	
-			} else {
-				if ( weapon.GetEntity() ) {
+			
+			if( currentVehicle.IsValid() )
+			{
+				fov = currentVehicle->GetZoomFov();
+			}
+			else
+			{
+				if( weapon.GetEntity() )
+				{
 					fov = weapon.GetEntity()->GetZoomFov();
 				}
 			}
@@ -10023,24 +10125,27 @@ idVec3	idPlayer::GunAcceleratingOffset() const
 	float weaponOffsetTime, weaponOffsetScale;
 	
 	ofs.Zero();
-
-	if ( grappling != 2 ) {	// ######################################## SR
-		weapon.GetEntity()->GetWeaponTimeOffsets( &weaponOffsetTime, &weaponOffsetScale );
 	
+	if( grappling != 2 )  	// ######################################## SR
+	{
+		weapon.GetEntity()->GetWeaponTimeOffsets( &weaponOffsetTime, &weaponOffsetScale );
+		
 		int stop = currentLoggedAccel - NUM_LOGGED_ACCELS;
 		if( stop < 0 )
 		{
 			stop = 0;
 		}
-		for( int i = currentLoggedAccel - 1 ; i > stop ; i-- ){
+		for( int i = currentLoggedAccel - 1 ; i > stop ; i-- )
+		{
 			const loggedAccel_t*	acc = &loggedAccel[i & ( NUM_LOGGED_ACCELS - 1 )];
-		
+			
 			float	f;
 			float	t = gameLocal.time - acc->time;
-			if( t >= weaponOffsetTime ) {
+			if( t >= weaponOffsetTime )
+			{
 				break;	// remainder are too old to care about
 			}
-		
+			
 			f = t / weaponOffsetTime;
 			f = ( cos( f * 2.0f * idMath::PI ) - 1.0f ) * 0.5f;
 			ofs += f * weaponOffsetScale * acc->dir;
@@ -10369,11 +10474,12 @@ void idPlayer::CalculateRenderView()
 		{
 			OffsetThirdPersonView( pm_thirdPersonAngle.GetFloat(), pm_thirdPersonRange.GetFloat(), pm_thirdPersonHeight.GetFloat(), pm_thirdPersonClip.GetBool() );
 		}
-		// ########## SR	
-		else if ( currentVehicle.IsValid() && buggy_thirdPerson ) {
+		// ########## SR
+		else if( currentVehicle.IsValid() && buggy_thirdPerson )
+		{
 			OffsetThirdPersonView( 0.0f, viewDist, viewHeight, true );
-		}	
-		// ######### END		
+		}
+		// ######### END
 		
 		else if( pm_thirdPersonDeath.GetBool() )
 		{
@@ -10906,7 +11012,7 @@ idPlayer::Event_InPDA
 */
 void idPlayer::Event_InPDA()
 {
-	idThread::ReturnInt( objectiveSystemOpen );	
+	idThread::ReturnInt( objectiveSystemOpen );
 }
 
 /*
@@ -11367,7 +11473,7 @@ void idPlayer::WriteToSnapshot( idBitMsg& msg ) const
 {
 	physicsObj.WriteToSnapshot( msg );
 	WriteBindToSnapshot( msg );
-
+	
 	// Only remote players will use these actual viewangles.
 	idCQuat snapViewCQuat( viewAngles.ToQuat().ToCQuat() );
 	msg.WriteFloat( snapViewCQuat.x );
@@ -11475,7 +11581,7 @@ void idPlayer::ReadFromSnapshot( const idBitMsg& msg )
 	
 	idEntityPtr<idAFEntity_Vehicle> snapshotVehicle;
 	snapshotVehicle.SetSpawnId( msg.ReadBits( 32 ) );
-
+	
 	// no msg reading below this
 	
 	// Update remote remote player state.
@@ -11505,16 +11611,16 @@ void idPlayer::ReadFromSnapshot( const idBitMsg& msg )
 	}
 	currentWeapon = -1;
 	
-	if ( snapshotVehicle.GetEntity() != NULL )
+	if( snapshotVehicle.GetEntity() != NULL )
 	{
 		snapshotVehicle->Use( this );
 		SetPhysics( &physicsObj );
 		physicsObj.DisableClip();
-		Hide();	
+		Hide();
 		Event_DisableWeapon();
 		currentVehicle = snapshotVehicle;
 	}
-
+	
 	/*if( flashlight.SetSpawnId( flashlightSpawnId ) )
 	{
 		if( flashlight.GetEntity() )
@@ -11861,15 +11967,15 @@ bool idPlayer::IsSoundChannelPlaying( const s_channelType channel )
 idPlayer::ShowTip
 ===============
 */
-void idPlayer::ShowTip( idStr tip1, const char *key, idStr tip2, bool autoHide )
+void idPlayer::ShowTip( idStr tip1, const char* key, idStr tip2, bool autoHide )
 {
 	if( tipUp )
 	{
 		return;
 	}
 	
-		// ######################## SR
-	idStr msg;												
+	// ######################## SR
+	idStr msg;
 	idStr msg1 = tip1;
 	idStr msg2 = tip2;
 	/*
@@ -11880,7 +11986,7 @@ void idPlayer::ShowTip( idStr tip1, const char *key, idStr tip2, bool autoHide )
 		msg2 = common->GetLanguageDict()->GetString( tip2 );
 	}
 	*/
-	//msg = msg1 + " \"" + common->KeysFromBinding( key ) + "\" " + msg2;		
+	//msg = msg1 + " \"" + common->KeysFromBinding( key ) + "\" " + msg2;
 	// ###################### END SR
 	
 	if( hudManager )
@@ -12060,26 +12166,26 @@ void idPlayer::Event_Gibbed()
 idPlayer::Event_GetObjective
 =====================
 */
-void idPlayer::Event_GetObjective( int objNum ) 
+void idPlayer::Event_GetObjective( int objNum )
 {
 	switch( objNum )
 	{
-	case 1:
+		case 1:
 		{
 			idThread::ReturnString( compassObjective_1 );
-			break;			
-		}	
-	case 2:
+			break;
+		}
+		case 2:
 		{
 			idThread::ReturnString( compassObjective_2 );
-			break;	
-		}	
-	case 3:
+			break;
+		}
+		case 3:
 		{
 			idThread::ReturnString( compassObjective_3 );
-			break;	
-		}	
-	default:
+			break;
+		}
+		default:
 		{
 			idThread::ReturnString( "" );
 		}

@@ -620,7 +620,7 @@ void idPhysics_Player::WaterMove()
 	idPhysics_Player::Accelerate( wishdir, wishspeed, PM_WATERACCELERATE );
 	
 	// motorsep 03-21-2015; FIXME: this is where player slides on the bottom of the water, even when the bottom floor is totally flat
-
+	
 	// make sure we can go up slopes easily under water
 	if( groundPlane && ( current.velocity * groundTrace.c.normal ) < 0.0f )
 	{
@@ -961,7 +961,8 @@ void idPhysics_Player::LadderMove()
 	float	upscale;
 	
 	// ######################################### SR
-	if ( idPhysics_Player::CheckJump() ) {
+	if( idPhysics_Player::CheckJump() )
+	{
 		// jumping off ladder
 		laddering = false;
 		ladderJumping = true;
@@ -969,7 +970,8 @@ void idPhysics_Player::LadderMove()
 		return;
 	}
 	
-	if ( ladderWeapon ) {
+	if( ladderWeapon )
+	{
 		return;
 	}
 	// ######################################### END SR
@@ -1319,42 +1321,50 @@ void idPhysics_Player::CheckLadder()
 		tracedist = 48.0f;
 	}
 	
-		// ################################ SR
+	// ################################ SR
 	
-	if ( laddering ) {
+	if( laddering )
+	{
 		laddering = false;
 		end = current.origin + tracedist * ladderDir;
 		gameLocal.clip.Translation( trace, current.origin, end, clipModel, clipModel->GetAxis(), clipMask, self );
-		if ( trace.fraction < 1.0f ) {
-			if ( trace.c.material && ( trace.c.material->GetSurfaceFlags() & SURF_LADDER ) ) {
+		if( trace.fraction < 1.0f )
+		{
+			if( trace.c.material && ( trace.c.material->GetSurfaceFlags() & SURF_LADDER ) )
+			{
 				end = current.origin - gravityNormal * ( maxStepHeight * 0.75f );
 				gameLocal.clip.Translation( trace, current.origin, end, clipModel, clipModel->GetAxis(), clipMask, self );
 				start = trace.endpos;
 				end = start + tracedist * ladderDir;
 				gameLocal.clip.Translation( trace, start, end, clipModel, clipModel->GetAxis(), clipMask, self );
-				if ( trace.fraction < 1.0f ) {
-					if ( trace.c.material && trace.c.material->GetSurfaceFlags() & SURF_LADDER ) {
+				if( trace.fraction < 1.0f )
+				{
+					if( trace.c.material && trace.c.material->GetSurfaceFlags() & SURF_LADDER )
+					{
 						ladder = true;
 						laddering = true;
 						ladderWeapon = true;
 						float playerYaw = forward.ToAngles().yaw;
 						ladderYaw = ladderNormal.ToAngles().yaw;
-						if ( ladderYaw <= ladderWeaponAng ) {
+						if( ladderYaw <= ladderWeaponAng )
+						{
 							ladderYaw = 360.0f - ladderYaw;
 							playerYaw = 360.0f - playerYaw;
-						}	
+						}
 						float ladderGap = playerYaw - ladderYaw;
-						if ( ladderGap > ( 360.0f - ladderWeaponAng ) || ladderGap < -( 360.0f - ladderWeaponAng ) ) {
+						if( ladderGap > ( 360.0f - ladderWeaponAng ) || ladderGap < -( 360.0f - ladderWeaponAng ) )
+						{
 							playerYaw = 360.0f - playerYaw;
 							ladderGap = playerYaw - ladderYaw;
-						}	
-						if ( ( ladderGap > ladderWeaponAng ) || ( ladderGap < -ladderWeaponAng ) ) {
+						}
+						if( ( ladderGap > ladderWeaponAng ) || ( ladderGap < -ladderWeaponAng ) )
+						{
 							ladderWeapon = false;
-						}		
-					} 
+						}
+					}
 				}
 			}
-		}	
+		}
 		return;
 	}
 	
@@ -1390,11 +1400,11 @@ void idPhysics_Player::CheckLadder()
 					ladder = true;
 					ladderNormal = trace.c.normal;
 					
-						// ######################## SR
+					// ######################## SR
 					laddering = true;
 					ladderJumping = false;
 					ladderDir = -ladderNormal;
-						// ######################## END SR					
+					// ######################## END SR
 				}
 			}
 		}
@@ -1433,12 +1443,15 @@ bool idPhysics_Player::CheckJump()
 	current.movementFlags |= PMF_JUMP_HELD | PMF_JUMPED;
 	
 	// ############################################ SR
-	if ( laddering ) {
+	if( laddering )
+	{
 		addVelocity = 2.0f * ladderJumpHeight * -gravityVector;
 		addVelocity *= idMath::Sqrt( addVelocity.Normalize() );
 		addVelocity += viewForward * ladderJumpDist;
 		current.velocity = addVelocity;
-	} else {	// ############################### END	
+	}
+	else  	// ############################### END
+	{
 	
 		addVelocity = 2.0f * maxJumpHeight * -gravityVector;
 		addVelocity *= idMath::Sqrt( addVelocity.Normalize() );
@@ -1453,34 +1466,38 @@ bool idPhysics_Player::CheckJump()
 idPhysics_Player::CheckWaterJump
 =============
 */
-bool idPhysics_Player::CheckWaterJump() {
+bool idPhysics_Player::CheckWaterJump()
+{
 	idVec3	spot;
 	int		cont;
 	idVec3	flatforward;
-
-	if( current.movementTime ) {
+	
+	if( current.movementTime )
+	{
 		return false;
 	}
-
+	
 	// check for water jump
-	if( waterLevel != WATERLEVEL_WAIST ) {	
+	if( waterLevel != WATERLEVEL_WAIST )
+	{
 		return false;
 	}
-
+	
 	flatforward = viewForward - ( viewForward * gravityNormal ) * gravityNormal;
 	flatforward.Normalize();
-
+	
 	spot = current.origin + 30.0f * flatforward;
 	spot -= 4.0f * gravityNormal;
 	cont = gameLocal.clip.Contents( spot, NULL, mat3_identity, -1, self );
-
+	
 	// motorsep 03-18-2015; FIXME: this check prevents player from swimming up using JUMP key, when standing on the bottom underwater.
 	// if disabled, player can swim up using JUMP key, but if player sinks in free fall, (s)he will bounce off the bottom surface like a ball, perpetually.
-
-	if( !( cont & CONTENTS_SOLID ) ) {
-			return false;
+	
+	if( !( cont & CONTENTS_SOLID ) )
+	{
+		return false;
 	}
-		
+	
 	spot -= 16.0f * gravityNormal;
 	cont = gameLocal.clip.Contents( spot, NULL, mat3_identity, -1, self );
 	if( cont )
@@ -1769,7 +1786,8 @@ bool idPhysics_Player::OnLadder() const
 idPhysics_Player::SetLadderJumpDist
 ================
 */
-void idPhysics_Player::SetLadderJumpDist( const float newLadderJumpDist, const float newLadderJumpHeight, const float newLadderWeaponAng ) {
+void idPhysics_Player::SetLadderJumpDist( const float newLadderJumpDist, const float newLadderJumpHeight, const float newLadderWeaponAng )
+{
 	ladderJumpDist = newLadderJumpDist;
 	ladderJumpHeight = newLadderJumpHeight;
 	ladderWeaponAng = newLadderWeaponAng;
@@ -1816,12 +1834,12 @@ idPhysics_Player::idPhysics_Player()
 	ladderWeapon = false;
 	ladderJumping = false;
 	ladderJumpDist = 300.0f;
-	ladderJumpHeight = 64.0f;	
+	ladderJumpHeight = 64.0f;
 	ladderWeaponAng = 0.0f;
 	ladderYaw = 0.0f;
 	ladderDir.Zero();
 	
-	// ######################	
+	// ######################
 	
 }
 
@@ -1900,14 +1918,14 @@ void idPhysics_Player::Save( idSaveGame* savefile ) const
 	
 	savefile->WriteBool( laddering );
 	savefile->WriteBool( ladderJumping );
-	savefile->WriteBool( ladderWeapon );	
+	savefile->WriteBool( ladderWeapon );
 	savefile->WriteFloat( ladderJumpDist );
-	savefile->WriteFloat( ladderJumpHeight );	
-	savefile->WriteFloat( ladderWeaponAng );	
+	savefile->WriteFloat( ladderJumpHeight );
+	savefile->WriteFloat( ladderWeaponAng );
 	savefile->WriteFloat( ladderYaw );
 	savefile->WriteVec3( ladderDir );
 	
-	// #################	
+	// #################
 }
 
 /*
@@ -1954,11 +1972,11 @@ void idPhysics_Player::Restore( idRestoreGame* savefile )
 	savefile->ReadBool( ladderWeapon );
 	savefile->ReadFloat( ladderJumpDist );
 	savefile->ReadFloat( ladderJumpHeight );
-	savefile->ReadFloat( ladderWeaponAng );	
+	savefile->ReadFloat( ladderWeaponAng );
 	savefile->ReadFloat( ladderYaw );
 	savefile->ReadVec3( ladderDir );
 	
-		// ########################	
+	// ########################
 }
 
 /*
@@ -2518,8 +2536,8 @@ void idPhysics_Player::SetMaster( idEntity* master, BindFlags flags )
 			current.localOrigin = ( current.origin - masterOrigin ) * masterAxis.Transpose();
 			masterEntity = master;
 			masterYaw = masterAxis[0].ToYaw();
-
-			if ( (flags&BFL_SNAPXFORM)!= 0 )
+			
+			if( ( flags & BFL_SNAPXFORM ) != 0 )
 			{
 				current.localOrigin.Zero();
 			}

@@ -140,27 +140,27 @@ idSessionLocal::idSessionLocal
 idSessionLocal::~idSessionLocal()
 {
 	// foresthale 2014-06-08: check before deleting these, the deletes were likely done in Shutdown already
-	if (processorSaveFiles)
+	if( processorSaveFiles )
 	{
 		delete processorSaveFiles;
 		processorSaveFiles = NULL;
 	}
-	if (processorLoadFiles)
+	if( processorLoadFiles )
 	{
 		delete processorLoadFiles;
 		processorLoadFiles = NULL;
 	}
-	if (processorDelete)
+	if( processorDelete )
 	{
 		delete processorDelete;
 		processorDelete = NULL;
 	}
-	if (processorEnumerate)
+	if( processorEnumerate )
 	{
 		delete processorEnumerate;
 		processorEnumerate = NULL;
 	}
-	if (sessionCallbacks)
+	if( sessionCallbacks )
 	{
 		delete sessionCallbacks;
 		sessionCallbacks = NULL;
@@ -1606,13 +1606,13 @@ idSessionLocal::~idSession
 */
 idSession::~idSession()
 {
-	if (signInManager)
+	if( signInManager )
 		delete signInManager;
 	signInManager = NULL;
-	if (saveGameManager)
+	if( saveGameManager )
 		delete saveGameManager;
 	saveGameManager = NULL;
-	if (dedicatedServerSearch)
+	if( dedicatedServerSearch )
 		delete dedicatedServerSearch;
 	dedicatedServerSearch = NULL;
 }
@@ -1645,37 +1645,37 @@ idSessionLocal::Shutdown
 void idSessionLocal::Shutdown()
 {
 	// foresthale 2014-05-28: shut down saveGameManager early because the thread it owns will be terminated before the dtor is reached
-	if (signInManager)
+	if( signInManager )
 		delete signInManager;
 	signInManager = NULL;
-	if (saveGameManager)
+	if( saveGameManager )
 		delete saveGameManager;
 	saveGameManager = NULL;
-	if (dedicatedServerSearch)
+	if( dedicatedServerSearch )
 		delete dedicatedServerSearch;
 	dedicatedServerSearch = NULL;
 	// foresthale 2014-06-08: delete these before we get to the dtor to prevent doexit crashes
-	if (processorSaveFiles)
+	if( processorSaveFiles )
 	{
 		delete processorSaveFiles;
 		processorSaveFiles = NULL;
 	}
-	if (processorLoadFiles)
+	if( processorLoadFiles )
 	{
 		delete processorLoadFiles;
 		processorLoadFiles = NULL;
 	}
-	if (processorDelete)
+	if( processorDelete )
 	{
 		delete processorDelete;
 		processorDelete = NULL;
 	}
-	if (processorEnumerate)
+	if( processorEnumerate )
 	{
 		delete processorEnumerate;
 		processorEnumerate = NULL;
 	}
-	if (sessionCallbacks)
+	if( sessionCallbacks )
 	{
 		delete sessionCallbacks;
 		sessionCallbacks = NULL;

@@ -240,7 +240,7 @@ public:
 	static void				ListResourcesContent_f( const idCmdArgs& args );
 	static void				RemoveResourcesFile_f( const idCmdArgs& args );
 	
-	void					BuildOrderedStartupContainer(idStrList &orderedFiles);
+	void					BuildOrderedStartupContainer( idStrList& orderedFiles );
 private:
 	idList<searchpath_t>	searchPaths;
 	int						loadCount;			// total files read
@@ -275,8 +275,8 @@ private:
 	// void					WriteResourceChapters( const char* name );
 	void					AddRenderProgs( idStrList& files );
 	void					AddFonts( idStrList& files );
-	bool 					IsFileSameAsInResources(const char *filename);
-
+	bool 					IsFileSameAsInResources( const char* filename );
+	
 	void					ReplaceSeparators( idStr& path, char sep = PATHSEPARATOR_CHAR );
 	int						ListOSFiles( const char* directory, const char* extension, idStrList& list );
 	idFileHandle			OpenOSFile( const char* name, fsMode_t mode );
@@ -956,7 +956,7 @@ bool idFileSystemLocal::IsSoundSample( const idStr& resName ) const
 }
 
 
-void idFileSystemLocal::BuildOrderedStartupContainer(idStrList &orderedFiles)
+void idFileSystemLocal::BuildOrderedStartupContainer( idStrList& orderedFiles )
 {
 	idFileList* fl = ListFilesTree( "materials", "*.mtr", true );
 	for( int i = 0; i < fl->GetList().Num(); i++ )
@@ -964,7 +964,7 @@ void idFileSystemLocal::BuildOrderedStartupContainer(idStrList &orderedFiles)
 		orderedFiles.AddUnique( fl->GetList()[i] );
 	}
 	FreeFileList( fl );
-		
+	
 	//fl = ListFilesTree( "renderprogs/gl", "*.*", true );
 	//for( int i = 0; i < fl->GetList().Num(); i++ )
 	//{
@@ -1053,7 +1053,7 @@ void idFileSystemLocal::BuildOrderedStartupContainer(idStrList &orderedFiles)
 	//orderedFiles.AddUnique( "script/sr_particleLOD.script" );
 	//orderedFiles.AddUnique( "script/cinema_arrival_to_outer_rim.script" );
 	//orderedFiles.AddUnique( "script/cinema_ganymede_landing.script" );
-	//orderedFiles.AddUnique( "script/script/cinematics.script" );	
+	//orderedFiles.AddUnique( "script/script/cinematics.script" );
 	orderedFiles.AddUnique( "generated/swf/shell.bswf" );
 	fl = ListFilesTree( "newfonts", "*.dat", false );
 	for( int i = 0; i < fl->GetList().Num(); i++ )
@@ -1066,47 +1066,51 @@ void idFileSystemLocal::BuildOrderedStartupContainer(idStrList &orderedFiles)
 }
 
 
-bool idFileSystemLocal::IsFileSameAsInResources(const char *filename)
+bool idFileSystemLocal::IsFileSameAsInResources( const char* filename )
 {
-	idFile *oldFile=GetResourceFile(filename, false);
-	if (!oldFile) return false;
-
-	idFile *newFile=OpenFileRead(filename);
-	if (!newFile)
+	idFile* oldFile = GetResourceFile( filename, false );
+	if( !oldFile ) return false;
+	
+	idFile* newFile = OpenFileRead( filename );
+	if( !newFile )
 	{
 		delete oldFile;
-		idLib::Warning("missing file: %s", filename);
+		idLib::Warning( "missing file: %s", filename );
 		return false;
 	}
-
+	
 	int len = newFile->Length();
-	bool equal = (oldFile->Length() == len);
-
-	const int bufferSize=32<<10;
+	bool equal = ( oldFile->Length() == len );
+	
+	const int bufferSize = 32 << 10;
 	char buffer1[bufferSize];
 	char buffer2[bufferSize];
-
-	while (equal && len!=0)
+	
+	while( equal && len != 0 )
 	{
-		int n=bufferSize;
-		if (n>len) n=len;
-
-		oldFile->Read(buffer1, n);
-		newFile->Read(buffer2, n);
-
-		if (memcmp(buffer1, buffer2, n)!=0) { equal=false; break; }
-
-		len-=n;
+		int n = bufferSize;
+		if( n > len ) n = len;
+		
+		oldFile->Read( buffer1, n );
+		newFile->Read( buffer2, n );
+		
+		if( memcmp( buffer1, buffer2, n ) != 0 )
+		{
+			equal = false;
+			break;
+		}
+		
+		len -= n;
 	}
-
-	if (!equal)
+	
+	if( !equal )
 	{
 		// files are different - keep new file
 		delete oldFile;
 		delete newFile;
 		return false;
 	}
-
+	
 	return true;
 }
 
@@ -1156,7 +1160,7 @@ void idFileSystemLocal::WriteResourcePacks()
 			//manifest.Print();
 		}
 	}
-
+	
 	//=========================================================================================
 	// Get a list of all files found inside every preload file in the chapter folder
 	// Store them under preloadManifests
@@ -1180,7 +1184,7 @@ void idFileSystemLocal::WriteResourcePacks()
 	}
 	
 	//=========================================================================================
-	// Scans through the entire list of manifest entries and see if an entry appears in every 
+	// Scans through the entire list of manifest entries and see if an entry appears in every
 	// manifest file. (Ignore all .cfg and .lang files)
 	// If this is true, the filename is added into filesCommonToAllMaps.
 	// Otherwise, the filename is added to filesNotCommonToAllMaps.
@@ -1205,9 +1209,9 @@ void idFileSystemLocal::WriteResourcePacks()
 			}
 		}
 	}
-
+	
 	//=========================================================================================
-	// Scans through the entire list of preload entries and see if an entry appears in every 
+	// Scans through the entire list of preload entries and see if an entry appears in every
 	// preload file.
 	// If true, the filename is added into commonPreloads.
 	//=========================================================================================
@@ -1258,19 +1262,19 @@ void idFileSystemLocal::WriteResourcePacks()
 	idStrList commonAnims( 2048 );
 	idStrList commonCollision( 2048 );
 	idStrList soundFiles( 2048 );		// don't write these per map so we fit on disc
-
+	
 	idStaticList< idStr, 16384 > mapFiles;		// map files from the manifest, these are static for easy debugging/
 	idStaticList< idStr, 16384 > mapFilesTwo;	// accumulates non bimage, bmodel and sample files
-
+	
 	idStr resourceFileName;
-
+	
 	//=========================================================================================
-	// Process remaining files in manifests. 
+	// Process remaining files in manifests.
 	//=========================================================================================
 	for( int i = 0; i < manifests.Num(); i++ )
 	{
 		resourceFileName = manifests[ i ].GetManifestName();
-
+		
 		//=========================================================================================
 		// If processing a startup manifest, add its contents to filesCommonToAllMaps
 		//=========================================================================================
@@ -1286,18 +1290,18 @@ void idFileSystemLocal::WriteResourcePacks()
 			}
 			continue;
 		}
-
+		
 		//=========================================================================================
 		// Insert into mapFilesTwo all unique files and place behind them all images, models,
 		// anims, and collisions (in this linear order). Sound files are not added in.
-		//=========================================================================================		
-		commonImages.Clear();	
+		//=========================================================================================
+		commonImages.Clear();
 		commonModels.Clear();
 		commonAnims.Clear();
 		commonCollision.Clear();
-			
+		
 		manifests[ i ].PopulateList( mapFiles );
-
+		
 		for( int j = 0; j < mapFiles.Num(); j++ )
 		{
 			idStr& resName = mapFiles[ j ];
@@ -1355,7 +1359,7 @@ void idFileSystemLocal::WriteResourcePacks()
 			mapFilesTwo.AddUnique( commonCollision[ j ] );
 		}
 	}
-
+	
 	//=========================================================================================
 	// Transfer the contents of mapFilesTwo to commonFiles
 	// mapFilesTwo is no longer important.
@@ -1386,7 +1390,7 @@ void idFileSystemLocal::WriteResourcePacks()
 	// write out common models, images and sounds to separate containers
 	commonImages.Clear();
 	commonModels.Clear();
-
+	
 	for( int i = 0; i < filesCommonToAllMaps.Num(); i++ )
 	{
 		idStr& resName = filesCommonToAllMaps[ i ];
@@ -1427,48 +1431,48 @@ void idFileSystemLocal::WriteResourcePacks()
 	{
 		commonFiles.AddUnique( commonModels[ j ] );
 	}
-
+	
 	// add "ordered" files to commonFiles
-	BuildOrderedStartupContainer(commonFiles);
-
+	BuildOrderedStartupContainer( commonFiles );
+	
 	// remove files found in old chapters (actually, in loaded .resources packs)
-	for (int j=commonFiles.Num()-1; j>=0; --j)
-		if (IsFileSameAsInResources(commonFiles[j]))
-			commonFiles.RemoveIndex(j); // files are the same - don't pack new file
-
-	for (int j=soundFiles.Num()-1; j>=0; --j)
-		if (IsFileSameAsInResources(soundFiles[j]))
-			soundFiles.RemoveIndex(j); // files are the same - don't pack new file
-
+	for( int j = commonFiles.Num() - 1; j >= 0; --j )
+		if( IsFileSameAsInResources( commonFiles[j] ) )
+			commonFiles.RemoveIndex( j ); // files are the same - don't pack new file
+			
+	for( int j = soundFiles.Num() - 1; j >= 0; --j )
+		if( IsFileSameAsInResources( soundFiles[j] ) )
+			soundFiles.RemoveIndex( j ); // files are the same - don't pack new file
+			
 	//=========================================================================================
 	// Write out _common.resources
 	//=========================================================================================
 	commonPreloads.WriteManifest( "_common.preload" );
-
-	int chapterId=fs_buildChapter.GetInteger();
-
-	if (chapterId>0)
-		idResourceContainer::WriteResourceFile( va("_chapter%02d", chapterId), commonFiles, false );
+	
+	int chapterId = fs_buildChapter.GetInteger();
+	
+	if( chapterId > 0 )
+		idResourceContainer::WriteResourceFile( va( "_chapter%02d", chapterId ), commonFiles, false );
 	else
 	{
 		// write mod .resources
-		const char *modname=fs_game.GetString();
-		if (!modname || !modname[0])
+		const char* modname = fs_game.GetString();
+		if( !modname || !modname[0] )
 		{
-			idLib::Warning("fs_buildChapter is 0 and no fs_game is set for mod, aborting");
+			idLib::Warning( "fs_buildChapter is 0 and no fs_game is set for mod, aborting" );
 			return;
 		}
-
+		
 		// add sound files to mod resources, instead of packing them separately
-		for (int j=0; j<soundFiles.Num(); ++j) commonFiles.AddUnique(soundFiles[j]);
+		for( int j = 0; j < soundFiles.Num(); ++j ) commonFiles.AddUnique( soundFiles[j] );
 		soundFiles.Clear();
-
+		
 		idResourceContainer::WriteResourceFile( modname, commonFiles, false );
 	}
 	
 	//=========================================================================================
 	// Prepare soundFiles
-	//=========================================================================================	
+	//=========================================================================================
 	idList< idStrList > soundOutputFiles;
 	soundOutputFiles.SetNum( 16 );
 	
@@ -1495,7 +1499,7 @@ void idFileSystemLocal::WriteResourcePacks()
 		{
 			if( soundFiles[ k ].Find( soundFileInfo[ l ].voqualifier, false ) >= 0 )
 			{
-				if ( ReadFile( soundFiles[k], NULL, NULL ) == -1 ) continue; // skip missing sound files
+				if( ReadFile( soundFiles[k], NULL, NULL ) == -1 ) continue;  // skip missing sound files
 				soundFileInfo[ l ].samples->AddUnique( soundFiles[ k ] );
 				soundFiles.RemoveIndex( k );
 			}
@@ -1505,9 +1509,9 @@ void idFileSystemLocal::WriteResourcePacks()
 	for( int k = 0; k < numSoundFiles; k++ )
 	{
 		idStrList& sampleList = *soundFileInfo[ k ].samples;
-
-		if (sampleList.Num()==0) continue; // skip if empty
-
+		
+		if( sampleList.Num() == 0 ) continue; // skip if empty
+		
 		// write pc
 		idResourceContainer::WriteResourceFile( va( "_chapter%02d_sound_pc_%s", chapterId, soundFileInfo[ k ].filename ), sampleList, false );
 		for( int l = 0; l < sampleList.Num(); l++ )
@@ -1516,9 +1520,9 @@ void idFileSystemLocal::WriteResourcePacks()
 		}
 	}
 	
-	if (soundFiles.Num()!=0)
-		idResourceContainer::WriteResourceFile( va("_chapter%02d_sound_pc", chapterId), soundFiles, false );
-
+	if( soundFiles.Num() != 0 )
+		idResourceContainer::WriteResourceFile( va( "_chapter%02d_sound_pc", chapterId ), soundFiles, false );
+		
 	for( int k = 0; k < soundFiles.Num(); k++ )
 	{
 		soundFiles[ k ].Replace( ".idwav", ".idxma" );
@@ -1528,10 +1532,10 @@ void idFileSystemLocal::WriteResourcePacks()
 	{
 		soundFiles[ k ].Replace( ".idxma", ".idmsf" );
 	}
-
+	
 	//=========================================================================================
 	// Write out _ordered.resources
-	//=========================================================================================		
+	//=========================================================================================
 	// BuildOrderedStartupContainer();
 	
 	ClearResourcePacks();
@@ -1550,7 +1554,7 @@ void idFileSystemLocal::WriteResourceChapters(const char* name)
 	idStrList filesNotCommonToAllMaps( 32768 );		// files that are not shared by all maps, used to trim the common list
 	idStrList filesCommonToAllMaps( 1024 );		// files that are shared by all maps, will include startup files, renderprogs etc..
 	idPreloadManifest commonPreloads;				// preload entries that exist in all map preload files
-	
+
 	// for debugging purpose
 	//if(UsingResourceFiles())
 	//	idLib::Printf( "using resources file\n" );
@@ -1558,7 +1562,7 @@ void idFileSystemLocal::WriteResourceChapters(const char* name)
 	//	idLib::Printf( "NOT using resources file\n" );
 
 	idStr path = RelativePathToOSPath( "maps/", "fs_savepath" );
-	
+
 	idStrList manifestFiles;
 	//ListOSFiles( "C:\\kot\\RBDOOM-3-BFG-master\\build\\base\\maps", ".manifest", manifestFiles ); //for debugging purpose
 	ListOSFiles( path, ".manifest", manifestFiles ); //for release purpose
@@ -1612,9 +1616,9 @@ void idFileSystemLocal::WriteResourceChapters(const char* name)
 			//preload.Print();
 		}
 	}
-	
+
 	//=========================================================================================
-	// Scans through the entire list of manifest entries and see if an entry appears in every 
+	// Scans through the entire list of manifest entries and see if an entry appears in every
 	// manifest file. (Ignore all .cfg and .lang files)
 	// If this is true, the filename is added into filesCommonToAllMaps.
 	// Otherwise, the filename is added to filesNotCommonToAllMaps.
@@ -1641,7 +1645,7 @@ void idFileSystemLocal::WriteResourceChapters(const char* name)
 	}
 
 	//=========================================================================================
-	// Scans through the entire list of preload entries and see if an entry appears in every 
+	// Scans through the entire list of preload entries and see if an entry appears in every
 	// preload file.
 	// If true, the filename is added into commonPreloads.
 	//=========================================================================================
@@ -1662,12 +1666,12 @@ void idFileSystemLocal::WriteResourceChapters(const char* name)
 			}
 		}
 	}
-	
+
 	AddRenderProgs( filesCommonToAllMaps ); // no files will be added in chapter 1
 	AddFonts( filesCommonToAllMaps );
-	
+
 	idStrList work;
-	
+
 	//=========================================================================================
 	// Remove all common files from each map manifest
 	// Parses through filesCommonToAllMaps and removes them from manifests
@@ -1679,14 +1683,14 @@ void idFileSystemLocal::WriteResourceChapters(const char* name)
 			continue;
 		}
 		//idLib::Printf( "%04d referenced files for %s\n", manifests[ i ].GetReferencedFileCount(), manifests[ i ].GetManifestName() );
-		
+
 		for( int j = 0; j < filesCommonToAllMaps.Num(); j++ )
 		{
 			manifests[ i ].RemoveAll( filesCommonToAllMaps[ j ] );
 		}
 		//idLib::Printf( "%04d referenced files for %s\n", manifests[ i ].GetReferencedFileCount(), manifests[ i ].GetManifestName() );
 	}
-	
+
 	idStrList commonImages( 2048 );
 	idStrList commonModels( 2048 );
 	idStrList commonAnims( 2048 );
@@ -1699,7 +1703,7 @@ void idFileSystemLocal::WriteResourceChapters(const char* name)
 	idStr resourceFileName;
 
 	//=========================================================================================
-	// Process remaining files in manifests. 
+	// Process remaining files in manifests.
 	//=========================================================================================
 	for( int i = 0; i < manifests.Num(); i++ )
 	{
@@ -1724,12 +1728,12 @@ void idFileSystemLocal::WriteResourceChapters(const char* name)
 		//=========================================================================================
 		// Insert into workingFilesTwo all unique files and place behind them all images, models,
 		// anims, and collisions (in this linear order). Sound files are not added in.
-		//=========================================================================================		
-		commonImages.Clear();	
+		//=========================================================================================
+		commonImages.Clear();
 		commonModels.Clear();
 		commonAnims.Clear();
 		commonCollision.Clear();
-			
+
 		manifests[ i ].PopulateList( workingFiles );
 
 		for( int j = 0; j < workingFiles.Num(); j++ )
@@ -1770,7 +1774,7 @@ void idFileSystemLocal::WriteResourceChapters(const char* name)
 			}
 			workingFilesTwo.AddUnique( resName ); // All unique files go up front
 		}
-		
+
 		// Add all images, models, anims, and collisions (in this order) to workingFilesTwo
 		for( int j = 0; j < commonImages.Num(); j++ )
 		{
@@ -1803,7 +1807,7 @@ void idFileSystemLocal::WriteResourceChapters(const char* name)
 	//=========================================================================================
 	// Write out chapterxxx.resources
 	//=========================================================================================
-	idResourceContainer::WriteResourceFile( "_chapter2", chapterFiles, false );	
+	idResourceContainer::WriteResourceFile( "_chapter2", chapterFiles, false );
 	chapterFiles.Clear();
 
 	//=========================================================================================
@@ -1816,7 +1820,7 @@ void idFileSystemLocal::WriteResourceChapters(const char* name)
 		filesCommonToAllMaps.Append( idStr( "maps/" ) + work[ i ] );
 	}
 	filesCommonToAllMaps.Append( "_common.preload" ); // Need to rename manually
-	
+
 	//=========================================================================================
 	// Add files already added to _common.resources of earlier chapters to commonFiles
 	//=========================================================================================
@@ -1827,7 +1831,7 @@ void idFileSystemLocal::WriteResourceChapters(const char* name)
 	{
 		commonFiles.AddUnique( resourceFiles[ rsrc_common ]->cacheTable[ j ].filename );
 	}
-	
+
 	//rsrc_common = FindResourceFile( "_common2.resources"); //Example of adding earlier chapter
 	//for( int j = 0; j < resourceFiles[ rsrc_common ]->cacheTable.Num(); j++ )
 	//{
@@ -1873,7 +1877,7 @@ void idFileSystemLocal::WriteResourceChapters(const char* name)
 		}
 		commonFiles.AddUnique( resName ); // All unique common files go up front
 	}
-	
+
 	// Add all common images and models (in this order) to commonFiles
 	for( int j = 0; j < commonImages.Num(); j++ )
 	{
@@ -1889,13 +1893,13 @@ void idFileSystemLocal::WriteResourceChapters(const char* name)
 	//=========================================================================================
 	commonPreloads.WriteManifest( "_common2.preload" ); //Need to rename manually for a new chapter
 	idResourceContainer::WriteResourceFile( "_common2", commonFiles, false ); //Need to rename manually
-	
+
 	//=========================================================================================
 	// Write out _ordered.resources
-	//=========================================================================================	
+	//=========================================================================================
 	idList< idStrList > soundOutputFiles;
 	soundOutputFiles.SetNum( 16 );
-	
+
 	struct soundVOInfo_t
 	{
 		const char* filename;
@@ -1912,7 +1916,7 @@ void idFileSystemLocal::WriteResourceChapters(const char* name)
 		{ "en", "sound/vo/", &soundOutputFiles[ 5 ] }	// english last so the other langs are culled first
 	};
 	const int numSoundFiles = sizeof( soundFileInfo ) / sizeof( soundVOInfo_t );
-	
+
 	for( int k = soundFiles.Num() - 1; k > 0; k-- )
 	{
 		for( int l = 0; l < numSoundFiles; l++ )
@@ -1924,11 +1928,11 @@ void idFileSystemLocal::WriteResourceChapters(const char* name)
 			}
 		}
 	}
-	
+
 	for( int k = 0; k < numSoundFiles; k++ )
 	{
 		idStrList& sampleList = *soundFileInfo[ k ].samples;
-		
+
 		// write pc
 		idResourceContainer::WriteResourceFile( va( "_sound_pc_%s", soundFileInfo[ k ].filename ), sampleList, false );
 		for( int l = 0; l < sampleList.Num(); l++ )
@@ -1936,23 +1940,23 @@ void idFileSystemLocal::WriteResourceChapters(const char* name)
 			sampleList[ l ].Replace( ".idwav", ".idxma" );
 		}
 	}
-	
+
 	idResourceContainer::WriteResourceFile( "_sound_pc", soundFiles, false );
 	for( int k = 0; k < soundFiles.Num(); k++ )
 	{
 		soundFiles[ k ].Replace( ".idwav", ".idxma" );
 	}
-	
+
 	for( int k = 0; k < soundFiles.Num(); k++ )
 	{
 		soundFiles[ k ].Replace( ".idxma", ".idmsf" );
 	}
-	
+
 	//=========================================================================================
 	// Write out _ordered.resources
-	//=========================================================================================		
+	//=========================================================================================
 	BuildOrderedStartupContainer();
-	
+
 	ClearResourcePacks();
 }
 */
@@ -3053,7 +3057,7 @@ void idFileSystemLocal::BuildChapters_f( const idCmdArgs& args )
 		common->Printf( "Usage: BuildChapters <chapter name>\n" );
 		return;
 	}
-	
+
 	idStr foldername =  args.Argv( 1 );
 	fileSystemLocal.WriteResourceChapters( foldername );
 }
@@ -3078,26 +3082,26 @@ void idFileSystemLocal::WriteResourceFile_f( const idCmdArgs& args )
 }
 
 
-static void addFileOrFolder(const char *filename, idStrList &list)
+static void addFileOrFolder( const char* filename, idStrList& list )
 {
-	idStr path=filename;
+	idStr path = filename;
 	path.BackSlashesToSlashes();
-	path.StripTrailing('/');
-
-	if (path.Find("/.svn", false)>=0) return;
-
-	if (fileSystem->IsFolder(path)==FOLDER_YES)
+	path.StripTrailing( '/' );
+	
+	if( path.Find( "/.svn", false ) >= 0 ) return;
+	
+	if( fileSystem->IsFolder( path ) == FOLDER_YES )
 	{
-		idFileList *files=fileSystem->ListFilesTree(path, "");
-
-		for (int i=0; i<files->GetNumFiles(); ++i)
-			addFileOrFolder(files->GetFile(i), list);
-
-		fileSystem->FreeFileList(files);
+		idFileList* files = fileSystem->ListFilesTree( path, "" );
+		
+		for( int i = 0; i < files->GetNumFiles(); ++i )
+			addFileOrFolder( files->GetFile( i ), list );
+			
+		fileSystem->FreeFileList( files );
 	}
 	else
 	{
-		list.Append(path);
+		list.Append( path );
 	}
 }
 
@@ -3121,9 +3125,9 @@ void idFileSystemLocal::UpdateResourceFile_f( const idCmdArgs& args )
 	{
 		addFileOrFolder( args.Argv( i ), filesToAdd );
 	}
-
+	
 	// for (int i=0; i<filesToAdd.Num(); ++i) common->Printf(" %s\n", filesToAdd[i].c_str());
-
+	
 	idResourceContainer::UpdateResourceFile( filename, filesToAdd );
 }
 
@@ -3147,53 +3151,53 @@ void idFileSystemLocal::ExtractResourceFile_f( const idCmdArgs& args )
 }
 
 
-void idFileSystemLocal::ListResourcesContent_f( const idCmdArgs &args )
+void idFileSystemLocal::ListResourcesContent_f( const idCmdArgs& args )
 {
-	if ( args.Argc() < 2 )
+	if( args.Argc() < 2 )
 	{
 		common->Printf( "Usage: fs_listResourcesContent <resource file> <optional output txt file>\n" );
 		return;
 	}
-
-	idStr filename = args.Argv(1);
-	filename.SetFileExtension("resources");
-
-	idResourceContainer *res=new idResourceContainer();
-	if (!res->Init(filename, 0))
+	
+	idStr filename = args.Argv( 1 );
+	filename.SetFileExtension( "resources" );
+	
+	idResourceContainer* res = new idResourceContainer();
+	if( !res->Init( filename, 0 ) )
 	{
 		delete res;
 		common->Printf( "Can't open resources file %s\n", filename.c_str() );
 		return;
 	}
-
+	
 	common->Printf( "Listing contents of %s\n", filename.c_str() );
-
-	idFile *outFile=NULL;
-	if (args.Argc()>2) outFile=fileSystem->OpenFileWrite(args.Argv(2));
-
-	for (int i=0; i<res->cacheTable.Num(); ++i)
+	
+	idFile* outFile = NULL;
+	if( args.Argc() > 2 ) outFile = fileSystem->OpenFileWrite( args.Argv( 2 ) );
+	
+	for( int i = 0; i < res->cacheTable.Num(); ++i )
 	{
-		const char *name=res->cacheTable[i].filename;
-		common->Printf(" %s\n", name);
-		if (outFile) outFile->Printf("%s\n", name);
+		const char* name = res->cacheTable[i].filename;
+		common->Printf( " %s\n", name );
+		if( outFile ) outFile->Printf( "%s\n", name );
 	}
-
-	if (outFile) delete outFile;
+	
+	if( outFile ) delete outFile;
 	delete res;
 }
 
 
-void idFileSystemLocal::RemoveResourcesFile_f( const idCmdArgs &args )
+void idFileSystemLocal::RemoveResourcesFile_f( const idCmdArgs& args )
 {
-	if ( args.Argc() < 3 )
+	if( args.Argc() < 3 )
 	{
 		common->Printf( "Usage: fs_removeResourcesFile <resource file> <files to remove>\n" );
 		return;
 	}
-
+	
 	idStr filename = args.Argv( 1 );
-	filename.SetFileExtension("resources");
-
+	filename.SetFileExtension( "resources" );
+	
 	idStrList filesToRemove;
 	for( int i = 2; i < args.Argc(); i++ )
 	{
@@ -3645,7 +3649,7 @@ void idFileSystemLocal::Startup()
 	cmdSystem->AddCommand( "fs_updateResourceFile", UpdateResourceFile_f, CMD_FL_SYSTEM, "updates or appends the supplied files in the supplied resource file" );
 	
 	cmdSystem->AddCommand( "fs_generateResourceCRCs", GenerateResourceCRCs_f, CMD_FL_SYSTEM, "Generates CRC checksums for all the resource files." );
-
+	
 	cmdSystem->AddCommand( "fs_listResourcesContent", ListResourcesContent_f, CMD_FL_SYSTEM, "list contents of the specifed .resources file" );
 	cmdSystem->AddCommand( "fs_removeResourcesFile", RemoveResourcesFile_f, CMD_FL_SYSTEM, "remove file from .resources package" );
 	

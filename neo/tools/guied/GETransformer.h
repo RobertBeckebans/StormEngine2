@@ -34,32 +34,35 @@ class rvGETransformer
 {
 public:
 
-	rvGETransformer ( );
-
-	bool		Create			( HWND parent, bool visible );
-	void		Show			( bool show );
-
-	void		SetWorkspace	( rvGEWorkspace* workspace );
-	void		Update			( void );
-
-	bool		GetLockAspect	( void );
-	HWND		GetWindow		( void );
-	rvGEWorkspace *	GetWorkspace(void) { return mWorkspace; }
+	rvGETransformer( );
+	
+	bool		Create( HWND parent, bool visible );
+	void		Show( bool show );
+	
+	void		SetWorkspace( rvGEWorkspace* workspace );
+	void		Update( void );
+	
+	bool		GetLockAspect( void );
+	HWND		GetWindow( void );
+	rvGEWorkspace* 	GetWorkspace( void )
+	{
+		return mWorkspace;
+	}
 protected:
 
 	HWND			mWnd;
 	HWND			mDlg;
 	rvGEWorkspace*	mWorkspace;
 	idWindow*		mRelative;
-
+	
 private:
 
-	static LRESULT CALLBACK		WndProc		( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam );
-	static INT_PTR CALLBACK		DlgProc		( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam );
-	static LRESULT FAR PASCAL	GetMsgProc	( int nCode, WPARAM wParam, LPARAM lParam );
+	static LRESULT CALLBACK		WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam );
+	static INT_PTR CALLBACK		DlgProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam );
+	static LRESULT FAR PASCAL	GetMsgProc( int nCode, WPARAM wParam, LPARAM lParam );
 };
 
-ID_INLINE HWND rvGETransformer::GetWindow ( void )
+ID_INLINE HWND rvGETransformer::GetWindow( void )
 {
 	return mWnd;
 }

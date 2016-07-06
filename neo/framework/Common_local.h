@@ -27,6 +27,7 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+
 static const int MAX_USERCMD_BACKUP = 256;
 static const int NUM_USERCMD_RELAY = 10;
 static const int NUM_USERCMD_SEND = 8;
@@ -532,6 +533,7 @@ private:
 	int					lastPacifierSessionTime;
 	int					lastPacifierGuiTime;
 	bool				lastPacifierDialogState;
+	
 	// foresthale 2014-05-30: a special binarize pacifier has to be shown in some cases, which includes filename and ETA information
 	bool				loadPacifierBinarizeActive;
 	int					loadPacifierBinarizeStartTime;

@@ -27,6 +27,7 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+
 #pragma hdrstop
 #include "precompiled.h"
 
@@ -749,6 +750,7 @@ int idMaterial::ParseTerm( idLexer& src )
 	{
 		return 1.0f;
 	}
+	
 	if( !token.Icmp( "sound" ) )
 	{
 		pd->registersAreConstant = false;

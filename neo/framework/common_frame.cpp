@@ -27,6 +27,7 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+
 #include "precompiled.h"
 #pragma hdrstop
 
@@ -527,6 +528,7 @@ void idCommonLocal::Frame()
 		// This may block if the GPU isn't finished renderng the previous frame.
 		frameTiming.startSyncTime = Sys_Microseconds();
 		const emptyCommand_t* renderCommands = NULL;
+		
 		// foresthale 2014-05-12: also check com_editors as many of them are not particularly thread-safe (editLights for example)
 		if( com_smp.GetBool() && com_editors == 0 )
 		{
@@ -815,7 +817,7 @@ void idCommonLocal::Frame()
 		// the FPU stack better be empty at this point or some bad code or compiler bug left values on the stack
 		if( !Sys_FPU_StackIsEmpty() )
 		{
-			Printf( Sys_FPU_GetState() );
+			Printf( "%s", Sys_FPU_GetState() );
 			FatalError( "idCommon::Frame: the FPU stack is not empty at the end of the frame\n" );
 		}
 		

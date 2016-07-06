@@ -334,11 +334,13 @@ R_SetupDrawSurfJoints
 */
 void R_SetupDrawSurfJoints( drawSurf_t* drawSurf, const srfTriangles_t* tri, const idMaterial* shader )
 {
-	if( tri->staticModelWithJoints == NULL || !r_useGPUSkinning.GetBool() )
+	// RB: added check wether GPU skinning is available at all
+	if( tri->staticModelWithJoints == NULL )// || !r_useGPUSkinning.GetBool() || !glConfig.gpuSkinningAvailable )
 	{
 		drawSurf->jointCache = 0;
 		return;
 	}
+	// RB end
 	
 	idRenderModelStatic* model = tri->staticModelWithJoints;
 	assert( model->jointsInverted != NULL );
@@ -699,7 +701,10 @@ void R_AddSingleModel( viewEntity_t* vEntity )
 		// If the entire model wasn't visible, there is no need to check the
 		// individual surfaces.
 		const bool surfaceDirectlyVisible = modelIsVisible && !idRenderMatrix::CullBoundsToMVP( vEntity->mvp, tri->bounds );
-		const bool gpuSkinned = ( tri->staticModelWithJoints != NULL && r_useGPUSkinning.GetBool() );
+		
+		// RB: added check wether GPU skinning is available at all
+		const bool gpuSkinned = true; //( tri->staticModelWithJoints != NULL && r_useGPUSkinning.GetBool() && glConfig.gpuSkinningAvailable );
+		// RB end
 		
 		//--------------------------
 		// base drawing surface
@@ -715,6 +720,7 @@ void R_AddSingleModel( viewEntity_t* vEntity )
 				{
 					tri->indexCache = vertexCache.AllocIndex( tri->indexes, ALIGN( tri->numIndexes * sizeof( triIndex_t ), INDEX_CACHE_ALIGN ) );
 				}
+			
 				if( !vertexCache.CacheIsCurrent( tri->ambientCache ) )
 				{
 					// we are going to use it for drawing, so make sure we have the tangents and normals
@@ -964,7 +970,7 @@ void R_AddSingleModel( viewEntity_t* vEntity )
 			{
 				if( shader->Coverage() == MC_PERFORATED )
 				{
-					if( r_forceShadowMapsOnAlphaTestedSurfaces.GetBool() == false )
+					if( !r_forceShadowMapsOnAlphaTestedSurfaces.GetBool() )
 						continue;
 				}
 			}
@@ -1005,7 +1011,7 @@ void R_AddSingleModel( viewEntity_t* vEntity )
 			// if the static shadow does not have any shadows
 			if( surfInter != NULL && surfInter->numShadowIndexes == 0 )
 			{
-				if( r_useShadowMapping.GetBool() == false )
+				if( !r_useShadowMapping.GetBool() )
 					continue;
 			}
 			

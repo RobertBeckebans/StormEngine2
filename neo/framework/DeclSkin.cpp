@@ -155,7 +155,7 @@ const char* idDeclSkin::DefaultDefinition() const
 idDeclSkin::GetNumModelAssociations
 ================
 */
-const int idDeclSkin::GetNumModelAssociations( void ) const
+const int idDeclSkin::GetNumModelAssociations() const
 {
 	return associatedModels.Num();
 }

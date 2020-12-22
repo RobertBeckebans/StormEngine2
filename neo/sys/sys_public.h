@@ -546,8 +546,8 @@ void			Sys_ClearEvents();
 // the main window is recreated
 void			Sys_InitInput();
 void			Sys_ShutdownInput();
-void			Sys_InitScanTable( void );
-const unsigned char* Sys_GetScanTable( void );
+void			Sys_InitScanTable();
+const unsigned char* Sys_GetScanTable();
 
 // keyboard input polling
 int				Sys_PollKeyboardInputEvents();

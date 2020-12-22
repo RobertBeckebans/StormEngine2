@@ -70,7 +70,7 @@ idDmapRenderModelOverlay::~idDmapRenderModelOverlay()
 idDmapRenderModelOverlay::Alloc
 ====================
 */
-idDmapRenderModelOverlay* idDmapRenderModelOverlay::Alloc( void )
+idDmapRenderModelOverlay* idDmapRenderModelOverlay::Alloc()
 {
 	return new idDmapRenderModelOverlay;
 }

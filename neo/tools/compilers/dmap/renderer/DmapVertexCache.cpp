@@ -868,7 +868,7 @@ void idDmapVertexCache::EndFrame()
 idDmapVertexCache::List
 =============
 */
-void idDmapVertexCache::List( void )
+void idDmapVertexCache::List()
 {
 	int	numActive = 0;
 	int frameStatic = 0;

@@ -39,7 +39,7 @@ rvRegistryOptions::rvRegistryOptions
 Constructor
 ================
 */
-rvRegistryOptions::rvRegistryOptions( void )
+rvRegistryOptions::rvRegistryOptions()
 {
 }
 
@@ -60,7 +60,7 @@ rvRegistryOptions::Save
 Write the options to the registry
 ================
 */
-bool rvRegistryOptions::Save( void )
+bool rvRegistryOptions::Save()
 {
 	HKEY	hKey;
 	int		i;
@@ -95,7 +95,7 @@ rvRegistryOptions::Load
 Read the options from the registry
 ================
 */
-bool rvRegistryOptions::Load( void )
+bool rvRegistryOptions::Load()
 {
 	HKEY	hKey;
 	char	temp[MAX_PATH];

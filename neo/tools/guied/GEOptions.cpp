@@ -62,7 +62,7 @@ rvGEOptions::rvGEOptions()
 rvGEOptions::Init
 ================
 */
-void rvGEOptions::Init( void )
+void rvGEOptions::Init()
 {
 	mRegistry.Init( "Software\\id Software\\DOOM3\\Tools\\GUIEditor" );
 }
@@ -74,7 +74,7 @@ rvGEOptions::Save
 Writes the options to the registry so they can later be read using the Load method
 ================
 */
-bool rvGEOptions::Save( void )
+bool rvGEOptions::Save()
 {
 	// Write the last page we visited
 	mRegistry.SetLong( "lastOptionsPage", mLastOptionsPage );
@@ -115,7 +115,7 @@ rvGEOptions::Load
 Loads previsouly saved options from the registry
 ================
 */
-bool rvGEOptions::Load( void )
+bool rvGEOptions::Load()
 {
 	if( !mRegistry.Load( ) )
 	{

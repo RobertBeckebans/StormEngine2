@@ -365,13 +365,13 @@ public:
 
 	//virtual void			Init();
 
-	void 					HitObject( void );	// const trace_t &collision, const idVec3 &velocity  );
-	void					FireBullet( void );
-	void					FireBomb( void );
-	void 					Aim( void );
+	void 					HitObject();	// const trace_t &collision, const idVec3 &velocity  );
+	void					FireBullet();
+	void					FireBomb();
+	void 					Aim();
 	void					Save( idSaveGame* savefile ) const;
 	void					Restore( idRestoreGame* savefile );
-	int						GetZoomFov( void );
+	int						GetZoomFov();
 	void 					LightOnOff( bool on );
 	bool					lightOn;
 
@@ -521,16 +521,16 @@ class idAFEntity_VehicleSimple_4wd : public idAFEntity_Vehicle
 public:
 	CLASS_PROTOTYPE( idAFEntity_VehicleSimple_4wd );
 
-	idAFEntity_VehicleSimple_4wd( void );
-	~idAFEntity_VehicleSimple_4wd( void );
+	idAFEntity_VehicleSimple_4wd();
+	~idAFEntity_VehicleSimple_4wd();
 
-	void					Spawn( void );
-	virtual void			Think( void );
+	void					Spawn();
+	virtual void			Think();
 
 	// ############### SR
 	virtual void			WriteToSnapshot( idBitMsg& msg ) const;
 	virtual void			ReadFromSnapshot( const idBitMsg& msg );
-	virtual void			ClientPredictionThink( void );
+	virtual void			ClientPredictionThink();
 	float					bvelocity;
 	float					bforce;
 	// ############### END

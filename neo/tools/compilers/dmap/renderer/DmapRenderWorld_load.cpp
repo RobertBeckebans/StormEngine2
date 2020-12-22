@@ -113,7 +113,7 @@ void idDmapRenderWorldLocal::FreeWorld()
 idDmapRenderWorldLocal::TouchWorldModels
 ================
 */
-void idDmapRenderWorldLocal::TouchWorldModels( void )
+void idDmapRenderWorldLocal::TouchWorldModels()
 {
 	int i;
 

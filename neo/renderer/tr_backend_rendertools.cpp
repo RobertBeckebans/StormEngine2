@@ -3263,7 +3263,7 @@ RB_SetGL2D
 This is not used by the normal game paths, just by some tools
 =============
 */
-void RB_SetGL2D( void )
+void RB_SetGL2D()
 {
 	// set 2D virtual screen size
 	qglViewport( 0, 0, glConfig.nativeScreenWidth, glConfig.nativeScreenHeight );

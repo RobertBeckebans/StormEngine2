@@ -2588,7 +2588,7 @@ void idAFEntity_Vehicle::LightOnOff( bool on )
 idAFEntity_Vehicle::GetZoomFov
 ================
 */
-int	idAFEntity_Vehicle::GetZoomFov( void )
+int	idAFEntity_Vehicle::GetZoomFov()
 {
 	return zoomFov;
 }
@@ -2599,7 +2599,7 @@ int	idAFEntity_Vehicle::GetZoomFov( void )
 idAFEntity_Vehicle::Aim
 ================
 */
-void idAFEntity_Vehicle::Aim( void )
+void idAFEntity_Vehicle::Aim()
 {
 	idRotation turretRotation, turretAim;
 	idAngles ang;
@@ -2655,7 +2655,7 @@ void idAFEntity_Vehicle::Aim( void )
 idAFEntity_Vehicle::FireBullet
 ================
 */
-void idAFEntity_Vehicle::FireBullet( void )
+void idAFEntity_Vehicle::FireBullet()
 {
 	if( !common->IsClient() )
 	{
@@ -2671,7 +2671,7 @@ void idAFEntity_Vehicle::FireBullet( void )
 idAFEntity_Vehicle::FireBomb
 ================
 */
-void idAFEntity_Vehicle::FireBomb( void )
+void idAFEntity_Vehicle::FireBomb()
 {
 	if( !common->IsClient() )
 	{
@@ -2821,7 +2821,7 @@ idAFEntity_Vehicle::HitObject
 ===============
 */
 
-void idAFEntity_Vehicle::HitObject( void )
+void idAFEntity_Vehicle::HitObject()
 {
 
 	idEntity*	ent;
@@ -3416,7 +3416,7 @@ END_CLASS
 idAFEntity_VehicleSimple_4wd::idAFEntity_VehicleSimple_4wd
 ================
 */
-idAFEntity_VehicleSimple_4wd::idAFEntity_VehicleSimple_4wd( void )
+idAFEntity_VehicleSimple_4wd::idAFEntity_VehicleSimple_4wd()
 {
 	for( int i = 0; i < 4; i++ )
 	{
@@ -3431,7 +3431,7 @@ idAFEntity_VehicleSimple_4wd::idAFEntity_VehicleSimple_4wd( void )
 idAFEntity_VehicleSimple_4wd::~idAFEntity_VehicleSimple_4wd
 ================
 */
-idAFEntity_VehicleSimple_4wd::~idAFEntity_VehicleSimple_4wd( void )
+idAFEntity_VehicleSimple_4wd::~idAFEntity_VehicleSimple_4wd()
 {
 	delete wheelModel;
 	wheelModel = NULL;
@@ -3442,7 +3442,7 @@ idAFEntity_VehicleSimple_4wd::~idAFEntity_VehicleSimple_4wd( void )
 idAFEntity_VehicleSimple_4wd::Spawn
 ================
 */
-void idAFEntity_VehicleSimple_4wd::Spawn( void )
+void idAFEntity_VehicleSimple_4wd::Spawn()
 {
 	static const char* wheelJointKeys[] =
 	{
@@ -3753,7 +3753,7 @@ void idAFEntity_VehicleSimple_4wd::ReadFromSnapshot( const idBitMsg& msg )
 idAFEntity_VehicleSimple_4wd::ClientPredictionThink
 ================
 */
-void idAFEntity_VehicleSimple_4wd::ClientPredictionThink( void )
+void idAFEntity_VehicleSimple_4wd::ClientPredictionThink()
 {
 	RunPhysics();
 	Present();
@@ -3768,7 +3768,7 @@ void idAFEntity_VehicleSimple_4wd::ClientPredictionThink( void )
 idAFEntity_VehicleSimple_4wd::Think
 ================
 */
-void idAFEntity_VehicleSimple_4wd::Think( void )
+void idAFEntity_VehicleSimple_4wd::Think()
 {
 	int i;
 	idVec3 origin, dorigin;

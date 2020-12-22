@@ -48,7 +48,7 @@ GUIEditorInit
 Start the gui editor
 ================
 */
-void GUIEditorInit( void )
+void GUIEditorInit()
 {
 	InitAfx();
 
@@ -60,7 +60,7 @@ void GUIEditorInit( void )
 GUIEditorShutdown
 ================
 */
-void GUIEditorShutdown( void )
+void GUIEditorShutdown()
 {
 }
 

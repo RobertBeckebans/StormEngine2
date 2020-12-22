@@ -717,7 +717,7 @@ public:
 	virtual void			Rotate( const idRotation& rotation );
 
 	//ivan start
-	const idVec3			GetLastContactPosition( void ) const;
+	const idVec3			GetLastContactPosition() const;
 	virtual void			Save( idSaveGame* savefile ) const;
 	virtual void			Restore( idRestoreGame* savefile );
 

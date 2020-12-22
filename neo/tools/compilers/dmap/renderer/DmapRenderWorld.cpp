@@ -676,7 +676,7 @@ void idDmapRenderWorldLocal::RenderScene( const dmapRenderView_t* renderView )
 NumAreas
 ===================
 */
-int idDmapRenderWorldLocal::NumAreas( void ) const
+int idDmapRenderWorldLocal::NumAreas() const
 {
 	return numPortalAreas;
 }

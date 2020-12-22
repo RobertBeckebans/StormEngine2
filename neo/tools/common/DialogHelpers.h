@@ -57,7 +57,7 @@ public:
 		EnableWindow( mWindow, enable );
 	}
 
-	bool IsChecked( void )
+	bool IsChecked()
 	{
 		return SendMessage( mWindow, BM_GETCHECK, 0, 0 ) == BST_CHECKED ? true : false;
 	}
@@ -74,7 +74,7 @@ public:
 		out = text;
 	}
 
-	float GetFloat( void )
+	float GetFloat()
 	{
 		idStr text;
 		GetText( text );
@@ -86,7 +86,7 @@ public:
 		SetText( va( "%g", f ) );
 	}
 
-	operator HWND( void ) const
+	operator HWND() const
 	{
 		return mWindow;
 	}
@@ -113,7 +113,7 @@ protected:
 class name : public rvDialogItemContainer						\
 {																\
 public:															\
-	name ( void ) { }											\
+	name () { }											\
 	name ( HWND hwnd ) { Cache ( hwnd ); }						\
 	void Cache ( HWND parent )									\
 	{															\

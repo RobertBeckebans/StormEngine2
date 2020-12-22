@@ -819,7 +819,7 @@ ReloadModels and RegenerateWorld call this
 // FIXME: need to do this for all worlds
 ===================
 */
-void R_FreeDerivedDataDmap( void )
+void R_FreeDerivedDataDmap()
 {
 	int i, j;
 	idDmapRenderWorldLocal* rw;
@@ -860,7 +860,7 @@ ReloadModels and RegenerateWorld call this
 // FIXME: need to do this for all worlds
 ===================
 */
-void R_ReCreateWorldReferencesDmap( void )
+void R_ReCreateWorldReferencesDmap()
 {
 	int i, j;
 	idDmapRenderWorldLocal* rw;

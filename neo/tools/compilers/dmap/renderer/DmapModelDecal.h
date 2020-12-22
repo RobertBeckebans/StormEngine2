@@ -62,10 +62,10 @@ typedef struct decalProjectionInfo_s
 class idDmapRenderModelDecal
 {
 public:
-	idDmapRenderModelDecal( void );
-	~idDmapRenderModelDecal( void );
+	idDmapRenderModelDecal();
+	~idDmapRenderModelDecal();
 
-	static idDmapRenderModelDecal* 	Alloc( void );
+	static idDmapRenderModelDecal* 	Alloc();
 	static void					Free( idDmapRenderModelDecal* decal );
 
 	// Creates decal projection info.
@@ -85,7 +85,7 @@ public:
 	void						AddDecalDrawSurf( struct dmapViewEntity_s* space );
 
 	// Returns the next decal in the chain.
-	idDmapRenderModelDecal* 		Next( void ) const
+	idDmapRenderModelDecal* 		Next() const
 	{
 		return nextDecal;
 	}

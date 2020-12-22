@@ -53,7 +53,7 @@ rvPropertyGrid::rvPropertyGrid
 constructor
 ================
 */
-rvPropertyGrid::rvPropertyGrid( void )
+rvPropertyGrid::rvPropertyGrid()
 {
 	mWindow			= NULL;
 	mEdit			= NULL;
@@ -162,7 +162,7 @@ rvPropertyGrid::FinishEdit
 Finish editing by copying the data in the edit control to the internal value
 ================
 */
-void rvPropertyGrid::FinishEdit( void )
+void rvPropertyGrid::FinishEdit()
 {
 	char				value[1024];
 	rvPropertyGridItem* item;
@@ -239,7 +239,7 @@ rvPropertyGrid::CancelEdit
 Stop editing without saving the data
 ================
 */
-void rvPropertyGrid::CancelEdit( void )
+void rvPropertyGrid::CancelEdit()
 {
 	if( mState == STATE_EDIT && !mEditLabel )
 	{
@@ -311,7 +311,7 @@ rvPropertyGrid::RemoveAllItems
 Remove all items from the property grid
 ================
 */
-void rvPropertyGrid::RemoveAllItems( void )
+void rvPropertyGrid::RemoveAllItems()
 {
 	int i;
 

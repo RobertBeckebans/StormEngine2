@@ -146,7 +146,7 @@ static void SetBrushContents( uBrush_t* b )
 FreeBuildBrush
 ===============
 */
-static void FreeBuildBrush( void )
+static void FreeBuildBrush()
 {
 	int		i;
 
@@ -168,7 +168,7 @@ Produces a final brush based on the buildBrush->sides array
 and links it to the current entity
 ===============
 */
-static uBrush_t* FinishBrush( void )
+static uBrush_t* FinishBrush()
 {
 	uBrush_t*	b;
 	primitive_t*	prim;
@@ -617,7 +617,7 @@ void FreeOptimizeGroupList( optimizeGroup_t* groups )
 FreeDMapFile
 ================
 */
-void FreeDMapFile( void )
+void FreeDMapFile()
 {
 	int		i, j;
 

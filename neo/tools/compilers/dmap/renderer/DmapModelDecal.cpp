@@ -47,7 +47,7 @@ If you have questions concerning this license or the applicable additional terms
 idDmapRenderModelDecal::idDmapRenderModelDecal
 ==================
 */
-idDmapRenderModelDecal::idDmapRenderModelDecal( void )
+idDmapRenderModelDecal::idDmapRenderModelDecal()
 {
 	memset( &tri, 0, sizeof( tri ) );
 	tri.verts = verts;
@@ -61,7 +61,7 @@ idDmapRenderModelDecal::idDmapRenderModelDecal( void )
 idDmapRenderModelDecal::~idDmapRenderModelDecal
 ==================
 */
-idDmapRenderModelDecal::~idDmapRenderModelDecal( void )
+idDmapRenderModelDecal::~idDmapRenderModelDecal()
 {
 }
 
@@ -70,7 +70,7 @@ idDmapRenderModelDecal::~idDmapRenderModelDecal( void )
 idDmapRenderModelDecal::idDmapRenderModelDecal
 ==================
 */
-idDmapRenderModelDecal* idDmapRenderModelDecal::Alloc( void )
+idDmapRenderModelDecal* idDmapRenderModelDecal::Alloc()
 {
 	return new idDmapRenderModelDecal;
 }

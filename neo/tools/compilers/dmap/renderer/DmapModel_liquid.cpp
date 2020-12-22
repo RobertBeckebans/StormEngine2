@@ -250,7 +250,7 @@ void idDmapRenderModelLiquid::IntersectBounds( const idBounds& bounds, float dis
 idDmapRenderModelLiquid::Update
 ====================
 */
-void idDmapRenderModelLiquid::Update( void )
+void idDmapRenderModelLiquid::Update()
 {
 	int		x, y;
 	float*	p2;

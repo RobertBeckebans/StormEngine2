@@ -62,7 +62,7 @@ void idDmapRenderModelPrt::InitFromFile( const char* fileName )
 idDmapRenderModelPrt::TouchData
 =================
 */
-void idDmapRenderModelPrt::TouchData( void )
+void idDmapRenderModelPrt::TouchData()
 {
 	// Ensure our particle system is added to the list of referenced decls
 	particleSystem = static_cast<const idDeclParticle*>( declManager->FindType( DECL_PARTICLE, name ) );

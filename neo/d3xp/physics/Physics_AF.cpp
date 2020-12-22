@@ -4438,7 +4438,7 @@ void idAFConstraint_Suspension::SetPosition( const idVec3& origin, const idMat3&
 idAFConstraint_Suspension::GetLastContactPosition
 ================
 */
-const idVec3 idAFConstraint_Suspension::GetLastContactPosition( void ) const
+const idVec3 idAFConstraint_Suspension::GetLastContactPosition() const
 {
 	return lastContactPosition;
 }

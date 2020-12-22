@@ -454,7 +454,7 @@ int idDmapMD5Mesh::NearestJoint( int a, int b, int c ) const
 idDmapMD5Mesh::NumVerts
 ====================
 */
-int idDmapMD5Mesh::NumVerts( void ) const
+int idDmapMD5Mesh::NumVerts() const
 {
 	return texCoords.Num();
 }
@@ -464,7 +464,7 @@ int idDmapMD5Mesh::NumVerts( void ) const
 idDmapMD5Mesh::NumTris
 ====================
 */
-int	idDmapMD5Mesh::NumTris( void ) const
+int	idDmapMD5Mesh::NumTris() const
 {
 	return numTris;
 }
@@ -474,7 +474,7 @@ int	idDmapMD5Mesh::NumTris( void ) const
 idDmapMD5Mesh::NumWeights
 ====================
 */
-int	idDmapMD5Mesh::NumWeights( void ) const
+int	idDmapMD5Mesh::NumWeights() const
 {
 	return numWeights;
 }
@@ -920,7 +920,7 @@ dynamicModel_t idDmapRenderModelMD5::IsDynamicModel() const
 idDmapRenderModelMD5::NumJoints
 ====================
 */
-int idDmapRenderModelMD5::NumJoints( void ) const
+int idDmapRenderModelMD5::NumJoints() const
 {
 	return joints.Num();
 }
@@ -930,7 +930,7 @@ int idDmapRenderModelMD5::NumJoints( void ) const
 idDmapRenderModelMD5::GetJoints
 ====================
 */
-const idMD5Joint* idDmapRenderModelMD5::GetJoints( void ) const
+const idMD5Joint* idDmapRenderModelMD5::GetJoints() const
 {
 	return joints.Ptr();
 }
@@ -940,7 +940,7 @@ const idMD5Joint* idDmapRenderModelMD5::GetJoints( void ) const
 idDmapRenderModelMD5::GetDefaultPose
 ====================
 */
-const idJointQuat* idDmapRenderModelMD5::GetDefaultPose( void ) const
+const idJointQuat* idDmapRenderModelMD5::GetDefaultPose() const
 {
 	return defaultPose.Ptr();
 }

@@ -62,7 +62,7 @@ rvGEHideModifier::Apply
 Apply the hide modifier by setting the visible state of the wrapper window
 ================
 */
-bool rvGEHideModifier::Apply( void )
+bool rvGEHideModifier::Apply()
 {
 	mWrapper->SetHidden( mHide );
 
@@ -81,7 +81,7 @@ rvGEHideModifier::Undo
 Undo the hide modifier by setting the undo visible state of the wrapper window
 ================
 */
-bool rvGEHideModifier::Undo( void )
+bool rvGEHideModifier::Undo()
 {
 	mWrapper->SetHidden( mUndoHide );
 

@@ -69,7 +69,7 @@ public:
 	idDmapRenderModelOverlay();
 	~idDmapRenderModelOverlay();
 
-	static idDmapRenderModelOverlay* Alloc( void );
+	static idDmapRenderModelOverlay* Alloc();
 	static void					Free( idDmapRenderModelOverlay* overlay );
 
 	// Projects an overlay onto deformable geometry and can be added to

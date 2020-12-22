@@ -119,7 +119,7 @@ BOOL CPreviewDlg::OnInitDialog()
 
 }
 
-void CPreviewDlg::OnBnClickedPreviewGui( void )
+void CPreviewDlg::OnBnClickedPreviewGui()
 {
 	onlyFilter = !onlyFilter;
 }

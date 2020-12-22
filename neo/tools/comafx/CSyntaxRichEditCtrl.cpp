@@ -85,7 +85,7 @@ END_MESSAGE_MAP()
 CSyntaxRichEditCtrl::CSyntaxRichEditCtrl
 ================
 */
-CSyntaxRichEditCtrl::CSyntaxRichEditCtrl( void )
+CSyntaxRichEditCtrl::CSyntaxRichEditCtrl()
 {
 	m_TextDoc = NULL;
 	keyWords = defaultKeyWords;
@@ -118,7 +118,7 @@ CSyntaxRichEditCtrl::CSyntaxRichEditCtrl( void )
 CSyntaxRichEditCtrl::~CSyntaxRichEditCtrl
 ================
 */
-CSyntaxRichEditCtrl::~CSyntaxRichEditCtrl( void )
+CSyntaxRichEditCtrl::~CSyntaxRichEditCtrl()
 {
 	FreeKeyWordsFromFile();
 	delete m_pchTip;
@@ -131,7 +131,7 @@ CSyntaxRichEditCtrl::~CSyntaxRichEditCtrl( void )
 CSyntaxRichEditCtrl::InitFont
 ================
 */
-void CSyntaxRichEditCtrl::InitFont( void )
+void CSyntaxRichEditCtrl::InitFont()
 {
 	LOGFONT lf;
 	CFont font;
@@ -215,7 +215,7 @@ void CSyntaxRichEditCtrl::SetCharType( int first, int last, int type )
 CSyntaxRichEditCtrl::InitSyntaxHighlighting
 ================
 */
-void CSyntaxRichEditCtrl::InitSyntaxHighlighting( void )
+void CSyntaxRichEditCtrl::InitSyntaxHighlighting()
 {
 	SetCharType( 0x00, 0xFF, CT_PUNCTUATION );
 	SetCharType( '\0', ' ', CT_WHITESPACE );
@@ -234,7 +234,7 @@ void CSyntaxRichEditCtrl::InitSyntaxHighlighting( void )
 CSyntaxRichEditCtrl::Init
 ================
 */
-void CSyntaxRichEditCtrl::Init( void )
+void CSyntaxRichEditCtrl::Init()
 {
 
 	// get the Rich Edit ITextDocument to use the wonky TOM interface
@@ -436,7 +436,7 @@ bool CSyntaxRichEditCtrl::LoadKeyWordsFromFile( const char* fileName )
 CSyntaxRichEditCtrl::FreeKeyWordsFromFile
 ================
 */
-void CSyntaxRichEditCtrl::FreeKeyWordsFromFile( void )
+void CSyntaxRichEditCtrl::FreeKeyWordsFromFile()
 {
 	for( int i = 0; i < keyWordsFromFile.Num(); i++ )
 	{
@@ -560,7 +560,7 @@ void CSyntaxRichEditCtrl::EnableKeyWordAutoCompletion( bool enable )
 CSyntaxRichEditCtrl::GetVisibleRange
 ================
 */
-CHARRANGE CSyntaxRichEditCtrl::GetVisibleRange( void ) const
+CHARRANGE CSyntaxRichEditCtrl::GetVisibleRange() const
 {
 	RECT rectArea;
 	int firstLine, lastLine;
@@ -941,7 +941,7 @@ CSyntaxRichEditCtrl::UpdateVisibleRange
   Updates the visible character range if it is not yet properly highlighted.
 ================
 */
-void CSyntaxRichEditCtrl::UpdateVisibleRange( void )
+void CSyntaxRichEditCtrl::UpdateVisibleRange()
 {
 	CHARRANGE visRange;
 	tom::ITextRange* range;
@@ -1179,7 +1179,7 @@ void CSyntaxRichEditCtrl::ReplaceText( int startCharIndex, int endCharIndex, con
 CSyntaxRichEditCtrl::AutoCompleteInsertText
 ================
 */
-void CSyntaxRichEditCtrl::AutoCompleteInsertText( void )
+void CSyntaxRichEditCtrl::AutoCompleteInsertText()
 {
 	long selStart, selEnd;
 	int index;
@@ -1201,7 +1201,7 @@ void CSyntaxRichEditCtrl::AutoCompleteInsertText( void )
 CSyntaxRichEditCtrl::AutoCompleteUpdate
 ================
 */
-void CSyntaxRichEditCtrl::AutoCompleteUpdate( void )
+void CSyntaxRichEditCtrl::AutoCompleteUpdate()
 {
 	long selStart, selEnd;
 	int index;
@@ -1251,7 +1251,7 @@ void CSyntaxRichEditCtrl::AutoCompleteShow( int charIndex )
 CSyntaxRichEditCtrl::AutoCompleteHide
 ================
 */
-void CSyntaxRichEditCtrl::AutoCompleteHide( void )
+void CSyntaxRichEditCtrl::AutoCompleteHide()
 {
 	autoCompleteStart = -1;
 	autoCompleteListBox.ShowWindow( FALSE );
@@ -1294,7 +1294,7 @@ void CSyntaxRichEditCtrl::ToolTipShow( int charIndex, const char* string )
 CSyntaxRichEditCtrl::ToolTipHide
 ================
 */
-void CSyntaxRichEditCtrl::ToolTipHide( void )
+void CSyntaxRichEditCtrl::ToolTipHide()
 {
 	funcParmToolTipStart = -1;
 	funcParmToolTip.ShowWindow( FALSE );
@@ -1385,7 +1385,7 @@ bool CSyntaxRichEditCtrl::BracedSectionEnd( char braceStartChar, char braceEndCh
 CSyntaxRichEditCtrl::BracedSectionAdjustEndTabs
 ================
 */
-void CSyntaxRichEditCtrl::BracedSectionAdjustEndTabs( void )
+void CSyntaxRichEditCtrl::BracedSectionAdjustEndTabs()
 {
 	int line, lineIndex, length, column, numTabs, i;
 	char buffer[1024];
@@ -1425,7 +1425,7 @@ void CSyntaxRichEditCtrl::BracedSectionAdjustEndTabs( void )
 CSyntaxRichEditCtrl::BracedSectionShow
 ================
 */
-void CSyntaxRichEditCtrl::BracedSectionShow( void )
+void CSyntaxRichEditCtrl::BracedSectionShow()
 {
 	for( int i = 0; i < 2; i++ )
 	{
@@ -1441,7 +1441,7 @@ void CSyntaxRichEditCtrl::BracedSectionShow( void )
 CSyntaxRichEditCtrl::BracedSectionHide
 ================
 */
-void CSyntaxRichEditCtrl::BracedSectionHide( void )
+void CSyntaxRichEditCtrl::BracedSectionHide()
 {
 	for( int i = 0; i < 2; i++ )
 	{

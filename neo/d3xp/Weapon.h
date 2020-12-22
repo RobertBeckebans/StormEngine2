@@ -254,19 +254,19 @@ private:
 
 	jointHandle_t			ejectReloadJointView;
 
-	void					Event_EjectReloadBrass( void );
+	void					Event_EjectReloadBrass();
 	void					Event_Start_Attack( int leftright );
-	void					Event_Stop_Attack( void );
-	void 					Event_NumProjectiles( void );
-	void 					Event_Spread( void );
-	void					Sword_Attack( void );
-	void 					Melee_Attack( void );
+	void					Event_Stop_Attack();
+	void 					Event_NumProjectiles();
+	void 					Event_Spread();
+	void					Sword_Attack();
+	void 					Melee_Attack();
 	void 					Event_GetObjective( int objNum );
 
 	void 					Event_MeleeAttackLeft( float angle );
 	void 					Event_MeleeAttackRight( float angle );
 
-	void					Event_GetBarrelJoint( void );
+	void					Event_GetBarrelJoint();
 
 	bool 					EntHit( int entNum );
 

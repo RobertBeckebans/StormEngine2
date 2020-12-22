@@ -514,7 +514,7 @@ void FilterBrushesIntoTree( uEntity_t* e )
 AllocTree
 ================
 */
-tree_t* AllocTree( void )
+tree_t* AllocTree()
 {
 	tree_t*	tree;
 
@@ -530,7 +530,7 @@ tree_t* AllocTree( void )
 AllocNode
 ================
 */
-node_t* AllocNode( void )
+node_t* AllocNode()
 {
 	node_t*	node;
 

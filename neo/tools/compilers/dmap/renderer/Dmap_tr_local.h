@@ -692,8 +692,8 @@ TR_TRISURF
 
 #define USE_TRI_DATA_ALLOCATOR
 
-void				R_InitTriSurfDataDmap( void );
-void				R_ShutdownTriSurfData( void );
+void				R_InitTriSurfDataDmap();
+void				R_ShutdownTriSurfData();
 srfDmapTriangles_t* R_AllocStaticTriSurfDmap();
 void				R_AllocStaticTriSurfPlanesDmap( srfDmapTriangles_t* tri, int numIndexes );
 void				R_AllocStaticTriSurfVertsDmap( srfDmapTriangles_t* tri, int numVerts );
@@ -787,7 +787,7 @@ TR_BACKEND_RENDERTOOLS
 
 =============================================================
 */
-void RB_SetGL2D( void );
+void RB_SetGL2D();
 
 /*
 ============================================================

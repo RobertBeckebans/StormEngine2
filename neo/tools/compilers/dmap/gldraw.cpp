@@ -30,7 +30,7 @@ If you have questions concerning this license or the applicable additional terms
 #pragma hdrstop
 #include "precompiled.h"
 
-void Draw_ClearWindow( void )
+void Draw_ClearWindow()
 {
 }
 
@@ -46,10 +46,10 @@ void GLS_Winding( const idWinding* w, int code )
 {
 }
 
-void GLS_BeginScene( void )
+void GLS_BeginScene()
 {
 }
 
-void GLS_EndScene( void )
+void GLS_EndScene()
 {
 }

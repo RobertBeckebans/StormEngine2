@@ -57,7 +57,7 @@ public:
 	virtual BOOL InitInstance();
 	virtual int ExitInstance();
 	virtual BOOL OnIdle( LONG lCount );
-	virtual int Run( void );
+	virtual int Run();
 	//}}AFX_VIRTUAL
 
 // Implementation

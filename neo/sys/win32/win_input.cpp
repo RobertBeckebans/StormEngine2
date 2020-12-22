@@ -1334,7 +1334,7 @@ static unsigned char	rightAltKey = K_RALT;
 Sys_InitScanTable
 ===========
 */
-void Sys_InitScanTable( void )
+void Sys_InitScanTable()
 {
 	idStr lang = cvarSystem->GetCVarString( "sys_lang" );
 	if( lang.Length() == 0 )
@@ -1380,7 +1380,7 @@ void Sys_InitScanTable( void )
 Sys_GetScanTable
 ==================
 */
-const unsigned char* Sys_GetScanTable( void )
+const unsigned char* Sys_GetScanTable()
 {
 	return keyScanTable;
 }

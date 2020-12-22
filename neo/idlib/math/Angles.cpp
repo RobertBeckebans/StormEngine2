@@ -144,7 +144,7 @@ idVec3 idAngles::ToForward() const
 idAngles::ToRight
 =================
 */
-idVec3 idAngles::ToRight( void ) const
+idVec3 idAngles::ToRight() const
 {
 	float sr, sp, sy, cr, cp, cy;
 
@@ -160,7 +160,7 @@ idVec3 idAngles::ToRight( void ) const
 idAngles::ToUp
 =================
 */
-idVec3 idAngles::ToUp( void ) const
+idVec3 idAngles::ToUp() const
 {
 	float sr, sp, sy, cr, cp, cy;
 

@@ -41,7 +41,7 @@ QEGlobals_t g_qeglobals;
  =======================================================================================================================
  =======================================================================================================================
  */
-void WINAPI QE_CheckOpenGLForErrors( void )
+void WINAPI QE_CheckOpenGLForErrors()
 {
 	CString strMsg;
 	int		i = qglGetError();
@@ -171,7 +171,7 @@ void Map_Snapshot()
     QE_CheckAutoSave If five minutes have passed since making a change and the map hasn't been saved, save it out.
  =======================================================================================================================
  */
-void QE_CheckAutoSave( void )
+void QE_CheckAutoSave()
 {
 	static bool inAutoSave = false;
 	static bool autoToggle = false;
@@ -323,7 +323,7 @@ bool QE_SaveProject( const char* pProjectFile )
     ConnectEntities Sets target / name on the two entities selected from the first selected to the secon
  =======================================================================================================================
  */
-void ConnectEntities( void )
+void ConnectEntities()
 {
 	entity_t*	e1;
 	const char*		target;
@@ -441,7 +441,7 @@ bool QE_SingleBrush( bool bQuiet, bool entityOK )
  =======================================================================================================================
  =======================================================================================================================
  */
-void QE_Init( void )
+void QE_Init()
 {
 	/* initialize variables */
 	g_qeglobals.d_gridsize = 8;
@@ -461,7 +461,7 @@ int g_numbrushes, g_numentities;
  =======================================================================================================================
  =======================================================================================================================
  */
-void QE_CountBrushesAndUpdateStatusBar( void )
+void QE_CountBrushesAndUpdateStatusBar()
 {
 	static int	s_lastbrushcount, s_lastentitycount;
 	static bool s_didonce;

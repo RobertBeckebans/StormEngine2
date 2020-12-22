@@ -42,7 +42,7 @@ idDmapSIMDProcessor* 	dmapSIMDProcessor = NULL;
 idDmapSIMD::Init
 ================
 */
-void idDmapSIMD::Init( void )
+void idDmapSIMD::Init()
 {
 	dmapGenericSIMD = new idDmapSIMD_Generic;
 	dmapGenericSIMD->cpuid = CPUID_GENERIC;
@@ -98,7 +98,7 @@ void idDmapSIMD::InitProcessor( const char* module, bool forceGeneric )
 idDmapSIMD::Shutdown
 ================
 */
-void idDmapSIMD::Shutdown( void )
+void idDmapSIMD::Shutdown()
 {
 	if( dmapProcessor != dmapGenericSIMD )
 	{

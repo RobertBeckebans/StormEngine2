@@ -1382,7 +1382,7 @@ void idAnimated::Event_StartAnim( const char* startanim )
 idAnimated::Event_GetAName
 ================
 */
-void idAnimated::Event_GetAName( void )
+void idAnimated::Event_GetAName()
 {
 	idThread::ReturnString( name.c_str() );
 }

@@ -42,11 +42,11 @@ void	DebuggerClientUpdate()
 
 }
 
-bool	DebuggerServerInit( void )
+bool	DebuggerServerInit()
 {
 	return false;
 }
-void	DebuggerServerShutdown( void )
+void	DebuggerServerShutdown()
 {
 
 }

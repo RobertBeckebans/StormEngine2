@@ -618,11 +618,11 @@ protected:
 
 	// #### SR
 
-	void					Event_AIEjectReloadBrass( void );
-	void					Event_AIDodgeLeft( void );
-	void					Event_AIDodgeRight( void );
-	void					Event_AIDodgeBack( void );
-	void					Event_AIDodgeUp( void );
+	void					Event_AIEjectReloadBrass();
+	void					Event_AIDodgeLeft();
+	void					Event_AIDodgeRight();
+	void					Event_AIDodgeBack();
+	void					Event_AIDodgeUp();
 
 	// #### END SR
 

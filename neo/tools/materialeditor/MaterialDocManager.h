@@ -44,8 +44,8 @@ class MaterialDocManager
 {
 
 public:
-	MaterialDocManager( void );
-	~MaterialDocManager( void );
+	MaterialDocManager();
+	~MaterialDocManager();
 
 	//Reg/UnReg Material Views
 	void			RegisterMaterialView( MaterialView* view );

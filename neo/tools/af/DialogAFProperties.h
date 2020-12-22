@@ -40,7 +40,7 @@ public:
 	DialogAFProperties( CWnd* pParent = NULL );   // standard constructor
 	virtual				~DialogAFProperties();
 	void				LoadFile( idDeclAF* af );
-	void				SaveFile( void );
+	void				SaveFile();
 
 	DialogAFBody* 		bodyDlg;
 	DialogAFConstraint* constraintDlg;
@@ -108,6 +108,6 @@ private:
 	static toolTip_t	toolTips[];
 
 private:
-	void				UpdateFile( void );
-	void				ClearFile( void );
+	void				UpdateFile();
+	void				ClearFile();
 };

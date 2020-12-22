@@ -161,7 +161,7 @@ bool DialogDeclEditor::TestDecl( const idStr& declText )
 DialogDeclEditor::UpdateStatusBar
 ================
 */
-void DialogDeclEditor::UpdateStatusBar( void )
+void DialogDeclEditor::UpdateStatusBar()
 {
 	int line, column, character;
 

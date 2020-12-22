@@ -42,14 +42,14 @@ public:
 	bool	Create( HWND parent, bool visible );
 	void	Show( bool visibile );
 
-	void	Refresh( void );
+	void	Refresh();
 
 	void	SetWorkspace( rvGEWorkspace* workspace );
 
-	void	Update( void );
-	void	UpdateSelections( void );
+	void	Update();
+	void	UpdateSelections();
 
-	HWND	GetWindow( void );
+	HWND	GetWindow();
 
 protected:
 
@@ -71,7 +71,7 @@ protected:
 	WNDPROC			mListWndProc;
 };
 
-ID_INLINE HWND rvGENavigator::GetWindow( void )
+ID_INLINE HWND rvGENavigator::GetWindow()
 {
 	return mWnd;
 }

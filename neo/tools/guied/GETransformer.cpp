@@ -252,7 +252,7 @@ INT_PTR CALLBACK rvGETransformer::DlgProc( HWND hWnd, UINT msg, WPARAM wParam, L
 	return FALSE;
 }
 
-bool rvGETransformer::GetLockAspect( void )
+bool rvGETransformer::GetLockAspect()
 {
 	UINT retVal = IsDlgButtonChecked( mDlg, IDC_GUIED_LOCK_ASPECT );
 
@@ -300,7 +300,7 @@ Update the enabled/disabled states based on the selections and update
 the rectangle coordinates
 ================
 */
-void rvGETransformer::Update( void )
+void rvGETransformer::Update()
 {
 	bool state = false;
 

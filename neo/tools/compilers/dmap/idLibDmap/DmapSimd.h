@@ -48,9 +48,9 @@ All idDmapSIMDProcessor routines are thread safe.
 class idDmapSIMD
 {
 public:
-	static void			Init( void );
+	static void			Init();
 	static void			InitProcessor( const char* module, bool forceGeneric );
-	static void			Shutdown( void );
+	static void			Shutdown();
 	static void			Test_f( const class idCmdArgs& args );
 };
 
@@ -58,7 +58,7 @@ public:
 class idDmapSIMDProcessor
 {
 public:
-	idDmapSIMDProcessor( void )
+	idDmapSIMDProcessor()
 	{
 		cpuid = CPUID_NONE;
 	}
@@ -66,7 +66,7 @@ public:
 
 	int								cpuid;
 
-	virtual const char* VPCALL		GetName( void ) const = 0;
+	virtual const char* VPCALL		GetName() const = 0;
 
 	virtual void VPCALL Add( float* dst, const float constant, const float* src, const int count ) = 0;
 	virtual void VPCALL Add( float* dst, const float* src0, const float* src1, const int count ) = 0;

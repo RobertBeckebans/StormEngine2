@@ -122,7 +122,7 @@ rvGEWorkspace::GetZoomScale
 Returns the scale of the current zoom level
 ================
 */
-float rvGEWorkspace::GetZoomScale( void )
+float rvGEWorkspace::GetZoomScale()
 {
 	return g_ZoomScales [ mZoom ];
 }
@@ -160,7 +160,7 @@ rvGEWorkspace::Detach
 Detaches the workspace from the window it is currently attached to
 ================
 */
-void rvGEWorkspace::Detach( void )
+void rvGEWorkspace::Detach()
 {
 	assert( mWnd );
 
@@ -175,7 +175,7 @@ rvGEWorkspace::SetupPixelFormat
 Setup the pixel format for the opengl context
 ================
 */
-bool rvGEWorkspace::SetupPixelFormat( void )
+bool rvGEWorkspace::SetupPixelFormat()
 {
 	HDC	 hDC    = GetDC( mWnd );
 	bool result = true;
@@ -205,7 +205,7 @@ rvGEWorkspace::RenderGrid
 Renders the grid on top of the user interface
 ================
 */
-void rvGEWorkspace::RenderGrid( void )
+void rvGEWorkspace::RenderGrid()
 {
 	float	x;
 	float	y;
@@ -364,7 +364,7 @@ rvGEWorkspace::UpdateTitle
 Updates the window title with the name of the file and the zoom level and weither its open or not
 ================
 */
-void rvGEWorkspace::UpdateTitle( void )
+void rvGEWorkspace::UpdateTitle()
 {
 	// Set the window title based on the current filename
 	SetWindowText( mWnd, va( "%s%s (%d%%)", idStr( mFilename ).StripPath( ).c_str( ), mModified ? "*" : "", ( int )( g_ZoomScales[mZoom] * 100 ) ) );
@@ -512,7 +512,7 @@ rvGEWorkspace::UpdateScrollbars
 Updates the states and the ranges of the scrollbars as well as the rectangle
 ================
 */
-void rvGEWorkspace::UpdateScrollbars( void )
+void rvGEWorkspace::UpdateScrollbars()
 {
 	SCROLLINFO info;
 
@@ -640,7 +640,7 @@ void rvGEWorkspace::UpdateCursor( float x, float y )
 	}
 }
 
-void rvGEWorkspace::UpdateCursor( void )
+void rvGEWorkspace::UpdateCursor()
 {
 	if( mDragType == rvGESelectionMgr::HT_NONE )
 	{
@@ -1333,7 +1333,7 @@ rvGEWorkspace::ZoomIn
 Zooms the workspace in by one zoom level
 ================
 */
-rvGEWorkspace::EZoomLevel rvGEWorkspace::ZoomIn( void )
+rvGEWorkspace::EZoomLevel rvGEWorkspace::ZoomIn()
 {
 	mZoom = mZoom + 1;
 	if( mZoom >= ZOOM_MAX )
@@ -1356,7 +1356,7 @@ rvGEWorkspace::ZoomOut
 Zooms the workspace out by one level
 ================
 */
-rvGEWorkspace::EZoomLevel rvGEWorkspace::ZoomOut( void )
+rvGEWorkspace::EZoomLevel rvGEWorkspace::ZoomOut()
 {
 	mZoom--;
 	if( mZoom <= ZOOM_MIN )
@@ -1516,7 +1516,7 @@ bool rvGEWorkspace::ShowAllEnumProc( rvGEWindowWrapper* wrapper, void* data )
 	return true;
 }
 
-void rvGEWorkspace::AddModifierShowAll( void )
+void rvGEWorkspace::AddModifierShowAll()
 {
 	rvGEModifierGroup* group = new rvGEModifierGroup;
 
@@ -1534,7 +1534,7 @@ void rvGEWorkspace::AddModifierShowAll( void )
 	mApplication->GetNavigator().Refresh( );
 }
 
-void rvGEWorkspace::DeleteSelected( void )
+void rvGEWorkspace::DeleteSelected()
 {
 	AddModifiers( MOD_DELETE );
 	mSelections.Clear( );
@@ -1669,7 +1669,7 @@ idWindow* rvGEWorkspace::AddWindow( rvGEWindowWrapper::EWindowType type )
 	return window;
 }
 
-bool rvGEWorkspace::EditSelectedProperties( void )
+bool rvGEWorkspace::EditSelectedProperties()
 {
 	if( !mSelections.Num( ) || mSelections.Num() > 1 )
 	{
@@ -1681,7 +1681,7 @@ bool rvGEWorkspace::EditSelectedProperties( void )
 	return true;
 }
 
-bool rvGEWorkspace::EditSelectedScripts( void )
+bool rvGEWorkspace::EditSelectedScripts()
 {
 	if( !mSelections.Num() || mSelections.Num() > 1 )
 	{
@@ -1693,25 +1693,25 @@ bool rvGEWorkspace::EditSelectedScripts( void )
 	return true;
 }
 
-void rvGEWorkspace::BringSelectedForward( void )
+void rvGEWorkspace::BringSelectedForward()
 {
 	AddModifiers( MOD_BRING_FORWARD );
 	mApplication->GetNavigator().Update( );
 }
 
-void rvGEWorkspace::BringSelectedToFront( void )
+void rvGEWorkspace::BringSelectedToFront()
 {
 	AddModifiers( MOD_BRING_FRONT );
 	mApplication->GetNavigator().Update( );
 }
 
-void rvGEWorkspace::SendSelectedToBack( void )
+void rvGEWorkspace::SendSelectedToBack()
 {
 	AddModifiers( MOD_SEND_BACK );
 	mApplication->GetNavigator().Update( );
 }
 
-void rvGEWorkspace::SendSelectedBackward( void )
+void rvGEWorkspace::SendSelectedBackward()
 {
 	AddModifiers( MOD_SEND_BACKWARD );
 	mApplication->GetNavigator().Update( );
@@ -1998,7 +1998,7 @@ rvGEWorkspace::MakeSelectedAChild
 Makes the selected windows a child of the first selected window
 ================
 */
-void rvGEWorkspace::MakeSelectedAChild( void )
+void rvGEWorkspace::MakeSelectedAChild()
 {
 	rvGEModifierGroup*	group;
 	int					i;
@@ -2034,7 +2034,7 @@ void rvGEWorkspace::MakeSelectedAChild( void )
 	SetModified( true );
 }
 
-void rvGEWorkspace::Copy( void )
+void rvGEWorkspace::Copy()
 {
 	int i;
 
@@ -2090,7 +2090,7 @@ rvGEClipboardItem*	rvGEWorkspace::CreateClipboardItem( idWindow* window )
 	return 0;
 }
 
-void rvGEWorkspace::Duplicate( void )
+void rvGEWorkspace::Duplicate()
 {
 	int i;
 
@@ -2154,7 +2154,7 @@ void rvGEWorkspace::PasteClipboardItem( rvGEClipboardItem* item, idWindow* paren
 	}
 }
 
-void rvGEWorkspace::Paste( void )
+void rvGEWorkspace::Paste()
 {
 	int i;
 
@@ -2186,14 +2186,14 @@ void rvGEWorkspace::Paste( void )
 	SetModified( true );
 }
 
-void rvGEWorkspace::HideSelected( void )
+void rvGEWorkspace::HideSelected()
 {
 	AddModifiers( MOD_HIDE );
 	mSelections.Clear( );
 	mApplication->GetNavigator().Refresh( );
 }
 
-void rvGEWorkspace::UnhideSelected( void )
+void rvGEWorkspace::UnhideSelected()
 {
 	AddModifiers( MOD_UNHIDE );
 	mApplication->GetNavigator().Refresh( );

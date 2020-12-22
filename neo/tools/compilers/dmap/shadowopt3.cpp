@@ -429,7 +429,7 @@ static void ClipOccluders( idVec4* verts, uint* indexes, int numIndexes,
 OptimizeOutputTris
 ================
 */
-static void OptimizeOutputTris( void )
+static void OptimizeOutputTris()
 {
 	int		i;
 
@@ -511,7 +511,7 @@ We could skip this and rely completely on the matched quad removal
 for all sil edges, but this will avoid the bulk of the checks.
 =====================
 */
-static void GenerateSilEdges( void )
+static void GenerateSilEdges()
 {
 	int		i, j;
 
@@ -596,7 +596,7 @@ GenerateSilPlanes
 Groups the silEdges into common planes
 =====================
 */
-void GenerateSilPlanes( void )
+void GenerateSilPlanes()
 {
 	numSilPlanes = 0;
 	silPlanes = ( silPlane_t* )Mem_Alloc( sizeof( *silPlanes ) * numSilEdges, TAG_DMAP );
@@ -837,7 +837,7 @@ static void FragmentSilQuad( silQuad_t quad, silPlane_t* silPlane,
 FragmentSilQuads
 ===============
 */
-static void FragmentSilQuads( void )
+static void FragmentSilQuads()
 {
 	// group the edges into common planes
 	GenerateSilPlanes();
@@ -874,7 +874,7 @@ EmitFragmentedSilQuads
 
 =====================
 */
-static void EmitFragmentedSilQuads( void )
+static void EmitFragmentedSilQuads()
 {
 	int		i, j, k;
 	mapTri_t*	mtri;
@@ -1001,7 +1001,7 @@ static void EmitFragmentedSilQuads( void )
 EmitUnoptimizedSilEdges
 =================
 */
-static void EmitUnoptimizedSilEdges( void )
+static void EmitUnoptimizedSilEdges()
 {
 	int	i;
 
@@ -1060,7 +1060,7 @@ and generating numUniqued and uniqued.
 These are still in projection-centered space, not global space
 ===================
 */
-static void UniqueVerts( void )
+static void UniqueVerts()
 {
 	int		i, j;
 

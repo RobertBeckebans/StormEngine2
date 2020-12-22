@@ -110,17 +110,17 @@ public:
 	idDict					epairs;
 
 public:
-	idDmapMapEntity( void )
+	idDmapMapEntity()
 	{
 		epairs.SetHashSize( 64 );
 	}
-	~idDmapMapEntity( void )
+	~idDmapMapEntity()
 	{
 		primitives.DeleteContents( true );
 	}
 	static idDmapMapEntity* 	Parse( idLexer& src, bool worldSpawn = false, float version = CURRENT_MAP_VERSION );
 	bool					Write( idFile* fp, int entityNum ) const;
-	int						GetNumPrimitives( void ) const
+	int						GetNumPrimitives() const
 	{
 		return primitives.Num();
 	}
@@ -142,8 +142,8 @@ protected:
 class idDmapMapFile
 {
 public:
-	idDmapMapFile( void );
-	~idDmapMapFile( void )
+	idDmapMapFile();
+	~idDmapMapFile()
 	{
 		entities.DeleteContents( true );
 	}
@@ -155,7 +155,7 @@ public:
 	bool					Parse( const char* filename, bool ignoreRegion = false, bool osPath = false );
 	bool					Write( const char* fileName, const char* ext, bool fromBasePath = true );
 	// get the number of entities in the map
-	int						GetNumEntities( void ) const
+	int						GetNumEntities() const
 	{
 		return entities.Num();
 	}
@@ -165,18 +165,18 @@ public:
 		return entities[i];
 	}
 	// get the name without file extension
-	const char* 			GetName( void ) const
+	const char* 			GetName() const
 	{
 		return name;
 	}
 	// get the file time
-	ID_TIME_T					GetFileTime( void ) const
+	ID_TIME_T					GetFileTime() const
 	{
 		return fileTime;
 	}
 	// get CRC for the map geometry
 	// texture coordinates and entity key/value pairs are not taken into account
-	unsigned int			GetGeometryCRC( void ) const
+	unsigned int			GetGeometryCRC() const
 	{
 		return geometryCRC;
 	}
@@ -204,10 +204,10 @@ protected:
 	bool					hasPrimitiveData;
 
 private:
-	void					SetGeometryCRC( void );
+	void					SetGeometryCRC();
 };
 
-ID_INLINE idDmapMapFile::idDmapMapFile( void )
+ID_INLINE idDmapMapFile::idDmapMapFile()
 {
 	version = CURRENT_MAP_VERSION;
 	fileTime = 0;

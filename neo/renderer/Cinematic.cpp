@@ -94,10 +94,10 @@ private:
 	bool					smootheddouble;
 	bool					inMemory;
 
-	void					RoQ_init( void );
+	void					RoQ_init();
 	void					blitVQQuad32fs( byte** status, unsigned char* data );
-	void					RoQShutdown( void );
-	void					RoQInterrupt( void );
+	void					RoQShutdown();
+	void					RoQInterrupt();
 
 	void					move8_32( byte* src, byte* dst, int spl );
 	void					move4_32( byte* src, byte* dst, int spl );
@@ -152,7 +152,7 @@ static unsigned short* 	vq8 = NULL;
 idCinematicLocal::InitCinematic
 ==============
 */
-void idCinematic::InitCinematic( void )
+void idCinematic::InitCinematic()
 {
 	float t_ub, t_vr, t_ug, t_vg;
 	int i;
@@ -184,7 +184,7 @@ void idCinematic::InitCinematic( void )
 idCinematicLocal::ShutdownCinematic
 ==============
 */
-void idCinematic::ShutdownCinematic( void )
+void idCinematic::ShutdownCinematic()
 {
 	Mem_Free( file );
 	file = NULL;
@@ -1605,7 +1605,7 @@ int JPEGBlit( byte* wStatus, byte* data, int datasize )
 
 	/* Step 3: read file parameters with jpeg_read_header() */
 
-	( void ) jpeg_read_header( &cinfo, TRUE );
+	jpeg_read_header( &cinfo, TRUE );
 	/* We can ignore the return value from jpeg_read_header since
 	 *   (a) suspension is not possible with the stdio data source, and
 	 *   (b) we passed TRUE to reject a tables-only JPEG file as an error.
@@ -1626,7 +1626,7 @@ int JPEGBlit( byte* wStatus, byte* data, int datasize )
 	cinfo.do_fancy_upsampling = FALSE;
 //	cinfo.out_color_space = JCS_GRAYSCALE;
 
-	( void ) jpeg_start_decompress( &cinfo );
+	jpeg_start_decompress( &cinfo );
 	/* We can ignore the return value since suspension is not possible
 	 * with the stdio data source.
 	 */
@@ -1658,7 +1658,7 @@ int JPEGBlit( byte* wStatus, byte* data, int datasize )
 		 * Here the array is only one element long, but you could ask for
 		 * more than one scanline at a time if that's more convenient.
 		 */
-		( void ) jpeg_read_scanlines( &cinfo, &buffer[0], 1 );
+		jpeg_read_scanlines( &cinfo, &buffer[0], 1 );
 
 		/* Assume put_scanline_someplace wants a pointer and sample count. */
 		memcpy( wStatus, &buffer[0][0], row_stride );
@@ -1680,7 +1680,7 @@ int JPEGBlit( byte* wStatus, byte* data, int datasize )
 
 	/* Step 7: Finish decompression */
 
-	( void ) jpeg_finish_decompress( &cinfo );
+	jpeg_finish_decompress( &cinfo );
 	/* We can ignore the return value since suspension is not possible
 	 * with the stdio data source.
 	 */
@@ -1703,7 +1703,7 @@ int JPEGBlit( byte* wStatus, byte* data, int datasize )
 idCinematicLocal::RoQInterrupt
 ==============
 */
-void idCinematicLocal::RoQInterrupt( void )
+void idCinematicLocal::RoQInterrupt()
 {
 	byte*				framedata;
 
@@ -1844,7 +1844,7 @@ redump:
 idCinematicLocal::RoQ_init
 ==============
 */
-void idCinematicLocal::RoQ_init( void )
+void idCinematicLocal::RoQ_init()
 {
 
 	RoQPlayed = 24;
@@ -1869,7 +1869,7 @@ void idCinematicLocal::RoQ_init( void )
 idCinematicLocal::RoQShutdown
 ==============
 */
-void idCinematicLocal::RoQShutdown( void )
+void idCinematicLocal::RoQShutdown()
 {
 	if( status == FMV_IDLE )
 	{

@@ -65,7 +65,7 @@ public:
 	idPlane					planes[8];
 
 public:
-	idLedge( void );
+	idLedge();
 	idLedge( const idVec3& v1, const idVec3& v2, const idVec3& gravityDir, idBrushBSPNode* n );
 	void					AddPoint( const idVec3& v );
 	void					CreateBevels( const idVec3& gravityDir );
@@ -79,11 +79,11 @@ class idAASBuild
 {
 
 public:
-	idAASBuild( void );
-	~idAASBuild( void );
+	idAASBuild();
+	~idAASBuild();
 	bool					Build( const idStr& fileName, const idAASSettings* settings );
 	bool					BuildReachability( const idStr& fileName, const idAASSettings* settings );
-	void					Shutdown( void );
+	void					Shutdown();
 
 private:
 	const idAASSettings* 	aasSettings;
@@ -99,7 +99,7 @@ private:
 private:	// map loading
 	void					ParseProcNodes( idLexer* src );
 	bool					LoadProcBSP( const char* name, ID_TIME_T minFileTime );
-	void					DeleteProcBSP( void );
+	void					DeleteProcBSP();
 	bool					ChoppedAwayByProcBSP( int nodeNum, idFixedWinding* w, const idVec3& normal, const idVec3& origin, const float radius );
 	void					ClipBrushSidesWithProcBSP( idBrushList& brushList );
 	int						ContentsForAAS( int contents );
@@ -135,8 +135,8 @@ private:	// merging
 	void					MergeLeafNodes( idBrushBSP& bsp );
 
 private:	// storing file
-	void					SetupHash( void );
-	void					ShutdownHash( void );
+	void					SetupHash();
+	void					ShutdownHash();
 	void					ClearHash( const idBounds& bounds );
 	int						HashVec( const idVec3& vec );
 	bool					GetVertex( const idVec3& v, int* vertexNum );

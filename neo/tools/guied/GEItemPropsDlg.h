@@ -40,9 +40,9 @@ public:
 
 	bool	Create( HWND parent, bool visible );
 	void	Show( bool visible );
-	void	Update( void );
+	void	Update();
 
-	HWND	GetWindow( void );
+	HWND	GetWindow();
 	void	SetWorkspace( rvGEWorkspace* workspace );
 
 protected:
@@ -59,7 +59,7 @@ protected:
 	PROPSHEETPAGE		propsp[4];
 };
 
-ID_INLINE HWND rvGEItemProps::GetWindow( void )
+ID_INLINE HWND rvGEItemProps::GetWindow()
 {
 	return mWnd;
 }

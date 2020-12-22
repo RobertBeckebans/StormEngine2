@@ -69,7 +69,7 @@ CZClip::~CZClip()
 	SaveRegistryInfo( "radiant_ZClipBottom",  &m_iZClipBottom,	sizeof( m_iZClipBottom ) );
 }
 
-void CZClip::Reset( void )
+void CZClip::Reset()
 {
 	m_iZClipTop		= 64;		// arb. starting values, but must be at least 64 apart
 	m_iZClipBottom	= -64;
@@ -79,17 +79,17 @@ void CZClip::Reset( void )
 }
 
 
-int	CZClip::GetTop( void )
+int	CZClip::GetTop()
 {
 	return m_iZClipTop;
 }
 
-int CZClip::GetBottom( void )
+int CZClip::GetBottom()
 {
 	return m_iZClipBottom;
 }
 
-void CZClip::Legalise( void )
+void CZClip::Legalise()
 {
 	// need swapping?
 	//
@@ -125,7 +125,7 @@ void CZClip::SetBottom( int iNewZ )
 	Legalise();
 }
 
-bool CZClip::IsEnabled( void )
+bool CZClip::IsEnabled()
 {
 	return m_bEnabled;
 }
@@ -140,7 +140,7 @@ bool CZClip::Enable( bool bOnOff )
 #define ZCLIP_BAR_THICKNESS 8
 #define ZCLIP_ARROWHEIGHT (ZCLIP_BAR_THICKNESS*8)
 
-void CZClip::Paint( void )
+void CZClip::Paint()
 {
 	float	x, y;
 	int	xCam = z.width / 4;	// hmmm, a rather unpleasant and obscure global name, but it was already called that so...

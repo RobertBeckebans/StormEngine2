@@ -560,7 +560,7 @@ idDmapRenderModel* idDmapRenderModelStatic::InstantiateDynamicModel( const struc
 idDmapRenderModelStatic::NumJoints
 ================
 */
-int idDmapRenderModelStatic::NumJoints( void ) const
+int idDmapRenderModelStatic::NumJoints() const
 {
 	return 0;
 }
@@ -570,7 +570,7 @@ int idDmapRenderModelStatic::NumJoints( void ) const
 idDmapRenderModelStatic::GetJoints
 ================
 */
-const idMD5Joint* idDmapRenderModelStatic::GetJoints( void ) const
+const idMD5Joint* idDmapRenderModelStatic::GetJoints() const
 {
 	return NULL;
 }
@@ -600,7 +600,7 @@ const char* idDmapRenderModelStatic::GetJointName( jointHandle_t handle ) const
 idDmapRenderModelStatic::GetDefaultPose
 ================
 */
-const idJointQuat* idDmapRenderModelStatic::GetDefaultPose( void ) const
+const idJointQuat* idDmapRenderModelStatic::GetDefaultPose() const
 {
 	return NULL;
 }
@@ -2475,7 +2475,7 @@ idDmapRenderModelStatic::FreeVertexCache
 We are about to restart the vertex cache, so dump everything
 ==============
 */
-void idDmapRenderModelStatic::FreeVertexCache( void )
+void idDmapRenderModelStatic::FreeVertexCache()
 {
 	for( int j = 0; j < surfaces.Num(); j++ )
 	{
@@ -2601,7 +2601,7 @@ void idDmapRenderModelStatic::WriteToDemoFile( class idDemoFile* f )
 idDmapRenderModelStatic::IsLoaded
 ================
 */
-bool idDmapRenderModelStatic::IsLoaded( void ) const
+bool idDmapRenderModelStatic::IsLoaded() const
 {
 	return !purged;
 }
@@ -2621,7 +2621,7 @@ void idDmapRenderModelStatic::SetLevelLoadReferenced( bool referenced )
 idDmapRenderModelStatic::IsLevelLoadReferenced
 ================
 */
-bool idDmapRenderModelStatic::IsLevelLoadReferenced( void )
+bool idDmapRenderModelStatic::IsLevelLoadReferenced()
 {
 	return levelLoadReferenced;
 }
@@ -2631,7 +2631,7 @@ bool idDmapRenderModelStatic::IsLevelLoadReferenced( void )
 idDmapRenderModelStatic::TouchData
 =================
 */
-void idDmapRenderModelStatic::TouchData( void )
+void idDmapRenderModelStatic::TouchData()
 {
 	for( int i = 0; i < surfaces.Num(); i++ )
 	{
@@ -2669,7 +2669,7 @@ bool idDmapRenderModelStatic::DeleteSurfaceWithId( int id )
 idDmapRenderModelStatic::DeleteSurfacesWithNegativeId
 =================
 */
-void idDmapRenderModelStatic::DeleteSurfacesWithNegativeId( void )
+void idDmapRenderModelStatic::DeleteSurfacesWithNegativeId()
 {
 	int i;
 

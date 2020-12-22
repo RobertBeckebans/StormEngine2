@@ -63,7 +63,7 @@ rvDebuggerClient::Initialize
 Initialize the debugger client
 ================
 */
-bool rvDebuggerClient::Initialize( void )
+bool rvDebuggerClient::Initialize()
 {
 	// Nothing else can run with the debugger
 	com_editors = EDITOR_DEBUGGER;
@@ -90,7 +90,7 @@ Shutdown the debugger client and let the debugger server
 know we are shutting down
 ================
 */
-void rvDebuggerClient::Shutdown( void )
+void rvDebuggerClient::Shutdown()
 {
 	mPort.Close();
 
@@ -110,7 +110,7 @@ rvDebuggerClient::ProcessMessages
 Process all incomding messages from the debugger server
 ================
 */
-bool rvDebuggerClient::ProcessMessages( void )
+bool rvDebuggerClient::ProcessMessages()
 {
 	// Attempt to let the server know we are here.
 	if( !IsConnected() )
@@ -405,7 +405,7 @@ rvDebuggerClient::ClearBreakpoints
 Removes all breakpoints from the client and server
 ================
 */
-void rvDebuggerClient::ClearBreakpoints( void )
+void rvDebuggerClient::ClearBreakpoints()
 {
 	for( int i = 0; i < GetBreakpointCount(); i ++ )
 	{
@@ -473,7 +473,7 @@ rvDebuggerClient::SendBreakpoints
 Send all breakpoints to the debugger server
 ================
 */
-void rvDebuggerClient::SendBreakpoints( void )
+void rvDebuggerClient::SendBreakpoints()
 {
 	if( !mConnected )
 	{
@@ -537,7 +537,7 @@ rvDebuggerClient::ClearCallstack
 Clear all callstack entries
 ================
 */
-void rvDebuggerClient::ClearCallstack( void )
+void rvDebuggerClient::ClearCallstack()
 {
 	mCallstack.Clear( );
 }
@@ -549,7 +549,7 @@ rvDebuggerClient::ClearThreads
 Clear all thread entries
 ================
 */
-void rvDebuggerClient::ClearThreads( void )
+void rvDebuggerClient::ClearThreads()
 {
 	mThreads.Clear( );
 }

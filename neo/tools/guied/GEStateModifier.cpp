@@ -52,7 +52,7 @@ rvGEStateModifier::Apply
 Applys the new state dictionary to the window
 ================
 */
-bool rvGEStateModifier::Apply( void )
+bool rvGEStateModifier::Apply()
 {
 	return SetState( mDict );
 }
@@ -64,7 +64,7 @@ rvGEStateModifier::Undo
 Applies the undo dictionary to the window
 ================
 */
-bool rvGEStateModifier::Undo( void )
+bool rvGEStateModifier::Undo()
 {
 	return SetState( mUndoDict );
 }

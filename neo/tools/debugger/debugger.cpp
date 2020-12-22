@@ -107,7 +107,7 @@ DebuggerServerInit
 Starts up the debugger server
 ================
 */
-bool DebuggerServerInit( void )
+bool DebuggerServerInit()
 {
 	// Allocate the new debugger server
 	if( gDebuggerServer == NULL )
@@ -140,7 +140,7 @@ DebuggerServerShutdown
 Shuts down the debugger server
 ================
 */
-void DebuggerServerShutdown( void )
+void DebuggerServerShutdown()
 {
 	if( gDebuggerServerThread )
 	{

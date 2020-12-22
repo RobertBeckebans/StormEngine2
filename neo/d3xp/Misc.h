@@ -310,7 +310,7 @@ private:
 
 	int						num_cycleanims;
 	void					Event_StartAnim( const char* startanim );
-	void					Event_GetAName( void );
+	void					Event_GetAName();
 
 	// ############################### END SR
 

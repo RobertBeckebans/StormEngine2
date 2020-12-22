@@ -345,7 +345,7 @@ idAI::Event_AIEjectReloadBrass
 Toss a shell model out from the breach if the bone is present
 ================
 */
-void idAI::Event_AIEjectReloadBrass( void )
+void idAI::Event_AIEjectReloadBrass()
 {
 	if( !g_showBrass.GetBool() )
 	{
@@ -390,7 +390,7 @@ idAI::Event_AIDodgeLeft
 Velocity based move left
 ================
 */
-void idAI::Event_AIDodgeLeft( void )
+void idAI::Event_AIDodgeLeft()
 {
 	physicsObj.SetLinearVelocity( viewAxis[ 1 ] * dodgeSpeed );
 }
@@ -402,7 +402,7 @@ idAI::Event_AIDodgeRight
 Velocity based move right
 ================
 */
-void idAI::Event_AIDodgeRight( void )
+void idAI::Event_AIDodgeRight()
 {
 	physicsObj.SetLinearVelocity( viewAxis[ 1 ] * -dodgeSpeed );
 }
@@ -414,7 +414,7 @@ idAI::Event_AIDodgeBack
 Velocity based move back
 ================
 */
-void idAI::Event_AIDodgeBack( void )
+void idAI::Event_AIDodgeBack()
 {
 	physicsObj.SetLinearVelocity( viewAxis[ 0 ] * -dodgeSpeed );
 }
@@ -426,7 +426,7 @@ idAI::Event_AIDodgeUp
 Velocity based move up
 ================
 */
-void idAI::Event_AIDodgeUp( void )
+void idAI::Event_AIDodgeUp()
 {
 	physicsObj.SetLinearVelocity( viewAxis[ 2 ] * dodgeSpeed );
 }

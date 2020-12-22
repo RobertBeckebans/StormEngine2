@@ -106,7 +106,7 @@ static void ValidateEdgeCounts( optIsland_t* island )
 AllocEdge
 ====================
 */
-static optEdge_t*	AllocEdge( void )
+static optEdge_t*	AllocEdge()
 {
 	optEdge_t*	e;
 
@@ -258,7 +258,7 @@ static optVertex_t* FindOptVertex( idDmapDrawVert* v, optimizeGroup_t* opt )
 DrawAllEdges
 ================
 */
-static	void DrawAllEdges( void )
+static	void DrawAllEdges()
 {
 	int		i;
 

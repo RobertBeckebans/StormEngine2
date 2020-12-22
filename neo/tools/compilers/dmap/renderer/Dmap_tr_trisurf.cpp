@@ -45,7 +45,7 @@ static int			numPlanes;
 R_InitTriSurfDataDmap
 ===============
 */
-void R_InitTriSurfDataDmap( void )
+void R_InitTriSurfDataDmap()
 {
 	silEdges = ( silEdge_t* )R_StaticAlloc( MAX_SIL_EDGES * sizeof( silEdges[0] ) );
 }
@@ -55,7 +55,7 @@ void R_InitTriSurfDataDmap( void )
 R_ShutdownTriSurfData
 ===============
 */
-void R_ShutdownTriSurfData( void )
+void R_ShutdownTriSurfData()
 {
 	R_StaticFree( silEdges );
 	silEdgeHash.Free();

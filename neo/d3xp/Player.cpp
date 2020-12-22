@@ -6833,7 +6833,7 @@ void idPlayer::SetClipModel()
 idPlayer::SwapView	// Swap first person / third person views (IMPULSE_16)
 ==============
 */
-void idPlayer::SwapView( void )
+void idPlayer::SwapView()
 {
 	if( currentVehicle.IsValid() )
 	{
@@ -6853,7 +6853,7 @@ void idPlayer::SwapView( void )
 idPlayer::ZoomView	// change view pos in buggy third person  (IMPULSE_21)
 ==============
 */
-void idPlayer::ZoomView( void )
+void idPlayer::ZoomView()
 {
 	if( buggy_thirdPerson && !zooming )
 	{
@@ -6869,7 +6869,7 @@ void idPlayer::ZoomView( void )
 idPlayer::Flashlight	// buggy headlight (IMPULSE_24)
 ==============
 */
-void idPlayer::Flashlight( void )
+void idPlayer::Flashlight()
 {
 	if( currentVehicle.IsValid() )
 	{
@@ -6883,7 +6883,7 @@ void idPlayer::Flashlight( void )
 idPlayer::LaunchHook	// Launch Grapple Hook (IMPULSE_23)
 ==============
 */
-void idPlayer::LaunchHook( void )
+void idPlayer::LaunchHook()
 {
 	if( grappling == 2 ) 		// player is ascending, so start swinging
 	{
@@ -6995,7 +6995,7 @@ void idPlayer::LaunchHook( void )
 idPlayer::FlyHook	// Grapple Hook flying to socket
 ==============
 */
-void idPlayer::FlyHook( void )
+void idPlayer::FlyHook()
 {
 	ShowGrappleRope();
 	if( !grapple->moving )
@@ -7016,7 +7016,7 @@ void idPlayer::FlyHook( void )
 idPlayer::GrappleAscend	// Player ascend Grapple rope
 ==============
 */
-void idPlayer::GrappleAscend( void )
+void idPlayer::GrappleAscend()
 {
 	const idVec3 origin = firstPersonViewOrigin - idVec3( 0.f, 0.f, -5.f );
 
@@ -7054,7 +7054,7 @@ void idPlayer::GrappleAscend( void )
 idPlayer::AscentToSwing	// Player swing on Grapple rope
 ==============
 */
-void idPlayer::AscentToSwing( void )
+void idPlayer::AscentToSwing()
 {
 
 	if( !grappleMover->moving )
@@ -7091,7 +7091,7 @@ void idPlayer::AscentToSwing( void )
 idPlayer::GrappleSwing	// Player swing on Grapple rope
 ==============
 */
-void idPlayer::GrappleSwing( void )
+void idPlayer::GrappleSwing()
 {
 	if( !( usercmd.buttons & BUTTON_JUMP ) )
 	{
@@ -7129,7 +7129,7 @@ void idPlayer::GrappleSwing( void )
 idPlayer::ShowGrappleRope
 ==================
 */
-void idPlayer::ShowGrappleRope( void )
+void idPlayer::ShowGrappleRope()
 {
 	idVec3 	origin, dir, target;
 	idMat3 	axis;
@@ -8933,7 +8933,7 @@ void idPlayer::Think()
 idPlayer::BuggyThink
 ==============
 */
-void idPlayer::BuggyThink( void )
+void idPlayer::BuggyThink()
 {
 
 	// If the player is driving a vehicle, aim the vehicle's weapon

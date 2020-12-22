@@ -63,7 +63,7 @@ bool rvGEModifierGroup::Append( rvGEModifier* mod )
 	return true;
 }
 
-bool rvGEModifierGroup::IsValid( void )
+bool rvGEModifierGroup::IsValid()
 {
 	int i;
 
@@ -78,7 +78,7 @@ bool rvGEModifierGroup::IsValid( void )
 	return true;
 }
 
-bool rvGEModifierGroup::Apply( void )
+bool rvGEModifierGroup::Apply()
 {
 	int i;
 
@@ -90,7 +90,7 @@ bool rvGEModifierGroup::Apply( void )
 	return true;
 }
 
-bool rvGEModifierGroup::Undo( void )
+bool rvGEModifierGroup::Undo()
 {
 	int i;
 

@@ -45,7 +45,7 @@ If you have questions concerning this license or the applicable additional terms
 idAASBuild::idAASBuild
 ============
 */
-idAASBuild::idAASBuild( void )
+idAASBuild::idAASBuild()
 {
 	file = NULL;
 	procNodes = NULL;
@@ -61,7 +61,7 @@ idAASBuild::idAASBuild( void )
 idAASBuild::~idAASBuild
 ============
 */
-idAASBuild::~idAASBuild( void )
+idAASBuild::~idAASBuild()
 {
 	Shutdown();
 }
@@ -71,7 +71,7 @@ idAASBuild::~idAASBuild( void )
 idAASBuild::Shutdown
 ================
 */
-void idAASBuild::Shutdown( void )
+void idAASBuild::Shutdown()
 {
 	aasSettings = NULL;
 	if( file )
@@ -204,7 +204,7 @@ bool idAASBuild::LoadProcBSP( const char* name, ID_TIME_T minFileTime )
 idAASBuild::DeleteProcBSP
 ============
 */
-void idAASBuild::DeleteProcBSP( void )
+void idAASBuild::DeleteProcBSP()
 {
 	if( procNodes )
 	{

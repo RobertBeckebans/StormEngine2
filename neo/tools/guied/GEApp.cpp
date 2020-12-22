@@ -81,7 +81,7 @@ rvGEApp::Initialize
 Initialize the gui editor application
 ================
 */
-bool rvGEApp::Initialize( void )
+bool rvGEApp::Initialize()
 {
 	mOptions.Init();
 
@@ -278,7 +278,7 @@ rvGEApp::RunFrame
 Runs the current frame which causes the active window to be redrawn
 ================
 */
-void rvGEApp::RunFrame( void )
+void rvGEApp::RunFrame()
 {
 	HWND			wnd;
 	rvGEWorkspace*	workspace = GetActiveWorkspace( &wnd );
@@ -1329,7 +1329,7 @@ rvGEApp::NewFile
 Creates a new file and opens a window for it
 ================
 */
-bool rvGEApp::NewFile( void )
+bool rvGEApp::NewFile()
 {
 	GEItescriptsDlg_Apply( gApp.GetScriptWindow() );
 	rvGEWorkspace* workspace = new rvGEWorkspace( this );
@@ -1434,7 +1434,7 @@ Finds the file menu and the location within it where the MRU should
 be added.
 ================
 */
-bool rvGEApp::InitRecentFiles( void )
+bool rvGEApp::InitRecentFiles()
 {
 	int	i;
 	int count;
@@ -1462,7 +1462,7 @@ rvGEApp::UpdateRecentFiles
 Updates the mru in the menu
 ================
 */
-void rvGEApp::UpdateRecentFiles( void )
+void rvGEApp::UpdateRecentFiles()
 {
 	int i;
 	int j;
@@ -1510,7 +1510,7 @@ rvGEApp::CloseViewer
 Closes the gui viewer
 ================
 */
-void rvGEApp::CloseViewer( void )
+void rvGEApp::CloseViewer()
 {
 	if( !mViewer )
 	{

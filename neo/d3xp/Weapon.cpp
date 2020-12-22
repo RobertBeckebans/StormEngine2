@@ -1085,7 +1085,7 @@ void idWeapon::Event_MeleeAttackRight( float angle )
 idWeapon::Event_GetBarrelJoint
 ==================
 */
-void idWeapon::Event_GetBarrelJoint( void )
+void idWeapon::Event_GetBarrelJoint()
 {
 	idThread::ReturnInt( barrelJointWorld );
 }
@@ -1125,7 +1125,7 @@ void idWeapon::Event_Stop_Attack()
 idWeapon::Event_NumProjectiles
 ==================
 */
-void idWeapon::Event_NumProjectiles( void )
+void idWeapon::Event_NumProjectiles()
 {
 	idThread::ReturnFloat( numProjectiles );
 }
@@ -1134,7 +1134,7 @@ void idWeapon::Event_NumProjectiles( void )
 idWeapon::Event_Spread
 ==================
 */
-void idWeapon::Event_Spread( void )
+void idWeapon::Event_Spread()
 {
 	idThread::ReturnFloat( spread );
 }
@@ -1162,7 +1162,7 @@ bool idWeapon::EntHit( int entNum )
 idWeapon::Melee_Attack
 =====================
 */
-void idWeapon::Melee_Attack( void )
+void idWeapon::Melee_Attack()
 {
 	idVec3 			start, end, tmp;
 	idMat3 			axis, axisLocal;
@@ -1329,7 +1329,7 @@ void idWeapon::Melee_Attack( void )
 idWeapon::Sword_Attack
 =====================
 */
-void idWeapon::Sword_Attack( void )
+void idWeapon::Sword_Attack()
 {
 	idVec3 			start, end, tmp;
 	idMat3 			axis, axisLocal;
@@ -5390,7 +5390,7 @@ idWeapon::Event_EjectReloadBrass
 Toss a shell model out from the breach if the bone is present
 ================
 */
-void idWeapon::Event_EjectReloadBrass( void )
+void idWeapon::Event_EjectReloadBrass()
 {
 	if( !g_showBrass.GetBool() || !owner->CanShowWeaponViewmodel() )
 	{

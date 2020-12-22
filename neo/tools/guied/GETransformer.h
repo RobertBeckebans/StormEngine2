@@ -40,11 +40,11 @@ public:
 	void		Show( bool show );
 
 	void		SetWorkspace( rvGEWorkspace* workspace );
-	void		Update( void );
+	void		Update();
 
-	bool		GetLockAspect( void );
-	HWND		GetWindow( void );
-	rvGEWorkspace* 	GetWorkspace( void )
+	bool		GetLockAspect();
+	HWND		GetWindow();
+	rvGEWorkspace* 	GetWorkspace()
 	{
 		return mWorkspace;
 	}
@@ -62,7 +62,7 @@ private:
 	static LRESULT FAR PASCAL	GetMsgProc( int nCode, WPARAM wParam, LPARAM lParam );
 };
 
-ID_INLINE HWND rvGETransformer::GetWindow( void )
+ID_INLINE HWND rvGETransformer::GetWindow()
 {
 	return mWnd;
 }

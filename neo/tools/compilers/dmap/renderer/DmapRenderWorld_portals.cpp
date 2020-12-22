@@ -909,7 +909,7 @@ BuildConnectedAreas
 This is only valid for a given view, not all views in a frame
 ===================
 */
-void idDmapRenderWorldLocal::BuildConnectedAreas( void )
+void idDmapRenderWorldLocal::BuildConnectedAreas()
 {
 	int		i;
 
@@ -942,7 +942,7 @@ The scissorRects on the viewEntitys and viewLights may be empty if
 they were considered, but not actually visible.
 =============
 */
-void idDmapRenderWorldLocal::FindViewLightsAndEntities( void )
+void idDmapRenderWorldLocal::FindViewLightsAndEntities()
 {
 	// clear the visible lightDef and entityDef lists
 	dmap_tr.viewDef->viewLights = NULL;
@@ -1008,7 +1008,7 @@ void idDmapRenderWorldLocal::FindViewLightsAndEntities( void )
 NumPortals
 ==============
 */
-int idDmapRenderWorldLocal::NumPortals( void ) const
+int idDmapRenderWorldLocal::NumPortals() const
 {
 	return numInterAreaPortals;
 }

@@ -52,15 +52,15 @@ public:
 	float			operator[]( const int index ) const;
 	float& 			operator[]( const int index );
 
-	void			Clear( void );
+	void			Clear();
 
 	void			Lerp( const idDmapDrawVert& a, const idDmapDrawVert& b, const float f );
 	void			LerpAll( const idDmapDrawVert& a, const idDmapDrawVert& b, const float f );
 
-	void			Normalize( void );
+	void			Normalize();
 
 	void			SetColor( dword color );
-	dword			GetColor( void ) const;
+	dword			GetColor() const;
 };
 
 ID_INLINE float idDmapDrawVert::operator[]( const int index ) const
@@ -74,7 +74,7 @@ ID_INLINE float&	idDmapDrawVert::operator[]( const int index )
 	return ( ( float* )( &xyz ) )[index];
 }
 
-ID_INLINE void idDmapDrawVert::Clear( void )
+ID_INLINE void idDmapDrawVert::Clear()
 {
 	xyz.Zero();
 	st.Zero();
@@ -108,7 +108,7 @@ ID_INLINE void idDmapDrawVert::SetColor( dword color )
 	*reinterpret_cast<dword*>( this->color ) = color;
 }
 
-ID_INLINE dword idDmapDrawVert::GetColor( void ) const
+ID_INLINE dword idDmapDrawVert::GetColor() const
 {
 	return *reinterpret_cast<const dword*>( this->color );
 }

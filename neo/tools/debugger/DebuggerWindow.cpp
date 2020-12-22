@@ -112,7 +112,7 @@ Registers the window class used by the debugger window.  This is called when
 the window is created.
 ================
 */
-bool rvDebuggerWindow::RegisterClass( void )
+bool rvDebuggerWindow::RegisterClass()
 {
 	static bool classRegistered = false;
 	if( classRegistered )
@@ -468,7 +468,7 @@ rvDebuggerWindow::UpdateTitle
 Updates the window title of the script debugger to show a few states
 ================
 */
-void rvDebuggerWindow::UpdateTitle( void )
+void rvDebuggerWindow::UpdateTitle()
 {
 	idStr title = va( "%s - ", APP_TITLE );
 	if( mClient->IsConnected( ) )
@@ -504,7 +504,7 @@ rvDebuggerWindow::UpdateScript
 Updates the edit window to contain the current script
 ================
 */
-void rvDebuggerWindow::UpdateScript( void )
+void rvDebuggerWindow::UpdateScript()
 {
 	UpdateTitle( );
 
@@ -542,7 +542,7 @@ rvDebuggerWindow::UpdateWindowMenu
 Updates the windows displayed in the window menu
 ================
 */
-void rvDebuggerWindow::UpdateWindowMenu( void )
+void rvDebuggerWindow::UpdateWindowMenu()
 {
 	while( GetMenuItemCount( mWindowMenu ) > mWindowMenuPos )
 	{
@@ -572,7 +572,7 @@ rvDebuggerWindow::UpdateCallstack
 Updates the contents of teh callastack
 ================
 */
-void rvDebuggerWindow::UpdateCallstack( void )
+void rvDebuggerWindow::UpdateCallstack()
 {
 	LVITEM item;
 	ListView_DeleteAllItems( mWndCallstack );
@@ -600,7 +600,7 @@ rvDebuggerWindow::UpdateWatch
 Updates the contents of the watch window
 ================
 */
-void rvDebuggerWindow::UpdateWatch( void )
+void rvDebuggerWindow::UpdateWatch()
 {
 	int i;
 
@@ -1502,7 +1502,7 @@ Static method that will activate the currently running debugger.  If one is foun
 and activated then true will be returned.
 ================
 */
-bool rvDebuggerWindow::Activate( void )
+bool rvDebuggerWindow::Activate()
 {
 	HWND find;
 
@@ -1826,7 +1826,7 @@ rvDebuggerWindow::ToggleBreakpoint
 Toggles the breakpoint on the current script line
 ================
 */
-void rvDebuggerWindow::ToggleBreakpoint( void )
+void rvDebuggerWindow::ToggleBreakpoint()
 {
 	rvDebuggerBreakpoint* bp;
 	DWORD				  sel;
@@ -1885,7 +1885,7 @@ rvDebuggerWindow::CreateToolbar
 Create the toolbar and and all of its buttons
 ================
 */
-void rvDebuggerWindow::CreateToolbar( void )
+void rvDebuggerWindow::CreateToolbar()
 {
 	// Create the toolbar control
 	mWndToolbar = CreateWindowEx( 0, TOOLBARCLASSNAME, "", WS_CHILD | WS_VISIBLE, 0, 0, 0, 0, mWnd, ( HMENU )IDC_DBG_TOOLBAR, mInstance, NULL );
@@ -2086,7 +2086,7 @@ Finds the file menu and the location within it where the MRU should
 be added.
 ================
 */
-bool rvDebuggerWindow::InitRecentFiles( void )
+bool rvDebuggerWindow::InitRecentFiles()
 {
 	int	i;
 	int count;
@@ -2114,7 +2114,7 @@ rvDebuggerWindow::UpdateRecentFiles
 Updates the mru in the menu
 ================
 */
-void rvDebuggerWindow::UpdateRecentFiles( void )
+void rvDebuggerWindow::UpdateRecentFiles()
 {
 	int i;
 	int j;

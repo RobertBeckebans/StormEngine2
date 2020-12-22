@@ -43,7 +43,7 @@ Generic implementation of idDmapSIMDProcessor
 class idDmapSIMD_Generic : public idDmapSIMDProcessor
 {
 public:
-	virtual const char* VPCALL GetName( void ) const;
+	virtual const char* VPCALL GetName() const;
 
 	virtual void VPCALL Add( float* dst, const float constant, const float* src, const int count );
 	virtual void VPCALL Add( float* dst, const float* src0, const float* src1, const int count );

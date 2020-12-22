@@ -41,10 +41,10 @@ public:
 	void			Init( const char* key );
 
 	// Write the options to the registery
-	bool			Save( void );
+	bool			Save();
 
 	// Read the options from the registry
-	bool			Load( void );
+	bool			Load();
 
 	// Window placement routines
 	void			SetWindowPlacement( const char* name, HWND hwnd );
@@ -73,7 +73,7 @@ public:
 	// MRU related methods
 	void			AddRecentFile( const char* filename );
 	const char*		GetRecentFile( int index );
-	int				GetRecentFileCount( void );
+	int				GetRecentFileCount();
 
 private:
 
@@ -132,7 +132,7 @@ ID_INLINE idVec4 rvRegistryOptions::GetVec4( const char* name )
 	return mValues.GetVec4( name );
 }
 
-ID_INLINE int rvRegistryOptions::GetRecentFileCount( void )
+ID_INLINE int rvRegistryOptions::GetRecentFileCount()
 {
 	return mRecentFiles.Num( );
 }

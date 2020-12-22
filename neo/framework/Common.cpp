@@ -40,7 +40,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "../sys/sys_savegame.h"
 
 #ifdef WIN32
-#include "../sys/win32/win_local.h"  //SS2 fix RoQ videos skipping
+	#include "../sys/win32/win_local.h"  //SS2 fix RoQ videos skipping
 #endif
 
 //#ifdef MINGW
@@ -48,13 +48,13 @@ If you have questions concerning this license or the applicable additional terms
 //#endif
 
 #ifdef ID_ALLOW_TOOLS
-#include "tools/edit_public.h"
+	#include "tools/edit_public.h"
 #endif
 
 #if defined( _DEBUG )
-#define BUILD_DEBUG "-debug"
+	#define BUILD_DEBUG "-debug"
 #else
-#define BUILD_DEBUG ""
+	#define BUILD_DEBUG ""
 #endif
 
 struct version_s
@@ -70,9 +70,9 @@ idCVar com_version( "si_version", version.string, CVAR_SYSTEM | CVAR_ROM | CVAR_
 idCVar com_forceGenericSIMD( "com_forceGenericSIMD", "0", CVAR_BOOL | CVAR_SYSTEM | CVAR_NOCHEAT, "force generic platform independent SIMD" );
 
 #ifdef ID_RETAIL
-idCVar com_allowConsole( "com_allowConsole", "0", CVAR_BOOL | CVAR_SYSTEM | CVAR_INIT, "allow toggling console with the tilde key" );
+	idCVar com_allowConsole( "com_allowConsole", "0", CVAR_BOOL | CVAR_SYSTEM | CVAR_INIT, "allow toggling console with the tilde key" );
 #else
-idCVar com_allowConsole( "com_allowConsole", "1", CVAR_BOOL | CVAR_SYSTEM | CVAR_INIT, "allow toggling console with the tilde key" );
+	idCVar com_allowConsole( "com_allowConsole", "1", CVAR_BOOL | CVAR_SYSTEM | CVAR_INIT, "allow toggling console with the tilde key" );
 #endif
 
 idCVar com_developer( "developer", "0", CVAR_BOOL | CVAR_SYSTEM | CVAR_NOCHEAT, "developer mode" );
@@ -107,13 +107,13 @@ bool			com_editorActive;		//  true if an editor has focus
 
 // RB begin
 #if defined(_WIN32)
-HWND com_hwndMsg = NULL;
+	HWND com_hwndMsg = NULL;
 #endif
 // RB end
 
 #ifdef __DOOM_DLL__
-idGame* 		game = NULL;
-idGameEdit* 	gameEdit = NULL;
+	idGame* 		game = NULL;
+	idGameEdit* 	gameEdit = NULL;
 #endif
 
 idCommonLocal	commonLocal;
@@ -149,60 +149,60 @@ idCommonLocal::idCommonLocal() :
 	effectiveSnapRate	= 0.0f;
 	totalBufferedTime	= 0;
 	totalRecvTime		= 0;
-	
+
 	com_fullyInitialized = false;
 	com_refreshOnPrint = false;
 	com_errorEntered = ERP_NONE;
 	com_shuttingDown = false;
 	com_isJapaneseSKU = false;
-	
+
 	logFile = NULL;
-	
+
 	strcpy( errorMessage, "" );
-	
+
 	rd_buffer = NULL;
 	rd_buffersize = 0;
 	rd_flush = NULL;
-	
+
 	gameDLL = 0;
-	
+
 	loadGUI = NULL;
 	nextLoadTip = 0;
 	isHellMap = false;
 	wipeForced = false;
 	defaultLoadscreen = false;
-	
+
 	menuSoundWorld = NULL;
-	
+
 	insideUpdateScreen = false;
 	insideExecuteMapChange = false;
-	
+
 	mapSpawnData.savegameFile = NULL;
-	
+
 	currentMapName.Clear();
 	aviDemoShortName.Clear();
-	
+
 	renderWorld = NULL;
 	soundWorld = NULL;
 	menuSoundWorld = NULL;
 	readDemo = NULL;
 	writeDemo = NULL;
-	
+
 	gameFrame = 0;
 	gameTimeResidual = 0;
 	syncNextGameFrame = true;
 	mapSpawned = false;
 	aviCaptureMode = false;
 	timeDemo = TD_NO;
-	
+
 	nextSnapshotSendTime = 0;
 	nextUsercmdSendTime = 0;
-	
+
 	clientPrediction = 0;
-	
+
 	saveFile = NULL;
 	stringsFile = NULL;
-	
+
 	ClearWipe();
 }
 
@@ -220,7 +220,7 @@ void idCommonLocal::Quit()
 		return;
 	}
 #endif
-	
+
 	// don't try to shutdown if we are in a recursive error
 	if( !com_errorEntered )
 	{
@@ -259,7 +259,7 @@ idCommonLocal::ParseCommandLine
 void idCommonLocal::ParseCommandLine( int argc, const char* const* argv )
 {
 	int i, current_count;
-	
+
 	com_numConsoleLines = 0;
 	current_count = 0;
 	// API says no program path
@@ -268,7 +268,7 @@ void idCommonLocal::ParseCommandLine( int argc, const char* const* argv )
 		if( idStr::Icmp( argv[ i ], "+connect_lobby" ) == 0 )
 		{
 			// Handle Steam bootable invites.
-			
+
 			// RB begin
 #if defined(_WIN32)
 			session->HandleBootableInvite( _atoi64( argv[ i + 1 ] ) );
@@ -304,7 +304,7 @@ skip loading of config file (DoomConfig.cfg)
 bool idCommonLocal::SafeMode()
 {
 	int			i;
-	
+
 	for( i = 0 ; i < com_numConsoleLines ; i++ )
 	{
 		if( !idStr::Icmp( com_consoleLines[ i ].Argv( 0 ), "safe" )
@@ -339,7 +339,7 @@ void idCommonLocal::StartupVariable( const char* match )
 			continue;
 		}
 		const char* s = com_consoleLines[ i ].Argv( 1 );
-		
+
 		if( !match || !idStr::Icmp( s, match ) )
 		{
 			cvarSystem->SetCVarString( s, com_consoleLines[ i ].Argv( 2 ) );
@@ -427,7 +427,7 @@ void idCommonLocal::WriteConfigToFile( const char* filename )
 		Printf( "Couldn't write %s.\n", filename );
 		return;
 	}
-	
+
 	idKeyInput::WriteBindings( f );
 	cvarSystem->WriteFlaggedVariables( CVAR_ARCHIVE, "set", f );
 	fileSystem->CloseFile( f );
@@ -448,27 +448,27 @@ void idCommonLocal::WriteConfiguration()
 	{
 		return;
 	}
-	
+
 	if( !( cvarSystem->GetModifiedFlags() & CVAR_ARCHIVE ) )
 	{
 		return;
 	}
 	cvarSystem->ClearModifiedFlags( CVAR_ARCHIVE );
-	
+
 	// save to the profile
 	idLocalUser* user = session->GetSignInManager().GetMasterLocalUser();
 	if( user != NULL )
 	{
 		user->SaveProfileSettings();
 	}
-	
+
 #ifdef CONFIG_FILE
 	// disable printing out the "Writing to:" message
 	bool developer = com_developer.GetBool();
 	com_developer.SetBool( false );
-	
+
 	WriteConfigToFile( CONFIG_FILE );
-	
+
 	// restore the developer cvar
 	com_developer.SetBool( developer );
 #endif
@@ -543,7 +543,7 @@ static void Com_ScriptDebugger_f( const idCmdArgs& args )
 {
 #ifdef USE_MFC_TOOLS
 	DebuggerServerInit();
-	
+
 	// Make sure it wasnt on the command line
 	if( !( com_editors & EDITOR_DEBUGGER ) )
 	{
@@ -565,7 +565,7 @@ static void Com_EditGUIs_f( const idCmdArgs& args )
 	// motorsep 12-28-2014; safety mechanicsm that ensures AA is off before GUI Editor can be used; eventually we might need a better solution or at least a Dialog window that lets user know about restart
 	// potentially I see having a menu screen with all tools shortcuts there and dialog window popping up if restart or some settings changes are required
 	int antialiasing = cvarSystem->GetCVarInteger( "r_multiSamples" );
-	
+
 	if( antialiasing != 0 )
 	{
 		idStr cmdLine = Sys_GetCmdLine();
@@ -573,7 +573,7 @@ static void Com_EditGUIs_f( const idCmdArgs& args )
 		Sys_ReLaunch( ( void* )cmdLine.c_str(), cmdLine.Length() );
 		return;
 	}
-	
+
 	GUIEditorInit();
 }
 
@@ -602,33 +602,33 @@ CONSOLE_COMMAND( printMemInfo, "prints memory debugging data", NULL )
 	MemInfo_t mi;
 	memset( &mi, 0, sizeof( mi ) );
 	mi.filebase = commonLocal.GetCurrentMapName();
-	
+
 	renderSystem->PrintMemInfo( &mi );			// textures and models
 	soundSystem->PrintMemInfo( &mi );			// sounds
-	
+
 	common->Printf( " Used image memory: %s bytes\n", idStr::FormatNumber( mi.imageAssetsTotal ).c_str() );
 	mi.assetTotals += mi.imageAssetsTotal;
-	
+
 	common->Printf( " Used model memory: %s bytes\n", idStr::FormatNumber( mi.modelAssetsTotal ).c_str() );
 	mi.assetTotals += mi.modelAssetsTotal;
-	
+
 	common->Printf( " Used sound memory: %s bytes\n", idStr::FormatNumber( mi.soundAssetsTotal ).c_str() );
 	mi.assetTotals += mi.soundAssetsTotal;
-	
+
 	common->Printf( " Used asset memory: %s bytes\n", idStr::FormatNumber( mi.assetTotals ).c_str() );
-	
+
 	// write overview file
 	idFile* f;
-	
+
 	f = fileSystem->OpenFileAppend( "maps/printmeminfo.txt" );
 	if( !f )
 	{
 		return;
 	}
-	
+
 	f->Printf( "total(%s ) image(%s ) model(%s ) sound(%s ): %s\n", idStr::FormatNumber( mi.assetTotals ).c_str(), idStr::FormatNumber( mi.imageAssetsTotal ).c_str(),
 			   idStr::FormatNumber( mi.modelAssetsTotal ).c_str(), idStr::FormatNumber( mi.soundAssetsTotal ).c_str(), mi.filebase.c_str() );
-			   
+
 	fileSystem->CloseFile( f );
 }
 
@@ -720,7 +720,7 @@ CONSOLE_COMMAND( error, "causes an error", NULL )
 		commonLocal.Printf( "error may only be used in developer mode\n" );
 		return;
 	}
-	
+
 	if( args.Argc() > 1 )
 	{
 		commonLocal.FatalError( "Testing fatal error" );
@@ -742,23 +742,23 @@ CONSOLE_COMMAND( freeze, "freezes the game for a number of seconds", NULL )
 {
 	float	s;
 	int		start, now;
-	
+
 	if( args.Argc() != 2 )
 	{
 		commonLocal.Printf( "freeze <seconds>\n" );
 		return;
 	}
-	
+
 	if( !com_developer.GetBool() )
 	{
 		commonLocal.Printf( "freeze may only be used in developer mode\n" );
 		return;
 	}
-	
+
 	s = atof( args.Argv( 1 ) );
-	
+
 	start = eventLoop->Milliseconds();
-	
+
 	while( 1 )
 	{
 		now = eventLoop->Milliseconds();
@@ -814,13 +814,13 @@ Write the config file to a specific name
 CONSOLE_COMMAND( writeConfig, "writes a config file", NULL )
 {
 	idStr	filename;
-	
+
 	if( args.Argc() != 2 )
 	{
 		commonLocal.Printf( "Usage: writeconfig <filename>\n" );
 		return;
 	}
-	
+
 	filename = args.Argv( 1 );
 	filename.DefaultFileExtension( ".cfg" );
 	commonLocal.Printf( "Writing %s.\n", filename.c_str() );
@@ -837,7 +837,7 @@ void idCommonLocal::CheckStartupStorageRequirements()
 	// RB: disabled savegame and profile storage checks, because it fails sometimes without any clear reason
 #if 0
 	int64 availableSpace = 0;
-	
+
 	// ------------------------------------------------------------------------
 	// Savegame and Profile required storage
 	// ------------------------------------------------------------------------
@@ -850,10 +850,10 @@ void idCommonLocal::CheckStartupStorageRequirements()
 		//idStr directory = fs_savepath.GetString();
 		directory += "\\";	// so it doesn't think the last part is a file and ignores in the directory creation
 		fileSystem->CreateOSPath( directory );
-		
+
 		// Get the free space on the save path.
 		availableSpace = Sys_GetDriveFreeSpaceInBytes( savepath );
-		
+
 		// If free space fails then get space on drive as a fall back
 		// (the directory will be created later anyway)
 		if( availableSpace <= 1 )
@@ -871,14 +871,14 @@ void idCommonLocal::CheckStartupStorageRequirements()
 			}
 		}
 	}
-	
+
 	const int MIN_SAVE_STORAGE_PROFILE		= 1024 * 1024;
 	const int MIN_SAVE_STORAGE_SAVEGAME		= MIN_SAVEGAME_SIZE_BYTES;
-	
+
 	uint64 requiredSizeBytes = MIN_SAVE_STORAGE_SAVEGAME + MIN_SAVE_STORAGE_PROFILE;
-	
+
 	idLib::Printf( "requiredSizeBytes: %lld\n", requiredSizeBytes );
-	
+
 	if( ( int64 )( requiredSizeBytes - availableSpace ) > 0 )
 	{
 		class idSWFScriptFunction_Continue : public idSWFScriptFunction_RefCounted
@@ -892,12 +892,12 @@ void idCommonLocal::CheckStartupStorageRequirements()
 				return idSWFScriptVar();
 			}
 		};
-		
+
 		idStaticList< idSWFScriptFunction*, 4 > callbacks;
 		idStaticList< idStrId, 4 > optionText;
 		callbacks.Append( new( TAG_SWF ) idSWFScriptFunction_Continue() );
 		optionText.Append( idStrId( "#STR_SWF_ACCEPT" ) );
-		
+
 		// build custom space required string
 		// #str_dlg_space_required ~= "There is insufficient storage available.  Please free %s and try again."
 		idStr format = idStrId( "#str_dlg_startup_insufficient_storage" ).GetLocalizedString();
@@ -911,12 +911,12 @@ void idCommonLocal::CheckStartupStorageRequirements()
 			size = va( "%.1f KB", ( float )requiredSizeBytes / 1024.0f + 0.1f );
 		}
 		idStr msg = va( format.c_str(), size.c_str() );
-		
+
 		common->Dialog().AddDynamicDialog( GDM_INSUFFICENT_STORAGE_SPACE, callbacks, optionText, true, msg );
 	}
 #endif
 	// RB end
-	
+
 	session->GetAchievementSystem().Start();
 }
 
@@ -961,20 +961,20 @@ extern idCVar sys_lang;
 void idCommonLocal::InitLanguageDict()
 {
 	idStr fileName;
-	
+
 	//D3XP: Instead of just loading a single lang file for each language
 	//we are going to load all files that begin with the language name
 	//similar to the way pak files work. So you can place english001.lang
 	//to add new strings to the english language dictionary
 	idFileList*	langFiles;
 	langFiles =  fileSystem->ListFilesTree( "strings", ".lang", true );
-	
+
 	idStrList langList = langFiles->GetList();
-	
+
 	// Loop through the list and filter
 	idStrList currentLangList = langList;
 	FilterLangList( &currentLangList, sys_lang.GetString() );
-	
+
 	if( currentLangList.Num() == 0 )
 	{
 		// reset to english and try to load again
@@ -982,7 +982,7 @@ void idCommonLocal::InitLanguageDict()
 		currentLangList = langList;
 		FilterLangList( &currentLangList, sys_lang.GetString() );
 	}
-	
+
 	idLocalization::ClearDictionary();
 	for( int i = 0; i < currentLangList.Num(); i++ )
 	{
@@ -997,9 +997,9 @@ void idCommonLocal::InitLanguageDict()
 		idLocalization::LoadDictionary( buffer, len, currentLangList[i] );
 		fileSystem->FreeFile( ( void* )buffer );
 	}
-	
+
 	fileSystem->FreeFileList( langFiles );
-	
+
 	Sys_InitScanTable();
 }
 
@@ -1051,7 +1051,7 @@ void idCommonLocal::InitCommands()
 	cmdSystem->AddCommand( "runAAS", RunAAS_f, CMD_FL_TOOL, "compiles an AAS file for a map", idCmdSystem::ArgCompletion_MapName );
 	cmdSystem->AddCommand( "runAASDir", RunAASDir_f, CMD_FL_TOOL, "compiles AAS files for all maps in a folder", idCmdSystem::ArgCompletion_MapName );
 	cmdSystem->AddCommand( "runReach", RunReach_f, CMD_FL_TOOL, "calculates reachability for an AAS file", idCmdSystem::ArgCompletion_MapName );
-	
+
 #ifdef ID_ALLOW_TOOLS
 	// editors
 	cmdSystem->AddCommand( "editor", Com_Editor_f, CMD_FL_TOOL, "launches the level editor Radiant" );
@@ -1064,7 +1064,7 @@ void idCommonLocal::InitCommands()
 	cmdSystem->AddCommand( "editGUIs", Com_EditGUIs_f, CMD_FL_TOOL, "launches the GUI Editor" );
 	cmdSystem->AddCommand( "editPDAs", Com_EditPDAs_f, CMD_FL_TOOL, "launches the in-game PDA Editor" );
 	cmdSystem->AddCommand( "debugger", Com_ScriptDebugger_f, CMD_FL_TOOL, "launches the Script Debugger" );
-	
+
 	//BSM Nerve: Add support for the material editor
 	cmdSystem->AddCommand( "materialEditor", Com_MaterialEditor_f, CMD_FL_TOOL, "launches the Material Editor" );
 #endif
@@ -1098,7 +1098,7 @@ void idCommonLocal::RenderSplash()
 	}
 	renderSystem->SetColor4( 1, 1, 1, 1 );
 	renderSystem->DrawStretchPic( barWidth, barHeight, SCREEN_WIDTH - barWidth * 2.0f, SCREEN_HEIGHT - barHeight * 2.0f, 0, 0, 1, 1, splashScreen );
-	
+
 	const emptyCommand_t* cmd = renderSystem->SwapCommandBuffers( &time_frontend, &time_backend, &time_shadows, &time_gpu );
 	renderSystem->RenderCommandBuffers( cmd );
 }
@@ -1180,22 +1180,22 @@ void idCommonLocal::RenderBink( const char* path,  const char* path_audio )
 	const float movieAspect = ( 16.0f / 9.0f );
 	const float imageWidth = SCREEN_WIDTH * movieAspect / sysAspect;
 	const float chop = 0.5f * ( SCREEN_WIDTH - imageWidth );
-	
+
 	idStr materialText;
 	materialText.Format( "{ translucent { videoMap %s } }", path );
-	
+
 	idMaterial* material = const_cast<idMaterial*>( declManager->FindMaterial( "video/kialogo" ) );
 	material->Parse( materialText.c_str(), materialText.Length(), false );
 	material->ResetCinematicTime( Sys_Milliseconds() );
-	
+
 	soundWorld->PlayShaderDirectly( path_audio, 0 ); // "gui/loadvideointro"
 	soundWorld->UnPause();
 	soundSystem->SetPlayingSoundWorld( soundWorld );
 	soundSystem->Render();
-	
+
 	sysEvent_t	ev; //SS2 fix RoQ videos skipping
 	bool EndVideo = false;
-	
+
 	// FIX ME: timing should be polled from the video
 	while( Sys_Milliseconds() <= 14000 ) // 13 sec (+1 sec delay) is the length of the test video we have
 	{
@@ -1214,18 +1214,22 @@ void idCommonLocal::RenderBink( const char* path,  const char* path_audio )
 					if( ev.evType == SE_KEY )
 					{
 						if( ev.evValue < K_JOY_STICK1_UP || K_JOY_DPAD_RIGHT  < ev.evValue )
+						{
 							EndVideo = true;
+						}
 					}
 					ev = Sys_GetEvent();
 				}
 			}
 		}
 		if( EndVideo )
+		{
 			break;
+		}
 		// TODO: Restrict Joystick input to only allow pressing buttons/triggers to skip video, no dpad or sticks.
 		Sys_Sleep( 10 );
 	}
-	
+
 	soundSystem->StopAllSounds(); // Stop Playing Video Sound track.
 	material->MakeDefault();
 }
@@ -1253,13 +1257,13 @@ void idCommonLocal::LoadGameDLL()
 {
 #ifdef __DOOM_DLL__
 	char			dllPath[ MAX_OSPATH ];
-	
+
 	gameImport_t	gameImport;
 	gameExport_t	gameExport;
 	GetGameAPI_t	GetGameAPI;
-	
+
 	fileSystem->FindDLL( "game", dllPath, true );
-	
+
 	if( !dllPath[ 0 ] )
 	{
 		common->FatalError( "couldn't find game dynamic library" );
@@ -1272,7 +1276,7 @@ void idCommonLocal::LoadGameDLL()
 		common->FatalError( "couldn't load game dynamic library" );
 		return;
 	}
-	
+
 	const char* functionName = "GetGameAPI";
 	GetGameAPI = ( GetGameAPI_t ) Sys_DLL_GetProcAddress( gameDLL, functionName );
 	if( !GetGameAPI )
@@ -1282,7 +1286,7 @@ void idCommonLocal::LoadGameDLL()
 		common->FatalError( "couldn't find game DLL API" );
 		return;
 	}
-	
+
 	gameImport.version					= GAME_API_VERSION;
 	gameImport.sys						= ::sys;
 	gameImport.common					= ::common;
@@ -1296,9 +1300,9 @@ void idCommonLocal::LoadGameDLL()
 	gameImport.declManager				= ::declManager;
 	gameImport.AASFileManager			= ::AASFileManager;
 	gameImport.collisionModelManager	= ::collisionModelManager;
-	
+
 	gameExport							= *GetGameAPI( &gameImport );
-	
+
 	if( gameExport.version != GAME_API_VERSION )
 	{
 		Sys_DLL_Unload( gameDLL );
@@ -1306,12 +1310,12 @@ void idCommonLocal::LoadGameDLL()
 		common->FatalError( "wrong game DLL API version" );
 		return;
 	}
-	
+
 	game								= gameExport.game;
 	gameEdit							= gameExport.gameEdit;
-	
+
 #endif
-	
+
 	// initialize the game object
 	if( game != NULL )
 	{
@@ -1345,9 +1349,9 @@ void idCommonLocal::UnloadGameDLL()
 	{
 		game->Shutdown();
 	}
-	
+
 #ifdef __DOOM_DLL__
-	
+
 	if( gameDLL )
 	{
 		Sys_DLL_Unload( gameDLL );
@@ -1355,7 +1359,7 @@ void idCommonLocal::UnloadGameDLL()
 	}
 	game = NULL;
 	gameEdit = NULL;
-	
+
 #endif
 }
 
@@ -1387,13 +1391,13 @@ void idCommonLocal::Init( int argc, const char* const* argv, const char* cmdline
 		idLib::common		= common;
 		idLib::cvarSystem	= cvarSystem;
 		idLib::fileSystem	= fileSystem;
-		
+
 		// initialize idLib
 		idLib::Init();
-		
+
 		// clear warning buffer
 		ClearWarnings( GAME_NAME " initialization" );
-		
+
 		idLib::Printf( va( "Command line: %s\n", cmdline ) );
 		//::MessageBox( NULL, cmdline, "blah", MB_OK );
 		// parse command line options
@@ -1405,86 +1409,86 @@ void idCommonLocal::Init( int argc, const char* const* argv, const char* cmdline
 			argv = args.GetArgs( &argc );
 		}
 		ParseCommandLine( argc, argv );
-		
+
 		// init console command system
 		cmdSystem->Init();
-		
+
 		// init CVar system
 		cvarSystem->Init();
-		
+
 		// register all static CVars
 		idCVar::RegisterStaticVars();
-		
+
 		idLib::Printf( "QA Timing INIT: %06dms\n", Sys_Milliseconds() );
-		
+
 		// print engine version
 		Printf( "%s\n", version.string );
-		
+
 		// initialize key input/binding, done early so bind command exists
 		idKeyInput::Init();
-		
+
 		// init the console so we can take prints
 		console->Init();
-		
+
 		// get architecture info
 		Sys_Init();
-		
+
 		// initialize networking
 		Sys_InitNetworking();
-		
+
 		// override cvars from command line
 		StartupVariable( NULL );
-		
+
 		consoleUsed = com_allowConsole.GetBool();
-		
+
 		if( Sys_AlreadyRunning() )
 		{
 			Sys_Quit();
 		}
-		
+
 		// initialize processor specific SIMD implementation
 		InitSIMD();
-		
+
 		// init commands
 		InitCommands();
-		
+
 		// initialize the file system
 		fileSystem->Init();
-		
+
 		const char* defaultLang = Sys_DefaultLanguage();
 		com_isJapaneseSKU = ( idStr::Icmp( defaultLang, ID_LANG_JAPANESE ) == 0 );
-		
+
 		// Allow the system to set a default lanugage
 		Sys_SetLanguageFromSystem();
-		
+
 		// Pre-allocate our 20 MB save buffer here on time, instead of on-demand for each save....
-		
+
 		saveFile.SetNameAndType( SAVEGAME_CHECKPOINT_FILENAME, SAVEGAMEFILE_BINARY );
 		saveFile.PreAllocate( MIN_SAVEGAME_SIZE_BYTES );
-		
+
 		stringsFile.SetNameAndType( SAVEGAME_STRINGS_FILENAME, SAVEGAMEFILE_BINARY );
 		stringsFile.PreAllocate( MAX_SAVEGAME_STRING_TABLE_SIZE );
-		
+
 		// Pre-Allocate the Thumbnail file in memory.
 		ThumbnailFile.SetNameAndType( SAVEGAME_THUMB_FILENAME, SAVEGAMEFILE_THUMB );
 		ThumbnailFile.PreAllocate( MIN_SAVEGAME_PREVIEW_SIZE_BYTES );
-		
+
 		// motorsep 01-16-2015; Doom 3 BFG never had _startup.resources, we don't have it either. No idea what needs to go there, but apparently it's non-essential
 		//fileSystem->BeginLevelLoad( "_startup", saveFile.GetDataPtr(), saveFile.GetAllocated() );
-		
+
 		// initialize the declaration manager
 		declManager->Init();
-		
+
 		// init journalling, etc
 		eventLoop->Init();
-		
+
 		// init the parallel job manager
 		parallelJobManager->Init();
-		
+
 		// exec the startup scripts
 		cmdSystem->BufferCommandText( CMD_EXEC_APPEND, "exec editor.cfg\n" );
 		cmdSystem->BufferCommandText( CMD_EXEC_APPEND, "exec default.cfg\n" );
-		
+
 #ifdef CONFIG_FILE
 		// skip the config file if "safe" is on the command line
 		if( !SafeMode() && !g_demoMode.GetBool() )
@@ -1492,33 +1496,33 @@ void idCommonLocal::Init( int argc, const char* const* argv, const char* cmdline
 			cmdSystem->BufferCommandText( CMD_EXEC_APPEND, "exec " CONFIG_FILE "\n" );
 		}
 #endif
-		
+
 		cmdSystem->BufferCommandText( CMD_EXEC_APPEND, "exec autoexec.cfg\n" );
-		
+
 		// run cfg execution
 		cmdSystem->ExecuteCommandBuffer();
-		
+
 		// re-override anything from the config files with command line args
 		StartupVariable( NULL );
-		
+
 		// if any archived cvars are modified after this, we will trigger a writing of the config file
 		cvarSystem->ClearModifiedFlags( CVAR_ARCHIVE );
-		
+
 		// init OpenGL, which will open a window and connect sound and input hardware
 		renderSystem->InitOpenGL();
-		
+
 		// Support up to 2 digits after the decimal point
 		com_engineHz_denominator = 100LL * com_engineHz.GetFloat();
 		com_engineHz_latched = com_engineHz.GetFloat();
-		
+
 		// start the sound system, but don't do any hardware operations yet
 		soundSystem->Init();
-		
+
 		// initialize the renderSystem data structures
 		renderSystem->Init();
-		
+
 		whiteMaterial = declManager->FindMaterial( "_white" );
-		
+
 		if( idStr::Icmp( sys_lang.GetString(), ID_LANG_FRENCH ) == 0 )
 		{
 			// If the user specified french, we show french no matter what SKU
@@ -1534,31 +1538,31 @@ void idCommonLocal::Init( int argc, const char* const* argv, const char* cmdline
 			// Otherwise show it in english
 			splashScreen = declManager->FindMaterial( "guis/assets/splash/legal_english" );
 		}
-		
+
 		//int legalStartTime = Sys_Milliseconds();
 		declManager->Init2();
-		
+
 		// initialize string database so we can use it for loading messages
 		InitLanguageDict();
-		
+
 		// spawn the game thread, even if we are going to run without SMP
 		// one meg stack, because it can parse decls from gui surfaces (unfortunately)
 		// use a lower priority so job threads can run on the same core
 		gameThread.StartWorkerThread( "Game/Draw", CORE_1B, THREAD_BELOW_NORMAL, 0x100000 );
 		// boost this thread's priority, so it will prevent job threads from running while
 		// the render back end still has work to do
-		
+
 		// init the user command input code
 		usercmdGen->Init();
-		
+
 		Sys_SetRumble( 0, 0, 0 );
-		
+
 		// initialize the user interfaces
 		uiManager->Init();
-		
+
 		// load the game dll
 		LoadGameDLL();
-		
+
 		// On the PC touch them all so they get included in the resource build
 		if( !fileSystem->UsingResourceFiles() )
 		{
@@ -1573,18 +1577,18 @@ void idCommonLocal::Init( int argc, const char* const* argv, const char* cmdline
 				declManager->DeclByIndex( DECL_VIDEO, i );
 			}
 		}
-		
+
 		fileSystem->UnloadResourceContainer( "_ordered" );
-		
+
 		// the same idRenderWorld will be used for all games
 		// and demos, insuring that level specific models
 		// will be freed
 		renderWorld = renderSystem->AllocRenderWorld();
 		soundWorld = soundSystem->AllocSoundWorld( renderWorld );
-		
+
 		menuSoundWorld = soundSystem->AllocSoundWorld( NULL );
 		menuSoundWorld->PlaceListener( vec3_origin, mat3_identity, 0 );
-		
+
 		// init the session
 		session->Initialize();
 		session->InitializeSoundRelatedSystems();
@@ -1594,27 +1598,27 @@ void idCommonLocal::Init( int argc, const char* const* argv, const char* cmdline
 		session->GetSaveGameManager().WaitForAllProcessors();
 		session->Pump();
 		InitializeMPMapsModes();
-		
+
 		// leaderboards need to be initialized after InitializeMPMapsModes, which populates the MP Map list.
 		if( game != NULL )
 		{
 			game->Leaderboards_Init();
 		}
-		
+
 		CreateMainMenu();
-		
+
 		commonDialog.Init();
-		
+
 		// load the console history file
 		consoleHistory.LoadHistoryFile();
-		
+
 		AddStartupCommands();
-		
+
 		StartMenu( true );
-		
+
 		const int legalMinTime = 4000; // was 4000; how long to keep legal screen visible before bringing up menu
 		const bool showVideo = ( !com_skipIntroVideos.GetBool() && fileSystem->UsingResourceFiles() );
-		
+
 		// SE2 fix begins
 		if( showVideo )
 		{
@@ -1631,9 +1635,9 @@ void idCommonLocal::Init( int argc, const char* const* argv, const char* cmdline
 			RenderSplash();
 			RenderSplash();
 		}		*/
-		
+
 		int legalStartTime = Sys_Milliseconds(); // SE2 fix ends
-		
+
 		renderSystem->LoadLevelImages();
 #ifndef _DEBUG
 		while( Sys_Milliseconds() - legalStartTime < legalMinTime )
@@ -1643,17 +1647,17 @@ void idCommonLocal::Init( int argc, const char* const* argv, const char* cmdline
 			Sys_Sleep( 10 );
 		}
 #endif
-		
+
 		com_firstLaunchIntroVideos.SetBool( false ); // SE2 feature; allow intro video to be skippable
-		
+
 		// print all warnings queued during initialization
 		PrintWarnings();
-		
+
 		// remove any prints from the notify lines
 		console->ClearNotifyLines();
-		
+
 		CheckStartupStorageRequirements();
-		
+
 		if( preload_CommonAssets.GetBool() && fileSystem->UsingResourceFiles() )
 		{
 			idPreloadManifest manifest;
@@ -1661,12 +1665,12 @@ void idCommonLocal::Init( int argc, const char* const* argv, const char* cmdline
 			globalImages->Preload( manifest, false );
 			soundSystem->Preload( manifest );
 		}
-		
+
 		fileSystem->EndLevelLoad();
-		
+
 		com_fullyInitialized = true;
-		
-		
+
+
 		// No longer need the splash screen
 		if( splashScreen != NULL )
 		{
@@ -1679,9 +1683,9 @@ void idCommonLocal::Init( int argc, const char* const* argv, const char* cmdline
 				}
 			}
 		}
-		
+
 		Printf( "--- Common Initialization Complete ---\n" );
-		
+
 		idLib::Printf( "QA Timing IIS: %06dms\n", Sys_Milliseconds() );
 	}
 	catch( idException& )
@@ -1702,129 +1706,129 @@ void idCommonLocal::Shutdown()
 		return;
 	}
 	com_shuttingDown = true;
-	
-	
+
+
 	// Kill any pending saves...
 	printf( "session->GetSaveGameManager().CancelToTerminate();\n" );
 	session->GetSaveGameManager().CancelToTerminate();
-	
+
 	// kill sound first
 	printf( "soundSystem->StopAllSounds();\n" );
 	soundSystem->StopAllSounds();
-	
+
 	// shutdown the script debugger
 	DebuggerServerShutdown();
-	
+
 	if( aviCaptureMode )
 	{
 		printf( "EndAVICapture();\n" );
 		EndAVICapture();
 	}
-	
+
 	printf( "Stop();\n" );
 	Stop();
-	
+
 	printf( "CleanupShell();\n" );
 	CleanupShell();
-	
+
 	printf( "delete loadGUI;\n" );
 	delete loadGUI;
 	loadGUI = NULL;
-	
+
 	printf( "delete renderWorld;\n" );
 	delete renderWorld;
 	renderWorld = NULL;
-	
+
 	printf( "delete soundWorld;\n" );
 	delete soundWorld;
 	soundWorld = NULL;
-	
+
 	printf( "delete menuSoundWorld;\n" );
 	delete menuSoundWorld;
 	menuSoundWorld = NULL;
-	
+
 	// shut down the session
 	printf( "session->ShutdownSoundRelatedSystems();\n" );
 	session->ShutdownSoundRelatedSystems();
 	printf( "session->Shutdown();\n" );
 	session->Shutdown();
-	
+
 	// shutdown, deallocate leaderboard definitions.
 	if( game != NULL )
 	{
 		printf( "game->Leaderboards_Shutdown();\n" );
 		game->Leaderboards_Shutdown();
 	}
-	
+
 	// shut down the user interfaces
 	printf( "uiManager->Shutdown();\n" );
 	uiManager->Shutdown();
-	
+
 	// shut down the sound system
 	printf( "soundSystem->Shutdown();\n" );
 	soundSystem->Shutdown();
-	
+
 	// shut down the user command input code
 	printf( "usercmdGen->Shutdown();\n" );
 	usercmdGen->Shutdown();
-	
+
 	// shut down the event loop
 	printf( "eventLoop->Shutdown();\n" );
 	eventLoop->Shutdown();
-	
+
 	// shutdown the decl manager
 	printf( "declManager->Shutdown();\n" );
 	declManager->Shutdown();
-	
+
 	// shut down the renderSystem
 	printf( "renderSystem->Shutdown();\n" );
 	renderSystem->Shutdown();
-	
+
 	printf( "commonDialog.Shutdown();\n" );
 	commonDialog.Shutdown();
-	
+
 	// foresthale 2014-05-28: stop the game thread before we get to doexit() and hit all the dtors and end up waiting on a dead idGameThread
 	gameThread.StopThread();
-	
+
 	// unload the game dll
 	printf( "UnloadGameDLL();\n" );
 	UnloadGameDLL();
-	
+
 	printf( "saveFile.Clear( true );\n" );
 	saveFile.Clear( true );
 	printf( "stringsFile.Clear( true );\n" );
 	stringsFile.Clear( true );
 	printf( "ThumbnailFile.Clear( true );\n" );
 	ThumbnailFile.Clear( true );
-	
+
 	// only shut down the log file after all output is done
 	printf( "CloseLogFile();\n" );
 	CloseLogFile();
-	
+
 	// shut down the file system
 	printf( "fileSystem->Shutdown( false );\n" );
 	fileSystem->Shutdown( false );
-	
+
 	// shut down non-portable system services
 	printf( "Sys_Shutdown();\n" );
 	Sys_Shutdown();
-	
+
 	// shut down the console
 	printf( "console->Shutdown();\n" );
 	console->Shutdown();
-	
+
 	// shut down the key system
 	printf( "idKeyInput::Shutdown();\n" );
 	idKeyInput::Shutdown();
-	
+
 	// shut down the cvar system
 	printf( "cvarSystem->Shutdown();\n" );
 	cvarSystem->Shutdown();
-	
+
 	// shut down the console command system
 	printf( "cmdSystem->Shutdown();\n" );
 	cmdSystem->Shutdown();
-	
+
 	// free any buffered warning messages
 	printf( "ClearWarnings( GAME_NAME \" shutdown\" );\n" );
 	ClearWarnings( GAME_NAME " shutdown" );
@@ -1832,7 +1836,7 @@ void idCommonLocal::Shutdown()
 	warningCaption.Clear();
 	printf( "errorList.Clear();\n" );
 	errorList.Clear();
-	
+
 	// shutdown idLib
 	printf( "idLib::ShutDown();\n" );
 	idLib::ShutDown();
@@ -1852,13 +1856,13 @@ void idCommonLocal::CreateMainMenu()
 		renderSystem->BeginLevelLoad();
 		soundSystem->BeginLevelLoad();
 		uiManager->BeginLevelLoad();
-		
+
 		// create main inside an "empty" game level load - so assets get
 		// purged automagically when we transition to a "real" map
 		game->Shell_CreateMenu( false );
 		game->Shell_Show( true );
 		game->Shell_SyncWithSession();
-		
+
 		// load
 		renderSystem->EndLevelLoad();
 		soundSystem->EndLevelLoad();
@@ -1877,18 +1881,18 @@ called on errors and game exits
 void idCommonLocal::Stop( bool resetSession )
 {
 	ClearWipe();
-	
+
 	// clear mapSpawned and demo playing flags
 	UnloadMap();
-	
+
 	soundSystem->StopAllSounds();
-	
+
 	insideUpdateScreen = false;
 	insideExecuteMapChange = false;
-	
+
 	// drop all guis
 	ExitMenu();
-	
+
 	if( resetSession )
 	{
 		session->QuitMatchToTitle();
@@ -1903,10 +1907,10 @@ idCommonLocal::BusyWait
 void idCommonLocal::BusyWait()
 {
 	Sys_GenerateEvents();
-	
+
 	const bool captureToImage = false;
 	UpdateScreen( captureToImage );
-	
+
 	session->UpdateSignInManager();
 	session->Pump();
 }
@@ -1922,11 +1926,11 @@ bool idCommonLocal::WaitForSessionState( idSession::sessionState_t desiredState 
 	{
 		return true;
 	}
-	
+
 	while( true )
 	{
 		BusyWait();
-		
+
 		idSession::sessionState_t sessionState = session->GetState();
 		if( sessionState == desiredState )
 		{
@@ -1940,7 +1944,7 @@ bool idCommonLocal::WaitForSessionState( idSession::sessionState_t desiredState 
 		{
 			return false;
 		}
-		
+
 		Sys_Sleep( 10 );
 	}
 }
@@ -1955,17 +1959,17 @@ void idCommonLocal::LeaveGame()
 
 	const bool captureToImage = false;
 	UpdateScreen( captureToImage );
-	
+
 	ResetNetworkingState();
-	
-	
+
+
 	Stop( false );
-	
+
 	CreateMainMenu();
-	
+
 	StartMenu();
-	
-	
+
+
 }
 
 /*
@@ -1982,33 +1986,33 @@ bool idCommonLocal::ProcessEvent( const sysEvent_t* event )
 		{
 			if( !game->Shell_IsActive() )
 			{
-			
+
 				// menus / etc
 				if( MenuEvent( event ) )
 				{
 					return true;
 				}
-				
+
 				console->Close();
-				
+
 				StartMenu();
 				return true;
 			}
 			else
 			{
 				console->Close();
-				
+
 				// menus / etc
 				if( MenuEvent( event ) )
 				{
 					return true;
 				}
-				
+
 				game->Shell_ClosePause();
 			}
 		}
 	}
-	
+
 	// let the pull-down console take it if desired
 	if( console->ProcessEvent( event, false ) )
 	{
@@ -2018,33 +2022,33 @@ bool idCommonLocal::ProcessEvent( const sysEvent_t* event )
 	{
 		return true;
 	}
-	
+
 	if( Dialog().IsDialogActive() )
 	{
 		Dialog().HandleDialogEvent( event );
 		return true;
 	}
-	
+
 	// menus / etc
 	if( MenuEvent( event ) )
 	{
 		return true;
 	}
-	
+
 	// if we aren't in a game, force the console to take it
 	if( !mapSpawned )
 	{
 		console->ProcessEvent( event, true );
 		return true;
 	}
-	
+
 	// in game, exec bindings for all key downs
 	if( event->evType == SE_KEY && event->evValue2 == 1 )
 	{
 		idKeyInput::ExecKeyBinding( event->evValue );
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -2066,7 +2070,7 @@ idCommonLocal::WriteFlaggedCVarsToFile
 void idCommonLocal::WriteFlaggedCVarsToFile( const char* filename, int flags, const char* setCmd )
 {
 	idFile* f;
-	
+
 	f = fileSystem->OpenFileWrite( filename, "fs_configpath" );
 	if( !f )
 	{
@@ -2095,7 +2099,7 @@ CONSOLE_COMMAND( writePrecache, "writes precache commands", NULL )
 	declManager->WritePrecacheCommands( f );
 	renderModelManager->WritePrecacheCommands( f );
 	uiManager->WritePrecacheCommands( f );
-	
+
 	fileSystem->CloseFile( f );
 }
 

@@ -48,7 +48,7 @@ void idLocalUser::Pump()
 {
 	// Pump the profile
 	GetProfileMgr().Pump();
-	
+
 	if( GetProfileMgr().GetProfile() != NULL && GetProfileMgr().GetProfile()->GetState() == idPlayerProfile::IDLE )
 	{
 		// Pump achievements
@@ -62,7 +62,7 @@ void idLocalUser::Pump()
 		}
 		session->GetAchievementSystem().Pump();
 	}
-	
+
 	// Extra platform pump if necessary
 	PumpPlatform();
 }
@@ -144,12 +144,12 @@ idLocalUser::GetStatInt
 int	idLocalUser::GetStatInt( int s )
 {
 	const idPlayerProfile* profile = GetProfile();
-	
+
 	if( profile != NULL && s >= 0 )
 	{
 		return profile->StatGetInt( s );
 	}
-	
+
 	return 0;
 }
 
@@ -161,12 +161,12 @@ idLocalUser::GetStatFloat
 float idLocalUser::GetStatFloat( int s )
 {
 	const idPlayerProfile* profile = GetProfile();
-	
+
 	if( profile != NULL )
 	{
 		return profile->StatGetFloat( s );
 	}
-	
+
 	return 0.0f;
 }
 
@@ -178,19 +178,19 @@ idLocalUser::LoadProfileSettings
 void idLocalUser::LoadProfileSettings()
 {
 	idPlayerProfile* profile = GetProfileMgr().GetProfile();
-	
+
 	// Lazy instantiation
 	if( profile == NULL )
 	{
 		// Create a new profile
 		profile = idPlayerProfile::CreatePlayerProfile( GetInputDevice() );
 	}
-	
+
 	if( profile != NULL )
 	{
 		profile->LoadSettings();
 	}
-	
+
 	return;
 }
 
@@ -206,7 +206,7 @@ void idLocalUser::SaveProfileSettings()
 	{
 		profile->SaveSettings( true );
 	}
-	
+
 	return;
 }
 

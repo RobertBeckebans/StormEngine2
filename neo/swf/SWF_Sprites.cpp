@@ -77,13 +77,13 @@ void idSWFSprite::Load( idSWFBitStream& bitstream, bool parseDictionary )
 {
 
 	frameCount = bitstream.ReadU16();
-	
+
 	// run through the file once, building the dictionary and accumulating control tags
 	frameOffsets.SetNum( frameCount + 1 );
 	frameOffsets[0] = 0;
-	
+
 	unsigned int currentFrame = 1;
-	
+
 	while( true )
 	{
 		uint16 codeAndLength = bitstream.ReadU16();
@@ -92,11 +92,11 @@ void idSWFSprite::Load( idSWFBitStream& bitstream, bool parseDictionary )
 		{
 			recordLength = bitstream.ReadU32();
 		}
-		
+
 		idSWFBitStream tagStream( bitstream.ReadData( recordLength ), recordLength, false );
-		
+
 		swfTag_t tag = ( swfTag_t )( codeAndLength >> 6 );
-		
+
 		// ----------------------
 		// Definition tags
 		// definition tags are only allowed in the main sprite
@@ -143,12 +143,12 @@ void idSWFSprite::Load( idSWFBitStream& bitstream, bool parseDictionary )
 		{
 			case Tag_End:
 				return;
-				
+
 			case Tag_ShowFrame:
 				frameOffsets[ currentFrame ] = commands.Num();
 				currentFrame++;
 				break;
-				
+
 			case Tag_FrameLabel:
 			{
 				swfFrameLabel_t& label = frameLabels.Alloc();
@@ -156,16 +156,16 @@ void idSWFSprite::Load( idSWFBitStream& bitstream, bool parseDictionary )
 				label.frameLabel = tagStream.ReadString();
 			}
 			break;
-			
+
 			case Tag_DoInitAction:
 			{
 				tagStream.ReadU16();
-				
+
 				idSWFBitStream& initaction = doInitActions.Alloc();
 				initaction.Load( tagStream.ReadData( recordLength - 2 ), recordLength - 2, true );
 			}
 			break;
-			
+
 			case Tag_DoAction:
 			case Tag_PlaceObject2:
 			case Tag_PlaceObject3:
@@ -176,7 +176,7 @@ void idSWFSprite::Load( idSWFBitStream& bitstream, bool parseDictionary )
 				command.stream.Load( tagStream.ReadData( recordLength ), recordLength, true );
 			}
 			break;
-			
+
 			default:
 				// We don't care, about sprite tags we don't support ... RobA
 				//idLib::Printf( "Load Sprite: Unhandled tag %s\n", idSWF::GetTagName( tag ) );
@@ -204,28 +204,28 @@ void idSWFSprite::Read( idFile* f )
 		f->ReadBig( frameLabels[i].frameNum );
 		f->ReadString( frameLabels[i].frameLabel );
 	}
-	
+
 	uint32 bufferSize;
 	f->ReadBig( bufferSize );
-	
+
 	commandBuffer = ( byte* )Mem_Alloc( bufferSize, TAG_SWF );
 	f->Read( commandBuffer, bufferSize );
-	
+
 	byte* currentBuffer = commandBuffer;
-	
+
 	f->ReadBig( num );
 	commands.SetNum( num );
 	for( int i = 0; i < commands.Num(); i++ )
 	{
 		uint32 streamLength = 0;
-		
+
 		f->ReadBig( commands[i].tag );
 		f->ReadBig( streamLength );
-		
+
 		commands[i].stream.Load( currentBuffer, streamLength, false );
 		currentBuffer += streamLength;
 	}
-	
+
 	uint32 doInitActionLength = 0;
 	f->ReadBig( num );
 	doInitActions.SetNum( num );
@@ -272,14 +272,14 @@ void idSWFSprite::Write( idFile* f )
 	{
 		f->Write( doInitActions[i].Ptr(), doInitActions[i].Length() );
 	}
-	
+
 	f->WriteBig( commands.Num() );
 	for( int i = 0; i < commands.Num(); i++ )
 	{
 		f->WriteBig( commands[i].tag );
 		f->WriteBig( commands[i].stream.Length() );
 	}
-	
+
 	f->WriteBig( doInitActions.Num() );
 	for( int i = 0; i < doInitActions.Num(); i++ )
 	{

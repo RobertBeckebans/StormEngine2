@@ -31,11 +31,11 @@ If you have questions concerning this license or the applicable additional terms
 #define AFX_RADIANT_H__330BBF06_731C_11D1_B539_00AA00A410FC__INCLUDED_
 
 #if _MSC_VER >= 1000
-#pragma once
+	#pragma once
 #endif // _MSC_VER >= 1000
 
 #ifndef __AFXWIN_H__
-#error include 'stdafx.h' before including this file for PCH
+	#error include 'stdafx.h' before including this file for PCH
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
@@ -49,7 +49,7 @@ class CRadiantApp : public CWinApp
 public:
 	CRadiantApp();
 	~CRadiantApp();
-	
+
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CRadiantApp)
@@ -59,7 +59,7 @@ public:
 	virtual BOOL OnIdle( LONG lCount );
 	virtual int Run( void );
 	//}}AFX_VIRTUAL
-	
+
 // Implementation
 
 	//{{AFX_MSG(CRadiantApp)

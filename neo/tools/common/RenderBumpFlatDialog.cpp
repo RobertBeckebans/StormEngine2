@@ -44,10 +44,10 @@ static bool CheckPow2( int Num )
 		{
 			return false;
 		}
-		
+
 		Num >>= 1;
 	}
-	
+
 	return true;
 }
 
@@ -62,49 +62,49 @@ static BOOL CALLBACK RBFProc( HWND hwndDlg, UINT message, WPARAM wParam, LPARAM 
 			SetDlgItemInt( hwndDlg, IDC_RBF_HEIGHT, rbfg_DefaultHeight.GetInteger(), FALSE );
 			SetDlgItemText( hwndDlg, IDC_RBF_FILENAME, RBFName );
 			return TRUE;
-			
+
 		case WM_COMMAND:
 			switch( LOWORD( wParam ) )
 			{
 				case IDOK:
 				{
 					int		width, height;
-					
+
 					width = GetDlgItemInt( hwndDlg, IDC_RBF_WIDTH, 0, FALSE );
 					height = GetDlgItemInt( hwndDlg, IDC_RBF_HEIGHT, 0, FALSE );
-					
+
 					rbfg_DefaultWidth.SetInteger( width );
 					rbfg_DefaultHeight.SetInteger( height );
-					
+
 					Com_WriteConfigToFile( CONFIG_FILE );
-					
+
 					if( !CheckPow2( width ) || !CheckPow2( height ) )
 					{
 						return TRUE;
 					}
-					
+
 					DestroyWindow( hwndDlg );
-					
+
 					cmdSystem->BufferCommandText( CMD_EXEC_APPEND, va( "renderbumpflat -size %d %d %s\n", width, height, RBFName.c_str() ) );
 					return TRUE;
 				}
-				
+
 				case IDCANCEL:
 					DestroyWindow( hwndDlg );
 					return TRUE;
 			}
 	}
-	
+
 	return FALSE;
 }
 
 void DoRBFDialog( const char* FileName )
 {
 	RBFName = FileName;
-	
+
 	Sys_GrabMouseCursor( false );
-	
+
 	DialogBox( 0, MAKEINTRESOURCE( IDD_RENDERBUMPFLAT ), 0, ( DLGPROC )RBFProc );
-	
+
 	Sys_GrabMouseCursor( true );
 }

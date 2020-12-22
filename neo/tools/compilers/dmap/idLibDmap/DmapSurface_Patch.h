@@ -46,23 +46,23 @@ public:
 	idDmapSurface_Patch( int maxPatchWidth, int maxPatchHeight );
 	idDmapSurface_Patch( const idDmapSurface_Patch& patch );
 	~idDmapSurface_Patch();
-	
+
 	void				SetSize( int patchWidth, int patchHeight );
 	int					GetWidth() const;
 	int					GetHeight() const;
-	
+
 	// subdivide the patch mesh based on error
 	void				Subdivide( float maxHorizontalError, float maxVerticalError, float maxLength, bool genNormals = false );
 	// subdivide the patch up to an explicit number of horizontal and vertical subdivisions
 	void				SubdivideExplicit( int horzSubdivisions, int vertSubdivisions, bool genNormals, bool removeLinear = false );
-	
+
 protected:
 	int					width;			// width of patch
 	int					height;			// height of patch
 	int					maxWidth;		// maximum width allocated for
 	int					maxHeight;		// maximum height allocated for
 	bool				expanded;		// true if vertices are spaced out
-	
+
 private:
 	// put the approximation points on the curve
 	void				PutOnCurve();

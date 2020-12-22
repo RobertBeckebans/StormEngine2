@@ -59,7 +59,7 @@ class idLBRowBlock
 {
 public:
 	idLBRowBlock() : lastTime( 0 ), startIndex( 0 ) {}
-	
+
 	int										lastTime;
 	int										startIndex;
 	idList< idLeaderboardCallback::row_t >	rows;
@@ -82,7 +82,7 @@ class idLBCache
 public:
 	static const int NUM_ROW_BLOCKS		= 5;
 	static const leaderboardFilterMode_t DEFAULT_LEADERBOARD_FILTER = LEADERBOARD_FILTER_OVERALL;
-	
+
 	idLBCache() :
 		def( NULL ),
 		filter( DEFAULT_LEADERBOARD_FILTER ),
@@ -95,7 +95,7 @@ public:
 		rowOffset( 0 ),
 		localIndex( -1 ),
 		errorCode( LEADERBOARD_DISPLAY_ERROR_NONE ) {}
-		
+
 	void									Pump();
 	void									Reset();
 	void									SetLeaderboard( const leaderboardDefinition_t* 	def_, leaderboardFilterMode_t filter_ = DEFAULT_LEADERBOARD_FILTER );
@@ -110,7 +110,7 @@ public:
 	idLBRowBlock* 							FindFreeRowBlock();
 	void									Update( const idLeaderboardCallback* callback );
 	const idLeaderboardCallback::row_t* 	GetLeaderboardRow( int row );
-	
+
 	const leaderboardDefinition_t* 			GetLeaderboard() const
 	{
 		return def;
@@ -119,7 +119,7 @@ public:
 	{
 		return numRowsInLeaderboard;
 	}
-	
+
 	int										GetEntryIndex() const
 	{
 		return entryIndex;
@@ -136,7 +136,7 @@ public:
 	{
 		return errorCode;
 	}
-	
+
 	bool									IsRequestingRows() const
 	{
 		return requestingRows;
@@ -145,7 +145,7 @@ public:
 	{
 		return loadingNewLeaderboard;
 	}
-	
+
 	void									SetEntryIndex( int value )
 	{
 		entryIndex = value;
@@ -154,31 +154,31 @@ public:
 	{
 		rowOffset = value;
 	}
-	
+
 	void									DisplayGamerCardUI( const idLeaderboardCallback::row_t* row );
-	
+
 private:
 	leaderboardDisplayError_t				CallbackErrorToDisplayError( leaderboardError_t errorCode );
-	
+
 	idLBRowBlock					rowBlocks[NUM_ROW_BLOCKS];
-	
+
 	const leaderboardDefinition_t* 	def;
 	leaderboardFilterMode_t			filter;
-	
+
 	// Pending def and filter are simply used to queue up SetLeaderboard calls when the system is currently
 	// busy waiting on results from a previous SetLeaderboard/GetLeaderboardRow call.
 	// This is so we only have ONE request in-flight at any given time.
 	const leaderboardDefinition_t* 	pendingDef;
 	leaderboardFilterMode_t			pendingFilter;
-	
+
 	bool							requestingRows;				// True while requested rows are in flight
 	bool							loadingNewLeaderboard;		// True when changing to a new leaderboard (or filter type)
-	
+
 	int								numRowsInLeaderboard;		// Total rows in this leaderboard (they won't all be cached though)
 	int								entryIndex;					// Relative row offset (from top of viewing window)
 	int								rowOffset;					// Absolute row offset
 	int								localIndex;					// Row for the master local user (-1 means not on leaderboard)
-	
+
 	leaderboardDisplayError_t		errorCode;					// Error state of the leaderboard
 };
 
@@ -193,25 +193,25 @@ public:
 
 	idMenuScreen();
 	virtual ~idMenuScreen();
-	
+
 	virtual void				Update();
 	virtual void				UpdateCmds();
 	virtual void				HandleMenu( const mainMenuTransition_t type );
-	
+
 	virtual void				ShowScreen( const mainMenuTransition_t transitionType );
 	virtual void				HideScreen( const mainMenuTransition_t transitionType );
-	
+
 	virtual void				ObserveEvent( const idMenuWidget& widget, const idWidgetEvent& event );
 	virtual void				SetScreenGui( idSWF* gui )
 	{
 		menuGUI = gui;
 	}
-	
+
 protected:
 
 	idSWF* 	menuGUI;
 	mainMenuTransition_t	transition;
-	
+
 };
 
 /*
@@ -224,7 +224,7 @@ class idMenuScreen_PDA_UserData : public idMenuScreen
 public:
 
 	idMenuScreen_PDA_UserData() {}
-	
+
 	virtual ~idMenuScreen_PDA_UserData() {}
 	virtual void					Initialize( idMenuHandler* data );
 	virtual void					Update();
@@ -243,7 +243,7 @@ public:
 	{
 		return &pdaAudioFiles;
 	}
-	
+
 private:
 	idMenuWidget_PDA_UserData 			pdaUserData;
 	idMenuWidget_PDA_Objective 		pdaObjectiveSimple;
@@ -263,11 +263,11 @@ public:
 		scrollEmailInfo( false )
 	{
 	}
-	
+
 	virtual ~idMenuScreen_PDA_UserEmails()
 	{
 	}
-	
+
 	virtual void					Update();
 	virtual void					Initialize( idMenuHandler* data );
 	virtual void					ShowScreen( const mainMenuTransition_t transitionType );
@@ -278,7 +278,7 @@ public:
 	{
 		return pdaInbox;
 	}
-	
+
 	bool							ScrollCorrectList( idWidgetAction& action, const idWidgetEvent& event, idMenuWidget* widget );
 	void							ShowEmail( bool show );
 	void							UpdateEmail();
@@ -302,17 +302,17 @@ public:
 		activeVideo( NULL )
 	{
 	}
-	
+
 	virtual ~idMenuScreen_PDA_VideoDisks()
 	{
 	}
-	
+
 	virtual void				Initialize( idMenuHandler* data );
 	virtual void				Update();
 	virtual void				ShowScreen( const mainMenuTransition_t transitionType );
 	virtual void				HideScreen( const mainMenuTransition_t transitionType );
 	virtual bool				HandleAction( idWidgetAction& action, const idWidgetEvent& event, idMenuWidget* widget, bool forceHandled = false );
-	
+
 	void						ToggleVideoDiskPlay();
 	void						UpdateVideoDetails();
 	void						SelectedVideoToPlay( int index );
@@ -348,11 +348,11 @@ public:
 	virtual void				ShowScreen( const mainMenuTransition_t transitionType );
 	virtual void				HideScreen( const mainMenuTransition_t transitionType );
 	virtual bool				HandleAction( idWidgetAction& action, const idWidgetEvent& event, idMenuWidget* widget, bool forceHandled = false );
-	
+
 	void						EquipWeapon();
 	const char* 				GetWeaponName( int index );
 	bool						IsVisibleWeapon( int index );
-	
+
 private:
 	idMenuWidget_Carousel 			itemList;
 	idMenuWidget_InfoBox 			infoBox;
@@ -376,7 +376,7 @@ public:
 	virtual void				ShowScreen( const mainMenuTransition_t transitionType );
 	virtual void				HideScreen( const mainMenuTransition_t transitionType );
 	virtual bool				HandleAction( idWidgetAction& action, const idWidgetEvent& event, idMenuWidget* widget, bool forceHandled = false );
-	
+
 	void						HandleExitGameBtn();
 	int							GetRootIndex();
 	void						SetRootIndex( int index );
@@ -384,7 +384,7 @@ public:
 	{
 		return helpWidget;
 	}
-	
+
 private:
 	idMenuWidget_DynamicList* 	options;
 	idMenuWidget_Help* 			helpWidget;
@@ -408,10 +408,10 @@ public:
 	virtual void				ShowScreen( const mainMenuTransition_t transitionType );
 	virtual void				HideScreen( const mainMenuTransition_t transitionType );
 	virtual bool				HandleAction( idWidgetAction& action, const idWidgetEvent& event, idMenuWidget* widget, bool forceHandled = false );
-	
+
 	void						HandleExitGameBtn();
 	void						HandleRestartBtn();
-	
+
 private:
 	idMenuWidget_DynamicList* 	options;
 	bool						isMpPause;
@@ -498,7 +498,7 @@ public:
 	virtual void				ShowScreen( const mainMenuTransition_t transitionType );
 	virtual void				HideScreen( const mainMenuTransition_t transitionType );
 	virtual bool				HandleAction( idWidgetAction& action, const idWidgetEvent& event, idMenuWidget* widget, bool forceHandled = false );
-	
+
 	void						SetCanContinue( bool valid )
 	{
 		canContinue = valid;
@@ -541,13 +541,13 @@ struct creditInfo_t
 		type = -1;
 		entry = "";
 	}
-	
+
 	creditInfo_t( int t, const char* val )
 	{
 		type = t;
 		entry = val;
 	}
-	
+
 	int type;
 	idStr entry;
 };
@@ -570,10 +570,10 @@ public:
 	virtual void				ShowScreen( const mainMenuTransition_t transitionType );
 	virtual void				HideScreen( const mainMenuTransition_t transitionType );
 	virtual bool				HandleAction( idWidgetAction& action, const idWidgetEvent& event, idMenuWidget* widget, bool forceHandled = false );
-	
+
 	void						SetupCreditList();
 	void						UpdateCredits();
-	
+
 private:
 	idMenuWidget_Button*			btnBack;
 	idList< creditInfo_t >		creditList;
@@ -598,7 +598,7 @@ public:
 	virtual void				ShowScreen( const mainMenuTransition_t transitionType );
 	virtual void				HideScreen( const mainMenuTransition_t transitionType );
 	virtual bool				HandleAction( idWidgetAction& action, const idWidgetEvent& event, idMenuWidget* widget, bool forceHandled = false );
-	
+
 private:
 	struct optionData_t
 	{
@@ -631,9 +631,9 @@ private:
 		int vidmode;
 	};
 	idList<optionData_t>		optionData;
-	
+
 	optionData_t				originalOption;
-	
+
 	idMenuWidget_DynamicList* 	options;
 	idMenuWidget_Button*			btnBack;
 };
@@ -722,16 +722,16 @@ public:
 		btnBack( NULL )
 	{
 	}
-	
+
 	virtual void				Initialize( idMenuHandler* data );
 	virtual void				ShowScreen( const mainMenuTransition_t transitionType );
 	virtual void				HideScreen( const mainMenuTransition_t transitionType );
 	virtual bool				HandleAction( idWidgetAction& action, const idWidgetEvent& event, idMenuWidget* widget, bool forceHandle = false );
-	
+
 	void						UpdateServerList();
 	void						OnServerListReady();
 	void						DescribeServer( const serverInfo_t& server, const int index );
-	
+
 private:
 	idMenuWidget_GameBrowserList* listWidget;
 	idMenuWidget_Button*				btnBack;
@@ -759,22 +759,22 @@ public:
 		refreshWhenMasterIsOnline( false )
 	{
 	}
-	
+
 	virtual ~idMenuScreen_Shell_Leaderboards();
-	
+
 	virtual void				Initialize( idMenuHandler* data );
 	virtual void				Update();
 	virtual void				ShowScreen( const mainMenuTransition_t transitionType );
 	virtual void				HideScreen( const mainMenuTransition_t transitionType );
 	virtual bool				HandleAction( idWidgetAction& action, const idWidgetEvent& event, idMenuWidget* widget, bool forceHandled = false );
-	
+
 	void						UpdateLeaderboard( const idLeaderboardCallback* callback );
 	void						PumpLBCache();
 	void						RefreshLeaderboard();
 	void						ShowMessage( bool show, idStr message, bool spinner );
 	void						ClearLeaderboard();
 	void 						SetLeaderboardIndex();
-	
+
 protected:
 
 	struct	doomLeaderboard_t
@@ -788,9 +788,9 @@ protected:
 		const leaderboardDefinition_t* 	lb;
 		idStr					name;
 	};
-	
+
 	idList< doomLeaderboard_t >	leaderboards;
-	
+
 	idMenuWidget_DynamicList* 	options;
 	idMenuWidget_Button*			btnBack;
 	idMenuWidget_Button*			btnPrev;
@@ -826,7 +826,7 @@ public:
 	virtual void				ShowScreen( const mainMenuTransition_t transitionType );
 	virtual void				HideScreen( const mainMenuTransition_t transitionType );
 	virtual bool				HandleAction( idWidgetAction& action, const idWidgetEvent& event, idMenuWidget* widget, bool forceHandled = false );
-	
+
 	void						SetBinding( int keyNum );
 	void						UpdateBindingDisplay();
 	void						ToggleWait( bool wait );
@@ -834,10 +834,10 @@ public:
 	{
 		bindingsChanged = changed;
 	}
-	
+
 protected:
 	void						HandleRestoreDefaults();
-	
+
 	idMenuWidget_DynamicList* 	options;
 	idMenuWidget_Button* 		restoreDefault;
 	idSWFSpriteInstance* 		blinder;
@@ -862,17 +862,17 @@ public:
 			map = "";
 			name = "";
 		};
-		
+
 		devOption_t( const char* m, const char* n )
 		{
 			map = m;
 			name = n;
 		}
-		
+
 		const char* 	map;
 		const char* 	name;
 	};
-	
+
 	idMenuScreen_Shell_Dev() :
 		options( NULL ),
 		btnBack( NULL )
@@ -883,9 +883,9 @@ public:
 	virtual void				ShowScreen( const mainMenuTransition_t transitionType );
 	virtual void				HideScreen( const mainMenuTransition_t transitionType );
 	virtual bool				HandleAction( idWidgetAction& action, const idWidgetEvent& event, idMenuWidget* widget, bool forceHandled = false );
-	
+
 	void						SetupDevOptions();
-	
+
 private:
 	idMenuWidget_DynamicList* 	options;
 	idMenuWidget_Button*			btnBack;
@@ -935,7 +935,7 @@ public:
 	virtual void				ShowScreen( const mainMenuTransition_t transitionType );
 	virtual void				HideScreen( const mainMenuTransition_t transitionType );
 	virtual bool				HandleAction( idWidgetAction& action, const idWidgetEvent& event, idMenuWidget* widget, bool forceHandled = false );
-	
+
 	void						UpdateSaveEnumerations();
 	void						UpdateSavePreviews();
 	void						LoadDamagedGame( int index );
@@ -945,7 +945,7 @@ public:
 	{
 		return sortedSaves;
 	}
-	
+
 private:
 	idMenuWidget_DynamicList* 	options;
 	idMenuWidget_Shell_SaveInfo* saveInfo;
@@ -978,12 +978,12 @@ public:
 	{
 		return sortedSaves;
 	}
-	
+
 	void						UpdateSaveEnumerations();
 	void						UpdateSavePreviews();
 	void						SaveGame( int index );
 	void						DeleteGame( int index );
-	
+
 private:
 	idMenuWidget_Button*			btnBack;
 	idMenuWidget_DynamicList* 		options;
@@ -1020,31 +1020,31 @@ public:
 			GAME_FIELD_FLASHLIGHT_SHADOWS,
 			MAX_GAME_FIELDS
 		};
-		
+
 		idMenuDataSource_GameSettings();
-		
+
 		// loads data
 		virtual void				LoadData();
-		
+
 		// submits data
 		virtual void				CommitData();
-		
+
 		// says whether something changed with the data
 		virtual bool				IsDataChanged() const;
-		
+
 		// retrieves a particular field for reading or updating
 		virtual idSWFScriptVar		GetField( const int fieldIndex ) const
 		{
 			return fields[ fieldIndex ];
 		}
-		
+
 		virtual void				AdjustField( const int fieldIndex, const int adjustAmount );
-		
+
 	private:
 		idStaticList< idSWFScriptVar, MAX_GAME_FIELDS >	fields;
 		idStaticList< idSWFScriptVar, MAX_GAME_FIELDS >	originalFields;
 	};
-	
+
 	idMenuScreen_Shell_GameOptions() :
 		options( NULL ),
 		btnBack( NULL )
@@ -1086,26 +1086,26 @@ public:
 			MATCH_FIELD_SCORE,
 			MAX_MATCH_FIELDS
 		};
-		
+
 		idMenuDataSource_MatchSettings();
-		
+
 		// loads data
 		virtual void				LoadData();
-		
+
 		// submits data
 		virtual void				CommitData();
-		
+
 		// says whether something changed with the data
 		virtual bool				IsDataChanged() const;
-		
+
 		// retrieves a particular field for reading or updating
 		virtual idSWFScriptVar		GetField( const int fieldIndex ) const
 		{
 			return fields[ fieldIndex ];
 		}
-		
+
 		virtual void				AdjustField( const int fieldIndex, const int adjustAmount );
-		
+
 		bool						MapChanged()
 		{
 			return updateMap;
@@ -1114,17 +1114,17 @@ public:
 		{
 			updateMap = false;
 		}
-		
+
 	private:
-	
+
 		void						GetModeName( int index, idStr& name );
 		void						GetMapName( int index, idStr& name );
-		
+
 		idStaticList< idSWFScriptVar, MAX_MATCH_FIELDS >	fields;
 		idStaticList< idSWFScriptVar, MAX_MATCH_FIELDS >	originalFields;
 		bool						updateMap;
 	};
-	
+
 	idMenuScreen_Shell_MatchSettings() :
 		options( NULL ),
 		btnBack( NULL )
@@ -1165,31 +1165,31 @@ public:
 			CONTROLS_FIELD_MOUSE_SENS,
 			MAX_CONTROL_FIELDS
 		};
-		
+
 		idMenuDataSource_ControlSettings();
-		
+
 		// loads data
 		virtual void				LoadData();
-		
+
 		// submits data
 		virtual void				CommitData();
-		
+
 		// says whether something changed with the data
 		virtual bool				IsDataChanged() const;
-		
+
 		// retrieves a particular field for reading or updating
 		virtual idSWFScriptVar		GetField( const int fieldIndex ) const
 		{
 			return fields[ fieldIndex ];
 		}
-		
+
 		virtual void				AdjustField( const int fieldIndex, const int adjustAmount );
-		
+
 	private:
 		idStaticList< idSWFScriptVar, MAX_CONTROL_FIELDS >	fields;
 		idStaticList< idSWFScriptVar, MAX_CONTROL_FIELDS >	originalFields;
 	};
-	
+
 	idMenuScreen_Shell_Controls() :
 		options( NULL ),
 		btnBack( NULL )
@@ -1234,31 +1234,31 @@ public:
 			GAMEPAD_FIELD_THRESHOLD,
 			MAX_GAMEPAD_FIELDS
 		};
-		
+
 		idMenuDataSource_GamepadSettings();
-		
+
 		// loads data
 		virtual void				LoadData();
-		
+
 		// submits data
 		virtual void				CommitData();
-		
+
 		// says whether something changed with the data
 		virtual bool				IsDataChanged() const;
-		
+
 		// retrieves a particular field for reading or updating
 		virtual idSWFScriptVar		GetField( const int fieldIndex ) const
 		{
 			return fields[ fieldIndex ];
 		}
-		
+
 		virtual void				AdjustField( const int fieldIndex, const int adjustAmount );
-		
+
 	private:
 		idStaticList< idSWFScriptVar, MAX_GAMEPAD_FIELDS >	fields;
 		idStaticList< idSWFScriptVar, MAX_GAMEPAD_FIELDS >	originalFields;
 	};
-	
+
 	idMenuScreen_Shell_Gamepad() :
 		options( NULL ),
 		btnBack( NULL )
@@ -1297,31 +1297,31 @@ public:
 			LAYOUT_FIELD_LAYOUT,
 			MAX_LAYOUT_FIELDS,
 		};
-		
+
 		idMenuDataSource_LayoutSettings();
-		
+
 		// loads data
 		virtual void				LoadData();
-		
+
 		// submits data
 		virtual void				CommitData();
-		
+
 		// says whether something changed with the data
 		virtual bool				IsDataChanged() const;
-		
+
 		// retrieves a particular field for reading or updating
 		virtual idSWFScriptVar		GetField( const int fieldIndex ) const
 		{
 			return fields[ fieldIndex ];
 		}
-		
+
 		virtual void				AdjustField( const int fieldIndex, const int adjustAmount );
-		
+
 	private:
 		idStaticList< idSWFScriptVar, MAX_LAYOUT_FIELDS >	fields;
 		idStaticList< idSWFScriptVar, MAX_LAYOUT_FIELDS >	originalFields;
 	};
-	
+
 	idMenuScreen_Shell_ControllerLayout() :
 		options( NULL ),
 		btnBack( NULL )
@@ -1332,7 +1332,7 @@ public:
 	virtual void				ShowScreen( const mainMenuTransition_t transitionType );
 	virtual void				HideScreen( const mainMenuTransition_t transitionType );
 	virtual bool				HandleAction( idWidgetAction& action, const idWidgetEvent& event, idMenuWidget* widget, bool forceHandled = false );
-	
+
 	void						UpdateBindingInfo();
 private:
 
@@ -1380,26 +1380,26 @@ public:
 			SYSTEM_FIELD_PNG_QUALITY,
 			MAX_SYSTEM_FIELDS
 		};
-		
+
 		idMenuDataSource_SystemSettings();
-		
+
 		// loads data
 		virtual void				LoadData();
-		
+
 		// submits data
 		virtual void				CommitData();
-		
+
 		// says whether something changed with the data
 		virtual bool				IsDataChanged() const;
-		
+
 		// retrieves a particular field for reading
 		virtual idSWFScriptVar		GetField( const int fieldIndex ) const;
-		
+
 		// updates a particular field value
 		virtual void				AdjustField( const int fieldIndex, const int adjustAmount );
-		
+
 		bool						IsRestartRequired() const;
-		
+
 	private:
 		int originalFramerate;
 		int originalAntialias;
@@ -1407,7 +1407,7 @@ public:
 		int originalVsync;
 		float originalBrightness;
 		float originalVolume;
-		
+
 		bool originalGlowEnable;
 		bool originalHDREnable;
 		bool originalHQSky;
@@ -1417,14 +1417,14 @@ public:
 		int  originalShadowMapQuality;
 		int  originalShadowMapSampleCount;
 		float  originalShadowMapDistance;
-		
+
 		/* PNG Options*/
 		bool originalUsePNG;
 		int  originalPNGQuality;
-		
+
 		idList<vidMode_t>			modeList;
 	};
-	
+
 	idMenuScreen_Shell_SystemOptions() :
 		options( NULL ),
 		btnBack( NULL )
@@ -1435,12 +1435,12 @@ public:
 	virtual void				ShowScreen( const mainMenuTransition_t transitionType );
 	virtual void				HideScreen( const mainMenuTransition_t transitionType );
 	virtual bool				HandleAction( idWidgetAction& action, const idWidgetEvent& event, idMenuWidget* widget, bool forceHandled = false );
-	
+
 private:
 	idMenuWidget_ControlList* 	options;
 	idMenuDataSource_SystemSettings	systemData;
 	idMenuWidget_Button*			btnBack;
-	
+
 };
 
 //*
@@ -1467,30 +1467,30 @@ public:
 			STEREO_FIELD_SWAP_EYES,
 			MAX_STEREO_FIELDS
 		};
-		
+
 		idMenuDataSource_StereoSettings();
-		
+
 		// loads data
 		virtual void				LoadData();
-		
+
 		// submits data
 		virtual void				CommitData();
-		
+
 		// says whether something changed with the data
 		virtual bool				IsDataChanged() const;
-		
+
 		// retrieves a particular field for reading or updating
 		virtual idSWFScriptVar		GetField( const int fieldIndex ) const;
-		
+
 		virtual void				AdjustField( const int fieldIndex, const int adjustAmount );
-		
+
 		bool						IsRestartRequired() const;
-		
+
 	private:
 		idStaticList< idSWFScriptVar, MAX_STEREO_FIELDS >	fields;
 		idStaticList< idSWFScriptVar, MAX_STEREO_FIELDS >	originalFields;
 	};
-	
+
 	idMenuScreen_Shell_Stereoscopics() :
 		options( NULL ),
 		btnBack( NULL ),
@@ -1528,18 +1528,18 @@ public:
 		btnBack( NULL )
 	{
 	}
-	
+
 	virtual void				Initialize( idMenuHandler* data );
 	virtual void				Update();
 	virtual void				ShowScreen( const mainMenuTransition_t transitionType );
 	virtual void				HideScreen( const mainMenuTransition_t transitionType );
 	virtual bool				HandleAction( idWidgetAction& action, const idWidgetEvent& event, idMenuWidget* widget, bool forceHandled = false );
-	
+
 	void						UpdateOptions();
 	void						UpdateLobby();
 	bool						CanKickSelectedPlayer( lobbyUserID_t& luid );
 	void						ShowLeaderboards();
-	
+
 private:
 
 	bool							isHost;
@@ -1571,7 +1571,7 @@ public:
 		btnBack( NULL )
 	{
 	}
-	
+
 	virtual void				Initialize( idMenuHandler* data );
 	virtual void				Update();
 	virtual void				ShowScreen( const mainMenuTransition_t transitionType );
@@ -1579,17 +1579,17 @@ public:
 	virtual bool				HandleAction( idWidgetAction& action, const idWidgetEvent& event, idMenuWidget* widget, bool forceHandled = false );
 	void						UpdateLobby();
 	bool						CanKickSelectedPlayer( lobbyUserID_t& luid );
-	
+
 private:
 
 	int								longCountdown;
 	int								longCountRemaining;
 	int								shortCountdown;
-	
+
 	bool							isHost;
 	bool							isPeer;
 	bool							privateGameLobby;
-	
+
 	idMenuWidget_DynamicList* 		options;
 	idMenuWidget_LobbyList* 		lobby;
 	idMenuWidget_Button*				btnBack;
@@ -1668,12 +1668,12 @@ public:
 		showSoulCubeInfoOnLoad( false )
 	{
 	}
-	
+
 	virtual void			Initialize( idMenuHandler* data );
 	virtual void			Update();
 	virtual void			ShowScreen( const mainMenuTransition_t transitionType );
 	virtual void			HideScreen( const mainMenuTransition_t transitionType );
-	
+
 	void					UpdateHealthArmor( idPlayer* player );
 	void					UpdateStamina( idPlayer* player );
 	void					UpdateLocation( idPlayer* player );
@@ -1708,14 +1708,14 @@ public:
 	{
 		showSoulCubeInfoOnLoad = show;
 	}
-	
+
 	void 					ShowGrappleCursor(); 	// ############## SR
 	void 					HideGrappleCursor(); 	// ############## SR
 	void 					ShowGrappleText(); 	// ############## SR
 	void 					HideGrappleText(); 	// ############## SR
-	
+
 	// MULTIPLAYER
-	
+
 	void					ToggleMPInfo( bool show, bool showTeams, bool isCTF = false );
 	void					SetFlagState( int team, int state );
 	void					SetTeamScore( int team, int score );
@@ -1727,7 +1727,7 @@ public:
 	void					ShowNewItem( const char* name, const char* icon );
 	void					UpdateFlashlight( idPlayer* player );
 	void					UpdateChattingHud( idPlayer* player );
-	
+
 private:
 
 	idSWFScriptObject* 		weaponInfo;
@@ -1740,7 +1740,7 @@ private:
 	//idSWFScriptObject* 		tipInfo;
 	idSWFScriptObject* 		mpChat;
 	idSWFScriptObject* 		mpWeapons;
-	
+
 	idSWFSpriteInstance* 	tipInfo; // SS2 fix
 	idSWFSpriteInstance* 	healthBorder;
 	idSWFSpriteInstance* 	healthPulse;
@@ -1763,9 +1763,9 @@ private:
 	idSWFSpriteInstance* 	combatCursor;
 	idSWFSpriteInstance* 	grabberCursor;
 	idSWFSpriteInstance* 	itemCursor;
-	
+
 	idSWFSpriteInstance* 	grappleCursor; // #### SR
-	
+
 	idSWFSpriteInstance* 	bsInfo;
 	idSWFSpriteInstance* 	soulcubeInfo;
 	idSWFSpriteInstance* 	newItem;
@@ -1775,27 +1775,27 @@ private:
 	idSWFSpriteInstance* 	mpConnection;
 	idSWFSpriteInstance* 	mpInfo;
 	idSWFSpriteInstance* 	mpHitInfo;
-	
+
 	idSWFTextInstance* 		locationName;
 	idSWFTextInstance* 		securityText;
 	idSWFTextInstance* 		newPDAName;
 	idSWFTextInstance* 		newPDAHeading;
 	idSWFTextInstance* 		newVideoHeading;
-	
+
 	idSWFTextInstance* 		mpMessage;
 	idSWFTextInstance* 		mpTime;
-	
+
 	int						audioLogPrevTime;
 	int						commPrevTime;
-	
+
 	bool					oxygenComm;
 	bool					inVaccuum;
-	
+
 	idStr					objTitle;
 	idStr					objDesc;
 	const idMaterial* 		objScreenshot;
 	idStr					objCompleteTitle;
-	
+
 	cursorState_t			cursorState;
 	int						cursorInCombat;
 	int						cursorTalking;
@@ -1804,7 +1804,7 @@ private:
 	int						cursorNone;
 	idStr					cursorAction;
 	idStr					cursorFocus;
-	
+
 	bool					showSoulCubeInfoOnLoad;
 };
 
@@ -1826,19 +1826,19 @@ public:
 		cinematicHint( NULL )
 	{
 	}
-	
+
 	virtual void			Initialize( idMenuHandler* data );
 	virtual void			Update();
 	virtual void			ShowScreen( const mainMenuTransition_t transitionType );
 	virtual void			HideScreen( const mainMenuTransition_t transitionType );
-	
+
 	void 					ShowCinematicHint();
-	
-	
+
+
 private:
 
 	idSWFSpriteInstance* 	cinematicHint;
-	
+
 };
 
 // ######################################################### END SR
@@ -1861,23 +1861,23 @@ public:
 	idMenuScreen_Scoreboard() :
 		playerList( NULL )
 	{
-	
+
 	}
-	
+
 	virtual void				Initialize( idMenuHandler* data );
 	virtual void				Update();
 	virtual void				ShowScreen( const mainMenuTransition_t transitionType );
 	virtual bool				HandleAction( idWidgetAction& action, const idWidgetEvent& event, idMenuWidget* widget, bool forceHandled = false );
-	
+
 	virtual void				SetPlayerData( idList< scoreboardInfo_t, TAG_IDLIB_LIST_MENU > data );
 	virtual void				UpdateTeamScores( int r, int b );
 	virtual void				UpdateGameInfo( idStr gameInfo );
 	virtual void				UpdateSpectating( idStr spectating, idStr follow );
 	virtual void				UpdateHighlight();
-	
+
 protected:
 	idMenuWidget_ScoreboardList* 		playerList;
-	
+
 };
 
 //*

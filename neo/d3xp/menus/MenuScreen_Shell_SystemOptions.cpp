@@ -50,14 +50,14 @@ idMenuScreen_Shell_SystemOptions::Initialize
 void idMenuScreen_Shell_SystemOptions::Initialize( idMenuHandler* data )
 {
 	idMenuScreen::Initialize( data );
-	
+
 	if( data != NULL )
 	{
 		menuGUI = data->GetGUI();
 	}
-	
+
 	SetSpritePath( "menuSystemOptions" );
-	
+
 	options = new( TAG_SWF ) idMenuWidget_ControlList();
 	options->SetNumVisibleOptions( NUM_SYSTEM_OPTIONS_OPTIONS );
 	options->SetSpritePath( GetSpritePath(), "info", "options" );
@@ -86,17 +86,17 @@ void idMenuScreen_Shell_SystemOptions::Initialize( idMenuHandler* data )
 	options->AddSliderToggle( "#str_swf_glow_enable", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_GLOW_ENABLE, DEFAULT_REPEAT_TIME );
 	options->AddSliderToggle( "#str_swf_hdr_enable", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_HDR_ENABLE, DEFAULT_REPEAT_TIME );
 	options->AddSliderToggle( "#str_swf_hq_sky_enable", &systemData, idMenuDataSource_SystemSettings::SYSTEM_FIELD_HIGH_QUALITY_SKY, DEFAULT_REPEAT_TIME );
-	
-	
+
+
 	btnBack = new( TAG_SWF ) idMenuWidget_Button();
 	btnBack->Initialize( data );
 	btnBack->SetLabel( "#str_swf_settings" );
 	btnBack->SetSpritePath( GetSpritePath(), "info", "btnBack" );
 	btnBack->AddEventAction( WIDGET_EVENT_PRESS ).Set( WIDGET_ACTION_GO_BACK );
-	
+
 	AddChild( options );
 	AddChild( btnBack );
-	
+
 	options->AddEventAction( WIDGET_EVENT_SCROLL_DOWN ).Set( new( TAG_SWF ) idWidgetActionHandler( options, WIDGET_ACTION_EVENT_SCROLL_DOWN_START_REPEATER, WIDGET_EVENT_SCROLL_DOWN ) );
 	options->AddEventAction( WIDGET_EVENT_SCROLL_UP ).Set( new( TAG_SWF ) idWidgetActionHandler( options, WIDGET_ACTION_EVENT_SCROLL_UP_START_REPEATER, WIDGET_EVENT_SCROLL_UP ) );
 	options->AddEventAction( WIDGET_EVENT_SCROLL_DOWN_RELEASE ).Set( new( TAG_SWF ) idWidgetActionHandler( options, WIDGET_ACTION_EVENT_STOP_REPEATER, WIDGET_EVENT_SCROLL_DOWN_RELEASE ) );
@@ -128,12 +128,12 @@ void idMenuScreen_Shell_SystemOptions::Update()
 				buttonInfo->label = "#str_swf_back";
 			}
 			buttonInfo->action.Set( WIDGET_ACTION_GO_BACK );
-			
+
 			buttonInfo = cmdBar->GetButton( idMenuWidget_CommandBar::BUTTON_JOY1 );
 			buttonInfo->action.Set( WIDGET_ACTION_PRESS_FOCUSED );
 		}
 	}
-	
+
 	idSWFScriptObject& root = GetSWFObject()->GetRootObject();
 	if( BindSprite( root ) )
 	{
@@ -143,19 +143,19 @@ void idMenuScreen_Shell_SystemOptions::Update()
 			heading->SetText( "#str_swf_header_system_options" );	// was #str_00183
 			heading->SetStrokeInfo( true, 0.75f, 1.75f );
 		}
-		
+
 		idSWFSpriteInstance* gradient = GetSprite()->GetScriptObject()->GetNestedSprite( "info", "gradient" );
 		if( gradient != NULL && heading != NULL )
 		{
 			gradient->SetXPos( heading->GetTextLength() );
 		}
 	}
-	
+
 	if( btnBack != NULL )
 	{
 		btnBack->BindSprite( root );
 	}
-	
+
 	idMenuScreen::Update();
 }
 
@@ -168,7 +168,7 @@ void idMenuScreen_Shell_SystemOptions::ShowScreen( const mainMenuTransition_t tr
 {
 
 	systemData.LoadData();
-	
+
 	idMenuScreen::ShowScreen( transitionType );
 }
 
@@ -199,9 +199,9 @@ void idMenuScreen_Shell_SystemOptions::HideScreen( const mainMenuTransition_t tr
 					//     (the old way would have been unnecessarily painful on POSIX systems)
 					//Sys_ReLaunch();
 					// DG end
-					
+
 					// motorsep 12-28-2014; reverted back to the original Sys_ReLaunch; guys from RBDoom 3 BFG team made it impossible to pass any cmds on restart
-					
+
 					idStr cmdLine = Sys_GetCmdLine();
 					if( cmdLine.Find( "com_skipIntroVideos" ) < 0 )
 					{
@@ -223,12 +223,12 @@ void idMenuScreen_Shell_SystemOptions::HideScreen( const mainMenuTransition_t tr
 		optionText.Append( idStrId( "#str_swf_system_options_restart" ) ); // Restart Now
 		common->Dialog().AddDynamicDialog( GDM_GAME_RESTART_REQUIRED, callbacks, optionText, true, idStr() );
 	}
-	
+
 	if( systemData.IsDataChanged() )
 	{
 		systemData.CommitData();
 	}
-	
+
 	idMenuScreen::HideScreen( transitionType );
 }
 
@@ -244,18 +244,18 @@ bool idMenuScreen_Shell_SystemOptions::HandleAction( idWidgetAction& action, con
 	{
 		return true;
 	}
-	
+
 	if( menuData->ActiveScreen() != SHELL_AREA_SYSTEM_OPTIONS )
 	{
 		return false;
 	}
-	
+
 	widgetAction_t actionType = action.GetType();
 	const idSWFParmList& parms = action.GetParms();
-	
+
 	switch( actionType )
 	{
-	
+
 		case WIDGET_ACTION_GO_BACK:
 		{
 			if( menuData != NULL )
@@ -273,18 +273,18 @@ bool idMenuScreen_Shell_SystemOptions::HandleAction( idWidgetAction& action, con
 			break;
 		case WIDGET_ACTION_COMMAND:
 		{
-		
+
 			if( options == NULL )
 			{
 				return true;
 			}
-			
+
 			int selectionIndex = options->GetFocusIndex();
 			if( parms.Num() > 0 )
 			{
 				selectionIndex = parms[0].ToInteger();
 			}
-			
+
 			switch( parms[0].ToInteger() )
 			{
 				case idMenuDataSource_SystemSettings::SYSTEM_FIELD_FULLSCREEN:
@@ -298,12 +298,12 @@ bool idMenuScreen_Shell_SystemOptions::HandleAction( idWidgetAction& action, con
 					options->Update();
 				}
 			}
-			
+
 			return true;
 		}
 		case WIDGET_ACTION_START_REPEATER:
 		{
-		
+
 			if( options == NULL )
 			{
 				return true;
@@ -311,7 +311,7 @@ bool idMenuScreen_Shell_SystemOptions::HandleAction( idWidgetAction& action, con
 			break;
 		}
 	}
-	
+
 	return idMenuWidget::HandleAction( action, event, widget, forceHandled );
 }
 
@@ -341,20 +341,20 @@ void idMenuScreen_Shell_SystemOptions::idMenuDataSource_SystemSettings::LoadData
 	originalVsync = r_swapInterval.GetInteger();
 	originalBrightness = r_lightScale.GetFloat();
 	originalVolume = s_volume_dB.GetFloat();
-	
+
 	originalShadowMapEnable = r_useShadowMapping.GetBool();
 	//originalShadowMapImageSize = r_shadowMapImageSize.GetInteger();
 	//originalShadowMapImageSize = r_shadowMapLodScale.GetInteger(); // currently sets resolution for shadow map image
 	originalShadowMapQuality = r_shadowMapQuality.GetInteger();
 	originalShadowMapSampleCount = r_shadowMapSamples.GetInteger();
 	originalShadowMapDistance = r_shadowMapMaxDistance.GetFloat();
-	
+
 	originalUsePNG = r_screenshot_png.GetBool();
 	originalPNGQuality = r_screenshot_png_quality.GetInteger();
 	originalGlowEnable = r_glowEnable.GetBool();
 	originalHDREnable = r_useHDR.GetBool();
 	originalHQSky = r_useHightQualitySky.GetBool();
-	
+
 	const int fullscreen = r_fullscreen.GetInteger();
 	if( fullscreen > 0 )
 	{
@@ -520,7 +520,7 @@ void idMenuScreen_Shell_SystemOptions::idMenuDataSource_SystemSettings::AdjustFi
 		}
 		/*case SYSTEM_FIELD_SHADOWMAPIMAGESIZE:
 		{
-	
+
 			static const int numValues = 2;
 			static const int values[numValues] = { 0, 1 }; //  0 is LOW (??) and 1 is HIGH (2048)
 			r_shadowMapLodScale.SetInteger( AdjustOption( r_shadowMapLodScale.GetInteger(), values, numValues, adjustAmount ) );
@@ -563,16 +563,16 @@ void idMenuScreen_Shell_SystemOptions::idMenuDataSource_SystemSettings::AdjustFi
 		}
 		case SYSTEM_FIELD_PNG_QUALITY:
 		{
-		
+
 			static const int numValues = 5;
 			// Why is this 0, 1, 4, or 16. I would expect this to be 0, 1, 2, 4, 8, or 16.
 			static const int values[numValues] = { 0, 3, 5, 7, 8 };
 			r_screenshot_png_quality.SetInteger( AdjustOption( r_screenshot_png_quality.GetInteger(), values, numValues, adjustAmount ) );
 			break;
-			
+
 			break;
 		}
-		
+
 	}
 	cvarSystem->ClearModifiedFlags( CVAR_ARCHIVE );
 }
@@ -791,9 +791,13 @@ bool idMenuScreen_Shell_SystemOptions::idMenuDataSource_SystemSettings::IsDataCh
 		return true;
 	}
 	if( originalHDREnable != r_useHDR.GetBool() )
+	{
 		return true;
+	}
 	if( originalHQSky != r_useHightQualitySky.GetBool() )
+	{
 		return true;
+	}
 	return false;
 }
 

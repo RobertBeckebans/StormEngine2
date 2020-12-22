@@ -59,24 +59,24 @@ public:
 	static CPreviewDlg* ShowMaterialChooser();
 	static CPreviewDlg* ShowParticleChooser();
 	static CPreviewDlg* ShowSkinChooser( entity_t* ent );
-	
+
 	void SetKeyVal( const char* key, const char* val )
 	{
 		editKey.SetWindowText( key );
 		editVal.SetWindowText( val );
 	}
-	
+
 	void EditCurvePoints();
 	void AddCurvePoints();
 	void InsertCurvePoint();
 	void DeleteCurvePoint();
-	
+
 // Dialog Data
 	enum { IDD = IDD_DIALOG_ENTITY };
-	
+
 protected:
 	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
-	
+
 	//DECLARE_MESSAGE_MAP()
 public:
 
@@ -94,8 +94,8 @@ public:
 	void UpdateKeyVal( const char* key, const char* val );
 	void SelectCurvePointByRay( const idVec3& org, const idVec3& dir, int buttons );
 	void UpdateEntityCurve();
-	
-	
+
+
 private:
 	entity_t* editEntity;
 	bool multipleEntities;
@@ -105,9 +105,9 @@ private:
 	idDict* dict;
 	const idMD5Anim* currentAnimation;
 	int currentAnimationFrame;
-	
+
 	const char* AngleKey();
-	
+
 	idPointListInterface curvePoints;
 public:
 	void UpdateFromAnimationFrame( bool updateKeyValueDisplay = true );
@@ -169,5 +169,5 @@ public:
 	afx_msg void OnBnClickedButtonParticle();
 	afx_msg void OnBnClickedButtonSkin();
 	afx_msg void OnBnClickedButtonCurve();
-	
+
 };

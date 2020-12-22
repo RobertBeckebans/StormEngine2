@@ -48,7 +48,7 @@ int		update_bits;
 void Sys_MarkMapModified( void )
 {
 	idStr title;
-	
+
 	if( mapModified != 1 )
 	{
 		mapModified = 1;	// mark the map as changed
@@ -101,7 +101,7 @@ void Sys_EndWait( void )
 void Sys_GetCursorPos( int* x, int* y )
 {
 	POINT	lpPoint;
-	
+
 	GetCursorPos( &lpPoint );
 	*x = lpPoint.x;
 	*y = lpPoint.y;
@@ -134,7 +134,7 @@ char* TranslateString( char* buf )
 	static char buf2[32768];
 	int			i, l;
 	char*		out;
-	
+
 	l = strlen( buf );
 	out = buf2;
 	for( i = 0; i < l; i++ )
@@ -149,9 +149,9 @@ char* TranslateString( char* buf )
 			*out++ = buf[i];
 		}
 	}
-	
+
 	*out++ = 0;
-	
+
 	return buf2;
 }
 
@@ -172,7 +172,7 @@ void PrintPixels( HDC hDC )
 {
 	int						i;
 	PIXELFORMATDESCRIPTOR	p[64];
-	
+
 	printf( "### flags color layer\n" );
 	for( i = 1; i < 64; i++ )
 	{
@@ -180,10 +180,10 @@ void PrintPixels( HDC hDC )
 		{
 			break;
 		}
-		
+
 		printf( "%3i %5i %5i %5i\n", i, p[i].dwFlags, p[i].cColorBits, p[i].bReserved );
 	}
-	
+
 	printf( "%i modes\n", i - 1 );
 }
 
@@ -207,7 +207,7 @@ int WINAPI QEW_SetupPixelFormat( HDC hDC, bool zbuffer )
 	{
 		Error( "ChoosePixelFormat failed." );
 	}
-	
+
 	return pixelFormat;
 #else
 	static PIXELFORMATDESCRIPTOR	pfd =
@@ -242,24 +242,24 @@ int WINAPI QEW_SetupPixelFormat( HDC hDC, bool zbuffer )
 		0						// layer masks ignored
 	};
 	int pixelformat = 0;
-	
+
 	zbuffer = true;
 	if( !zbuffer )
 	{
 		pfd.cDepthBits = 0;
 	}
-	
+
 	if( ( pixelformat = ChoosePixelFormat( hDC, &pfd ) ) == 0 )
 	{
 		printf( "%d", GetLastError() );
 		Error( "ChoosePixelFormat failed" );
 	}
-	
+
 	if( !SetPixelFormat( hDC, pixelformat, &pfd ) )
 	{
 		Error( "SetPixelFormat failed" );
 	}
-	
+
 	return pixelformat;
 #endif
 }
@@ -275,15 +275,15 @@ void Error( char* error, ... )
 	char	text[1024];
 	char	text2[1024];
 	int		err;
-	
+
 	err = GetLastError();
-	
+
 	int i = qglGetError();
-	
+
 	va_start( argptr, error );
 	vsprintf( text, error, argptr );
 	va_end( argptr );
-	
+
 	sprintf
 	(
 		text2,
@@ -292,13 +292,13 @@ void Error( char* error, ... )
 		err,
 		i
 	);
-	
+
 	if( g_pParentWnd->MessageBox( text2, "Error", MB_YESNO ) == IDYES )
 	{
 		g_PrefsDlg.LoadPrefs();
 		g_PrefsDlg.DoModal();
 	}
-	
+
 	common->FatalError( text );
 }
 
@@ -311,15 +311,15 @@ void Warning( char* error, ... )
 	va_list argptr;
 	char	text[1024];
 	int		err;
-	
+
 	err = GetLastError();
-	
+
 	int i = qglGetError();
-	
+
 	va_start( argptr, error );
 	vsprintf( text, error, argptr );
 	va_end( argptr );
-	
+
 	common->Printf( text );
 }
 
@@ -334,12 +334,12 @@ bool ConfirmModified( void )
 	{
 		return true;
 	}
-	
+
 	if( g_pParentWnd->MessageBox( "This will lose changes to the map", "warning", MB_OKCANCEL ) == IDCANCEL )
 	{
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -368,15 +368,15 @@ void OpenDialog( void )
 		strcpy( szDirName, ValueForKey( g_qeglobals.d_project_entity, "basepath" ) );
 		strcat( szDirName, "\\maps" );
 	}
-	
+
 	if( g_PrefsDlg.m_strMaps.GetLength() > 0 )
 	{
 		strcat( szDirName, va( "\\%s", g_PrefsDlg.m_strMaps ) );
 	}
-	
+
 	/* Place the terminating null character in the szFile. */
 	szFile[0] = '\0';
-	
+
 	/* Set the members of the OPENFILENAME structure. */
 	ofn.lStructSize = sizeof( OPENFILENAME );
 	ofn.hwndOwner = g_pParentWnd->GetSafeHwnd();
@@ -388,24 +388,24 @@ void OpenDialog( void )
 	ofn.nMaxFileTitle = sizeof( szFileTitle );
 	ofn.lpstrInitialDir = szDirName;
 	ofn.Flags = OFN_SHOWHELP | OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-	
+
 	/* Display the Open dialog box. */
 	if( !GetOpenFileName( &ofn ) )
 	{
 		return; // canceled
 	}
-	
+
 	// Add the file in MRU. FIXME
 	AddNewItem( g_qeglobals.d_lpMruMenu, ofn.lpstrFile );
-	
+
 	// Refresh the File menu. FIXME
 	PlaceMenuMRUItem( g_qeglobals.d_lpMruMenu, GetSubMenu( GetMenu( g_pParentWnd->GetSafeHwnd() ), 0 ), ID_FILE_EXIT );
-	
+
 	/* Open the file. */
 	Map_LoadFile( ofn.lpstrFile );
-	
+
 	g_PrefsDlg.SavePrefs();
-	
+
 }
 
 /*
@@ -416,10 +416,10 @@ void ProjectDialog( void )
 {
 	/* Obtain the system directory name and store it in szDirName. */
 	strcpy( szDirName, ValueForKey( g_qeglobals.d_project_entity, "basepath" ) );
-	
+
 	/* Place the terminating null character in the szFile. */
 	szFile[0] = '\0';
-	
+
 	/* Set the members of the OPENFILENAME structure. */
 	ofn.lStructSize = sizeof( OPENFILENAME );
 	ofn.hwndOwner = g_pParentWnd->GetSafeHwnd();
@@ -431,16 +431,16 @@ void ProjectDialog( void )
 	ofn.nMaxFileTitle = sizeof( szFileTitle );
 	ofn.lpstrInitialDir = szDirName;
 	ofn.Flags = OFN_SHOWHELP | OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-	
+
 	/* Display the Open dialog box. */
 	if( !GetOpenFileName( &ofn ) )
 	{
 		return; // canceled
 	}
-	
+
 	// Refresh the File menu.
 	PlaceMenuMRUItem( g_qeglobals.d_lpMruMenu, GetSubMenu( GetMenu( g_pParentWnd->GetSafeHwnd() ), 0 ), ID_FILE_EXIT );
-	
+
 	/* Open the file. */
 	if( !QE_LoadProject( ofn.lpstrFile ) )
 	{
@@ -457,7 +457,7 @@ extern void AddSlash( CString& strPath );
 void SaveAsDialog( bool bRegion )
 {
 	strcpy( szDirName, ValueForKey( g_qeglobals.d_project_entity, "basepath" ) );
-	
+
 	CString strPath = szDirName;
 	AddSlash( strPath );
 	strPath += "maps";
@@ -465,10 +465,10 @@ void SaveAsDialog( bool bRegion )
 	{
 		strPath += va( "\\%s", g_PrefsDlg.m_strMaps );
 	}
-	
+
 	/* Place the terminating null character in the szFile. */
 	szFile[0] = '\0';
-	
+
 	/* Set the members of the OPENFILENAME structure. */
 	ofn.lStructSize = sizeof( OPENFILENAME );
 	ofn.hwndOwner = g_pParentWnd->GetSafeHwnd();
@@ -480,13 +480,13 @@ void SaveAsDialog( bool bRegion )
 	ofn.nMaxFileTitle = sizeof( szFileTitle );
 	ofn.lpstrInitialDir = strPath;
 	ofn.Flags = OFN_SHOWHELP | OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_OVERWRITEPROMPT;
-	
+
 	/* Display the Open dialog box. */
 	if( !GetSaveFileName( &ofn ) )
 	{
 		return; // canceled
 	}
-	
+
 	if( bRegion )
 	{
 		DefaultExtension( ofn.lpstrFile, ".reg" );
@@ -495,14 +495,14 @@ void SaveAsDialog( bool bRegion )
 	{
 		DefaultExtension( ofn.lpstrFile, ".map" );
 	}
-	
+
 	if( !bRegion )
 	{
 		strcpy( currentmap, ofn.lpstrFile );
 		AddNewItem( g_qeglobals.d_lpMruMenu, ofn.lpstrFile );
 		PlaceMenuMRUItem( g_qeglobals.d_lpMruMenu, GetSubMenu( GetMenu( g_pParentWnd->GetSafeHwnd() ), 0 ), ID_FILE_EXIT );
 	}
-	
+
 	Map_SaveFile( ofn.lpstrFile, bRegion );	// ignore region
 }
 
@@ -521,14 +521,14 @@ void FillBSPMenu( void )
 	HMENU		hmenu;
 	int			i;
 	static int	count;
-	
+
 	hmenu = GetSubMenu( GetMenu( g_pParentWnd->GetSafeHwnd() ), MENU_BSP );
-	
+
 	for( i = 0; i < count; i++ )
 	{
 		DeleteMenu( hmenu, CMD_BSPCOMMAND + i, MF_BYCOMMAND );
 	}
-	
+
 	i = 0;
 	count = g_qeglobals.d_project_entity->epairs.GetNumKeyVals();
 	for( int j = 0; j < count; j++ )
@@ -540,7 +540,7 @@ void FillBSPMenu( void )
 			i++;
 		}
 	}
-	
+
 	count = i;
 }
 

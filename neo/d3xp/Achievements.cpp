@@ -141,7 +141,7 @@ void idAchievementManager::SyncAchievments()
 	{
 		return;
 	}
-	
+
 	// Set achievement counts
 	for( int i = 0; i < counts.Num(); i++ )
 	{
@@ -178,12 +178,12 @@ idAchievementManager::Save
 void idAchievementManager::Save( idSaveGame* savefile ) const
 {
 	owner.Save( savefile );
-	
+
 	for( int i = 0; i < ACHIEVEMENTS_NUM; i++ )
 	{
 		savefile->WriteInt( counts[i] );
 	}
-	
+
 	savefile->WriteInt( lastImpKilledTime );
 	savefile->WriteInt( lastPlayerKilledTime );
 	savefile->WriteBool( playerTookDamage );
@@ -198,17 +198,17 @@ idAchievementManager::Restore
 void idAchievementManager::Restore( idRestoreGame* savefile )
 {
 	owner.Restore( savefile );
-	
+
 	for( int i = 0; i < ACHIEVEMENTS_NUM; i++ )
 	{
 		savefile->ReadInt( counts[i] );
 	}
-	
+
 	savefile->ReadInt( lastImpKilledTime );
 	savefile->ReadInt( lastPlayerKilledTime );
 	savefile->ReadBool( playerTookDamage );
 	savefile->ReadInt( currentHellTimeKills );
-	
+
 	SyncAchievments();
 }
 
@@ -223,11 +223,11 @@ void idAchievementManager::EventCompletesAchievement( const achievement_t eventI
 	{
 		return;
 	}
-	
+
 	idLocalUser* localUser = GetLocalUser();
 	if( localUser == NULL || localUser->GetProfile() == NULL )
 	{
-	
+
 		// Send a Reliable Message to the User that needs to unlock this.
 		if( owner != NULL )
 		{
@@ -236,25 +236,25 @@ void idAchievementManager::EventCompletesAchievement( const achievement_t eventI
 			byte buffer[ bufferSize ];
 			idBitMsg msg;
 			msg.InitWrite( buffer, bufferSize );
-			
+
 			msg.WriteByte( playerId );
 			msg.WriteByte( eventId );
-			
+
 			msg.WriteByteAlign();
 			idLib::Printf( "Host Sending Achievement\n" );
 			session->GetActingGameStateLobbyBase().SendReliableToLobbyUser( gameLocal.lobbyUserIDs[ owner->entityNumber ], GAME_RELIABLE_MESSAGE_ACHIEVEMENT_UNLOCK, msg );
 		}
-		
+
 		return; // Remote user or build game
 	}
-	
+
 	// Check to see if we've already given the achievement.
 	// If so, don't do again because we don't want to autosave every time a trigger is hit
 	if( localUser->GetProfile()->GetAchievement( eventId ) )
 	{
 		return;
 	}
-	
+
 #ifdef ID_RETAIL
 	if( common->GetConsoleUsed() )
 	{
@@ -266,9 +266,9 @@ void idAchievementManager::EventCompletesAchievement( const achievement_t eventI
 		return;
 	}
 #endif
-	
+
 	counts[eventId]++;
-	
+
 	if( counts[eventId] >= achievementInfo[eventId].required )
 	{
 		session->GetAchievementSystem().AchievementUnlock( localUser, eventId );
@@ -331,14 +331,14 @@ idAchievementManager::LocalUser_CompleteAchievement
 void idAchievementManager::LocalUser_CompleteAchievement( achievement_t id )
 {
 	idLocalUser* localUser = session->GetSignInManager().GetMasterLocalUser();
-	
+
 	// Check to see if we've already given the achievement.
 	// If so, don't do again because we don't want to autosave every time a trigger is hit
 	if( localUser == NULL || localUser->GetProfile()->GetAchievement( id ) )
 	{
 		return;
 	}
-	
+
 #ifdef ID_RETAIL
 	if( common->GetConsoleUsed() )
 	{
@@ -350,7 +350,7 @@ void idAchievementManager::LocalUser_CompleteAchievement( achievement_t id )
 		return;
 	}
 #endif
-	
+
 	session->GetAchievementSystem().AchievementUnlock( localUser, id );
 }
 
@@ -429,10 +429,10 @@ CONSOLE_COMMAND( AchievementsList, "Lists achievements and status", NULL )
 		return;
 	}
 	idPlayerProfile* profile = user->GetProfile();
-	
+
 	idArray<bool, 128> achievementState;
 	bool achievementStateValid = session->GetAchievementSystem().GetAchievementState( user, achievementState );
-	
+
 	for( int i = 0; i < ACHIEVEMENTS_NUM; i++ )
 	{
 		const char* pInfo = "";
@@ -474,10 +474,10 @@ CONSOLE_COMMAND( AchievementsList, "Lists achievements and status", NULL )
 		{
 			count = 0;
 		}
-		
+
 		achievementDescription_t data;
 		bool descriptionValid = session->GetAchievementSystem().GetAchievementDescription( user, i, data );
-		
+
 		idLib::Printf( "%02d: %2d/%2d | %12.12s | %12.12s | %s%s\n", i, count, achievementInfo[i].required, pInfo, sInfo, descriptionValid ? data.hidden ? "(hidden) " : "" : "(unknown) ", descriptionValid ? data.name : "" );
 	}
 }

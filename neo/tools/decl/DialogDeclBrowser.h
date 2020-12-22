@@ -38,19 +38,19 @@ class DialogDeclBrowser : public CDialog
 {
 
 	DECLARE_DYNAMIC( DialogDeclBrowser )
-	
+
 public:
 	DialogDeclBrowser( CWnd* pParent = NULL );   // standard constructor
 	virtual				~DialogDeclBrowser();
-	
+
 	void				ReloadDeclarations( void );
 	bool				CompareDecl( HTREEITEM item, const char* name ) const;
-	
+
 	//{{AFX_VIRTUAL(DialogDeclBrowser)
 	virtual BOOL		OnInitDialog();
 	virtual void		DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
 	//}}AFX_VIRTUAL
-	
+
 protected:
 	//{{AFX_MSG(DialogDeclBrowser)
 	afx_msg BOOL		OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult );
@@ -69,9 +69,9 @@ protected:
 	afx_msg void		OnBnClickedOk();
 	afx_msg void		OnBnClickedCancel();
 	//}}AFX_MSG
-	
+
 	DECLARE_MESSAGE_MAP()
-	
+
 private:
 
 	//{{AFX_DATA(DialogDeclBrowser)
@@ -88,24 +88,24 @@ private:
 	CButton				reloadButton;
 	CButton				cancelButton;
 	//}}AFX_DATA
-	
+
 	static toolTip_t	toolTips[];
-	
+
 	CRect				initialRect;
 	CPathTreeCtrl		baseDeclTree;
 	int					numListedDecls;
 	idStr				findNameString;
 	idStr				findTextString;
-	
+
 	TCHAR* 				m_pchTip;
 	WCHAR* 				m_pwchTip;
-	
+
 private:
 	void				AddDeclTypeToTree( declType_t type, const char* root, CPathTreeCtrl& tree );
 	void				AddScriptsToTree( CPathTreeCtrl& tree );
 	void				AddGUIsToTree( CPathTreeCtrl& tree );
 	void				InitBaseDeclTree( void );
-	
+
 	void				GetDeclName( HTREEITEM item, idStr& typeName, idStr& declName ) const;
 	const idDecl* 		GetDeclFromTreeItem( HTREEITEM item ) const;
 	const idDecl* 		GetSelectedDecl( void ) const;

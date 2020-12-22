@@ -35,13 +35,13 @@ If you have questions concerning this license or the applicable additional terms
 
 #ifndef NOMINMAX
 
-#ifndef max
-#define max(a,b)            (((a) > (b)) ? (a) : (b))
-#endif
+	#ifndef max
+		#define max(a,b)            (((a) > (b)) ? (a) : (b))
+	#endif
 
-#ifndef min
-#define min(a,b)            (((a) < (b)) ? (a) : (b))
-#endif
+	#ifndef min
+		#define min(a,b)            (((a) < (b)) ? (a) : (b))
+	#endif
 
 #endif  /* NOMINMAX */
 
@@ -101,7 +101,7 @@ LPMRUMENU CreateMruMenu( WORD wNbLruShowInit,
 {
 	LPMRUMENU lpMruMenu;
 	lpMruMenu = ( LPMRUMENU )GlobalAllocPtr( GHND, sizeof( MRUMENU ) );
-	
+
 	lpMruMenu->wNbItemFill = 0;
 	lpMruMenu->wNbLruMenu = wNbLruMenuInit;
 	lpMruMenu->wNbLruShow = wNbLruShowInit;
@@ -234,7 +234,9 @@ void SetNbLruShow( LPMRUMENU lpMruMenu, WORD wNbLruShowInit )
 BOOL SetMenuItem( LPMRUMENU lpMruMenu, WORD wItem, LPSTR lpItem )
 {
 	if( wItem >= NBMRUMENU )
+	{
 		return FALSE;
+	}
 	_fstrncpy( ( lpMruMenu->lpMRU ) +
 			   ( ( lpMruMenu->wMaxSizeLruItem ) * ( UINT )wItem ),
 			   lpItem, lpMruMenu->wMaxSizeLruItem - 1 );
@@ -276,9 +278,13 @@ BOOL GetMenuItem( LPMRUMENU lpMruMenu, WORD wItem,
 				  BOOL fIDMBased, LPSTR lpItem, UINT uiSize )
 {
 	if( fIDMBased )
+	{
 		wItem -= ( lpMruMenu->wIdMru + 1 );
+	}
 	if( wItem >= lpMruMenu->wNbItemFill )
+	{
 		return FALSE;
+	}
 	_fstrncpy( lpItem, ( lpMruMenu->lpMRU ) +
 			   ( ( lpMruMenu->wMaxSizeLruItem ) * ( UINT )( wItem ) ), uiSize );
 	*( lpItem + uiSize - 1 ) = '\0';
@@ -360,9 +366,13 @@ BOOL DelMenuItem( LPMRUMENU lpMruMenu, WORD wItem, BOOL fIDMBased )
 {
 	WORD i;
 	if( fIDMBased )
+	{
 		wItem -= ( lpMruMenu->wIdMru + 1 );
+	}
 	if( lpMruMenu->wNbItemFill <= wItem )
+	{
 		return FALSE;
+	}
 	lpMruMenu->wNbItemFill--;
 	for( i = wItem; i < lpMruMenu->wNbItemFill; i++ )
 		lstrcpy( lpMruMenu->lpMRU + ( lpMruMenu->wMaxSizeLruItem * ( UINT )i ),
@@ -397,17 +407,23 @@ void PlaceMenuMRUItem( LPMRUMENU lpMruMenu, HMENU hMenu, UINT uiItem )
 	int  i;
 	WORD wNbShow;
 	if( hMenu == NULL )
+	{
 		return;
+	}
 	// remove old MRU in menu
 	for( i = 0; i <= ( int )( lpMruMenu->wNbLruMenu ); i++ )
+	{
 		RemoveMenu( hMenu, i + lpMruMenu->wIdMru, MF_BYCOMMAND );
-		
+	}
+
 	if( lpMruMenu->wNbItemFill == 0 )
+	{
 		return;
-		
+	}
+
 	// If they are item, insert a separator before the files
 	InsertMenu( hMenu, uiItem, MF_SEPARATOR, lpMruMenu->wIdMru, NULL );
-	
+
 	wNbShow = min( lpMruMenu->wNbItemFill, lpMruMenu->wNbLruShow );
 	for( i = ( int )wNbShow - 1; i >= 0; i-- )
 	{
@@ -421,7 +437,7 @@ void PlaceMenuMRUItem( LPMRUMENU lpMruMenu, HMENU hMenu, UINT uiItem )
 			GlobalFreePtr( lpTxt );
 		}
 	}
-	
+
 }
 
 ///////////////////////////////////////////
@@ -458,17 +474,21 @@ BOOL SaveMruInIni( LPMRUMENU lpMruMenu, LPSTR lpszSection, LPSTR lpszFile )
 {
 	LPSTR lpTxt;
 	WORD i;
-	
+
 	lpTxt = ( LPSTR )GlobalAllocPtr( GHND, lpMruMenu->wMaxSizeLruItem + 20 );
 	if( lpTxt == NULL )
+	{
 		return FALSE;
-		
+	}
+
 	for( i = 0; i < lpMruMenu->wNbLruMenu; i++ )
 	{
 		char szEntry[16];
 		wsprintf( szEntry, "File%lu", ( DWORD )i + 1 );
 		if( !GetMenuItem( lpMruMenu, i, FALSE, lpTxt, lpMruMenu->wMaxSizeLruItem + 10 ) )
+		{
 			*lpTxt = '\0';
+		}
 		WritePrivateProfileString( lpszSection, szEntry, lpTxt, lpszFile );
 	}
 	GlobalFreePtr( lpTxt );
@@ -509,17 +529,21 @@ BOOL LoadMruInIni( LPMRUMENU lpMruMenu, LPSTR lpszSection, LPSTR lpszFile )
 	WORD i;
 	lpTxt = ( LPSTR )GlobalAllocPtr( GHND, lpMruMenu->wMaxSizeLruItem + 20 );
 	if( lpTxt == NULL )
+	{
 		return FALSE;
-		
+	}
+
 	for( i = 0; i < lpMruMenu->wNbLruMenu; i++ )
 	{
 		char szEntry[16];
-		
+
 		wsprintf( szEntry, "File%lu", ( DWORD )i + 1 );
 		GetPrivateProfileString( lpszSection, szEntry, "", lpTxt,
 								 lpMruMenu->wMaxSizeLruItem + 10, lpszFile );
 		if( *lpTxt == '\0' )
+		{
 			break;
+		}
 		SetMenuItem( lpMruMenu, i, lpTxt );
 	}
 	GlobalFreePtr( lpTxt );
@@ -531,10 +555,10 @@ BOOL LoadMruInIni( LPMRUMENU lpMruMenu, LPSTR lpszSection, LPSTR lpszFile )
 BOOL IsWin395OrHigher( void )
 {
 	WORD wVer;
-	
+
 	wVer = LOWORD( GetVersion() );
 	wVer = ( ( ( WORD )LOBYTE( wVer ) ) << 8 ) | ( WORD )HIBYTE( wVer );
-	
+
 	return ( wVer >= 0x035F );            // 5F = 95 dec
 }
 
@@ -571,20 +595,24 @@ BOOL SaveMruInReg( LPMRUMENU lpMruMenu, LPSTR lpszKey )
 	WORD i;
 	HKEY hCurKey;
 	DWORD dwDisp;
-	
+
 	lpTxt = ( LPSTR )GlobalAllocPtr( GHND, lpMruMenu->wMaxSizeLruItem + 20 );
 	if( lpTxt == NULL )
+	{
 		return FALSE;
-		
+	}
+
 	RegCreateKeyEx( HKEY_CURRENT_USER, lpszKey, 0, NULL,
 					REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hCurKey, &dwDisp );
-					
+
 	for( i = 0; i < lpMruMenu->wNbLruMenu; i++ )
 	{
 		char szEntry[16];
 		wsprintf( szEntry, "File%lu", ( DWORD )i + 1 );
 		if( !GetMenuItem( lpMruMenu, i, FALSE, lpTxt, lpMruMenu->wMaxSizeLruItem + 10 ) )
+		{
 			*lpTxt = '\0';
+		}
 		RegSetValueEx( hCurKey, szEntry, 0, REG_SZ, ( unsigned char* )lpTxt, lstrlen( lpTxt ) );
 	}
 	RegCloseKey( hCurKey );
@@ -626,11 +654,13 @@ BOOL LoadMruInReg( LPMRUMENU lpMruMenu, LPSTR lpszKey )
 	DWORD dwType;
 	lpTxt = ( LPSTR )GlobalAllocPtr( GHND, lpMruMenu->wMaxSizeLruItem + 20 );
 	if( lpTxt == NULL )
+	{
 		return FALSE;
-		
+	}
+
 	RegOpenKeyEx( HKEY_CURRENT_USER, lpszKey, 0, KEY_READ, &hCurKey );
-	
-	
+
+
 	for( i = 0; i < lpMruMenu->wNbLruMenu; i++ )
 	{
 		char szEntry[16];
@@ -641,7 +671,9 @@ BOOL LoadMruInReg( LPMRUMENU lpMruMenu, LPSTR lpszKey )
 		RegQueryValueEx( hCurKey, szEntry, NULL, &dwType, ( LPBYTE )lpTxt, &dwSizeBuf );
 		*( lpTxt + dwSizeBuf ) = '\0';
 		if( *lpTxt == '\0' )
+		{
 			break;
+		}
 		SetMenuItem( lpMruMenu, i, lpTxt );
 	}
 	RegCloseKey( hCurKey );
@@ -676,17 +708,23 @@ BOOL LoadMruInReg( LPMRUMENU lpMruMenu, LPSTR lpszKey )
 WIN32KIND GetWin32Kind()
 {
 	BOOL IsWin395OrHigher( void );
-	
+
 	WORD wVer;
-	
+
 	if( ( GetVersion() & 0x80000000 ) == 0 )
+	{
 		return WINNT;
+	}
 	wVer = LOWORD( GetVersion() );
 	wVer = ( ( ( WORD )LOBYTE( wVer ) ) << 8 ) | ( WORD )HIBYTE( wVer );
-	
+
 	if( wVer >= 0x035F )
+	{
 		return WIN95ORGREATHER;
+	}
 	else
+	{
 		return WIN32S;
+	}
 }
 #endif

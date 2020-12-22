@@ -110,7 +110,7 @@ void CEditViewDlg::ShowFindDlg()
 	}
 	findDlg = new CFindReplaceDialog();
 	findDlg->Create( TRUE, findStr, NULL, FR_DOWN, this );
-	
+
 }
 
 void CEditViewDlg::OnBnClickedButtonOpen()
@@ -168,24 +168,24 @@ void CEditViewDlg::UpdateEditPreview()
 BOOL CEditViewDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
-	
+
 	mediaPreview.Create( IDD_DIALOG_EDITPREVIEW, this );
 	mediaPreview.ShowWindow( SW_SHOW );
-	
+
 	CRect rct;
 	LONG lSize = sizeof( rct );
 	if( LoadRegistryInfo( "Radiant::EditViewWindow", &rct, &lSize ) )
 	{
 		SetWindowPos( NULL, rct.left, rct.top, rct.Width(), rct.Height(), SWP_SHOWWINDOW );
 	}
-	
+
 	editInfo.SetTabStops();
 	editInfo.SetLimitText( 1024 * 1024 );
-	
+
 	UpdateEditPreview();
-	
+
 	SetTimer( 1, 250, NULL );
-	
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -198,7 +198,7 @@ void CEditViewDlg::OnDestroy()
 		GetWindowRect( rct );
 		SaveRegistryInfo( "Radiant::EditViewWindow", &rct, sizeof( rct ) );
 	}
-	
+
 	CDialog::OnDestroy();
 }
 
@@ -251,7 +251,7 @@ void CEditViewDlg::OnTimer( UINT_PTR nIDEvent )
 		editInfo.GetSel( start, end );
 		wnd->SetWindowText( va( "%i", editInfo.LineFromChar( start ) ) );
 	}
-	
+
 }
 
 void CEditViewDlg::OnBnClickedButtonGoto()
@@ -283,19 +283,19 @@ BOOL CEditViewDlg::PreTranslateMessage( MSG* pMsg )
 		OnBnClickedButtonSave();
 		return TRUE;
 	}
-	
+
 	if( pMsg->message == WM_KEYDOWN && ( pMsg->wParam == 'o' || pMsg->wParam == 'O' ) && GetAsyncKeyState( VK_CONTROL ) & 0x8000 )
 	{
 		OnBnClickedButtonOpen();
 		return TRUE;
 	}
-	
+
 	if( pMsg->message == WM_KEYDOWN && ( pMsg->wParam == 'f' || pMsg->wParam == 'F' ) && GetAsyncKeyState( VK_CONTROL ) & 0x8000 )
 	{
 		ShowFindDlg();
 		return TRUE;
 	}
-	
+
 	if( pMsg->hwnd == editInfo.GetSafeHwnd() && ( pMsg->message == WM_KEYDOWN ) && ( pMsg->wParam == VK_TAB ) )
 	{
 		// get the char index of the caret position
@@ -306,7 +306,7 @@ BOOL CEditViewDlg::PreTranslateMessage( MSG* pMsg )
 		editInfo.ReplaceSel( "\t", TRUE );
 		return TRUE;
 	}
-	
+
 	return CDialog::PreTranslateMessage( pMsg );
 }
 
@@ -316,13 +316,13 @@ LRESULT CEditViewDlg::OnFindDialogMessage( WPARAM wParam, LPARAM lParam )
 	{
 		return 0;
 	}
-	
+
 	if( findDlg->IsTerminating() )
 	{
 		findDlg = NULL;
 		return 0;
 	}
-	
+
 	// If the FR_FINDNEXT flag is set,
 	// call the application-defined search routine
 	// to search for the requested string.

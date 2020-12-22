@@ -46,18 +46,18 @@ idImage::SubImageUpload
 void idImage::SubImageUpload( int mipLevel, int x, int y, int z, int width, int height, const void* pic, int pixelPitch ) const
 {
 	assert( x >= 0 && y >= 0 && mipLevel >= 0 && width >= 0 && height >= 0 && mipLevel < opts.numLevels );
-	
+
 	int compressedSize = 0;
-	
+
 	if( IsCompressed() )
 	{
 		assert( !( x & 3 ) && !( y & 3 ) );
-		
+
 		// compressed size may be larger than the dimensions due to padding to quads
 		int quadW = ( width + 3 ) & ~3;
 		int quadH = ( height + 3 ) & ~3;
 		compressedSize = quadW * quadH * BitsForFormat( opts.format ) / 8;
-		
+
 		int padW = ( opts.width + 3 ) & ~3;
 		int padH = ( opts.height + 3 ) & ~3;
 		( void )padH;
@@ -78,7 +78,7 @@ void idImage::SubImageUpload( int mipLevel, int x, int y, int z, int width, int 
 	{
 		assert( x + width <= opts.width && y + height <= opts.height );
 	}
-	
+
 	int target;
 	int uploadTarget;
 	if( opts.textureType == TT_2D )
@@ -97,9 +97,9 @@ void idImage::SubImageUpload( int mipLevel, int x, int y, int z, int width, int 
 		target = GL_TEXTURE_2D;
 		uploadTarget = GL_TEXTURE_2D;
 	}
-	
+
 	qglBindTexture( target, texnum );
-	
+
 	if( pixelPitch != 0 )
 	{
 		qglPixelStorei( GL_UNPACK_ROW_LENGTH, pixelPitch );
@@ -117,7 +117,7 @@ void idImage::SubImageUpload( int mipLevel, int x, int y, int z, int width, int 
 	}
 	else
 	{
-	
+
 		// make sure the pixel store alignment is correct so that lower mips get created
 		// properly for odd shaped textures - this fixes the mip mapping issues with
 		// fonts
@@ -130,7 +130,7 @@ void idImage::SubImageUpload( int mipLevel, int x, int y, int z, int width, int 
 		{
 			qglPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 		}
-		
+
 		qglTexSubImage2D( uploadTarget, mipLevel, x, y, width, height, dataFormat, dataType, pic );
 	}
 #ifdef DEBUG
@@ -181,7 +181,7 @@ void idImage::SetTexParameters()
 			idLib::FatalError( "%s: bad texture type %d", GetName(), opts.textureType );
 			return;
 	}
-	
+
 	// ALPHA, LUMINANCE, LUMINANCE_ALPHA, and INTENSITY have been removed
 	// in OpenGL 3.2. In order to mimic those modes, we use the swizzle operators
 #if defined( USE_CORE_PROFILE )
@@ -243,7 +243,7 @@ void idImage::SetTexParameters()
 		qglTexParameteri( target, GL_TEXTURE_SWIZZLE_A, GL_RED );
 	}
 #endif
-	
+
 	switch( filter )
 	{
 		case TF_DEFAULT:
@@ -268,7 +268,7 @@ void idImage::SetTexParameters()
 		default:
 			common->FatalError( "%s: bad texture filter %d", GetName(), filter );
 	}
-	
+
 	if( glConfig.anisotropicFilterAvailable )
 	{
 		// only do aniso filtering on mip mapped images
@@ -295,7 +295,7 @@ void idImage::SetTexParameters()
 		// use a blurring LOD bias in combination with high anisotropy to fix our aliasing grate textures...
 		qglTexParameterf( target, GL_TEXTURE_LOD_BIAS_EXT, r_lodBias.GetFloat() );
 	}
-	
+
 	// set the wrap/clamp modes
 	switch( repeat )
 	{
@@ -342,7 +342,7 @@ void idImage::SetTexParameters()
 		glTexParameteri( target, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
 #endif
 	}
-	
+
 }
 
 /*
@@ -359,7 +359,7 @@ void idImage::AllocImage()
 {
 	GL_CheckErrors();
 	PurgeImage();
-	
+
 	switch( opts.format )
 	{
 		case FMT_RGBA8:
@@ -483,7 +483,7 @@ void idImage::AllocImage()
 		default:
 			idLib::Error( "Unhandled image format %d in %s\n", opts.format, GetName() );
 	}
-	
+
 	// if we don't have a rendering context, just return after we
 	// have filled in the parms.  We must have the values set, or
 	// an image match from a shader before OpenGL starts would miss
@@ -492,15 +492,15 @@ void idImage::AllocImage()
 	{
 		return;
 	}
-	
+
 	// generate the texture number
 	qglGenTextures( 1, ( GLuint* )&texnum );
 	assert( texnum != TEXTURE_NOT_LOADED );
-	
+
 	//----------------------------------------------------
 	// allocate all the mip levels with NULL data
 	//----------------------------------------------------
-	
+
 	int numSides;
 	int target;
 	int uploadTarget;
@@ -529,9 +529,9 @@ void idImage::AllocImage()
 		target = uploadTarget = GL_TEXTURE_2D;
 		numSides = 1;
 	}
-	
+
 	qglBindTexture( target, texnum );
-	
+
 	for( int side = 0; side < numSides; side++ )
 	{
 		int w = opts.width;
@@ -547,14 +547,14 @@ void idImage::AllocImage()
 		}
 		for( int level = 0; level < opts.numLevels; level++ )
 		{
-		
+
 			// clear out any previous error
 			GL_CheckErrors();
-			
+
 			if( IsCompressed() )
 			{
 				int compressedSize = ( ( ( w + 3 ) / 4 ) * ( ( h + 3 ) / 4 ) * int64( 16 ) * BitsForFormat( opts.format ) ) / 8;
-				
+
 				// Even though the OpenGL specification allows the 'data' pointer to be NULL, for some
 				// drivers we actually need to upload data to get it to allocate the texture.
 				// However, on 32-bit systems we may fail to allocate a large block of memory for large
@@ -563,7 +563,7 @@ void idImage::AllocImage()
 				// As of 2011-10-6 using NVIDIA hardware and drivers we have to allocate the memory with HeapAlloc
 				// with the exact size otherwise large image allocation (for instance for physical page textures)
 				// may fail on Vista 32-bit.
-				
+
 				// RB begin
 #if defined(_WIN32)
 				void* data = HeapAlloc( GetProcessHeap(), 0, compressedSize );
@@ -586,21 +586,21 @@ void idImage::AllocImage()
 			{
 				qglTexImage2D( uploadTarget + side, level, internalFormat, w, h, 0, dataFormat, dataType, NULL );
 			}
-			
+
 			GL_CheckErrors();
-			
+
 			w = Max( 1, w >> 1 );
 			h = Max( 1, h >> 1 );
 		}
 	}
-	
+
 	qglTexParameteri( target, GL_TEXTURE_MAX_LEVEL, opts.numLevels - 1 );
-	
+
 	// see if we messed anything up
 	GL_CheckErrors();
-	
+
 	SetTexParameters();
-	
+
 	GL_CheckErrors();
 }
 
@@ -615,7 +615,9 @@ void idImage::PurgeImage()
 	{
 		// foresthale 2014-10-05: hitting quit in the launch console crashes if we call qglDeleteTextures (which is NULL at the time)
 		if( qglDeleteTextures )
-			qglDeleteTextures( 1, ( GLuint* )&texnum );	// this should be the ONLY place it is ever called!
+		{
+			qglDeleteTextures( 1, ( GLuint* )&texnum );    // this should be the ONLY place it is ever called!
+		}
 		texnum = TEXTURE_NOT_LOADED;
 	}
 	// clear all the current binding caches, so the next bind will do a real one

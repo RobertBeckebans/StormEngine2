@@ -82,7 +82,7 @@ void idSoundVoice_Base::InitSurround( int outputChannels, int channelMask )
 	speakerPositions[idWaveFile::CHANNEL_INDEX_BACK_CENTER			].Set( -1.0f,								  0.0f );									// 180 degrees
 	speakerPositions[idWaveFile::CHANNEL_INDEX_SIDE_LEFT			].Set( 0.0f,								  1.0f );									// 90 degrees
 	speakerPositions[idWaveFile::CHANNEL_INDEX_SIDE_RIGHT			].Set( 0.0f,								 -1.0f );									// 270 degrees
-	
+
 	speakerLeft[idWaveFile::CHANNEL_INDEX_FRONT_LEFT_CENTER] = idWaveFile::CHANNEL_INDEX_FRONT_LEFT;
 	speakerLeft[idWaveFile::CHANNEL_INDEX_FRONT_LEFT] = idWaveFile::CHANNEL_INDEX_SIDE_LEFT;
 	speakerLeft[idWaveFile::CHANNEL_INDEX_SIDE_LEFT] = idWaveFile::CHANNEL_INDEX_BACK_LEFT;
@@ -92,10 +92,10 @@ void idSoundVoice_Base::InitSurround( int outputChannels, int channelMask )
 	speakerLeft[idWaveFile::CHANNEL_INDEX_SIDE_RIGHT] = idWaveFile::CHANNEL_INDEX_FRONT_RIGHT;
 	speakerLeft[idWaveFile::CHANNEL_INDEX_FRONT_RIGHT] = idWaveFile::CHANNEL_INDEX_FRONT_RIGHT_CENTER;
 	speakerLeft[idWaveFile::CHANNEL_INDEX_FRONT_RIGHT_CENTER] = idWaveFile::CHANNEL_INDEX_FRONT_LEFT_CENTER;
-	
+
 	speakerLeft[idWaveFile::CHANNEL_INDEX_FRONT_CENTER] = idWaveFile::CHANNEL_INDEX_FRONT_CENTER;
 	speakerLeft[idWaveFile::CHANNEL_INDEX_LOW_FREQUENCY] = idWaveFile::CHANNEL_INDEX_LOW_FREQUENCY;
-	
+
 	speakerRight[idWaveFile::CHANNEL_INDEX_FRONT_RIGHT_CENTER] = idWaveFile::CHANNEL_INDEX_FRONT_RIGHT;
 	speakerRight[idWaveFile::CHANNEL_INDEX_FRONT_RIGHT] = idWaveFile::CHANNEL_INDEX_SIDE_RIGHT;
 	speakerRight[idWaveFile::CHANNEL_INDEX_SIDE_RIGHT] = idWaveFile::CHANNEL_INDEX_BACK_RIGHT;
@@ -105,13 +105,13 @@ void idSoundVoice_Base::InitSurround( int outputChannels, int channelMask )
 	speakerRight[idWaveFile::CHANNEL_INDEX_SIDE_LEFT] = idWaveFile::CHANNEL_INDEX_FRONT_LEFT;
 	speakerRight[idWaveFile::CHANNEL_INDEX_FRONT_LEFT] = idWaveFile::CHANNEL_INDEX_FRONT_LEFT_CENTER;
 	speakerRight[idWaveFile::CHANNEL_INDEX_FRONT_LEFT_CENTER] = idWaveFile::CHANNEL_INDEX_FRONT_RIGHT_CENTER;
-	
+
 	speakerRight[idWaveFile::CHANNEL_INDEX_FRONT_CENTER] = idWaveFile::CHANNEL_INDEX_FRONT_CENTER;
 	speakerRight[idWaveFile::CHANNEL_INDEX_LOW_FREQUENCY] = idWaveFile::CHANNEL_INDEX_LOW_FREQUENCY;
-	
+
 	dstChannels = outputChannels;
 	dstMask = channelMask;
-	
+
 	// dstMap maps a destination channel to a speaker
 	// invMap maps a speaker to a destination channel
 	dstLFE = -1;
@@ -144,7 +144,7 @@ void idSoundVoice_Base::InitSurround( int outputChannels, int channelMask )
 	}
 	assert( ( dstLFE == -1 ) || ( ( dstMask & idWaveFile::CHANNEL_MASK_LOW_FREQUENCY ) != 0 ) );
 	assert( ( dstCenter == -1 ) || ( ( dstMask & idWaveFile::CHANNEL_MASK_FRONT_CENTER ) != 0 ) );
-	
+
 	float omniChannels = ( float )dstChannels;
 	if( dstMask & idWaveFile::CHANNEL_MASK_LOW_FREQUENCY )
 	{
@@ -186,17 +186,17 @@ void idSoundVoice_Base::CalculateSurround( int srcChannels, float pLevelMatrix[ 
 		}
 		return;
 	}
-	
+
 #define MATINDEX( src, dst ) ( srcChannels * dst + src )
-	
+
 	float subFraction = s_subFraction.GetFloat();
-	
+
 	if( srcChannels == 1 )
 	{
 		idVec2 p2 = position.ToVec2();
-		
+
 		float centerFraction = centerChannel;
-		
+
 		float sqrLength = p2.LengthSqr();
 		if( sqrLength <= 0.01f )
 		{
@@ -211,21 +211,21 @@ void idSoundVoice_Base::CalculateSurround( int srcChannels, float pLevelMatrix[ 
 			float invLength = idMath::InvSqrt( sqrLength );
 			float distance = ( invLength * sqrLength );
 			p2 *= invLength;
-			
+
 			float spatialize = 1.0f;
 			if( distance < innerRadius )
 			{
 				spatialize = distance / innerRadius;
 			}
 			float omni = omniLevel * ( 1.0f - spatialize );
-			
+
 			if( dstCenter != -1 )
 			{
 				centerFraction *= Max( 0.0f, p2.x );
 				spatialize *= ( 1.0f - centerFraction );
 				omni *= ( 1.0f - centerFraction );
 			}
-			
+
 			float channelDots[MAX_CHANNELS_PER_VOICE] = { 0 };
 			for( int i = 0; i < dstChannels; i++ )
 			{
@@ -242,7 +242,7 @@ void idSoundVoice_Base::CalculateSurround( int srcChannels, float pLevelMatrix[ 
 				}
 			}
 			int speakerA = dstMap[channelA];
-			
+
 			// Find the 2nd nearest speaker
 			int speakerB;
 			float speakerACross = ( speakerPositions[speakerA].x * p2.y ) - ( speakerPositions[speakerA].y * p2.x );
@@ -255,7 +255,7 @@ void idSoundVoice_Base::CalculateSurround( int srcChannels, float pLevelMatrix[ 
 				speakerB = speakerRight[speakerA];
 			}
 			int channelB = invMap[speakerB];
-			
+
 			// Divide the amplitude between the 2 closest speakers
 			float distA = ( speakerPositions[speakerA] - p2 ).Length();
 			float distB = ( speakerPositions[speakerB] - p2 ).Length();

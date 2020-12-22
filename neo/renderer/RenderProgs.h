@@ -48,120 +48,120 @@ enum renderParm_t
 	RENDERPARM_WINDOWCOORD,
 	RENDERPARM_DIFFUSEMODIFIER,
 	RENDERPARM_SPECULARMODIFIER,
-	
+
 	RENDERPARM_LOCALLIGHTORIGIN,
 	RENDERPARM_LOCALVIEWORIGIN,
-	
+
 	RENDERPARM_LIGHTPROJECTION_S,
 	RENDERPARM_LIGHTPROJECTION_T,
 	RENDERPARM_LIGHTPROJECTION_Q,
 	RENDERPARM_LIGHTFALLOFF_S,
-	
+
 	RENDERPARM_BUMPMATRIX_S,
 	RENDERPARM_BUMPMATRIX_T,
-	
+
 	RENDERPARM_DIFFUSEMATRIX_S,
 	RENDERPARM_DIFFUSEMATRIX_T,
-	
+
 	RENDERPARM_SPECULARMATRIX_S,
 	RENDERPARM_SPECULARMATRIX_T,
-	
+
 	RENDERPARM_VERTEXCOLOR_MODULATE,
 	RENDERPARM_VERTEXCOLOR_ADD,
-	
+
 	// The following are new and can be in any order
-	
+
 	RENDERPARM_COLOR,
 	RENDERPARM_VIEWORIGIN,
 	RENDERPARM_GLOBALEYEPOS,
-	
+
 	RENDERPARM_MVPMATRIX_X,
 	RENDERPARM_MVPMATRIX_Y,
 	RENDERPARM_MVPMATRIX_Z,
 	RENDERPARM_MVPMATRIX_W,
-	
+
 	RENDERPARM_MODELMATRIX_X,
 	RENDERPARM_MODELMATRIX_Y,
 	RENDERPARM_MODELMATRIX_Z,
 	RENDERPARM_MODELMATRIX_W,
-	
+
 	RENDERPARM_PROJMATRIX_X,
 	RENDERPARM_PROJMATRIX_Y,
 	RENDERPARM_PROJMATRIX_Z,
 	RENDERPARM_PROJMATRIX_W,
-	
+
 	RENDERPARM_MODELVIEWMATRIX_X,
 	RENDERPARM_MODELVIEWMATRIX_Y,
 	RENDERPARM_MODELVIEWMATRIX_Z,
 	RENDERPARM_MODELVIEWMATRIX_W,
-	
+
 	RENDERPARM_TEXTUREMATRIX_S,
 	RENDERPARM_TEXTUREMATRIX_T,
-	
+
 	RENDERPARM_TEXGEN_0_S,
 	RENDERPARM_TEXGEN_0_T,
 	RENDERPARM_TEXGEN_0_Q,
 	RENDERPARM_TEXGEN_0_ENABLED,
-	
+
 	RENDERPARM_TEXGEN_1_S,
 	RENDERPARM_TEXGEN_1_T,
 	RENDERPARM_TEXGEN_1_Q,
 	RENDERPARM_TEXGEN_1_ENABLED,
-	
+
 	RENDERPARM_WOBBLESKY_X,
 	RENDERPARM_WOBBLESKY_Y,
 	RENDERPARM_WOBBLESKY_Z,
-	
+
 	RENDERPARM_OVERBRIGHT,
 	RENDERPARM_ENABLE_SKINNING,
 	RENDERPARM_ALPHA_TEST,
-	
+
 	// RB begin
 	RENDERPARM_AMBIENT_COLOR,
-	
+
 	RENDERPARM_GLOBALLIGHTORIGIN,
 	RENDERPARM_JITTERTEXSCALE,
 	RENDERPARM_JITTERTEXOFFSET,
 	RENDERPARM_CASCADEDISTANCES,
-	
+
 	RENDERPARM_SHADOW_MATRIX_0_X,
 	RENDERPARM_SHADOW_MATRIX_0_Y,
 	RENDERPARM_SHADOW_MATRIX_0_Z,
 	RENDERPARM_SHADOW_MATRIX_0_W,
-	
+
 	RENDERPARM_SHADOW_MATRIX_1_X,
 	RENDERPARM_SHADOW_MATRIX_1_Y,
 	RENDERPARM_SHADOW_MATRIX_1_Z,
 	RENDERPARM_SHADOW_MATRIX_1_W,
-	
+
 	RENDERPARM_SHADOW_MATRIX_2_X,
 	RENDERPARM_SHADOW_MATRIX_2_Y,
 	RENDERPARM_SHADOW_MATRIX_2_Z,
 	RENDERPARM_SHADOW_MATRIX_2_W,
-	
+
 	RENDERPARM_SHADOW_MATRIX_3_X,
 	RENDERPARM_SHADOW_MATRIX_3_Y,
 	RENDERPARM_SHADOW_MATRIX_3_Z,
 	RENDERPARM_SHADOW_MATRIX_3_W,
-	
+
 	RENDERPARM_SHADOW_MATRIX_4_X,
 	RENDERPARM_SHADOW_MATRIX_4_Y,
 	RENDERPARM_SHADOW_MATRIX_4_Z,
 	RENDERPARM_SHADOW_MATRIX_4_W,
-	
+
 	RENDERPARM_SHADOW_MATRIX_5_X,
 	RENDERPARM_SHADOW_MATRIX_5_Y,
 	RENDERPARM_SHADOW_MATRIX_5_Z,
 	RENDERPARM_SHADOW_MATRIX_5_W,
 	// RB end
-	
+
 	RENDERPARM_GLOSSMATRIX_S,
 	RENDERPARM_GLOSSMATRIX_T,
-	
+
 	RENDERPARM_CUBEMAPCOLORSPACE, // motorsep 05-18-2015; needed for switching colorspace in skybox shader; rpcubemapColorSpace
-	
+
 	RENDERPARM_TOTAL,
-	
+
 	RENDERPARM_USER = 128,
 };
 
@@ -184,18 +184,18 @@ class idRenderProgManager
 public:
 	idRenderProgManager();
 	virtual ~idRenderProgManager();
-	
+
 	void	Init();
 	void	Shutdown();
-	
+
 	void	SetRenderParm( renderParm_t rp, const float* value );
 	void	SetRenderParms( renderParm_t rp, const float* values, int numValues );
-	
+
 	int		FindVertexShader( const char* name );
 	int		FindFragmentShader( const char* name );
-	
+
 	void	BindShader( int vIndex, int fIndex );
-	
+
 	void	BindShader_GUI( )
 	{
 		BindShader_Builtin( BUILTIN_GUI );
@@ -236,39 +236,39 @@ public:
 	{
 		BindShader_Builtin( BUILTIN_INTERACTION_AMBIENT_SKINNED );
 	}
-	
+
 	// RB begin
 	void	BindShader_Interaction_ShadowMapping_Spot()
 	{
 		BindShader_Builtin( BUILTIN_INTERACTION_SHADOW_MAPPING_SPOT );
 	}
-	
+
 	void	BindShader_Interaction_ShadowMapping_Spot_Skinned()
 	{
 		BindShader_Builtin( BUILTIN_INTERACTION_SHADOW_MAPPING_SPOT_SKINNED );
 	}
-	
+
 	void	BindShader_Interaction_ShadowMapping_Point()
 	{
 		BindShader_Builtin( BUILTIN_INTERACTION_SHADOW_MAPPING_POINT );
 	}
-	
+
 	void	BindShader_Interaction_ShadowMapping_Point_Skinned()
 	{
 		BindShader_Builtin( BUILTIN_INTERACTION_SHADOW_MAPPING_POINT_SKINNED );
 	}
-	
+
 	void	BindShader_Interaction_ShadowMapping_Parallel()
 	{
 		BindShader_Builtin( BUILTIN_INTERACTION_SHADOW_MAPPING_PARALLEL );
 	}
-	
+
 	void	BindShader_Interaction_ShadowMapping_Parallel_Skinned()
 	{
 		BindShader_Builtin( BUILTIN_INTERACTION_SHADOW_MAPPING_PARALLEL_SKINNED );
 	}
 	// RB end
-	
+
 	void	BindShader_SimpleShade()
 	{
 		BindShader_Builtin( BUILTIN_SIMPLESHADE );
@@ -289,7 +289,7 @@ public:
 	{
 		BindShader_Builtin( BUILTIN_BUMPY_ENVIRONMENT_SKINNED );
 	}
-	
+
 	void	BindShader_Depth()
 	{
 		BindShader_Builtin( BUILTIN_DEPTH );
@@ -314,7 +314,7 @@ public:
 	{
 		BindShader_Builtin( BUILTIN_SHADOW_DEBUG_SKINNED );
 	}
-	
+
 	void	BindShader_BlendLight()
 	{
 		BindShader_Builtin( BUILTIN_BLENDLIGHT );
@@ -367,7 +367,7 @@ public:
 	{
 		BindShader_Builtin( BUILTIN_MOTION_BLUR );
 	}
-	
+
 	// foresthale 2014-02-20: added HDRDither shader
 	void	BindShader_HDRDither()
 	{
@@ -387,7 +387,7 @@ public:
 	{
 		BindShader_Builtin( BUILTIN_HDRGLOWBLURDIRECTIONAL );
 	}
-	
+
 	// the joints buffer should only be bound for vertex programs that use joints
 	bool	ShaderUsesJoints() const
 	{
@@ -398,14 +398,14 @@ public:
 	{
 		return vertexShaders[currentVertexShader].optionalSkinning;
 	}
-	
+
 	// unbind the currently bound render program
 	void	Unbind();
-	
+
 	// this should only be called via the reload shader console command
 	void	LoadAllShaders();
 	void	KillAllShaders();
-	
+
 	static const int	MAX_GLSL_USER_PARMS = 8;
 	const char*	GetGLSLParmName( int rp ) const;
 	int			GetGLSLCurrentProgram() const
@@ -416,11 +416,11 @@ public:
 	void		CommitUniforms();
 	int			FindGLSLProgram( const char* name, int vIndex, int fIndex );
 	void		ZeroUniforms();
-	
+
 protected:
 	void	LoadVertexShader( int index );
 	void	LoadFragmentShader( int index );
-	
+
 	enum
 	{
 		BUILTIN_GUI,
@@ -438,14 +438,14 @@ protected:
 		BUILTIN_ENVIRONMENT_SKINNED,
 		BUILTIN_BUMPY_ENVIRONMENT,
 		BUILTIN_BUMPY_ENVIRONMENT_SKINNED,
-		
+
 		BUILTIN_DEPTH,
 		BUILTIN_DEPTH_SKINNED,
 		BUILTIN_SHADOW,
 		BUILTIN_SHADOW_SKINNED,
 		BUILTIN_SHADOW_DEBUG,
 		BUILTIN_SHADOW_DEBUG_SKINNED,
-		
+
 		BUILTIN_BLENDLIGHT,
 		BUILTIN_FOG,
 		BUILTIN_FOG_SKINNED,
@@ -459,7 +459,7 @@ protected:
 		BUILTIN_BINK_GUI,
 		BUILTIN_STEREO_INTERLACE,
 		BUILTIN_MOTION_BLUR,
-		
+
 		// foresthale 2014-02-20: added HDRDither shader
 		BUILTIN_HDRDITHER,
 		// foresthale 2014-04-08: r_glow
@@ -481,13 +481,13 @@ protected:
 	{
 		BindShader( builtinShaders[i], builtinShaders[i] );
 	}
-	
+
 	bool	CompileGLSL( GLenum target, const char* name );
 	GLuint	LoadGLSLShader( GLenum target, const char* name, idList<int>& uniforms );
 	void	LoadGLSLProgram( const int programIndex, const int vertexShaderIndex, const int fragmentShaderIndex );
-	
+
 	static const GLuint INVALID_PROGID = 0xFFFFFFFF;
-	
+
 	struct vertexShader_t
 	{
 		vertexShader_t() : progId( INVALID_PROGID ), usesJoints( false ), optionalSkinning( false ) {}
@@ -504,7 +504,7 @@ protected:
 		GLuint		progId;
 		idList<int>	uniforms;
 	};
-	
+
 	struct glslProgram_t
 	{
 		glslProgram_t() :	progId( INVALID_PROGID ),
@@ -523,8 +523,8 @@ protected:
 	int	currentRenderProgram;
 	idList<glslProgram_t, TAG_RENDER> glslPrograms;
 	idStaticList < idVec4, RENDERPARM_USER + MAX_GLSL_USER_PARMS > glslUniforms;
-	
-	
+
+
 	int				currentVertexShader;
 	int				currentFragmentShader;
 	idList<vertexShader_t, TAG_RENDER> vertexShaders;

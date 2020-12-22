@@ -73,8 +73,8 @@ idRenderProgManager::Init()
 void idRenderProgManager::Init()
 {
 	common->Printf( "----- Initializing Render Shaders -----\n" );
-	
-	
+
+
 	for( int i = 0; i < MAX_BUILTINS; i++ )
 	{
 		builtinShaders[i] = -1;
@@ -100,12 +100,12 @@ void idRenderProgManager::Init()
 		{ BUILTIN_ENVIRONMENT_SKINNED, "environment_skinned.vfp" },
 		{ BUILTIN_BUMPY_ENVIRONMENT, "bumpyEnvironment.vfp" },
 		{ BUILTIN_BUMPY_ENVIRONMENT_SKINNED, "bumpyEnvironment_skinned.vfp" },
-		
+
 		{ BUILTIN_DEPTH, "depth.vfp" },
 		{ BUILTIN_DEPTH_SKINNED, "depth_skinned.vfp" },
 		{ BUILTIN_SHADOW_DEBUG, "shadowDebug.vfp" },
 		{ BUILTIN_SHADOW_DEBUG_SKINNED, "shadowDebug_skinned.vfp" },
-		
+
 		{ BUILTIN_BLENDLIGHT, "blendlight.vfp" },
 		{ BUILTIN_FOG, "fog.vfp" },
 		{ BUILTIN_FOG_SKINNED, "fog_skinned.vfp" },
@@ -119,7 +119,7 @@ void idRenderProgManager::Init()
 		{ BUILTIN_BINK_GUI, "bink_gui.vfp" },
 		{ BUILTIN_STEREO_INTERLACE, "stereoInterlace.vfp" },
 		{ BUILTIN_MOTION_BLUR, "motionBlur.vfp" },
-		
+
 		// foresthale 2014-02-20: added HDRDither shader
 		{ BUILTIN_HDRDITHER, "hdrDither.vfp" },
 		// foresthale 2014-04-08: r_glow
@@ -137,7 +137,7 @@ void idRenderProgManager::Init()
 	vertexShaders.SetNum( numBuiltins );
 	fragmentShaders.SetNum( numBuiltins );
 	glslPrograms.SetNum( numBuiltins );
-	
+
 	for( int i = 0; i < numBuiltins; i++ )
 	{
 		vertexShaders[i].name = builtins[i].name;
@@ -147,16 +147,16 @@ void idRenderProgManager::Init()
 		LoadFragmentShader( i );
 		LoadGLSLProgram( i, i, i );
 	}
-	
+
 	// Special case handling for fastZ shaders
 	builtinShaders[BUILTIN_SHADOW] = FindVertexShader( "shadow.vp" );
 	builtinShaders[BUILTIN_SHADOW_SKINNED] = FindVertexShader( "shadow_skinned.vp" );
-	
+
 	FindGLSLProgram( "shadow.vp", builtinShaders[BUILTIN_SHADOW], -1 );
 	FindGLSLProgram( "shadow_skinned.vp", builtinShaders[BUILTIN_SHADOW_SKINNED], -1 );
-	
+
 	glslUniforms.SetNum( RENDERPARM_USER + MAX_GLSL_USER_PARMS, vec4_zero );
-	
+
 	// motorsep 10-26-2014; any new skinned built-in shader has to have .usesJoints set to true in the section below;
 	// non-built-in skinned shaders are taken care of in idRenderProgManager::FindVertexShader
 	vertexShaders[builtinShaders[BUILTIN_TEXTURE_VERTEXCOLOR_SKINNED]].usesJoints = true;
@@ -171,7 +171,7 @@ void idRenderProgManager::Init()
 	vertexShaders[builtinShaders[BUILTIN_INTERACTION_SHADOW_MAPPING_SPOT_SKINNED]].usesJoints = true;
 	vertexShaders[builtinShaders[BUILTIN_INTERACTION_SHADOW_MAPPING_POINT_SKINNED]].usesJoints = true;
 	vertexShaders[builtinShaders[BUILTIN_INTERACTION_SHADOW_MAPPING_PARALLEL_SKINNED]].usesJoints = true;
-	
+
 	cmdSystem->AddCommand( "reloadShaders", R_ReloadShaders, CMD_FL_RENDERER, "reloads shaders" );
 }
 
@@ -190,7 +190,7 @@ void idRenderProgManager::LoadAllShaders()
 	{
 		LoadFragmentShader( i );
 	}
-	
+
 	for( int i = 0; i < glslPrograms.Num(); ++i )
 	{
 		LoadGLSLProgram( i, glslPrograms[i].vertexShaderIndex, glslPrograms[i].fragmentShaderIndex );
@@ -261,7 +261,7 @@ int idRenderProgManager::FindVertexShader( const char* name )
 	int index = vertexShaders.Append( shader );
 	LoadVertexShader( index );
 	currentVertexShader = index;
-	
+
 	// FIXME: we should really scan the program source code for using rpEnableSkinning but at this
 	// point we directly load a binary and the program source code is not available on the consoles
 	if(	idStr::Icmp( name, "heatHaze.vfp" ) == 0 ||
@@ -271,7 +271,7 @@ int idRenderProgManager::FindVertexShader( const char* name )
 		vertexShaders[index].usesJoints = true;
 		vertexShaders[index].optionalSkinning = true;
 	}
-	
+
 	// Steel Storm 2 fix for inkEffect on animated skeletal models
 	// begins
 	if( idStr::FindText( name, "_skinned.glsl" ) > -1 )
@@ -280,7 +280,7 @@ int idRenderProgManager::FindVertexShader( const char* name )
 		vertexShaders[index].optionalSkinning = true;
 	}
 	// ends
-	
+
 	return index;
 }
 
@@ -369,7 +369,7 @@ void idRenderProgManager::Unbind()
 {
 	currentVertexShader = -1;
 	currentFragmentShader = -1;
-	
+
 	qglUseProgram( 0 );
 }
 

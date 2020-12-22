@@ -62,11 +62,11 @@ struct kbd_poll_t
 {
 	int key;
 	bool state;
-	
+
 	kbd_poll_t()
 	{
 	}
-	
+
 	kbd_poll_t( int k, bool s )
 	{
 		key = k;
@@ -78,11 +78,11 @@ struct mouse_poll_t
 {
 	int action;
 	int value;
-	
+
 	mouse_poll_t()
 	{
 	}
-	
+
 	mouse_poll_t( int a, int v )
 	{
 		action = a;
@@ -119,15 +119,19 @@ struct gamepad_device_t
 		activeEvents = 0;
 		gameJoyStick = NULL;
 		for( int i = 0; i < SDL_CONTROLLER_BUTTON_MAX; i++ )
+		{
 			oldState[i] = 0;
+		}
 		for( int i = 0; i < SDL_CONTROLLER_AXIS_MAX; i++ )
 		{
 			oldAxisState[i] = 0;
 		}
 		for( int i = 0; i < SDL_BFG_MAX_CONTROLLER_BUTTON_EVENTS; i++ )
+		{
 			oldButtonStates[i] = false;
+		}
 	}
-	
+
 	gamepad_device_t( SDL_GameController* v )
 	{
 		gamePad = v;
@@ -135,13 +139,17 @@ struct gamepad_device_t
 		gameJoyStick = SDL_GameControllerGetJoystick( v );
 		gamePadId = SDL_JoystickInstanceID( gameJoyStick );
 		for( int i = 0; i < SDL_CONTROLLER_BUTTON_MAX; i++ )
+		{
 			oldState[i] = 0;
+		}
 		for( int i = 0; i < SDL_CONTROLLER_AXIS_MAX; i++ )
 		{
 			oldAxisState[i] = 0;
 		}
 		for( int i = 0; i < SDL_BFG_MAX_CONTROLLER_BUTTON_EVENTS; i++ )
+		{
 			oldButtonStates[i] = false;
+		}
 	}
 	void PushButton( int inputDeviceNum, int key, bool value )
 	{
@@ -209,13 +217,13 @@ struct gamepad_device_t
 				PushButton( inputDeviceNum, K_JOY_TRIGGER2, ( value > range ) );
 			}
 		}
-		
+
 		// These events are used for actual game input
 		events[activeEvents].event = event;
 		events[activeEvents].value = value;
 		activeEvents++;
 	}
-	
+
 	int	pollEvents( int controllerID )
 	{
 		static const int sdl2BFG_ButtonRemap[SDL_CONTROLLER_BUTTON_MAX] =
@@ -247,7 +255,7 @@ struct gamepad_device_t
 			}
 		}
 		int currentAxisState = 0;
-		
+
 		for( int i = 0; i < SDL_CONTROLLER_AXIS_MAX; i++ )
 		{
 			currentAxisState = SDL_GameControllerGetAxis( gamePad, ( SDL_GameControllerAxis )i );
@@ -276,21 +284,21 @@ int			eventHead = 0;
 static int SDL_KeyToDoom3Key( SDL_Keycode key, bool& isChar )
 {
 	isChar = false;
-	
+
 	if( key >= SDLK_SPACE && key < SDLK_DELETE )
 	{
 		isChar = true;
 		//return key;// & 0xff;
 	}
-	
+
 	switch( key )
 	{
 		case SDLK_ESCAPE:
 			return K_ESCAPE;
-			
+
 		case SDLK_SPACE:
 			return K_SPACE;
-			
+
 		//case SDLK_EXCLAIM:
 		/*
 		SDLK_QUOTEDBL:
@@ -313,60 +321,60 @@ static int SDL_KeyToDoom3Key( SDL_Keycode key, bool& isChar )
 			return K_APOSTROPHE; // This is the "'" key.
 		case SDLK_0:
 			return K_0;
-			
+
 		case SDLK_1:
 			return K_1;
-			
+
 		case SDLK_2:
 			return K_2;
-			
+
 		case SDLK_3:
 			return K_3;
-			
+
 		case SDLK_4:
 			return K_4;
-			
+
 		case SDLK_5:
 			return K_5;
-			
+
 		case SDLK_6:
 			return K_6;
-			
+
 		case SDLK_7:
 			return K_7;
-			
+
 		case SDLK_8:
 			return K_8;
-			
+
 		case SDLK_9:
 			return K_9;
-			
+
 		// DG: add some missing keys..
 		case SDLK_UNDERSCORE:
 			return K_UNDERLINE;
-			
+
 		case SDLK_MINUS:
 			return K_MINUS;
-			
+
 		case SDLK_COMMA:
 			return K_COMMA;
-			
+
 		case SDLK_COLON:
 			return K_COLON;
-			
+
 		case SDLK_SEMICOLON:
 			return K_SEMICOLON;
-			
+
 		case SDLK_PERIOD:
 			return K_PERIOD;
-			
+
 		case SDLK_AT:
 			return K_AT;
-			
+
 		case SDLK_EQUALS:
 			return K_EQUALS;
 		// DG end
-		
+
 		/*
 		SDLK_COLON		= 58,
 		SDLK_SEMICOLON		= 59,
@@ -395,267 +403,267 @@ static int SDL_KeyToDoom3Key( SDL_Keycode key, bool& isChar )
 			return K_BACKSLASH;
 		case SDLK_a:
 			return K_A;
-			
+
 		case SDLK_b:
 			return K_B;
-			
+
 		case SDLK_c:
 			return K_C;
-			
+
 		case SDLK_d:
 			return K_D;
-			
+
 		case SDLK_e:
 			return K_E;
-			
+
 		case SDLK_f:
 			return K_F;
-			
+
 		case SDLK_g:
 			return K_G;
-			
+
 		case SDLK_h:
 			return K_H;
-			
+
 		case SDLK_i:
 			return K_I;
-			
+
 		case SDLK_j:
 			return K_J;
-			
+
 		case SDLK_k:
 			return K_K;
-			
+
 		case SDLK_l:
 			return K_L;
-			
+
 		case SDLK_m:
 			return K_M;
-			
+
 		case SDLK_n:
 			return K_N;
-			
+
 		case SDLK_o:
 			return K_O;
-			
+
 		case SDLK_p:
 			return K_P;
-			
+
 		case SDLK_q:
 			return K_Q;
-			
+
 		case SDLK_r:
 			return K_R;
-			
+
 		case SDLK_s:
 			return K_S;
-			
+
 		case SDLK_t:
 			return K_T;
-			
+
 		case SDLK_u:
 			return K_U;
-			
+
 		case SDLK_v:
 			return K_V;
-			
+
 		case SDLK_w:
 			return K_W;
-			
+
 		case SDLK_x:
 			return K_X;
-			
+
 		case SDLK_y:
 			return K_Y;
-			
+
 		case SDLK_z:
 			return K_Z;
-			
+
 		case SDLK_RETURN:
 			return K_ENTER;
-			
+
 		case SDLK_BACKSPACE:
 			return K_BACKSPACE;
-			
+
 		case SDLK_PAUSE:
 			return K_PAUSE;
-			
+
 		// DG: add tab key support
 		case SDLK_TAB:
 			return K_TAB;
 		// DG end
-		
+
 		//case SDLK_APPLICATION:
 		//	return K_COMMAND;
 		case SDLK_CAPSLOCK:
 			return K_CAPSLOCK;
-			
+
 		case SDLK_SCROLLLOCK:
 			return K_SCROLL;
-			
+
 		case SDLK_POWER:
 			return K_POWER;
-			
+
 		case SDLK_UP:
 			return K_UPARROW;
-			
+
 		case SDLK_DOWN:
 			return K_DOWNARROW;
-			
+
 		case SDLK_LEFT:
 			return K_LEFTARROW;
-			
+
 		case SDLK_RIGHT:
 			return K_RIGHTARROW;
-			
+
 		case SDLK_LGUI:
 			return K_LWIN;
-			
+
 		case SDLK_RGUI:
 			return K_RWIN;
 		//case SDLK_MENU:
 		//	return K_MENU;
-		
+
 		case SDLK_LALT:
 			return K_LALT;
-			
+
 		case SDLK_RALT:
 			return K_RALT;
-			
+
 		case SDLK_RCTRL:
 			return K_RCTRL;
-			
+
 		case SDLK_LCTRL:
 			return K_LCTRL;
-			
+
 		case SDLK_RSHIFT:
 			return K_RSHIFT;
-			
+
 		case SDLK_LSHIFT:
 			return K_LSHIFT;
-			
+
 		case SDLK_INSERT:
 			return K_INS;
-			
+
 		case SDLK_DELETE:
 			return K_DEL;
-			
+
 		case SDLK_PAGEDOWN:
 			return K_PGDN;
-			
+
 		case SDLK_PAGEUP:
 			return K_PGUP;
-			
+
 		case SDLK_HOME:
 			return K_HOME;
-			
+
 		case SDLK_END:
 			return K_END;
-			
+
 		case SDLK_F1:
 			return K_F1;
-			
+
 		case SDLK_F2:
 			return K_F2;
-			
+
 		case SDLK_F3:
 			return K_F3;
-			
+
 		case SDLK_F4:
 			return K_F4;
-			
+
 		case SDLK_F5:
 			return K_F5;
-			
+
 		case SDLK_F6:
 			return K_F6;
-			
+
 		case SDLK_F7:
 			return K_F7;
-			
+
 		case SDLK_F8:
 			return K_F8;
-			
+
 		case SDLK_F9:
 			return K_F9;
-			
+
 		case SDLK_F10:
 			return K_F10;
-			
+
 		case SDLK_F11:
 			return K_F11;
-			
+
 		case SDLK_F12:
 			return K_F12;
 		// K_INVERTED_EXCLAMATION;
-		
+
 		case SDLK_F13:
 			return K_F13;
-			
+
 		case SDLK_F14:
 			return K_F14;
-			
+
 		case SDLK_F15:
 			return K_F15;
-			
+
 		case SDLK_KP_7:
 			return K_KP_7;
-			
+
 		case SDLK_KP_8:
 			return K_KP_8;
-			
+
 		case SDLK_KP_9:
 			return K_KP_9;
-			
+
 		case SDLK_KP_4:
 			return K_KP_4;
-			
+
 		case SDLK_KP_5:
 			return K_KP_5;
-			
+
 		case SDLK_KP_6:
 			return K_KP_6;
-			
+
 		case SDLK_KP_1:
 			return K_KP_1;
-			
+
 		case SDLK_KP_2:
 			return K_KP_2;
-			
+
 		case SDLK_KP_3:
 			return K_KP_3;
-			
+
 		case SDLK_KP_ENTER:
 			return K_KP_ENTER;
-			
+
 		case SDLK_KP_0:
 			return K_KP_0;
-			
+
 		case SDLK_KP_PERIOD:
 			return K_KP_DOT;
-			
+
 		case SDLK_KP_DIVIDE:
 			return K_KP_SLASH;
 		// K_SUPERSCRIPT_TWO;
-		
-		
-		
+
+
+
 		case SDLK_KP_MINUS:
 			return K_KP_MINUS;
 		// K_ACUTE_ACCENT;
-		
+
 		case SDLK_KP_PLUS:
 			return K_KP_PLUS;
-			
+
 		case SDLK_NUMLOCKCLEAR:
 			return K_NUMLOCK;
-			
+
 		case SDLK_KP_MULTIPLY:
 			return K_KP_STAR;
-			
+
 		case SDLK_KP_EQUALS:
 			return K_KP_EQUALS;
-			
+
 		// K_MASCULINE_ORDINATOR;
 		// K_GRAVE_A;
 		// K_AUX1;
@@ -680,14 +688,14 @@ static int SDL_KeyToDoom3Key( SDL_Keycode key, bool& isChar )
 		// K_GRAVE_U;
 		// K_AUX15;
 		// K_AUX16;
-		
+
 		case SDLK_PRINTSCREEN:
 			return K_PRINTSCREEN;
-			
+
 		case SDLK_MODE:
 			return K_RALT;
 	}
-	
+
 	return 0;
 }
 // RB end
@@ -696,18 +704,18 @@ static void PushConsoleEvent( const char* s )
 {
 	char* b;
 	size_t len;
-	
+
 	len = strlen( s ) + 1;
 	b = ( char* )Mem_Alloc( len, TAG_EVENTS );
 	strcpy( b, s );
-	
+
 	SDL_Event event;
-	
+
 	event.type = SDL_USEREVENT;
 	event.user.code = SE_CONSOLE;
 	event.user.data1 = ( void* )len;
 	event.user.data2 = b;
-	
+
 	SDL_PushEvent( &event );
 }
 
@@ -745,7 +753,7 @@ void Sys_InitInput()
 		const char* name;
 		SDL_JoystickGetGUIDString( SDL_JoystickGetDeviceGUID( i ),
 								   guid, sizeof( guid ) );
-								   
+
 		if( SDL_IsGameController( i ) )
 		{
 			name = SDL_GameControllerNameForIndex( i );
@@ -795,11 +803,11 @@ Sys_GetConsoleKey
 unsigned char Sys_GetConsoleKey( bool shifted )
 {
 	static unsigned char keys[2] = { '`', '~' };
-	
+
 	if( in_keyboard.IsModified() )
 	{
 		idStr lang = in_keyboard.GetString();
-		
+
 		if( lang.Length() )
 		{
 			if( !lang.Icmp( "french" ) )
@@ -833,10 +841,10 @@ unsigned char Sys_GetConsoleKey( bool shifted )
 				keys[1] = 167; // §
 			}
 		}
-		
+
 		in_keyboard.ClearModified();
 	}
-	
+
 	return shifted ? keys[1] : keys[0];
 }
 
@@ -858,7 +866,7 @@ Sys_GrabMouseCursor
 void Sys_GrabMouseCursor( bool grabIt )
 {
 	int flags;
-	
+
 	if( grabIt )
 	{
 		// DG: disabling the cursor is now done once in GLimp_Init() because it should always be disabled
@@ -869,7 +877,7 @@ void Sys_GrabMouseCursor( bool grabIt )
 	{
 		flags = GRAB_SETSTATE;
 	}
-	
+
 	GLimp_GrabInput( flags );
 }
 
@@ -884,7 +892,7 @@ sysEvent_t Sys_GetEvent()
 	SDL_Event ev;
 	sysEvent_t res = { };
 	int eventNum = event_queue.Num();
-	
+
 	static const sysEvent_t res_none = { SE_NONE, 0, 0, 0, NULL };
 	if( eventNum && eventHead < eventNum )
 	{
@@ -896,7 +904,7 @@ sysEvent_t Sys_GetEvent()
 	{
 		return res_none;
 	}
-	
+
 }
 
 void Sys_QueEvent( sysEventType_t type, int value, int value2, int ptrLength, void* ptr, int inputDeviceNum )
@@ -927,23 +935,25 @@ int sys_HandleSDL_Events( void* userdata, SDL_Event* event )
 					SDL_Keymod currentmod = SDL_GetModState();
 					int newmod = KMOD_NONE;
 					if( currentmod & KMOD_CAPS ) // preserve capslock
+					{
 						newmod |= KMOD_CAPS;
-						
+					}
+
 					SDL_SetModState( ( SDL_Keymod )newmod );
-					
+
 					// DG: un-pause the game when focus is gained, that also re-grabs the input
 					//     disabling the cursor is now done once in GLimp_Init() because it should always be disabled
 					cvarSystem->SetCVarBool( "com_pause", false );
 					// DG end
 					break;
 				}
-				
+
 				case SDL_WINDOWEVENT_FOCUS_LOST:
 					// DG: pause the game when focus is lost, that also un-grabs the input
 					cvarSystem->SetCVarBool( "com_pause", true );
 					// DG end
 					break;
-					
+
 				// DG: handle resizing and moving of window
 				case SDL_WINDOWEVENT_RESIZED:
 				{
@@ -951,12 +961,12 @@ int sys_HandleSDL_Events( void* userdata, SDL_Event* event )
 					int h = event->window.data2;
 					r_windowWidth.SetInteger( w );
 					r_windowHeight.SetInteger( h );
-					
+
 					glConfig.nativeScreenWidth = w;
 					glConfig.nativeScreenHeight = h;
 					break;
 				}
-				
+
 				case SDL_WINDOWEVENT_MOVED:
 				{
 					int x = event->window.data1;
@@ -967,9 +977,9 @@ int sys_HandleSDL_Events( void* userdata, SDL_Event* event )
 				}
 					// DG end
 			}
-			
+
 			return 0;
-			
+
 		case SDL_KEYDOWN:
 			if( event->key.keysym.sym == SDLK_RETURN && ( event->key.keysym.mod & KMOD_ALT ) > 0 )
 			{
@@ -986,7 +996,7 @@ int sys_HandleSDL_Events( void* userdata, SDL_Event* event )
 				PushConsoleEvent( "vid_restart" );
 				return 0;
 			}
-			
+
 			// DG: ctrl-g to un-grab mouse - yeah, left ctrl shoots, then just use right ctrl :)
 			if( event->key.keysym.sym == SDLK_g && ( event->key.keysym.mod & KMOD_CTRL ) > 0 )
 			{
@@ -996,7 +1006,7 @@ int sys_HandleSDL_Events( void* userdata, SDL_Event* event )
 				return 0;
 			}
 		// DG end
-		
+
 		// fall through
 		case SDL_KEYUP:
 		{
@@ -1007,12 +1017,12 @@ int sys_HandleSDL_Events( void* userdata, SDL_Event* event )
 			{
 				key = K_GRAVE;
 				c = K_BACKSPACE; // bad hack to get empty console inputline..
-				
+
 			} // DG end, the original code is in the else case
 			else
 			{
 				key = SDL_KeyToDoom3Key( event->key.keysym.sym, isChar );
-				
+
 				if( key == 0 )
 				{
 					unsigned char uc = event->key.keysym.scancode & 0xff;
@@ -1025,15 +1035,17 @@ int sys_HandleSDL_Events( void* userdata, SDL_Event* event )
 					else
 					{
 						if( event->type == SDL_KEYDOWN ) // FIXME: don't complain if this was an ASCII char and the console is open?
+						{
 							common->Warning( "unmapped SDL key %d (0x%x) scancode %d", event->key.keysym.sym, event->	key.keysym.scancode, event->key.keysym.scancode );
+						}
 						return 0;
 					}
 				}
 			}
-			
+
 			Sys_QueEvent( SE_KEY, key, event->key.state == SDL_PRESSED ? 1 : 0, 0, NULL, 0 );
 			kbd_polls.Append( kbd_poll_t( key, event->key.state == SDL_PRESSED ) );
-			
+
 			if( key == K_BACKSPACE && event->key.state == SDL_PRESSED )
 			{
 				//c = key;
@@ -1041,14 +1053,16 @@ int sys_HandleSDL_Events( void* userdata, SDL_Event* event )
 			}
 			//Sys_QueEvent( SE_CHAR, c, 0, 0, NULL, 0 );
 			return 0;
-			
+
 		}
-		
+
 		case SDL_TEXTINPUT:
 			if( event->text.text && *event->text.text )
 			{
 				if( !event->text.text[1] )
+				{
 					Sys_QueEvent( SE_CHAR, *event->text.text, 0, 0, NULL, 0 );
+				}
 				else
 				{
 					char* s = NULL;
@@ -1068,9 +1082,9 @@ int sys_HandleSDL_Events( void* userdata, SDL_Event* event )
 					return 0;
 				}
 			}
-			
+
 			return 1;
-			
+
 		case SDL_MOUSEMOTION:
 			// DG: return event with absolute mouse-coordinates when in menu
 			// to fix cursor problems in windowed mode
@@ -1083,12 +1097,12 @@ int sys_HandleSDL_Events( void* userdata, SDL_Event* event )
 				Sys_QueEvent( SE_MOUSE, event->motion.xrel, event->motion.yrel, 0, NULL, 0 );
 			}
 			// DG end
-			
+
 			mouse_polls.Append( mouse_poll_t( M_DELTAX, event->motion.xrel ) );
 			mouse_polls.Append( mouse_poll_t( M_DELTAY, event->motion.yrel ) );
-			
+
 			return 0;
-			
+
 		case SDL_MOUSEWHEEL:
 			if( event->wheel.y > 0 )
 			{
@@ -1105,7 +1119,7 @@ int sys_HandleSDL_Events( void* userdata, SDL_Event* event )
 				Sys_QueEvent( SE_KEY, K_MWHEELDOWN, 0, 0, NULL, 0 );
 			}
 			return 0;
-			
+
 		case SDL_MOUSEBUTTONDOWN:
 		case SDL_MOUSEBUTTONUP:
 			switch( event->button.button )
@@ -1133,7 +1147,7 @@ int sys_HandleSDL_Events( void* userdata, SDL_Event* event )
 		case SDL_JOYDEVICEREMOVED:       /**< An opened joystick has been removed */
 			/* Always Pass these events on to SDL*/
 			return 1;
-			
+
 		case SDL_CONTROLLERDEVICEADDED:
 			/* TODO: Handle what happens when a gamepad is added */
 			/* 			Sys_QueEvent( SE_KEY, key, value, 0, NULL, inputDeviceNum ); */
@@ -1169,7 +1183,7 @@ int sys_HandleSDL_Events( void* userdata, SDL_Event* event )
 		case SDL_QUIT:
 			PushConsoleEvent( "quit" );
 			return 0;
-			
+
 		case SDL_USEREVENT:
 			switch( event->user.code )
 			{
@@ -1203,10 +1217,10 @@ Sys_ClearEvents
 void Sys_ClearEvents()
 {
 	SDL_Event ev;
-	
+
 	while( SDL_PollEvent( &ev ) )
 		;
-		
+
 	kbd_polls.SetNum( 0 );
 	mouse_polls.SetNum( 0 );
 	event_queue.SetNum( 0 );
@@ -1221,10 +1235,12 @@ Sys_GenerateEvents
 void Sys_GenerateEvents()
 {
 	char* s = Posix_ConsoleInput();
-	
+
 	if( s )
+	{
 		PushConsoleEvent( s );
-		
+	}
+
 	SDL_PumpEvents();
 }
 
@@ -1246,8 +1262,10 @@ Sys_ReturnKeyboardInputEvent
 int Sys_ReturnKeyboardInputEvent( const int n, int& key, bool& state )
 {
 	if( n >= kbd_polls.Num() )
+	{
 		return 0;
-		
+	}
+
 	key = kbd_polls[n].key;
 	state = kbd_polls[n].state;
 	return 1;
@@ -1271,22 +1289,22 @@ Sys_PollMouseInputEvents
 int Sys_PollMouseInputEvents( int mouseEvents[MAX_MOUSE_EVENTS][2] )
 {
 	int numEvents = mouse_polls.Num();
-	
+
 	if( numEvents > MAX_MOUSE_EVENTS )
 	{
 		numEvents = MAX_MOUSE_EVENTS;
 	}
-	
+
 	for( int i = 0; i < numEvents; i++ )
 	{
 		const mouse_poll_t& mp = mouse_polls[i];
-		
+
 		mouseEvents[i][0] = mp.action;
 		mouseEvents[i][1] = mp.value;
 	}
-	
+
 	mouse_polls.SetNum( 0 );
-	
+
 	return numEvents;
 }
 
@@ -1303,7 +1321,7 @@ int Sys_PollJoystickInputEvents( int deviceNum )
 		{
 			activeController = deviceNum;
 			return joystick_Devices[deviceNum].pollEvents( deviceNum );
-			
+
 		}
 	}
 	return 0;//win32.g_Joystick.PollInputEvents( deviceNum );

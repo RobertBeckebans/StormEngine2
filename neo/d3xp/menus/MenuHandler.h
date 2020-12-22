@@ -161,7 +161,7 @@ struct actionRepeater_t
 		isActive( false )
 	{
 	}
-	
+
 	idMenuWidget* 		widget;
 	idWidgetEvent		event;
 	idWidgetAction		action;
@@ -185,7 +185,7 @@ public:
 		playerNum( 0 )
 	{
 	}
-	
+
 	mpScoreboardInfo( const mpScoreboardInfo& src )
 	{
 		voiceState = src.voiceState;
@@ -197,7 +197,7 @@ public:
 		team = src.team;
 		playerNum = src.playerNum;
 	}
-	
+
 	void operator=( const mpScoreboardInfo& src )
 	{
 		voiceState = src.voiceState;
@@ -209,33 +209,33 @@ public:
 		team = src.team;
 		playerNum = src.playerNum;
 	}
-	
+
 	bool operator!=( const mpScoreboardInfo& otherInfo ) const
 	{
-	
+
 		if( otherInfo.score != score || otherInfo.wins != wins || otherInfo.ping != ping ||
 				otherInfo.spectateData != spectateData || otherInfo.name != name || otherInfo.team != team ||
 				otherInfo.playerNum != playerNum || otherInfo.voiceState != voiceState )
 		{
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	bool operator==( const mpScoreboardInfo& otherInfo ) const
 	{
-	
+
 		if( otherInfo.score != score || otherInfo.wins != wins || otherInfo.ping != ping ||
 				otherInfo.spectateData != spectateData || otherInfo.name != name || otherInfo.team != team ||
 				otherInfo.playerNum != playerNum || otherInfo.voiceState != voiceState )
 		{
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	voiceStateDisplay_t voiceState;
 	int score;
 	int wins;
@@ -244,7 +244,7 @@ public:
 	int playerNum;
 	idStr spectateData;
 	idStr name;
-	
+
 };
 
 /*
@@ -288,7 +288,7 @@ public:
 		nextScreen = screen;
 		transition = trans;
 	}
-	
+
 	virtual void			StartWidgetActionRepeater( idMenuWidget* widget, const idWidgetAction& action, const idWidgetEvent& event );
 	virtual void			PumpWidgetActionRepeater();
 	virtual void			ClearWidgetActionRepeater();
@@ -301,12 +301,12 @@ public:
 	virtual int				GetPlatform( bool realPlatform = false );
 	virtual void			PlaySound( menuSounds_t type, int channel = -1 );
 	virtual void			StopSound( int channel = SCHANNEL_ANY );
-	
+
 	idMenuWidget_CommandBar* 	GetCmdBar()
 	{
 		return cmdBar;
 	}
-	
+
 protected:
 
 	bool						scrollingMenu;
@@ -319,9 +319,9 @@ protected:
 	actionRepeater_t			actionRepeater;
 	idMenuScreen* 				menuScreens[MAX_SCREEN_AREAS];
 	idList< idMenuWidget*, TAG_IDLIB_LIST_MENU>	children;
-	
+
 	idStaticList< idStr, NUM_GUI_SOUNDS >		sounds;
-	
+
 	idMenuWidget_CommandBar* 	cmdBar;
 };
 
@@ -337,7 +337,7 @@ struct lobbyPlayerInfo_t
 		voiceState( VOICECHAT_DISPLAY_NONE )
 	{
 	}
-	
+
 	idStr					name;
 	int						partyToken;
 	voiceStateDisplay_t		voiceState;
@@ -383,7 +383,7 @@ public:
 	virtual bool			HandleAction( idWidgetAction& action, const idWidgetEvent& event, idMenuWidget* widget, bool forceHandled = false );
 	virtual idMenuScreen* 	GetMenuScreen( int index );
 	virtual bool			HandleGuiEvent( const sysEvent_t* sev );
-	
+
 	void					UpdateSavedGames();
 	void					ShowSmallFrame( bool show );
 	void					ShowMPFrame( bool show );
@@ -399,7 +399,7 @@ public:
 	void					UpdateBGState();
 	void					GetMapName( int index, idStr& name );
 	void					GetModeName( int index, idStr& name );
-	
+
 	idMenuWidget* 			GetPacifier()
 	{
 		return pacifier;
@@ -414,7 +414,7 @@ public:
 	}
 	void					ShowPacifier( const idStr& msg );
 	void					HidePacifier();
-	
+
 	void					SetTimeRemaining( int time )
 	{
 		timeRemaining = time;
@@ -469,7 +469,7 @@ public:
 	{
 		return gameComplete;
 	}
-	
+
 private:
 
 	shellState_t			state;
@@ -480,7 +480,7 @@ private:
 	bool					waitForBinding;
 	const char* 			waitBind;
 	//idSysSignal				deviceRequestedSignal;
-	
+
 	idList<const char*, TAG_IDLIB_LIST_MENU>	mpGameModes;
 	idList<mpMap_t, TAG_IDLIB_LIST_MENU>			mpGameMaps;
 	idMenuWidget_MenuBar* 	menuBar;
@@ -499,7 +499,7 @@ private:
 	const idMaterial* 		lmIntro;
 	const idMaterial* 		marsRotation;
 	idList< idStr, TAG_IDLIB_LIST_MENU>			navOptions;
-	
+
 };
 
 
@@ -518,20 +518,20 @@ public:
 		hiding( false )
 	{
 	}
-	
-	
+
+
 	virtual void			Update();
 	virtual void			ActivateMenu( bool show );
 	virtual void			Initialize( const char* swfFile, idSoundWorld* sw );
 	virtual idMenuScreen* 	GetMenuScreen( int index );
-	
+
 	idMenuScreen_Cinematic* 		GetCinematic();
-	
-	
+
+
 protected:
 
 	bool	hiding;
-	
+
 };
 
 // ##################################################### END SR
@@ -554,7 +554,7 @@ public:
 	{
 	}
 	virtual ~idMenuHandler_PDA();
-	
+
 	virtual void			Update();
 	virtual void			ActivateMenu( bool show );
 	virtual void			TriggerMenu();
@@ -567,10 +567,10 @@ public:
 	{
 		videoPlaying = false;
 	}
-	
+
 	bool					PlayPDAAudioLog( int pdaIndex, int audioIndex );
 	virtual void			Cleanup();
-	
+
 protected:
 
 	bool							audioLogPlaying;
@@ -600,12 +600,12 @@ public:
 		radioMessage( false )
 	{
 	}
-	
+
 	virtual void			Update();
 	virtual void			ActivateMenu( bool show );
 	virtual void			Initialize( const char* swfFile, idSoundWorld* sw );
 	virtual idMenuScreen* 	GetMenuScreen( int index );
-	
+
 	idMenuScreen_HUD* 		GetHud();
 	void					ShowTip( const char* title, const char* tip, bool autoHide );
 	void					HideTip();
@@ -613,14 +613,14 @@ public:
 	{
 		radioMessage = show;
 	}
-	
+
 protected:
 
 	bool	autoHideTip;
 	int		tipStartTime;
 	bool	hiding;
 	bool	radioMessage;
-	
+
 };
 
 /*
@@ -638,14 +638,14 @@ public:
 		activationScreen( SCOREBOARD_AREA_INVALID )
 	{
 	}
-	
+
 	virtual void			Update();
 	virtual void			TriggerMenu();
 	virtual void			ActivateMenu( bool show );
 	virtual void			Initialize( const char* swfFile, idSoundWorld* sw );
 	virtual idMenuScreen* 	GetMenuScreen( int index );
 	virtual bool			HandleAction( idWidgetAction& action, const idWidgetEvent& event, idMenuWidget* widget, bool forceHandled = false );
-	
+
 	void					AddPlayerInfo( int index, voiceStateDisplay_t voiceState, int team, idStr name, int score, int wins, int ping, idStr spectateData );
 	void					UpdateScoreboard( idList< mpScoreboardInfo >& data, idStr gameInfo );
 	void					UpdateVoiceStates();
@@ -657,17 +657,17 @@ public:
 	void					MutePlayer( int slot );
 	void					GetUserID( int slot, lobbyUserID_t& luid );
 	void					UpdateScoreboardSelection();
-	
+
 protected:
 
 	int		redScore;
 	int		blueScore;
 	int		activationScreen;
-	
+
 	idList< mpScoreboardInfo > scoreboardInfo;
 	idList< scoreboardInfo_t, TAG_IDLIB_LIST_MENU >		redInfo;
 	idList< scoreboardInfo_t, TAG_IDLIB_LIST_MENU>		blueInfo;
-	
+
 };
 
 

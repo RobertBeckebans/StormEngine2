@@ -91,49 +91,49 @@ static srfDmapTriangles_t* R_MakeFullScreenTrisDmap()
 {
 	// copy verts and indexes
 	srfDmapTriangles_t* tri = ( srfDmapTriangles_t* )Mem_ClearedAlloc( sizeof( *tri ), TAG_RENDER_TOOLS );
-	
+
 	tri->numIndexes = 6;
 	tri->numVerts = 4;
-	
+
 	int indexSize = tri->numIndexes * sizeof( tri->indexes[0] );
 	int allocatedIndexBytes = ALIGN( indexSize, 16 );
 	tri->indexes = ( uint* )Mem_Alloc( allocatedIndexBytes, TAG_RENDER_TOOLS );
-	
+
 	int vertexSize = tri->numVerts * sizeof( tri->verts[0] );
 	int allocatedVertexBytes = ALIGN( vertexSize, 16 );
 	tri->verts = ( idDmapDrawVert* )Mem_ClearedAlloc( allocatedVertexBytes, TAG_RENDER_TOOLS );
-	
+
 	idDmapDrawVert* verts = tri->verts;
-	
+
 	uint tempIndexes[6] = { 3, 0, 2, 2, 0, 1 };
 	memcpy( tri->indexes, tempIndexes, indexSize );
-	
+
 	verts[0].xyz[0] = -1.0f;
 	verts[0].xyz[1] = 1.0f;
 	verts[0].st[0] = 0.0f;
 	verts[0].st[1] = 1.0f;
-	
+
 	verts[1].xyz[0] = 1.0f;
 	verts[1].xyz[1] = 1.0f;
 	verts[1].st[0] = 1.0f;
 	verts[1].st[1] = 1.0f;
-	
+
 	verts[2].xyz[0] = 1.0f;
 	verts[2].xyz[1] = -1.0f;
 	verts[2].st[0] = 1.0f;
 	verts[2].st[1] = 0.0f;
-	
+
 	verts[3].xyz[0] = -1.0f;
 	verts[3].xyz[1] = -1.0f;
 	verts[3].st[0] = 0.0f;
 	verts[3].st[1] = 0.0f;
-	
+
 	for( int i = 0; i < 4; i++ )
 	{
 		verts[i].SetColor( 0xffffffff );
 	}
-	
-	
+
+
 	return tri;
 }
 
@@ -146,23 +146,23 @@ R_MakeZeroOneCubeTrisDmap
 static srfDmapTriangles_t* R_MakeZeroOneCubeTrisDmap()
 {
 	srfDmapTriangles_t* tri = ( srfDmapTriangles_t* )Mem_ClearedAlloc( sizeof( *tri ), TAG_RENDER_TOOLS );
-	
+
 	tri->numVerts = 8;
 	tri->numIndexes = 36;
-	
+
 	const int indexSize = tri->numIndexes * sizeof( tri->indexes[0] );
 	const int allocatedIndexBytes = ALIGN( indexSize, 16 );
 	tri->indexes = ( uint* )Mem_Alloc( allocatedIndexBytes, TAG_RENDER_TOOLS );
-	
+
 	const int vertexSize = tri->numVerts * sizeof( tri->verts[0] );
 	const int allocatedVertexBytes = ALIGN( vertexSize, 16 );
 	tri->verts = ( idDmapDrawVert* )Mem_ClearedAlloc( allocatedVertexBytes, TAG_RENDER_TOOLS );
-	
+
 	idDmapDrawVert* verts = tri->verts;
-	
+
 	const float low = 0.0f;
 	const float high = 1.0f;
-	
+
 	idVec3 center( 0.0f );
 	idVec3 mx( low, 0.0f, 0.0f );
 	idVec3 px( high, 0.0f, 0.0f );
@@ -170,7 +170,7 @@ static srfDmapTriangles_t* R_MakeZeroOneCubeTrisDmap()
 	idVec3 py( 0.0f, high, 0.0f );
 	idVec3 mz( 0.0f, 0.0f, low );
 	idVec3 pz( 0.0f, 0.0f, high );
-	
+
 	verts[0].xyz = center + mx + my + mz;
 	verts[1].xyz = center + px + my + mz;
 	verts[2].xyz = center + px + py + mz;
@@ -179,7 +179,7 @@ static srfDmapTriangles_t* R_MakeZeroOneCubeTrisDmap()
 	verts[5].xyz = center + px + my + pz;
 	verts[6].xyz = center + px + py + pz;
 	verts[7].xyz = center + mx + py + pz;
-	
+
 	// bottom
 	tri->indexes[0 * 3 + 0] = 2;
 	tri->indexes[0 * 3 + 1] = 3;
@@ -222,12 +222,12 @@ static srfDmapTriangles_t* R_MakeZeroOneCubeTrisDmap()
 	tri->indexes[11 * 3 + 0] = 5;
 	tri->indexes[11 * 3 + 1] = 4;
 	tri->indexes[11 * 3 + 2] = 6;
-	
+
 	for( int i = 0; i < 4; i++ )
 	{
 		verts[i].SetColor( 0xffffffff );
 	}
-	
+
 	return tri;
 }
 
@@ -242,46 +242,46 @@ Initializes the Test Image Triangles
 srfDmapTriangles_t* R_MakeTestImageTrianglesDmap()
 {
 	srfDmapTriangles_t* tri = ( srfDmapTriangles_t* )Mem_ClearedAlloc( sizeof( *tri ), TAG_RENDER_TOOLS );
-	
+
 	tri->numIndexes = 6;
 	tri->numVerts = 4;
-	
+
 	int indexSize = tri->numIndexes * sizeof( tri->indexes[0] );
 	int allocatedIndexBytes = ALIGN( indexSize, 16 );
 	tri->indexes = ( uint* )Mem_Alloc( allocatedIndexBytes, TAG_RENDER_TOOLS );
-	
+
 	int vertexSize = tri->numVerts * sizeof( tri->verts[0] );
 	int allocatedVertexBytes = ALIGN( vertexSize, 16 );
 	tri->verts = ( idDmapDrawVert* )Mem_ClearedAlloc( allocatedVertexBytes, TAG_RENDER_TOOLS );
-	
+
 	ALIGNTYPE16 uint tempIndexes[6] = { 3, 0, 2, 2, 0, 1 };
 	memcpy( tri->indexes, tempIndexes, indexSize );
-	
+
 	idDmapDrawVert* tempVerts = tri->verts;
 	tempVerts[0].xyz[0] = 0.0f;
 	tempVerts[0].xyz[1] = 0.0f;
 	tempVerts[0].xyz[2] = 0;
 	tempVerts[0].st[0] = 0.0f;
 	tempVerts[0].st[1] = 0.0f;
-	
+
 	tempVerts[1].xyz[0] = 1.0f;
 	tempVerts[1].xyz[1] = 0.0f;
 	tempVerts[1].xyz[2] = 0;
 	tempVerts[1].st[0] = 1.0f;
 	tempVerts[1].st[1] = 0.0f;
-	
+
 	tempVerts[2].xyz[0] = 1.0f;
 	tempVerts[2].xyz[1] = 1.0f;
 	tempVerts[2].xyz[2] = 0;
 	tempVerts[2].st[0] = 1.0f;
 	tempVerts[2].st[1] = 1.0f;
-	
+
 	tempVerts[3].xyz[0] = 0.0f;
 	tempVerts[3].xyz[1] = 1.0f;
 	tempVerts[3].xyz[2] = 0;
 	tempVerts[3].st[0] = 0.0f;
 	tempVerts[3].st[1] = 1.0f;
-	
+
 	for( int i = 0; i < 4; i++ )
 	{
 		tempVerts[i].SetColor( 0xFFFFFFFF );
@@ -325,27 +325,27 @@ void idDmapRenderSystemLocal::Clear()
 	guiModel = NULL;
 	memset( gammaTable, 0, sizeof( gammaTable ) );
 	takingScreenshot = false;
-	
+
 	if( unitSquareTriangles != NULL )
 	{
 		Mem_Free( unitSquareTriangles );
 		unitSquareTriangles = NULL;
 	}
-	
+
 	if( zeroOneCubeTriangles != NULL )
 	{
 		Mem_Free( zeroOneCubeTriangles );
 		zeroOneCubeTriangles = NULL;
 	}
-	
+
 	if( testImageTriangles != NULL )
 	{
 		Mem_Free( testImageTriangles );
 		testImageTriangles = NULL;
 	}
-	
+
 	frontEndJobList = NULL;
-	
+
 #ifdef BUGFIXEDSCREENSHOTRESOLUTION
 	// foresthale 2014-03-01: screenshots need to override the results of GetWidth() and GetHeight()
 	screenshotOverrideWidth = 0;
@@ -362,44 +362,44 @@ void idDmapRenderSystemLocal::Init()
 {
 
 	common->Printf( "------- Initializing Dmap RenderSystem --------\n" );
-	
+
 	// clear all our internal state
 	viewCount = 1;		// so cleared structures never match viewCount
 	// we used to memset tr, but now that it is a class, we can't, so
 	// there may be other state we need to reset
-	
+
 	ambientLightVector[0] = 0.5f;
 	ambientLightVector[1] = 0.5f - 0.385f;
 	ambientLightVector[2] = 0.8925f;
 	ambientLightVector[3] = 1.0f;
-	
+
 	memset( &backEnd, 0, sizeof( backEnd ) );
-	
+
 	R_InitCvarsDmap();
-	
+
 	R_InitCommandsDmap();
-	
+
 	guiModel = new( TAG_RENDER )idGuiModel;
 	guiModel->Clear();
 	tr_dmapGuiModel = guiModel;	// for DeviceContext fast path
-	
+
 	globalImages->Init();
 	globalFramebuffers->Init(); // foresthale 2014-02-18: framebuffer objects
-	
+
 	idCinematic::InitCinematic();
-	
+
 	// build brightness translation tables
 	R_SetColorMappings();
-	
+
 	R_InitMaterialsDmap();
-	
+
 	dmapRenderModelManager->Init();
-	
+
 	// set the identity space
 	identitySpace.modelMatrix[0 * 4 + 0] = 1.0f;
 	identitySpace.modelMatrix[1 * 4 + 1] = 1.0f;
 	identitySpace.modelMatrix[2 * 4 + 2] = 1.0f;
-	
+
 	// make sure the dmap_tr.unitSquareTriangles data is current in the vertex / index cache
 	if( unitSquareTriangles == NULL )
 	{
@@ -415,12 +415,12 @@ void idDmapRenderSystemLocal::Init()
 	{
 		testImageTriangles = R_MakeTestImageTrianglesDmap();
 	}
-	
+
 	frontEndJobList = parallelJobManager->AllocJobList( JOBLIST_RENDERER_FRONTEND, JOBLIST_PRIORITY_MEDIUM, 2048, 0, NULL );
-	
+
 	// make sure the command buffers are ready to accept the first screen update
 	SwapCommandBuffers( NULL, NULL, NULL, NULL );
-	
+
 	common->Printf( "Dmap RenderSystem initialized.\n" );
 	common->Printf( "--------------------------------------\n" );
 }
@@ -453,38 +453,38 @@ idDmapRenderSystemLocal::Shutdown
 void idDmapRenderSystemLocal::Shutdown()
 {
 	common->Printf( "idDmapRenderSystemLocal::Shutdown()\n" );
-	
+
 	fonts.DeleteContents();
-	
+
 	if( R_IsInitialized() )
 	{
 		globalFramebuffers->PurgeAllFramebuffers(); // foresthale 2014-02-18: framebuffer objects
 		globalImages->PurgeAllImages();
 	}
-	
+
 	dmapRenderModelManager->Shutdown();
-	
+
 	idCinematic::ShutdownCinematic();
-	
+
 	globalFramebuffers->Shutdown(); // foresthale 2014-02-18: framebuffer objects
 	globalImages->Shutdown();
-	
+
 	// free frame memory
 	R_ShutdownFrameData();
-	
+
 	UnbindBufferObjects();
-	
+
 	// free the vertex cache, which should have nothing allocated now
 	dmapVertexCache.Shutdown();
-	
+
 	RB_ShutdownDebugTools();
-	
+
 	delete guiModel;
-	
+
 	parallelJobManager->FreeJobList( frontEndJobList );
-	
+
 	Clear();
-	
+
 	ShutdownOpenGL();
 }
 
@@ -513,8 +513,8 @@ void idDmapRenderSystemLocal::BeginLevelLoad()
 	R_InitMaterialsDmap();
 	globalImages->BeginLevelLoad();
 	dmapRenderModelManager->BeginLevelLoad();
-	
-	
+
+
 }
 
 /*
@@ -624,10 +624,10 @@ void idDmapRenderSystemLocal::InitOpenGL()
 	if( !R_IsInitialized() )
 	{
 		R_InitOpenGL();
-		
+
 		// Reloading images here causes the rendertargets to get deleted. Figure out how to handle this properly on 360
 		globalImages->ReloadImages( true );
-		
+
 		int err = qglGetError();
 		if( err != GL_NO_ERROR )
 		{

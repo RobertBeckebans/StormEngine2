@@ -29,7 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // RB: missing __analysis_assume
 #if defined(__MINGW32__)
-#include <sal.h>
+	#include <sal.h>
 #endif
 // RB end
 
@@ -62,7 +62,7 @@ bool SpursEmulationAssertFailed( const char* filename, int line, const char* exp
 		raise( SIGTRAP );
 		// DG: end
 #endif // _WIN32
-		
+
 	}
 	return true;
 }

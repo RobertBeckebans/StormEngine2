@@ -52,7 +52,7 @@ public:
 			idLib::Warning( "No device specified when registering mouse user" );
 			return idSWFScriptVar();
 		}
-		
+
 		const int device = parms[ 0 ].ToInteger();
 		session->GetSignInManager().RegisterLocalUser( device );
 		return idSWFScriptVar();
@@ -68,14 +68,14 @@ idMenuScreen_Shell_PressStart::Initialize
 void idMenuScreen_Shell_PressStart::Initialize( idMenuHandler* data )
 {
 	idMenuScreen::Initialize( data );
-	
+
 	if( data != NULL )
 	{
 		menuGUI = data->GetGUI();
 	}
-	
+
 	SetSpritePath( "menuStart" );
-	
+
 	itemList = new( TAG_SWF ) idMenuWidget_Carousel();
 	itemList->SetSpritePath( GetSpritePath(), "info", "options" );
 	itemList->SetNumVisibleOptions( NUM_GAME_SELECTIONS_VISIBLE );
@@ -87,28 +87,28 @@ void idMenuScreen_Shell_PressStart::Initialize( idMenuHandler* data )
 		itemList->AddChild( buttonWidget );
 	}
 	itemList->Initialize( data );
-	
+
 	AddChild( itemList );
-	
+
 	AddEventAction( WIDGET_EVENT_SCROLL_LEFT ).Set( new( TAG_SWF ) idWidgetActionHandler( this, WIDGET_ACTION_EVENT_SCROLL_LEFT_START_REPEATER, WIDGET_EVENT_SCROLL_LEFT ) );
 	AddEventAction( WIDGET_EVENT_SCROLL_RIGHT ).Set( new( TAG_SWF ) idWidgetActionHandler( this, WIDGET_ACTION_EVENT_SCROLL_RIGHT_START_REPEATER, WIDGET_EVENT_SCROLL_RIGHT ) );
 	AddEventAction( WIDGET_EVENT_SCROLL_LEFT_RELEASE ).Set( new( TAG_SWF ) idWidgetActionHandler( this, WIDGET_ACTION_EVENT_STOP_REPEATER, WIDGET_EVENT_SCROLL_LEFT_RELEASE ) );
 	AddEventAction( WIDGET_EVENT_SCROLL_RIGHT_RELEASE ).Set( new( TAG_SWF ) idWidgetActionHandler( this, WIDGET_ACTION_EVENT_STOP_REPEATER, WIDGET_EVENT_SCROLL_RIGHT_RELEASE ) );
-	
+
 	AddEventAction( WIDGET_EVENT_SCROLL_UP ).Set( new( TAG_SWF ) idWidgetActionHandler( this, WIDGET_ACTION_EVENT_SCROLL_UP_START_REPEATER, WIDGET_EVENT_SCROLL_UP ) );
 	AddEventAction( WIDGET_EVENT_SCROLL_DOWN ).Set( new( TAG_SWF ) idWidgetActionHandler( this, WIDGET_ACTION_EVENT_SCROLL_DOWN_START_REPEATER, WIDGET_EVENT_SCROLL_DOWN ) );
 	AddEventAction( WIDGET_EVENT_SCROLL_UP_RELEASE ).Set( new( TAG_SWF ) idWidgetActionHandler( this, WIDGET_ACTION_EVENT_STOP_REPEATER, WIDGET_EVENT_SCROLL_UP_RELEASE ) );
 	AddEventAction( WIDGET_EVENT_SCROLL_DOWN_RELEASE ).Set( new( TAG_SWF ) idWidgetActionHandler( this, WIDGET_ACTION_EVENT_STOP_REPEATER, WIDGET_EVENT_SCROLL_DOWN_RELEASE ) );
-	
+
 	AddEventAction( WIDGET_EVENT_SCROLL_LEFT_LSTICK ).Set( new( TAG_SWF ) idWidgetActionHandler( this, WIDGET_ACTION_EVENT_SCROLL_LEFT_START_REPEATER, WIDGET_EVENT_SCROLL_LEFT_LSTICK ) );
 	AddEventAction( WIDGET_EVENT_SCROLL_RIGHT_LSTICK ).Set( new( TAG_SWF ) idWidgetActionHandler( this, WIDGET_ACTION_EVENT_SCROLL_RIGHT_START_REPEATER, WIDGET_EVENT_SCROLL_RIGHT_LSTICK ) );
 	AddEventAction( WIDGET_EVENT_SCROLL_LEFT_LSTICK_RELEASE ).Set( new( TAG_SWF ) idWidgetActionHandler( this, WIDGET_ACTION_EVENT_STOP_REPEATER, WIDGET_EVENT_SCROLL_LEFT_LSTICK_RELEASE ) );
 	AddEventAction( WIDGET_EVENT_SCROLL_RIGHT_LSTICK_RELEASE ).Set( new( TAG_SWF ) idWidgetActionHandler( this, WIDGET_ACTION_EVENT_STOP_REPEATER, WIDGET_EVENT_SCROLL_RIGHT_LSTICK_RELEASE ) );
-	
+
 	doomCover = declManager->FindMaterial( "guis/assets/mainmenu/doom_cover.tga" );
 	doom2Cover = declManager->FindMaterial( "guis/assets/mainmenu/doom2_cover.tga" );
 	doom3Cover = declManager->FindMaterial( "guis/assets/mainmenu/doom3_cover.tga" );
-	
+
 	startButton = new idMenuWidget_Button();
 	startButton->SetSpritePath( GetSpritePath(), "info", "btnStart" );
 	AddChild( startButton );
@@ -140,7 +140,7 @@ void idMenuScreen_Shell_PressStart::Update()
 			}
 		}
 	}
-	
+
 	idMenuScreen::Update();
 }
 
@@ -157,35 +157,35 @@ void idMenuScreen_Shell_PressStart::ShowScreen( const mainMenuTransition_t trans
 	{
 		if( g_demoMode.GetBool() )
 		{
-		
+
 			idList<const idMaterial*> coverIcons;
 			if( itemList != NULL )
 			{
 				itemList->SetListImages( coverIcons );
 			}
-			
+
 			if( startButton != NULL )
 			{
 				startButton->BindSprite( root );
 				startButton->SetLabel( idLocalization::GetString( "#str_swf_press_start" ) );
 			}
-			
+
 			idSWFSpriteInstance* backing = GetSprite()->GetScriptObject()->GetNestedSprite( "backing" );
 			if( backing != NULL )
 			{
 				backing->SetVisible( false );
 			}
-			
+
 		}
 		else
 		{
-		
+
 			idList<const idMaterial*> coverIcons;
-			
+
 			coverIcons.Append( doomCover );
 			coverIcons.Append( doom3Cover );
 			coverIcons.Append( doom2Cover );
-			
+
 			if( itemList != NULL )
 			{
 				itemList->SetListImages( coverIcons );
@@ -193,22 +193,22 @@ void idMenuScreen_Shell_PressStart::ShowScreen( const mainMenuTransition_t trans
 				itemList->SetViewIndex( 1 );
 				itemList->SetMoveToIndex( 1 );
 			}
-			
+
 			if( startButton != NULL )
 			{
 				startButton->BindSprite( root );
 				startButton->SetLabel( "" );
 			}
-			
+
 			idSWFSpriteInstance* backing = GetSprite()->GetScriptObject()->GetNestedSprite( "backing" );
 			if( backing != NULL )
 			{
 				backing->SetVisible( true );
 			}
-			
+
 		}
 	}
-	
+
 	idMenuScreen::ShowScreen( transitionType );
 }
 
@@ -234,16 +234,16 @@ bool idMenuScreen_Shell_PressStart::HandleAction( idWidgetAction& action, const 
 	{
 		return true;
 	}
-	
+
 	//if( menuData->ActiveScreen() != SHELL_AREA_START )
 	if( menuData->ActiveScreen() != SHELL_AREA_ROOT ) // motorsep 12-21-2014; we don't need Start screen on PC
 	{
 		return false;
 	}
-	
+
 	widgetAction_t actionType = action.GetType();
 	const idSWFParmList& parms = action.GetParms();
-	
+
 	switch( actionType )
 	{
 		case WIDGET_ACTION_PRESS_FOCUSED:
@@ -252,17 +252,17 @@ bool idMenuScreen_Shell_PressStart::HandleAction( idWidgetAction& action, const 
 			{
 				return true;
 			}
-			
+
 			if( event.parms.Num() != 1 )
 			{
 				return true;
 			}
-			
+
 			if( itemList->GetMoveToIndex() != itemList->GetViewIndex() )
 			{
 				return true;
 			}
-			
+
 			if( parms.Num() > 0 )
 			{
 				const int index = parms[0].ToInteger();
@@ -272,7 +272,7 @@ bool idMenuScreen_Shell_PressStart::HandleAction( idWidgetAction& action, const 
 					Update();
 				}
 			}
-			
+
 			if( itemList->GetMoveToIndex() == 1 )
 			{
 				if( session->GetSignInManager().GetMasterLocalUser() == NULL )
@@ -285,7 +285,7 @@ bool idMenuScreen_Shell_PressStart::HandleAction( idWidgetAction& action, const 
 					menuData->SetNextScreen( SHELL_AREA_ROOT, MENU_TRANSITION_SIMPLE );
 				}
 			}
-			
+
 			return true;
 		}
 		case WIDGET_ACTION_START_REPEATER:
@@ -304,24 +304,24 @@ bool idMenuScreen_Shell_PressStart::HandleAction( idWidgetAction& action, const 
 		}
 		case WIDGET_ACTION_SCROLL_HORIZONTAL:
 		{
-		
+
 			if( itemList == NULL )
 			{
 				return true;
 			}
-			
+
 			if( itemList->GetTotalNumberOfOptions() <= 1 )
 			{
 				return true;
 			}
-			
+
 			idLib::Printf( "scroll \n" );
-			
+
 			if( itemList->GetMoveDiff() > 0 )
 			{
 				itemList->MoveToIndex( itemList->GetMoveToIndex(), true );
 			}
-			
+
 			int direction = parms[0].ToInteger();
 			if( direction == 1 )
 			{
@@ -345,10 +345,10 @@ bool idMenuScreen_Shell_PressStart::HandleAction( idWidgetAction& action, const 
 					itemList->MoveToIndex( ( itemList->GetNumVisibleOptions() / 2 ) + 1 );
 				}
 			}
-			
+
 			return true;
 		}
 	}
-	
+
 	return idMenuWidget::HandleAction( action, event, widget, forceHandled );
 }

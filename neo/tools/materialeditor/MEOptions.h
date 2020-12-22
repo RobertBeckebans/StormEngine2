@@ -42,10 +42,10 @@ class MEOptions
 public:
 	MEOptions();
 	~MEOptions();
-	
+
 	bool				Save( void );
 	bool				Load( void );
-	
+
 	/**
 	* Sets the flag that determines if the settings need to be saved because
 	* they where modified.
@@ -62,33 +62,33 @@ public:
 	{
 		return modified;
 	};
-	
+
 	void				SetWindowPlacement( const char* name, HWND hwnd );
 	bool				GetWindowPlacement( const char* name, HWND hwnd );
-	
+
 	void				SetMaterialTreeWidth( int width );
 	int					GetMaterialTreeWidth();
-	
+
 	void				SetStageWidth( int width );
 	int					GetStageWidth();
-	
+
 	void				SetPreviewPropertiesWidth( int width );
 	int					GetPreviewPropertiesWidth();
-	
+
 	void				SetMaterialEditHeight( int height );
 	int					GetMaterialEditHeight();
-	
+
 	void				SetMaterialPropHeadingWidth( int width );
 	int					GetMaterialPropHeadingWidth();
-	
+
 	void				SetPreviewPropHeadingWidth( int width );
 	int					GetPreviewPropHeadingWidth();
-	
+
 protected:
 	rvRegistryOptions	registry;
-	
+
 	bool				modified;
-	
+
 	int					materialTreeWidth;
 	int					stageWidth;
 	int					previewPropertiesWidth;

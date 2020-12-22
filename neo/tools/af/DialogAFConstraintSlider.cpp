@@ -102,18 +102,18 @@ void DialogAFConstraintSlider::InitJointLists( void )
 {
 	m_comboAxisJoint1.ResetContent();
 	m_comboAxisJoint2.ResetContent();
-	
+
 	if( !file )
 	{
 		return;
 	}
-	
+
 	const idRenderModel* model = gameEdit->ANIM_GetModelFromName( file->model );
 	if( !model )
 	{
 		return;
 	}
-	
+
 	int numJoints = model->NumJoints();
 	for( int i = 0; i < numJoints; i++ )
 	{
@@ -154,9 +154,9 @@ void DialogAFConstraintSlider::LoadConstraint( idDeclAF_Constraint* c )
 {
 	int i, s1, s2;
 	idAngles angles;
-	
+
 	constraint = c;
-	
+
 	// slider axis
 	s1 = SetSafeComboBoxSelection( &m_comboAxisJoint1, constraint->axis.joint1.c_str(), -1 );
 	s2 = SetSafeComboBoxSelection( &m_comboAxisJoint2, constraint->axis.joint2.c_str(), s1 );
@@ -173,7 +173,7 @@ void DialogAFConstraintSlider::LoadConstraint( idDeclAF_Constraint* c )
 		constraint->axis.type = idAFVector::VEC_COORDS;
 	}
 	CheckRadioButton( IDC_RADIO_SLIDER_AXIS_BONE, IDC_RADIO_SLIDER_AXIS_ANGLES, i );
-	
+
 	// update displayed values
 	UpdateData( FALSE );
 }
@@ -187,13 +187,13 @@ void DialogAFConstraintSlider::SaveConstraint( void )
 {
 	int s1, s2;
 	CString str;
-	
+
 	if( !file || !constraint )
 	{
 		return;
 	}
 	UpdateData( TRUE );
-	
+
 	// slider axis
 	if( constraint->axis.type == idAFVector::VEC_BONEDIR )
 	{
@@ -206,7 +206,7 @@ void DialogAFConstraintSlider::SaveConstraint( void )
 	{
 		constraint->axis.ToVec3() = idAngles( m_axisPitch, m_axisYaw, 0.0f ).ToForward();
 	}
-	
+
 	AFDialogSetFileModified();
 }
 

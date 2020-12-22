@@ -69,31 +69,31 @@ double SarrusDet( idVec3D a, idVec3D b, idVec3D c )
 void ComputeAxisBase( idVec3& normal, idVec3D& texS, idVec3D& texT )
 {
 	double	RotY, RotZ;
-	
+
 	// do some cleaning
 	if( idMath::Fabs( normal[0] ) < 1e-6 )
 	{
 		normal[0] = 0.0f;
 	}
-	
+
 	if( idMath::Fabs( normal[1] ) < 1e-6 )
 	{
 		normal[1] = 0.0f;
 	}
-	
+
 	if( idMath::Fabs( normal[2] ) < 1e-6 )
 	{
 		normal[2] = 0.0f;
 	}
-	
+
 	RotY = -atan2( normal[2], idMath::Sqrt( normal[1] * normal[1] + normal[0] * normal[0] ) );
 	RotZ = atan2( normal[1], normal[0] );
-	
+
 	// rotate (0,1,0) and (0,0,1) to compute texS and texT
 	texS[0] = -sin( RotZ );
 	texS[1] = cos( RotZ );
 	texS[2] = 0;
-	
+
 	// the texT vector is along -Z ( T texture coorinates axis )
 	texT[0] = -sin( RotY ) * cos( RotZ );
 	texT[1] = -sin( RotY ) * sin( RotZ );
@@ -108,10 +108,10 @@ void FaceToBrushPrimitFace( face_t* f )
 {
 	idVec3D	texX, texY;
 	idVec3D	proj;
-	
+
 	// ST of (0,0) (1,0) (0,1)
 	idVec5	ST[3];	// [ point index ] [ xyz ST ]
-	
+
 	//
 	// ++timo not used as long as brushprimit_texdef and texdef are static
 	// f->brushprimit_texdef.contents=f->texdef.contents;
@@ -124,7 +124,7 @@ void FaceToBrushPrimitFace( face_t* f )
 	{
 		common->Printf( "Warning : f->plane.normal is (0,0,0) in FaceToBrushPrimitFace\n" );
 	}
-	
+
 	// check d_texture
 	if( !f->d_texture )
 	{
@@ -134,11 +134,11 @@ void FaceToBrushPrimitFace( face_t* f )
 #endif
 	// compute axis base
 	ComputeAxisBase( f->plane.Normal(), texX, texY );
-	
+
 	// compute projection vector
 	VectorCopy( f->plane, proj );
 	VectorScale( proj, -f->plane[3], proj );
-	
+
 	//
 	// (0,0) in plane axis base is (0,0,0) in world coordinates + projection on the
 	// affine plane (1,0) in plane axis base is texX in world coordinates + projection
@@ -154,7 +154,7 @@ void FaceToBrushPrimitFace( face_t* f )
 	VectorCopy( texY, ST[2] );
 	VectorAdd( ST[2], proj, ST[2] );
 	EmitTextureCoordinates( ST[2], f->d_texture, f );
-	
+
 	// compute texture matrix
 	f->brushprimit_texdef.coords[0][2] = ST[0][3];
 	f->brushprimit_texdef.coords[1][2] = ST[0][4];
@@ -173,15 +173,15 @@ void EmitBrushPrimitTextureCoordinates( face_t* f, idWinding* w, patchMesh_t* pa
 {
 	idVec3D	texX, texY;
 	double	x, y;
-	
+
 	if( f == NULL || ( w == NULL && patch == NULL ) )
 	{
 		return;
 	}
-	
+
 	// compute axis base
 	ComputeAxisBase( f->plane.Normal(), texX, texY );
-	
+
 	//
 	// in case the texcoords matrix is empty, build a default one same behaviour as if
 	// scale[0]==0 && scale[1]==0 in old code
@@ -195,7 +195,7 @@ void EmitBrushPrimitTextureCoordinates( face_t* f, idWinding* w, patchMesh_t* pa
 		f->brushprimit_texdef.coords[1][1] = 1.0f;
 		ConvertTexMatWithQTexture( &f->brushprimit_texdef, NULL, &f->brushprimit_texdef, f->d_texture );
 	}
-	
+
 	int i;
 	if( w )
 	{
@@ -207,7 +207,7 @@ void EmitBrushPrimitTextureCoordinates( face_t* f, idWinding* w, patchMesh_t* pa
 			( *w )[i][4] = f->brushprimit_texdef.coords[1][0] * x + f->brushprimit_texdef.coords[1][1] * y + f->brushprimit_texdef.coords[1][2];
 		}
 	}
-	
+
 	if( patch )
 	{
 		int j;
@@ -240,19 +240,19 @@ void BrushPrimit_Parse( brush_t* b, bool newFormat, const idVec3 origin )
 		Warning( "parsing brush primitive" );
 		return;
 	}
-	
+
 	do
 	{
 		if( !GetToken( true ) )
 		{
 			break;
 		}
-		
+
 		if( !strcmp( token, "}" ) )
 		{
 			break;
 		}
-		
+
 		// reading of b->epairs if any
 		if( strcmp( token, "(" ) )
 		{
@@ -273,7 +273,7 @@ void BrushPrimit_Parse( brush_t* b, bool newFormat, const idVec3 origin )
 					;
 				scan->next = f;
 			}
-			
+
 			if( newFormat )
 			{
 				// read the three point plane definition
@@ -283,22 +283,22 @@ void BrushPrimit_Parse( brush_t* b, bool newFormat, const idVec3 origin )
 					GetToken( false );
 					plane[j] = atof( token );
 				}
-				
+
 				f->plane = plane;
 				f->originalPlane = plane;
 				f->dirty = false;
-				
+
 				//idWinding	*w = Brush_MakeFaceWinding(b, f, true);
 				idWinding w;
 				w.BaseForPlane( plane );
-				
+
 				for( j = 0; j < 3; j++ )
 				{
 					f->planepts[j].x = w[j].x + origin.x;
 					f->planepts[j].y = w[j].y + origin.y;
 					f->planepts[j].z = w[j].z + origin.z;
 				}
-				
+
 				GetToken( false );
 			}
 			else
@@ -309,19 +309,19 @@ void BrushPrimit_Parse( brush_t* b, bool newFormat, const idVec3 origin )
 					{
 						GetToken( true );
 					}
-					
+
 					if( strcmp( token, "(" ) )
 					{
 						Warning( "parsing brush" );
 						return;
 					}
-					
+
 					for( j = 0; j < 3; j++ )
 					{
 						GetToken( false );
 						f->planepts[i][j] = atof( token );
 					}
-					
+
 					GetToken( false );
 					if( strcmp( token, ")" ) )
 					{
@@ -330,7 +330,7 @@ void BrushPrimit_Parse( brush_t* b, bool newFormat, const idVec3 origin )
 					}
 				}
 			}
-			
+
 			// texture coordinates
 			GetToken( false );
 			if( strcmp( token, "(" ) )
@@ -338,57 +338,57 @@ void BrushPrimit_Parse( brush_t* b, bool newFormat, const idVec3 origin )
 				Warning( "parsing brush primitive" );
 				return;
 			}
-			
+
 			GetToken( false );
 			if( strcmp( token, "(" ) )
 			{
 				Warning( "parsing brush primitive" );
 				return;
 			}
-			
+
 			for( j = 0; j < 3; j++ )
 			{
 				GetToken( false );
 				f->brushprimit_texdef.coords[0][j] = atof( token );
 			}
-			
+
 			GetToken( false );
 			if( strcmp( token, ")" ) )
 			{
 				Warning( "parsing brush primitive" );
 				return;
 			}
-			
+
 			GetToken( false );
 			if( strcmp( token, "(" ) )
 			{
 				Warning( "parsing brush primitive" );
 				return;
 			}
-			
+
 			for( j = 0; j < 3; j++ )
 			{
 				GetToken( false );
 				f->brushprimit_texdef.coords[1][j] = atof( token );
 			}
-			
+
 			GetToken( false );
 			if( strcmp( token, ")" ) )
 			{
 				Warning( "parsing brush primitive" );
 				return;
 			}
-			
+
 			GetToken( false );
 			if( strcmp( token, ")" ) )
 			{
 				Warning( "parsing brush primitive" );
 				return;
 			}
-			
+
 			// read the texturedef
 			GetToken( false );
-			
+
 			// strcpy(f->texdef.name, token);
 			if( g_qeglobals.mapVersion < 2.0 )
 			{
@@ -398,7 +398,7 @@ void BrushPrimit_Parse( brush_t* b, bool newFormat, const idVec3 origin )
 			{
 				f->texdef.SetName( token );
 			}
-			
+
 			if( TokenAvailable() )
 			{
 				GetToken( false );
@@ -459,7 +459,7 @@ void TexMatToFakeTexCoords( float texMat[2][3], float shift[2], float* rot, floa
 	{
 		*rot = RAD2DEG( atan2( texMat[1][0], texMat[0][0] ) );
 	}
-	
+
 	shift[0] = -texMat[0][2];
 	shift[1] = texMat[1][2];
 }
@@ -523,14 +523,14 @@ void Face_MoveTexture_BrushPrimit( face_t* f, idVec3 delta )
 	idVec3D	M[3];	// columns of the matrix .. easier that way
 	double	det;
 	idVec3D	D[2];
-	
+
 	// compute plane axis base ( doesn't change with translation )
 	ComputeAxisBase( f->plane.Normal(), texS, texT );
-	
+
 	// compute translation vector in plane axis base
 	tx = DotProduct( delta, texS );
 	ty = DotProduct( delta, texT );
-	
+
 	// fill the data vectors
 	M[0][0] = tx;
 	M[0][1] = 1.0f + tx;
@@ -547,7 +547,7 @@ void Face_MoveTexture_BrushPrimit( face_t* f, idVec3 delta )
 	D[1][0] = f->brushprimit_texdef.coords[1][2];
 	D[1][1] = f->brushprimit_texdef.coords[1][0] + f->brushprimit_texdef.coords[1][2];
 	D[1][2] = f->brushprimit_texdef.coords[1][1] + f->brushprimit_texdef.coords[1][2];
-	
+
 	// solve
 	det = SarrusDet( M[0], M[1], M[2] );
 	f->brushprimit_texdef.coords[0][0] = SarrusDet( D[0], M[1], M[2] ) / det;
@@ -637,13 +637,13 @@ void MatrixForPoints( idVec3D M[3], idVec3D D[2], brushprimit_texdef_t* T )
 	// standard! it's column-line .. later computations are easier that way)
 	//
 	double	det;
-	
+
 	// idVec3D D[2];
 	M[2][0] = 1.0f;
 	M[2][1] = 1.0f;
 	M[2][2] = 1.0f;
 #if 0
-	
+
 	// fill the data vectors
 	M[0][0] = A2[0];
 	M[0][1] = B2[0];
@@ -684,13 +684,13 @@ void Face_FitTexture_BrushPrimit( face_t* f, idVec3 mins, idVec3 maxs, float hei
 	int						i, j;
 	double					val;
 	idVec3D					M[3], D[2];
-	
+
 	// idVec3D N[2],Mf[2];
 	brushprimit_texdef_t	N;
 	idVec3D					Mf[2];
-	
-	
-	
+
+
+
 	//memset(f->brushprimit_texdef.coords, 0, sizeof(f->brushprimit_texdef.coords));
 	//f->brushprimit_texdef.coords[0][0] = 1.0f;
 	//f->brushprimit_texdef.coords[1][1] = 1.0f;
@@ -703,7 +703,7 @@ void Face_FitTexture_BrushPrimit( face_t* f, idVec3 mins, idVec3 maxs, float hei
 	EmitBrushPrimitTextureCoordinates( f, f->face_winding );
 	BBoxSTMin[0] = BBoxSTMin[1] = BBoxSTMin[2] = 999999;
 	BBoxSTMax[0] = BBoxSTMax[1] = BBoxSTMax[2] = -999999;
-	
+
 	w = f->face_winding;
 	if( w )
 	{
@@ -717,7 +717,7 @@ void Face_FitTexture_BrushPrimit( face_t* f, idVec3 mins, idVec3 maxs, float hei
 				{
 					BBoxSTMin[j] = val;
 				}
-				
+
 				if( val > BBoxSTMax[j] )
 				{
 					BBoxSTMax[j] = val;
@@ -725,7 +725,7 @@ void Face_FitTexture_BrushPrimit( face_t* f, idVec3 mins, idVec3 maxs, float hei
 			}
 		}
 	}
-	
+
 	//
 	// we have the three points of the BBox (BBoxSTMin[0].BBoxSTMin[1])
 	// (BBoxSTMax[0],BBoxSTMin[1]) (BBoxSTMin[0],BBoxSTMax[1]) in ST space the BP
@@ -747,9 +747,9 @@ void Face_FitTexture_BrushPrimit( face_t* f, idVec3 mins, idVec3 maxs, float hei
 	D[1][1] = 0.0f;
 	D[1][2] = height;
 	MatrixForPoints( M, D, &N );
-	
+
 #if 0
-	
+
 	//
 	// FIT operation gives coordinates of three points of the bounding box in (S',T'),
 	// our target axis base A(S',T')=(0,0) B(S',T')=(nWidth,0) C(S',T')=(0,nHeight)
@@ -791,11 +791,11 @@ void Face_FitTexture_BrushPrimit( face_t* f, idVec3 mins, idVec3 maxs, float hei
 			   N.coords[1][1] *
 			   f->brushprimit_texdef.coords[1][2] +
 			   N.coords[1][2];
-			   
+
 	// copy back
 	VectorCopy( Mf[0], f->brushprimit_texdef.coords[0] );
 	VectorCopy( Mf[1], f->brushprimit_texdef.coords[1] );
-	
+
 	//
 	// handle the texture size ConvertTexMatWithQTexture( &f->brushprimit_texdef,
 	// NULL, &f->brushprimit_texdef, f->d_texture );
@@ -813,10 +813,10 @@ void Face_ScaleTexture_BrushPrimit( face_t* face, float sS, float sT )
 		Sys_Status( "BP mode required\n" );
 		return;
 	}
-	
+
 	brushprimit_texdef_t*	pBP = &face->brushprimit_texdef;
 	BPMatScale( pBP->coords, sS, sT );
-	
+
 	// now emit the coordinates on the winding
 	EmitBrushPrimitTextureCoordinates( face, face->face_winding );
 }
@@ -871,12 +871,12 @@ idVec3D	txl_origin;
 void TextureLockTransformation_BrushPrimit( face_t* f )
 {
 	idVec3D	Orig, texS, texT;		// axis base of initial plane
-	
+
 	// used by transformation algo
 	idVec3D	temp;
 	int		j;
 	//idVec3D	vRotate;				// rotation vector
-	
+
 	idVec3D	rOrig, rvecS, rvecT;	// geometric transformation of (0,0) (1,0) (0,1) { initial plane axis base }
 	idVec3	rNormal;
 	idVec3D	rtexS, rtexT;	// axis base for the transformed plane
@@ -884,7 +884,7 @@ void TextureLockTransformation_BrushPrimit( face_t* f )
 	idVec3D	M[3];
 	double	det;
 	idVec3D	D[2];
-	
+
 	// silence compiler warnings
 	rOrig.Zero();
 	rvecS = rOrig;
@@ -892,13 +892,13 @@ void TextureLockTransformation_BrushPrimit( face_t* f )
 	rNormal.x = rOrig.x;
 	rNormal.y = rOrig.y;
 	rNormal.z = rOrig.z;
-	
+
 	// compute plane axis base
 	ComputeAxisBase( f->plane.Normal(), texS, texT );
 	Orig.x = vec3_origin.x;
 	Orig.y = vec3_origin.y;
 	Orig.z = vec3_origin.z;
-	
+
 	//
 	// compute coordinates of (0,0) (1,0) (0,1) ( expressed in initial plane axis base
 	// ) after transformation (0,0) (1,0) (0,1) ( expressed in initial plane axis base
@@ -916,7 +916,7 @@ void TextureLockTransformation_BrushPrimit( face_t* f )
 				VectorRotate3Origin(Orig, vRotate, txl_vOrigin, rOrig);
 				VectorRotate3Origin(texS, vRotate, txl_vOrigin, rvecS);
 				VectorRotate3Origin(texT, vRotate, txl_vOrigin, rvecT);
-		
+
 				// compute normal of plane after rotation
 				VectorRotate3(f->plane.Normal(), vRotate, rNormal);
 		*/
@@ -928,19 +928,19 @@ void TextureLockTransformation_BrushPrimit( face_t* f )
 		{
 			rOrig[j] = DotProduct( temp, txl_matrix[j] ) + txl_origin[j];
 		}
-		
+
 		VectorSubtract( texS, txl_origin, temp );
 		for( j = 0; j < 3; j++ )
 		{
 			rvecS[j] = DotProduct( temp, txl_matrix[j] ) + txl_origin[j];
 		}
-		
+
 		VectorSubtract( texT, txl_origin, temp );
 		for( j = 0; j < 3; j++ )
 		{
 			rvecT[j] = DotProduct( temp, txl_matrix[j] ) + txl_origin[j];
 		}
-		
+
 		//
 		// we also need the axis base of the target plane, apply the transformation matrix
 		// to the normal too..
@@ -950,10 +950,10 @@ void TextureLockTransformation_BrushPrimit( face_t* f )
 			rNormal[j] = DotProduct( f->plane, txl_matrix[j] );
 		}
 	}
-	
+
 	// compute rotated plane axis base
 	ComputeAxisBase( rNormal, rtexS, rtexT );
-	
+
 	// compute S/T coordinates of the three points in rotated axis base ( in M matrix )
 	lOrig[0] = DotProduct( rOrig, rtexS );
 	lOrig[1] = DotProduct( rOrig, rtexT );
@@ -970,7 +970,7 @@ void TextureLockTransformation_BrushPrimit( face_t* f )
 	M[0][2] = lvecT[0];
 	M[1][2] = lvecT[1];
 	M[2][2] = 1.0f;
-	
+
 	// fill data vector
 	D[0][0] = f->brushprimit_texdef.coords[0][2];
 	D[0][1] = f->brushprimit_texdef.coords[0][0] + f->brushprimit_texdef.coords[0][2];
@@ -978,7 +978,7 @@ void TextureLockTransformation_BrushPrimit( face_t* f )
 	D[1][0] = f->brushprimit_texdef.coords[1][2];
 	D[1][1] = f->brushprimit_texdef.coords[1][0] + f->brushprimit_texdef.coords[1][2];
 	D[1][2] = f->brushprimit_texdef.coords[1][1] + f->brushprimit_texdef.coords[1][2];
-	
+
 	// solve
 	det = SarrusDet( M[0], M[1], M[2] );
 	f->brushprimit_texdef.coords[0][0] = SarrusDet( D[0], M[1], M[2] ) / det;
@@ -1068,7 +1068,7 @@ void Face_GetScale_BrushPrimit( face_t* face, float* s, float* t, float* rot )
 {
 	idVec3D	texS, texT;
 	ComputeAxisBase( face->plane.Normal(), texS, texT );
-	
+
 	if( face == NULL || face->face_winding == NULL )
 	{
 		return;
@@ -1080,12 +1080,12 @@ void Face_GetScale_BrushPrimit( face_t* face, float* s, float* t, float* rot )
 		Os += DotProduct( ( *face->face_winding )[i], texS );
 		Ot += DotProduct( ( *face->face_winding )[i], texT );
 	}
-	
+
 	Os /= face->face_winding->GetNumPoints();
 	Ot /= face->face_winding->GetNumPoints();
-	
+
 	brushprimit_texdef_t*	pBP = &face->brushprimit_texdef;
-	
+
 	// here we have a special case, M is a translation and it's inverse is easy
 	float					BPO[2][3];
 	float					aux[2][3];
@@ -1099,13 +1099,13 @@ void Face_GetScale_BrushPrimit( face_t* face, float* s, float* t, float* rot )
 	m[0][2] = Os;
 	m[1][2] = Ot;			// now M^-1
 	BPMatMul( aux, m, BPO );
-	
+
 	// apply a given scale (on S and T)
 	ConvertTexMatWithQTexture( BPO, face->d_texture, aux, NULL );
-	
+
 	*s = idMath::Sqrt( aux[0][0] * aux[0][0] + aux[1][0] * aux[1][0] );
 	*t = idMath::Sqrt( aux[0][1] * aux[0][1] + aux[1][1] * aux[1][1] );
-	
+
 	// compute rotate value
 	if( idMath::Fabs( face->brushprimit_texdef.coords[0][0] ) < ZERO_EPSILON )
 	{
@@ -1123,8 +1123,8 @@ void Face_GetScale_BrushPrimit( face_t* face, float* s, float* t, float* rot )
 	{
 		*rot = RAD2DEG( atan2( face->brushprimit_texdef.coords[1][0] / ( *s ) ? ( *s ) : 1.0f, face->brushprimit_texdef.coords[0][0] / ( *t ) ? ( *t ) : 1.0f ) );
 	}
-	
-	
+
+
 }
 
 /*
@@ -1135,21 +1135,21 @@ void Face_SetExplicitScale_BrushPrimit( face_t* face, float s, float t )
 {
 	idVec3D	texS, texT;
 	ComputeAxisBase( face->plane.Normal(), texS, texT );
-	
+
 	// find ST coordinates for the center of the face
 	double	Os = 0, Ot = 0;
-	
+
 	for( int i = 0; i < face->face_winding->GetNumPoints(); i++ )
 	{
 		Os += DotProduct( ( *face->face_winding )[i], texS );
 		Ot += DotProduct( ( *face->face_winding )[i], texT );
 	}
-	
+
 	Os /= face->face_winding->GetNumPoints();
 	Ot /= face->face_winding->GetNumPoints();
-	
+
 	brushprimit_texdef_t*	pBP = &face->brushprimit_texdef;
-	
+
 	// here we have a special case, M is a translation and it's inverse is easy
 	float					BPO[2][3];
 	float					aux[2][3];
@@ -1163,15 +1163,15 @@ void Face_SetExplicitScale_BrushPrimit( face_t* face, float s, float t )
 	m[0][2] = Os;
 	m[1][2] = Ot;			// now M^-1
 	BPMatMul( aux, m, BPO );
-	
+
 	// apply a given scale (on S and T)
 	ConvertTexMatWithQTexture( BPO, face->d_texture, aux, NULL );
-	
+
 	// reset the scale (normalize the matrix)
 	double	v1, v2;
 	v1 = idMath::Sqrt( aux[0][0] * aux[0][0] + aux[1][0] * aux[1][0] );
 	v2 = idMath::Sqrt( aux[0][1] * aux[0][1] + aux[1][1] * aux[1][1] );
-	
+
 	if( s == 0.0 )
 	{
 		s = v1;
@@ -1180,9 +1180,9 @@ void Face_SetExplicitScale_BrushPrimit( face_t* face, float s, float t )
 	{
 		t = v2;
 	}
-	
+
 	double	sS, sT;
-	
+
 	// put the values for scale on S and T here:
 	sS = s / v1;
 	sT = t / v2;
@@ -1195,7 +1195,7 @@ void Face_SetExplicitScale_BrushPrimit( face_t* face, float s, float t )
 	m[0][2] = -Os;
 	m[1][2] = -Ot;
 	BPMatMul( aux, m, pBP->coords );
-	
+
 	// now emit the coordinates on the winding
 	EmitBrushPrimitTextureCoordinates( face, face->face_winding );
 }
@@ -1215,7 +1215,7 @@ void Face_FlipTexture_BrushPrimit( face_t* f, bool y )
 		Face_SetExplicitScale_BrushPrimit( f, -s, 0.0 );
 	}
 #if 0
-	
+
 	idVec3D	texS, texT;
 	ComputeAxisBase( f->plane.normal, texS, texT );
 	double	Os = 0, Ot = 0;
@@ -1224,16 +1224,16 @@ void Face_FlipTexture_BrushPrimit( face_t* f, bool y )
 		Os += DotProduct( f->face_winding->p[i], texS );
 		Ot += DotProduct( f->face_winding->p[i], texT );
 	}
-	
+
 	Ot = abs( Ot );
 	Ot *= t;
 	Ot /= f->d_texture->GetEditorImage()->GetUploadHeight();
-	
+
 	Os = abs( Os );
 	Os *= s;
 	Os /= f->d_texture->GetEditorImage()->GetUploadWidth();
-	
-	
+
+
 	if( y )
 	{
 		Face_FitTexture_BrushPrimit( f, texS, texT, -Ot, 1.0 );
@@ -1261,15 +1261,15 @@ void Face_SetAxialScale_BrushPrimit( face_t* face, bool y )
 	{
 		return;
 	}
-	
+
 	if( !face->face_winding )
 	{
 		return;
 	}
-	
+
 	//float oldS, oldT, oldR;
 	//Face_GetScale_BrushPrimit(face, &oldS, &oldT, &oldR);
-	
+
 	idVec3D min, max;
 	min.x = min.y = min.z = 999999.0;
 	max.x = max.y = max.z = -999999.0;
@@ -1287,9 +1287,9 @@ void Face_SetAxialScale_BrushPrimit( face_t* face, bool y )
 			}
 		}
 	}
-	
+
 	idVec3 len;
-	
+
 	if( g_bAxialMode )
 	{
 		if( g_axialAnchor >= 0 && g_axialAnchor < face->face_winding->GetNumPoints() &&
@@ -1314,15 +1314,15 @@ void Face_SetAxialScale_BrushPrimit( face_t* face, bool y )
 			len = ( *face->face_winding )[1].ToVec3() - ( *face->face_winding )[0].ToVec3();
 		}
 	}
-	
+
 	double dist = len.Length();
 	double width = idMath::Fabs( max.x - min.x );
 	double height = idMath::Fabs( max.z - min.z );
-	
+
 	//len = maxs[2] - mins[2];
 	//double yDist = len.Length();
-	
-	
+
+
 	if( dist != 0.0 )
 	{
 		if( dist > face->d_texture->GetEditorImage()->GetUploadHeight() )
@@ -1342,7 +1342,7 @@ void Face_SetAxialScale_BrushPrimit( face_t* face, bool y )
 			width /= dist;
 		}
 	}
-	
+
 	if( y )
 	{
 		Face_SetExplicitScale_BrushPrimit( face, 0.0, height );
@@ -1356,7 +1356,7 @@ void Face_SetAxialScale_BrushPrimit( face_t* face, bool y )
 	/*
 		common->Printf("Face x: %f  y: %f  xr: %f  yr: %f\n", x, y, xRatio, yRatio);
 		common->Printf("Texture x: %i  y: %i  \n",face->d_texture->GetEditorImage()->GetUploadWidth(), face->d_texture->GetEditorImage()->GetUploadHeight());
-	
+
 		idVec3D texS, texT;
 		ComputeAxisBase(face->plane.normal, texS, texT);
 		float	Os = 0, Ot = 0;
@@ -1364,15 +1364,15 @@ void Face_SetAxialScale_BrushPrimit( face_t* face, bool y )
 			Os += DotProduct(face->face_winding->p[i], texS);
 			Ot += DotProduct(face->face_winding->p[i], texT);
 		}
-	
+
 		common->Printf("Face2 x: %f  y: %f  \n", Os, Ot);
 		Os /= face->face_winding->numpoints;
 		Ot /= face->face_winding->numpoints;
-	
-	
+
+
 		//Os /= face->face_winding->numpoints;
 		//Ot /= face->face_winding->numpoints;
-	
+
 	*/
 }
 

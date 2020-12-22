@@ -35,11 +35,11 @@ If you have questions concerning this license or the applicable additional terms
 
 // foresthale 2014-05-29: let's not use the MFC DEBUG_NEW when we have our own...
 #ifdef ID_DEBUG_NEW_MFC
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+	#ifdef _DEBUG
+		#define new DEBUG_NEW
+		#undef THIS_FILE
+		static char THIS_FILE[] = __FILE__;
+	#endif
 #endif
 
 /////////////////////////////////////////////////////////////////////////////

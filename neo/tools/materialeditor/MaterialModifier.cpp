@@ -60,7 +60,7 @@ AttributeMaterialModifier::AttributeMaterialModifier( MaterialDocManager* manage
 
 	this->stage = stage;
 	this->key = key;
-	
+
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -184,7 +184,7 @@ void StageDeleteModifier::Undo()
 	MaterialDoc* material = manager->CreateMaterialDoc( materialName );
 	material->InsertStage( stageNum, stageData.GetInt( "stagetype" ), stageData.GetString( "name" ), false );
 	material->SetData( stageNum, &stageData );
-	
+
 }
 
 /**
@@ -315,7 +315,7 @@ void MoveMaterialModifier::Undo()
 	//Delete New Material
 	MaterialDoc* material = manager->CreateMaterialDoc( materialName );
 	manager->DeleteMaterial( material, false );
-	
+
 	//RedoAdd Old Material
 	manager->RedoAddMaterial( copyMaterial, false );
 }
@@ -328,7 +328,7 @@ void MoveMaterialModifier::Redo()
 	//Delete Old Material
 	MaterialDoc* material = manager->CreateMaterialDoc( copyMaterial );
 	manager->DeleteMaterial( material, false );
-	
+
 	//Redo Add New Material
 	manager->RedoAddMaterial( materialName, false );
 }
@@ -450,7 +450,7 @@ void DeleteMaterialFolderModifier::Undo()
 
 	//Add the folder back and save the folder position for the redo
 	item = view->AddFolder( materialName, parent );
-	
+
 	//Add each of the children back
 	for( int i = 0; i < affectedMaterials.Num(); i++ )
 	{

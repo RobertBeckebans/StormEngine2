@@ -35,13 +35,13 @@ class rvGETransformer
 public:
 
 	rvGETransformer( );
-	
+
 	bool		Create( HWND parent, bool visible );
 	void		Show( bool show );
-	
+
 	void		SetWorkspace( rvGEWorkspace* workspace );
 	void		Update( void );
-	
+
 	bool		GetLockAspect( void );
 	HWND		GetWindow( void );
 	rvGEWorkspace* 	GetWorkspace( void )
@@ -54,7 +54,7 @@ protected:
 	HWND			mDlg;
 	rvGEWorkspace*	mWorkspace;
 	idWindow*		mRelative;
-	
+
 private:
 
 	static LRESULT CALLBACK		WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam );

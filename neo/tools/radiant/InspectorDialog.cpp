@@ -73,26 +73,26 @@ END_MESSAGE_MAP()
 BOOL CInspectorDialog::OnInitDialog()
 {
 	CTabsDlg::OnInitDialog();
-	
+
 	ASSERT( m_Tabs.GetSafeHwnd() );
-	
+
 	LoadWindowPlacement( GetSafeHwnd() , "radiant_InspectorsWindow" );
-	
+
 	consoleWnd.Create( IDD_DIALOG_CONSOLE, this );
 	texWnd.Create( TEXTURE_WINDOW_CLASS, "", QE3_SPLITTER_STYLE, CRect( 5, 5, 10, 10 ), this, 1299 );
 	mediaDlg.Create( IDD_DIALOG_TEXTURELIST, this );
 	entityDlg.Create( IDD_DIALOG_ENTITY, this );
-	
+
 	dockedTabs = GetCvarInt( "radiant_InspectorDockedDialogs" , W_CONSOLE | W_TEXTURE | W_MEDIA );
-	
+
 	AddDockedWindow( &consoleWnd , W_CONSOLE , 1 , "Console"	 , ( dockedTabs & W_CONSOLE ) != 0 , InspectorsDockingCallback );
 	AddDockedWindow( &texWnd	  , W_TEXTURE , 2 , "Textures"   , ( dockedTabs & W_TEXTURE ) != 0 , InspectorsDockingCallback );
 	AddDockedWindow( &mediaDlg	  , W_MEDIA	  , 3 , "Media"	     , ( dockedTabs & W_MEDIA ) != 0 , InspectorsDockingCallback );
 	AddDockedWindow( &entityDlg  , W_ENTITY  , 4 , "Entity"	 , ( dockedTabs & W_ENTITY ) != 0 , InspectorsDockingCallback );
-	
+
 	SetMode( W_CONSOLE );
 	initialized = true;
-	
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -132,19 +132,19 @@ bool CInspectorDialog::GetSelectAllCriteria( idStr& key, idStr& val )
 void CInspectorDialog::OnSize( UINT nType, int cx, int cy )
 {
 	CTabsDlg::OnSize( nType, cx, cy );
-	
+
 	DockedWindowInfo* info = NULL;
 	POSITION pos;
 	WORD wID;
-	
+
 	if( !initialized )
 	{
 		return;
 	}
-	
+
 	CRect rect;
 	GetClientRect( rect );
-	
+
 	CRect tabRect;
 	m_Tabs.GetWindowRect( tabRect );
 	// retain vert size but size 4 in from edges and 4 up from bottom
@@ -154,18 +154,18 @@ void CInspectorDialog::OnSize( UINT nType, int cx, int cy )
 	tabRect.bottom = rect.Height() - 4;
 	// adjust rect for children size
 	rect.bottom -= 5 + tabRect.Height();
-	
+
 	m_Tabs.SetWindowPos( NULL, tabRect.left, tabRect.top, tabRect.Width(), tabRect.Height(), 0 );
-	
+
 	for( pos = m_Windows.GetStartPosition(); pos != NULL ; )
 	{
 		m_Windows.GetNextAssoc( pos, wID, ( void*& )info );
-		
+
 		if( ( info->m_State == DockedWindowInfo::DOCKED ) )
 		{
 			info->m_Window->SetWindowPos( NULL, rect.left, rect.top, rect.Width(), rect.Height(), 0 );
 		}
-		
+
 	}
 }
 
@@ -173,7 +173,7 @@ void CInspectorDialog::OnDestroy()
 {
 	::SaveWindowPlacement( GetSafeHwnd() , "radiant_InspectorsWindow" );
 	SetCvarInt( "radiant_InspectorDockedDialogs" , dockedTabs );
-	
+
 	CTabsDlg::OnDestroy();
 }
 

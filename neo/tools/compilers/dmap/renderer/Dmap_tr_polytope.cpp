@@ -51,19 +51,19 @@ srfDmapTriangles_t* R_PolytopeSurfaceDmap( int numPlanes, const idPlane* planes,
 	srfDmapTriangles_t* tri;
 	idFixedWinding planeWindings[MAX_POLYTOPE_PLANES];
 	int numVerts, numIndexes;
-	
+
 	if( numPlanes > MAX_POLYTOPE_PLANES )
 	{
 		common->Error( "R_PolytopeSurfaceDmap: more than %d planes", MAX_POLYTOPE_PLANES );
 	}
-	
+
 	numVerts = 0;
 	numIndexes = 0;
 	for( i = 0; i < numPlanes; i++ )
 	{
 		const idPlane& plane = planes[i];
 		idFixedWinding& w = planeWindings[i];
-		
+
 		w.BaseForPlane( plane );
 		for( j = 0; j < numPlanes; j++ )
 		{
@@ -84,12 +84,12 @@ srfDmapTriangles_t* R_PolytopeSurfaceDmap( int numPlanes, const idPlane* planes,
 		numVerts += w.GetNumPoints();
 		numIndexes += ( w.GetNumPoints() - 2 ) * 3;
 	}
-	
+
 	// allocate the surface
 	tri = R_AllocStaticTriSurfDmap();
 	R_AllocStaticTriSurfVertsDmap( tri, numVerts );
 	R_AllocStaticTriSurfIndexesDmap( tri, numIndexes );
-	
+
 	// copy the data from the windings
 	for( i = 0; i < numPlanes; i++ )
 	{
@@ -103,7 +103,7 @@ srfDmapTriangles_t* R_PolytopeSurfaceDmap( int numPlanes, const idPlane* planes,
 			tri->verts[tri->numVerts + j].Clear();
 			tri->verts[tri->numVerts + j].xyz = w[j].ToVec3();
 		}
-		
+
 		for( j = 1; j < w.GetNumPoints() - 1; j++ )
 		{
 			tri->indexes[tri->numIndexes + 0] = tri->numVerts;
@@ -112,7 +112,7 @@ srfDmapTriangles_t* R_PolytopeSurfaceDmap( int numPlanes, const idPlane* planes,
 			tri->numIndexes += 3;
 		}
 		tri->numVerts += w.GetNumPoints();
-		
+
 		// optionally save the winding
 		if( windings )
 		{
@@ -120,9 +120,9 @@ srfDmapTriangles_t* R_PolytopeSurfaceDmap( int numPlanes, const idPlane* planes,
 			*windings[i] = w;
 		}
 	}
-	
+
 	R_BoundTriSurfDmap( tri );
-	
+
 	return tri;
 }
 
@@ -140,19 +140,19 @@ srfTriangles_t* R_PolytopeSurface( int numPlanes, const idPlane* planes, idWindi
 	srfTriangles_t* tri;
 	idFixedWinding planeWindings[MAX_POLYTOPE_PLANES];
 	int numVerts, numIndexes;
-	
+
 	if( numPlanes > MAX_POLYTOPE_PLANES )
 	{
 		common->Error( "R_PolytopeSurface: more than %d planes", MAX_POLYTOPE_PLANES );
 	}
-	
+
 	numVerts = 0;
 	numIndexes = 0;
 	for( i = 0; i < numPlanes; i++ )
 	{
 		const idPlane& plane = planes[i];
 		idFixedWinding& w = planeWindings[i];
-		
+
 		w.BaseForPlane( plane );
 		for( j = 0; j < numPlanes; j++ )
 		{
@@ -173,12 +173,12 @@ srfTriangles_t* R_PolytopeSurface( int numPlanes, const idPlane* planes, idWindi
 		numVerts += w.GetNumPoints();
 		numIndexes += ( w.GetNumPoints() - 2 ) * 3;
 	}
-	
+
 	// allocate the surface
 	tri = R_AllocStaticTriSurf();
 	R_AllocStaticTriSurfVerts( tri, numVerts );
 	R_AllocStaticTriSurfIndexes( tri, numIndexes );
-	
+
 	// copy the data from the windings
 	for( i = 0; i < numPlanes; i++ )
 	{
@@ -192,7 +192,7 @@ srfTriangles_t* R_PolytopeSurface( int numPlanes, const idPlane* planes, idWindi
 			tri->verts[tri->numVerts + j ].Clear();
 			tri->verts[tri->numVerts + j ].xyz = w[j].ToVec3();
 		}
-		
+
 		for( j = 1 ; j < w.GetNumPoints() - 1 ; j++ )
 		{
 			tri->indexes[ tri->numIndexes + 0 ] = tri->numVerts;
@@ -201,7 +201,7 @@ srfTriangles_t* R_PolytopeSurface( int numPlanes, const idPlane* planes, idWindi
 			tri->numIndexes += 3;
 		}
 		tri->numVerts += w.GetNumPoints();
-		
+
 		// optionally save the winding
 		if( windings )
 		{
@@ -209,8 +209,8 @@ srfTriangles_t* R_PolytopeSurface( int numPlanes, const idPlane* planes, idWindi
 			*windings[i] = w;
 		}
 	}
-	
+
 	R_BoundTriSurf( tri );
-	
+
 	return tri;
 }

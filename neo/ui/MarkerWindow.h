@@ -49,7 +49,7 @@ public:
 		return idWindow::Allocated();
 	};
 	virtual idWinVar* GetWinVarByName( const char* _name, bool winLookup = false );
-	
+
 	virtual const char* HandleEvent( const sysEvent_t* event, bool* updateVisuals );
 	virtual void PostParse();
 	virtual void Draw( int time, float x, float y );
@@ -57,14 +57,14 @@ public:
 	virtual void		Activate( bool activate, idStr& act );
 	virtual void MouseExit();
 	virtual void MouseEnter();
-	
-	
+
+
 private:
 	virtual bool ParseInternalVar( const char* name, idParser* src );
 	void CommonInit();
 	void Line( int x1, int y1, int x2, int y2, dword* out, dword color );
 	void Point( int x, int y, dword* out, dword color );
-	
+
 	typedef struct
 	{
 		short		health;
@@ -72,7 +72,7 @@ private:
 		short		stamina;
 		short		combat;
 	} logStats_t;
-	
+
 	logStats_t loggedStats[MAX_LOGGED_STATS];
 	idList<markerData_t> markerTimes;
 	idStr statData;

@@ -79,7 +79,7 @@ bool idEditWindow::ParseInternalVar( const char* _name, idTokenParser* src )
 		cvarMax = src->ParseInt();
 		return true;
 	}
-	
+
 	return idWindow::ParseInternalVar( _name, src );
 }
 
@@ -122,7 +122,7 @@ void idEditWindow::CommonInit()
 	cvar = NULL;
 	liveUpdate = true;
 	readonly = false;
-	
+
 	scroller = new( TAG_OLD_UI ) idSliderWindow( gui );
 }
 
@@ -147,9 +147,9 @@ void idEditWindow::GainFocus()
 void idEditWindow::Draw( int time, float x, float y )
 {
 	idVec4 color = foreColor;
-	
+
 	UpdateCvar( true );
-	
+
 	int len = text.Length();
 	if( len != lastTextLength )
 	{
@@ -158,7 +158,7 @@ void idEditWindow::Draw( int time, float x, float y )
 		lastTextLength = len;
 	}
 	float scale = textScale;
-	
+
 	idStr		pass;
 	const char* buffer;
 	if( password )
@@ -174,17 +174,17 @@ void idEditWindow::Draw( int time, float x, float y )
 	{
 		buffer = text;
 	}
-	
+
 	if( cursorPos > len )
 	{
 		cursorPos = len;
 	}
-	
+
 	idRectangle rect = textRect;
-	
+
 	rect.x -= paintOffset;
 	rect.w += paintOffset;
-	
+
 	if( wrap && scroller->GetHigh() > 0.0f )
 	{
 		float lineHeight = GetMaxCharHeight( ) + 5;
@@ -192,7 +192,7 @@ void idEditWindow::Draw( int time, float x, float y )
 		rect.w -= sizeBias;
 		rect.h = ( breaks.Num() + 1 ) * lineHeight;
 	}
-	
+
 	if( hover && !noEvents && Contains( gui->CursorX(), gui->CursorY() ) )
 	{
 		color = hoverColor;
@@ -205,7 +205,7 @@ void idEditWindow::Draw( int time, float x, float y )
 	{
 		color = hoverColor;
 	}
-	
+
 	dc->DrawText( buffer, scale, 0, color, rect, wrap, ( flags & WIN_FOCUS ) ? cursorPos : -1 );
 }
 
@@ -217,7 +217,7 @@ idEditWindow::HandleEvent
 const char* idEditWindow::HandleEvent( const sysEvent_t* event, bool* updateVisuals )
 {
 	static char buffer[ MAX_EDITFIELD ];
-	
+
 	if( wrap )
 	{
 		// need to call this to allow proper focus and capturing on embedded children
@@ -227,38 +227,38 @@ const char* idEditWindow::HandleEvent( const sysEvent_t* event, bool* updateVisu
 			return ret;
 		}
 	}
-	
+
 	if( ( event->evType != SE_CHAR && event->evType != SE_KEY ) )
 	{
 		return "";
 	}
-	
+
 	idStr::Copynz( buffer, text.c_str(), sizeof( buffer ) );
 	int key = event->evValue;
 	int len = text.Length();
-	
+
 	if( event->evType == SE_CHAR )
 	{
 		if( key == '`' )
 		{
 			return "";
 		}
-		
+
 		if( updateVisuals )
 		{
 			*updateVisuals = true;
 		}
-		
+
 		if( maxChars && len > maxChars )
 		{
 			len = maxChars;
 		}
-		
+
 		if( readonly )
 		{
 			return "";
 		}
-		
+
 		//
 		// ignore any non printable chars (except enter when wrap is enabled)
 		//
@@ -269,7 +269,7 @@ const char* idEditWindow::HandleEvent( const sysEvent_t* event, bool* updateVisu
 		{
 			return "";
 		}
-		
+
 		if( numeric )
 		{
 			if( ( key < '0' || key > '9' ) && key != '.' )
@@ -277,7 +277,7 @@ const char* idEditWindow::HandleEvent( const sysEvent_t* event, bool* updateVisu
 				return "";
 			}
 		}
-		
+
 		if( dc->GetOverStrike() )
 		{
 			if( maxChars && cursorPos >= maxChars )
@@ -293,28 +293,28 @@ const char* idEditWindow::HandleEvent( const sysEvent_t* event, bool* updateVisu
 			}
 			memmove( &buffer[ cursorPos + 1 ], &buffer[ cursorPos ], len + 1 - cursorPos );
 		}
-		
+
 		buffer[ cursorPos ] = key;
-		
+
 		text = buffer;
 		UpdateCvar( false );
 		RunScript( ON_ACTION );
-		
+
 		if( cursorPos < len + 1 )
 		{
 			cursorPos++;
 		}
 		EnsureCursorVisible();
-		
+
 	}
 	else if( event->evType == SE_KEY && event->evValue2 )
 	{
-	
+
 		if( updateVisuals )
 		{
 			*updateVisuals = true;
 		}
-		
+
 		if( key == K_DEL )
 		{
 			if( readonly )
@@ -330,7 +330,7 @@ const char* idEditWindow::HandleEvent( const sysEvent_t* event, bool* updateVisu
 			}
 			return "";
 		}
-		
+
 		if( key == K_BACKSPACE )  	// ctrl-h is backspace
 		{
 			if( readonly )
@@ -349,12 +349,12 @@ const char* idEditWindow::HandleEvent( const sysEvent_t* event, bool* updateVisu
 					memmove( &buffer[ cursorPos - 1 ], &buffer[ cursorPos ], len + 1 - cursorPos );
 					cursorPos--;
 				}
-				
+
 				text = buffer;
 				UpdateCvar( false );
 				RunScript( ON_ACTION );
 			}
-			
+
 			return "";
 		}
 		if( key == K_RIGHTARROW )
@@ -368,7 +368,7 @@ const char* idEditWindow::HandleEvent( const sysEvent_t* event, bool* updateVisu
 					{
 						cursorPos++;
 					}
-					
+
 					while( ( cursorPos < len ) && ( buffer[ cursorPos ] == ' ' ) )
 					{
 						cursorPos++;
@@ -382,12 +382,12 @@ const char* idEditWindow::HandleEvent( const sysEvent_t* event, bool* updateVisu
 					}
 				}
 			}
-			
+
 			EnsureCursorVisible();
-			
+
 			return "";
 		}
-		
+
 		if( key == K_LEFTARROW )
 		{
 			if( ( idKeyInput::IsDown( K_LCTRL ) || idKeyInput::IsDown( K_RCTRL ) ) )
@@ -397,7 +397,7 @@ const char* idEditWindow::HandleEvent( const sysEvent_t* event, bool* updateVisu
 				{
 					cursorPos--;
 				}
-				
+
 				while( ( cursorPos > 0 ) && ( buffer[ cursorPos - 1 ] != ' ' ) )
 				{
 					cursorPos--;
@@ -410,12 +410,12 @@ const char* idEditWindow::HandleEvent( const sysEvent_t* event, bool* updateVisu
 					cursorPos--;
 				}
 			}
-			
+
 			EnsureCursorVisible();
-			
+
 			return "";
 		}
-		
+
 		if( key == K_HOME )
 		{
 			if( ( idKeyInput::IsDown( K_LCTRL ) || idKeyInput::IsDown( K_RCTRL ) ) || cursorLine <= 0 || ( cursorLine >= breaks.Num() ) )
@@ -429,7 +429,7 @@ const char* idEditWindow::HandleEvent( const sysEvent_t* event, bool* updateVisu
 			EnsureCursorVisible();
 			return "";
 		}
-		
+
 		if( key == K_END )
 		{
 			if( ( idKeyInput::IsDown( K_LCTRL ) || idKeyInput::IsDown( K_RCTRL ) ) || ( cursorLine < -1 ) || ( cursorLine >= breaks.Num() - 1 ) )
@@ -443,7 +443,7 @@ const char* idEditWindow::HandleEvent( const sysEvent_t* event, bool* updateVisu
 			EnsureCursorVisible();
 			return "";
 		}
-		
+
 		if( key == K_INS )
 		{
 			if( !readonly )
@@ -452,7 +452,7 @@ const char* idEditWindow::HandleEvent( const sysEvent_t* event, bool* updateVisu
 			}
 			return "";
 		}
-		
+
 		if( key == K_DOWNARROW )
 		{
 			if( ( idKeyInput::IsDown( K_LCTRL ) || idKeyInput::IsDown( K_RCTRL ) ) )
@@ -469,7 +469,7 @@ const char* idEditWindow::HandleEvent( const sysEvent_t* event, bool* updateVisu
 				}
 			}
 		}
-		
+
 		if( key == K_UPARROW )
 		{
 			if( ( idKeyInput::IsDown( K_LCTRL ) || idKeyInput::IsDown( K_RCTRL ) ) )
@@ -486,20 +486,20 @@ const char* idEditWindow::HandleEvent( const sysEvent_t* event, bool* updateVisu
 				}
 			}
 		}
-		
+
 		if( key == K_ENTER || key == K_KP_ENTER )
 		{
 			RunScript( ON_ACTION );
 			RunScript( ON_ENTER );
 			return cmd;
 		}
-		
+
 		if( key == K_ESCAPE )
 		{
 			RunScript( ON_ESC );
 			return cmd;
 		}
-		
+
 	}
 	else if( event->evType == SE_KEY && !event->evValue2 )
 	{
@@ -513,14 +513,14 @@ const char* idEditWindow::HandleEvent( const sysEvent_t* event, bool* updateVisu
 			RunScript( ON_ACTIONRELEASE );
 		}
 	}
-	
+
 	return "";
 }
 
 void idEditWindow::PostParse()
 {
 	idWindow::PostParse();
-	
+
 	if( maxChars == 0 )
 	{
 		maxChars = 10;
@@ -532,12 +532,12 @@ void idEditWindow::PostParse()
 		text = ( char* ) buffer;
 		fileSystem->FreeFile( buffer );
 	}
-	
+
 	InitCvar();
 	InitScroller( false );
-	
+
 	EnsureCursorVisible();
-	
+
 	flags |= WIN_CANFOCUS;
 }
 
@@ -553,17 +553,17 @@ void idEditWindow::InitScroller( bool horizontal )
 	const char* thumbImage = "guis/assets/scrollbar_thumb.tga";
 	const char* barImage = "guis/assets/scrollbarv.tga";
 	const char* scrollerName = "_scrollerWinV";
-	
+
 	if( horizontal )
 	{
 		barImage = "guis/assets/scrollbarh.tga";
 		scrollerName = "_scrollerWinH";
 	}
-	
+
 	const idMaterial* mat = declManager->FindMaterial( barImage );
 	mat->SetSort( SS_GUI );
 	sizeBias = mat->GetImageWidth();
-	
+
 	idRectangle scrollRect;
 	if( horizontal )
 	{
@@ -580,7 +580,7 @@ void idEditWindow::InitScroller( bool horizontal )
 		scrollRect.w = sizeBias;
 		scrollRect.h = clientRect.h;
 	}
-	
+
 	scroller->InitWithDefaults( scrollerName, scrollRect, foreColor, matColor, mat->GetName(), thumbImage, !horizontal, true );
 	InsertChild( scroller, NULL );
 	scroller->SetBuddy( this );
@@ -600,12 +600,12 @@ void idEditWindow::EnsureCursorVisible()
 	{
 		cursorPos = 0;
 	}
-	
+
 	if( !dc )
 	{
 		return;
 	}
-	
+
 	SetFont();
 	if( !wrap )
 	{
@@ -633,7 +633,7 @@ void idEditWindow::EnsureCursorVisible()
 		int maxWidth = GetMaxCharWidth( );
 		int left = cursorX - maxWidth;
 		int right = ( cursorX - textRect.w ) + maxWidth;
-		
+
 		if( paintOffset > left )
 		{
 			// When we go past the left side, we want the text to jump 6 characters
@@ -648,17 +648,17 @@ void idEditWindow::EnsureCursorVisible()
 			paintOffset = 0;
 		}
 		scroller->SetRange( 0.0f, 0.0f, 1.0f );
-		
+
 	}
 	else
 	{
 		// Word wrap
-		
+
 		breaks.Clear();
 		idRectangle rect = textRect;
 		rect.w -= sizeBias;
 		dc->DrawText( text, textScale, textAlign, colorWhite, rect, true, ( flags & WIN_FOCUS ) ? cursorPos : -1, true, &breaks );
-		
+
 		int fit = textRect.h / ( GetMaxCharHeight() + 5 );
 		if( fit < breaks.Num() + 1 )
 		{
@@ -669,7 +669,7 @@ void idEditWindow::EnsureCursorVisible()
 			// The text fits completely in the box
 			scroller->SetRange( 0.0f, 0.0f, 1.0f );
 		}
-		
+
 		if( forceScroll )
 		{
 			scroller->SetValue( breaks.Num() - fit );
@@ -730,7 +730,7 @@ void idEditWindow::InitCvar( )
 		cvar = NULL;
 		return;
 	}
-	
+
 	cvar = cvarSystem->Find( cvarStr );
 	if( !cvar )
 	{
@@ -774,7 +774,7 @@ idEditWindow::RunNamedEvent
 void idEditWindow::RunNamedEvent( const char* eventName )
 {
 	idStr event, group;
-	
+
 	if( !idStr::Cmpn( eventName, "cvar read ", 10 ) )
 	{
 		event = eventName;

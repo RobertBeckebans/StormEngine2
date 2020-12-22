@@ -32,7 +32,7 @@ If you have questions concerning this license or the applicable additional terms
 #define AFX_ENTITYLISTDLG_H__C241B9A3_819F_11D1_B548_00AA00A410FC__INCLUDED_
 
 #if _MSC_VER >= 1000
-#pragma once
+	#pragma once
 #endif // _MSC_VER >= 1000
 // EntityListDlg.h : header file
 //
@@ -47,21 +47,21 @@ public:
 	CEntityListDlg( CWnd* pParent = NULL ); // standard constructor
 	void UpdateList();
 	static void ShowDialog();
-	
+
 // Dialog Data
 	//{{AFX_DATA(CEntityListDlg)
 	enum { IDD = IDD_DLG_ENTITYLIST };
 	CListCtrl	m_lstEntity;
 	//}}AFX_DATA
-	
-	
+
+
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CEntityListDlg)
 protected:
 	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	//}}AFX_VIRTUAL
-	
+
 // Implementation
 protected:
 
@@ -72,7 +72,7 @@ protected:
 	virtual void OnCancel();
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSysCommand( UINT nID,  LPARAM lParam );
-	
+
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 public:

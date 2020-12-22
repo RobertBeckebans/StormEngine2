@@ -39,7 +39,7 @@ class idSWFScriptFunction
 {
 public:
 	virtual ~idSWFScriptFunction() {};
-	
+
 	virtual idSWFScriptVar	Call( idSWFScriptObject* thisObject, const idSWFParmList& parms )
 	{
 		return idSWFScriptVar();
@@ -78,7 +78,7 @@ protected:
 	T* pThis;
 public:
 	idSWFScriptFunction_Nested() : pThis( NULL ) { }
-	
+
 	idSWFScriptFunction* 	Bind( T* _pThis )
 	{
 		pThis = _pThis;
@@ -132,7 +132,7 @@ public:
 	{
 		Clear();
 	}
-	
+
 	void				Clear();
 	void				Copy( const idSWFConstantPool& other );
 	idSWFScriptString* Get( int n )
@@ -143,7 +143,7 @@ public:
 	{
 		pool.Append( s );
 	}
-	
+
 private:
 	idList< idSWFScriptString*, TAG_SWF > pool;
 };
@@ -191,7 +191,7 @@ public:
 		registers.SetNum( 4 );
 	}
 	virtual		~idSWFScriptFunction_Script();
-	
+
 	static idSWFScriptFunction_Script* 	Alloc()
 	{
 		return new( TAG_SWF ) idSWFScriptFunction_Script;
@@ -207,7 +207,7 @@ public:
 			delete this;
 		}
 	}
-	
+
 	// This could all be passed to Alloc (and was at one time) but in some places it's far more convenient to specify each separately
 	void	SetFlags( uint16 _flags )
 	{
@@ -240,7 +240,7 @@ public:
 		parameters[n].reg = r;
 		parameters[n].name = name;
 	}
-	
+
 	idSWFScriptObject* GetPrototype()
 	{
 		return prototype;
@@ -251,27 +251,27 @@ public:
 		assert( prototype == NULL );
 		prototype = _prototype;
 	}
-	
+
 	virtual idSWFScriptVar	Call( idSWFScriptObject* thisObject, const idSWFParmList& parms );
-	
+
 private:
 	idSWFScriptVar Run( idSWFScriptObject* thisObject, idSWFStack& stack, idSWFBitStream& bitstream );
-	
+
 private:
 	int					refCount;
-	
+
 	uint16				flags;
 	const  byte* 		data;
 	uint32				length;
 	idSWFScriptObject* prototype;
-	
+
 	idSWFSpriteInstance* defaultSprite;		// some actions have an implicit sprite they work off of (e.g. Action_GotoFrame outside of object scope)
-	
+
 	idList< idSWFScriptObject*, TAG_SWF > scope;
-	
+
 	idSWFConstantPool	constants;
 	idList< idSWFScriptVar, TAG_SWF > registers;
-	
+
 	struct parmInfo_t
 	{
 		const char* name;

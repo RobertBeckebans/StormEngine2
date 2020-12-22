@@ -57,7 +57,7 @@ void WINAPI QE_CheckOpenGLForErrors( void )
 			{
 				Map_SaveFile( NULL, false );
 			}
-			
+
 			exit( 1 );
 		}
 		else
@@ -81,7 +81,7 @@ bool DoesFileExist( const char* pBuff, long& lSize )
 		file.Close();
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -102,7 +102,7 @@ bool ExtractPath_and_Filename( const char* pPath, CString& strPath, CString& str
 	{
 		strFilename = pPath;
 	}
-	
+
 	return true;
 }
 
@@ -113,7 +113,7 @@ bool ExtractPath_and_Filename( const char* pPath, CString& strPath, CString& str
 void Map_Snapshot()
 {
 	CString strMsg;
-	
+
 	//
 	// we need to do the following 1. make sure the snapshot directory exists (create
 	// it if it doesn't) 2. find out what the lastest save is based on number 3. inc
@@ -123,14 +123,14 @@ void Map_Snapshot()
 	ExtractPath_and_Filename( currentmap, strOrgPath, strOrgFile );
 	AddSlash( strOrgPath );
 	strOrgPath += "snapshots";
-	
+
 	bool			bGo = true;
 	struct _stat	Stat;
 	if( _stat( strOrgPath, &Stat ) == -1 )
 	{
 		bGo = ( _mkdir( strOrgPath ) != -1 );
 	}
-	
+
 	AddSlash( strOrgPath );
 	if( bGo )
 	{
@@ -138,7 +138,7 @@ void Map_Snapshot()
 		long	lSize = 0;
 		CString strNewPath = strOrgPath;
 		strNewPath += strOrgFile;
-		
+
 		CString strFile;
 		while( bGo )
 		{
@@ -146,7 +146,7 @@ void Map_Snapshot()
 			bGo = DoesFileExist( strFile, lSize );
 			nCount++;
 		}
-		
+
 		// strFile has the next available slot
 		Map_SaveFile( strFile.GetBuffer( 0 ), false );
 		Sys_SetTitle( currentmap );
@@ -180,19 +180,19 @@ void QE_CheckAutoSave( void )
 		Sys_Status( "Did not autosave due recursive entry into autosave routine\n" );
 		return;
 	}
-	
+
 	if( !mapModified )
 	{
 		return;
 	}
-	
+
 	inAutoSave = true;
-	
+
 	if( g_PrefsDlg.m_bAutoSave )
 	{
 		CString strMsg = g_PrefsDlg.m_bSnapShots ? "Autosaving snapshot..." : "Autosaving...";
 		Sys_Status( strMsg.GetBuffer( 0 ), 0 );
-		
+
 		if( g_PrefsDlg.m_bSnapShots && stricmp( currentmap, "unnamed.map" ) != 0 )
 		{
 			Map_Snapshot();
@@ -210,7 +210,7 @@ void QE_CheckAutoSave( void )
 		common->Printf( "Autosave skipped...\n" );
 		Sys_Status( "Autosave skipped...", 0 );
 	}
-	
+
 	inAutoSave = false;
 }
 
@@ -222,13 +222,13 @@ void QE_CheckAutoSave( void )
 const char*	g_pPathFixups[] =
 {
 	"basepath",
-	
+
 	// "remotebasepath",
 	"entitypath",
-	
+
 	// "texturepath",
 	"autosave",
-	
+
 	// "mapspath"
 };
 
@@ -243,45 +243,45 @@ bool QE_LoadProject( char* projectfile )
 {
 	char*		data;
 	ID_TIME_T		time;
-	
+
 	common->Printf( "QE_LoadProject (%s)\n", projectfile );
-	
+
 	if( fileSystem->ReadFile( projectfile, reinterpret_cast < void** >( &data ), &time ) <= 0 )
 	{
 		return false;
 	}
-	
+
 	g_strProject = projectfile;
 	g_PrefsDlg.m_strLastProject = projectfile;
 	g_PrefsDlg.SavePrefs();
-	
+
 	CString strData = data;
-	
+
 	fileSystem->FreeFile( data );
-	
+
 	StartTokenParsing( strData.GetBuffer( 0 ) );
 	g_qeglobals.d_project_entity = Entity_Parse( true );
 	if( !g_qeglobals.d_project_entity )
 	{
 		Error( "Couldn't parse %s", projectfile );
 	}
-	
+
 	// set here some default project settings you need
 	if( strlen( ValueForKey( g_qeglobals.d_project_entity, "brush_primit" ) ) == 0 )
 	{
 		SetKeyValue( g_qeglobals.d_project_entity, "brush_primit", "0" );
 	}
-	
+
 	g_qeglobals.m_bBrushPrimitMode = IntForKey( g_qeglobals.d_project_entity, "brush_primit" );
-	
+
 	Eclass_InitForSourceDirectory( ValueForKey( g_qeglobals.d_project_entity, "entitypath" ) );
 	g_Inspectors->FillClassList();	// list in entity window
-	
+
 	Map_New();
-	
+
 	// FillTextureMenu();
 	FillBSPMenu();
-	
+
 	return true;
 }
 
@@ -298,19 +298,19 @@ bool QE_SaveProject( const char* pProjectFile )
 	{
 		return false;
 	}
-	
+
 	file->Write( "{\n", 2 );
-	
+
 	int count = g_qeglobals.d_project_entity->epairs.GetNumKeyVals();
 	for( int i = 0; i < count; i++ )
 	{
 		file->WriteFloatString( "\"%s\" \"%s\"\n", g_qeglobals.d_project_entity->epairs.GetKeyVal( i )->GetKey().c_str(), g_qeglobals.d_project_entity->epairs.GetKeyVal( i )->GetValue().c_str() );
 	}
-	
+
 	file->Write( "}\n", 2 );
-	
+
 	fileSystem->CloseFile( file );
-	
+
 	return true;
 }
 
@@ -329,16 +329,16 @@ void ConnectEntities( void )
 	const char*		target;
 	idStr strTarget;
 	int i, t;
-	
+
 	if( g_qeglobals.d_select_count < 2 )
 	{
 		Sys_Status( "Must have at least two brushes selected.", 0 );
 		Sys_Beep();
 		return;
 	}
-	
+
 	e1 = g_qeglobals.d_select_order[0]->owner;
-	
+
 	for( i = 0; i < g_qeglobals.d_select_count; i++ )
 	{
 		if( g_qeglobals.d_select_order[i]->owner == world_entity )
@@ -348,7 +348,7 @@ void ConnectEntities( void )
 			return;
 		}
 	}
-	
+
 	for( i = 1; i < g_qeglobals.d_select_count; i++ )
 	{
 		if( e1 == g_qeglobals.d_select_order[i]->owner )
@@ -358,7 +358,7 @@ void ConnectEntities( void )
 			return;
 		}
 	}
-	
+
 	target = ValueForKey( e1, "target" );
 	if( target && *target )
 	{
@@ -379,7 +379,7 @@ void ConnectEntities( void )
 	{
 		t = 0;
 	}
-	
+
 	for( i = 1; i < g_qeglobals.d_select_count; i++ )
 	{
 		target = ValueForKey( g_qeglobals.d_select_order[i]->owner, "name" );
@@ -401,9 +401,9 @@ void ConnectEntities( void )
 		}
 		t++;
 	}
-	
+
 	Sys_UpdateWindows( W_XY | W_CAMERA );
-	
+
 	Select_Deselect();
 	Select_Brush( g_qeglobals.d_select_order[1] );
 }
@@ -420,20 +420,20 @@ bool QE_SingleBrush( bool bQuiet, bool entityOK )
 		{
 			Sys_Status( "Error: you must have a single brush selected\n" );
 		}
-		
+
 		return false;
 	}
-	
+
 	if( !entityOK && selected_brushes.next->owner->eclass->fixedsize )
 	{
 		if( !bQuiet )
 		{
 			Sys_Status( "Error: you cannot manipulate fixed size entities\n" );
 		}
-		
+
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -446,7 +446,7 @@ void QE_Init( void )
 	/* initialize variables */
 	g_qeglobals.d_gridsize = 8;
 	g_qeglobals.d_showgrid = true;
-	
+
 	/*
 	 * other stuff £
 	 * FIXME: idMaterial Texture_Init (true); Cam_Init (); XY_Init ();
@@ -465,13 +465,13 @@ void QE_CountBrushesAndUpdateStatusBar( void )
 {
 	static int	s_lastbrushcount, s_lastentitycount;
 	static bool s_didonce;
-	
+
 	// entity_t *e;
 	brush_t*		b, *next;
-	
+
 	g_numbrushes = 0;
 	g_numentities = 0;
-	
+
 	if( active_brushes.next != NULL )
 	{
 		for( b = active_brushes.next; b != NULL && b != &active_brushes; b = next )
@@ -490,7 +490,7 @@ void QE_CountBrushesAndUpdateStatusBar( void )
 			}
 		}
 	}
-	
+
 	/*
 	 * if ( entities.next != NULL ) { for ( e = entities.next ; e != &entities &&
 	 * g_numentities != MAX_MAP_ENTITIES ; e = e->next) { g_numentities++; } }
@@ -498,7 +498,7 @@ void QE_CountBrushesAndUpdateStatusBar( void )
 	if( ( ( g_numbrushes != s_lastbrushcount ) || ( g_numentities != s_lastentitycount ) ) || ( !s_didonce ) )
 	{
 		Sys_UpdateStatusBar();
-		
+
 		s_lastbrushcount = g_numbrushes;
 		s_lastentitycount = g_numentities;
 		s_didonce = true;

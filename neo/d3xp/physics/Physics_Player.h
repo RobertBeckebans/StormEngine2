@@ -71,7 +71,7 @@ typedef struct playerPState_s
 	int						movementType;
 	int						movementFlags;
 	int						movementTime;
-	
+
 	playerPState_s() :
 		origin( vec3_zero ),
 		velocity( vec3_zero ),
@@ -90,12 +90,12 @@ class idPhysics_Player : public idPhysics_Actor
 
 public:
 	CLASS_PROTOTYPE( idPhysics_Player );
-	
+
 	idPhysics_Player();
-	
+
 	void					Save( idSaveGame* savefile ) const;
 	void					Restore( idRestoreGame* savefile );
-	
+
 	// initialisation
 	void					SetSpeed( const float newWalkSpeed, const float newCrouchSpeed );
 	void					SetMaxStepHeight( const float newMaxStepHeight );
@@ -114,111 +114,111 @@ public:
 	bool					IsCrouching() const;
 	bool					OnLadder() const;
 	const idVec3& 			PlayerGetOrigin() const;	// != GetOrigin
-	
+
 	void 					SetLadderJumpDist( const float newLadderJumpDist, const float newLadderJumpHeight, const float newLadderWeaponAng );	// ###### SR
-	
+
 public:	// common physics interface
 	bool					Evaluate( int timeStepMSec, int endTimeMSec );
 	bool					Interpolate( const float fraction );
 	void					UpdateTime( int endTimeMSec );
 	int						GetTime() const;
-	
+
 	void					GetImpactInfo( const int id, const idVec3& point, impactInfo_t* info ) const;
 	void					ApplyImpulse( const int id, const idVec3& point, const idVec3& impulse );
 	bool					IsAtRest() const;
 	int						GetRestStartTime() const;
-	
+
 	void					SaveState();
 	void					RestoreState();
-	
+
 	void					SetOrigin( const idVec3& newOrigin, int id = -1 );
 	void					SetAxis( const idMat3& newAxis, int id = -1 );
-	
+
 	void					Translate( const idVec3& translation, int id = -1 );
 	void					Rotate( const idRotation& rotation, int id = -1 );
-	
+
 	void					SetLinearVelocity( const idVec3& newLinearVelocity, int id = 0 );
-	
+
 	const idVec3& 			GetLinearVelocity( int id = 0 ) const;
-	
+
 	bool					ClientPusherLocked( bool& justBecameUnlocked );
 	void					SetPushed( int deltaTime );
 	void					SetPushedWithAbnormalVelocityHack( int deltaTime );
 	const idVec3& 			GetPushedLinearVelocity( const int id = 0 ) const;
 	void					ClearPushedVelocity();
-	
+
 	void					SetMaster( idEntity* master, BindFlags flags );
-	
+
 	void					WriteToSnapshot( idBitMsg& msg ) const;
 	void					ReadFromSnapshot( const idBitMsg& msg );
-	
+
 	void					SnapToNextState()
 	{
 		current = next;
 		previous = current;
 	}
-	
+
 	// ############ SR
-	
+
 	bool 					ladderWeapon;
 	bool					laddering;
-	
+
 	// ############ END SR
-	
+
 private:
 	// player physics state
 	playerPState_t			current;
 	playerPState_t			saved;
-	
+
 	// physics state for client interpolation
 	playerPState_t			previous;
 	playerPState_t			next;
-	
+
 	// properties
 	float					walkSpeed;
 	float					crouchSpeed;
 	float					maxStepHeight;
 	float					maxJumpHeight;
 	int						debugLevel;				// if set, diagnostic output will be printed
-	
+
 	// player input
 	usercmd_t				command;
 	idVec3					commandForward;		// can't use cmd.angles cause of the delta_angles and head tracking
-	
+
 	// run-time variables
 	int						framemsec;
 	float					frametime;
 	float					playerSpeed;
 	idVec3					viewForward;
 	idVec3					viewRight;
-	
+
 	// walk movement
 	bool					walking;
 	bool					groundPlane;
 	trace_t					groundTrace;
 	const idMaterial* 		groundMaterial;
-	
+
 	// ladder movement
 	bool					ladder;
 	idVec3					ladderNormal;
-	
+
 	// ########################################### SR
-	
+
 	float 					ladderJumpDist;
 	float 					ladderJumpHeight;
 	float					ladderWeaponAng;
 	float					ladderYaw;
 	bool					ladderJumping;
 	idVec3					ladderDir;
-	
+
 	// ################ END SR
-	
+
 	// results of last evaluate
 	waterLevel_t			waterLevel;
 	int						waterType;
-	
+
 	bool					clientPusherLocked;
-	
+
 private:
 	float					CmdScale( const usercmd_t& cmd ) const;
 	void					Accelerate( const idVec3& wishdir, const float wishspeed, const float accel );

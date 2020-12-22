@@ -44,26 +44,26 @@ class MaterialPropTreeView : public CPropTreeView, public MaterialView
 
 public:
 	virtual				~MaterialPropTreeView();
-	
+
 	void				SetPropertyListType( int listType, int stageNum = -1 );
-	
+
 	void				LoadSettings();
 	void				SaveSettings();
-	
+
 	//Material Interface
 	virtual void		MV_OnMaterialChange( MaterialDoc* pMaterial );
-	
+
 protected:
 	MaterialPropTreeView();
 	DECLARE_DYNCREATE( MaterialPropTreeView )
-	
+
 	afx_msg void		OnPropertyChangeNotification( NMHDR* nmhdr, LRESULT* lresult );
 	afx_msg void		OnPropertyItemExpanding( NMHDR* nmhdr, LRESULT* lresult );
 	DECLARE_MESSAGE_MAP()
-	
+
 	MaterialDef*		FindDefForTreeID( UINT treeID );
 	void				RefreshProperties();
-	
+
 protected:
 
 	MaterialDoc*		currentMaterial;

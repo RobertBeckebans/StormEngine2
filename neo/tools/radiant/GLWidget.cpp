@@ -36,11 +36,11 @@ If you have questions concerning this license or the applicable additional terms
 
 // foresthale 2014-05-29: let's not use the MFC DEBUG_NEW when we have our own...
 #ifdef ID_DEBUG_NEW_MFC
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+	#ifdef _DEBUG
+		#define new DEBUG_NEW
+		#undef THIS_FILE
+		static char THIS_FILE[] = __FILE__;
+	#endif
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
@@ -61,27 +61,27 @@ static idMiniDrawVert cubeData[] =
 	idMiniDrawVert( +1.0, -1.0, +1.0, 1.0, 0.0 ),
 	idMiniDrawVert( +1.0, +1.0, +1.0, 1.0, 1.0 ),
 	idMiniDrawVert( -1.0, +1.0, +1.0, 0.0, 1.0 ),
-	
+
 	idMiniDrawVert( -1.0, -1.0, -1.0, 1.0, 0.0 ),
 	idMiniDrawVert( -1.0, +1.0, +1.0, 1.0, 1.0 ),
 	idMiniDrawVert( +1.0, +1.0, -1.0, 0.0, 1.0 ),
 	idMiniDrawVert( +1.0, -1.0, -1.0, 0.0, 0.0 ),
-	
+
 	idMiniDrawVert( -1.0, +1.0, -1.0, 0.0, 1.0 ),
 	idMiniDrawVert( -1.0, +1.0, +1.0, 0.0, 0.0 ),
 	idMiniDrawVert( +1.0, +1.0, +1.0, 1.0, 0.0 ),
 	idMiniDrawVert( +1.0, +1.0, -1.0, 1.0, 1.0 ),
-	
+
 	idMiniDrawVert( -1.0, -1.0, -1.0, 1.0, 1.0 ),
 	idMiniDrawVert( +1.0, -1.0, -1.0, 0.0, 1.0 ),
 	idMiniDrawVert( +1.0, -1.0, +1.0, 0.0, 0.0 ),
 	idMiniDrawVert( -1.0, -1.0, +1.0, 1.0, 0.0 ),
-	
+
 	idMiniDrawVert( +1.0, -1.0, -1.0, 1.0, 0.0 ),
 	idMiniDrawVert( +1.0, +1.0, -1.0, 1.0, 1.0 ),
 	idMiniDrawVert( +1.0, +1.0, +1.0, 0.0, 1.0 ),
 	idMiniDrawVert( +1.0, -1.0, +1.0, 0.0, 0.0 ),
-	
+
 	idMiniDrawVert( -1.0, -1.0, -1.0, 0.0, 0.0 ),
 	idMiniDrawVert( -1.0, -1.0, +1.0, 1.0, 0.0 ),
 	idMiniDrawVert( -1.0, +1.0, +1.0, 1.0, 1.0 ),
@@ -141,7 +141,7 @@ END_MESSAGE_MAP()
 BOOL idGLWidget::PreCreateWindow( CREATESTRUCT& cs )
 {
 	// TODO: Add your specialized code here and/or call the base class
-	
+
 	return CWnd::PreCreateWindow( cs );
 }
 
@@ -151,13 +151,13 @@ BOOL idGLWidget::Create( LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dw
 	{
 		return FALSE;
 	}
-	
+
 	CDC* dc = GetDC();
 	QEW_SetupPixelFormat( dc->m_hDC, false );
 	ReleaseDC( dc );
-	
+
 	return TRUE;
-	
+
 }
 
 void idGLWidget::OnPaint()
@@ -171,29 +171,29 @@ void idGLWidget::OnPaint()
 		initialized = true;
 	}
 	CPaintDC dc( this ); // device context for painting
-	
+
 	CRect rect;
 	GetClientRect( rect );
-	
+
 	if( !qwglMakeCurrent( dc.m_hDC, win32.hGLRC ) )
 	{
 	}
-	
+
 	// foresthale 2014-05-19: set up familiar state for editors before we draw anything
 	tr.Editor_SetupState();
-	
+
 	qglViewport( 0, 0, rect.Width(), rect.Height() );
 	qglScissor( 0, 0, rect.Width(), rect.Height() );
 	qglMatrixMode( GL_PROJECTION );
 	qglLoadIdentity();
 	qglClearColor( 0.4f, 0.4f, 0.4f, 0.7f );
 	qglClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-	
-	
+
+
 	qglDisable( GL_DEPTH_TEST );
 	qglDisable( GL_BLEND );
 	qglOrtho( 0, rect.Width(), 0, rect.Height(), -256, 256 );
-	
+
 	if( drawable )
 	{
 		drawable->draw( 1, 1, rect.Width() - 1, rect.Height() - 1 );
@@ -207,11 +207,11 @@ void idGLWidget::OnPaint()
 		qglClearColor( 0.4f, 0.4f, 0.4f, 0.7f );
 		qglClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	}
-	
+
 	qwglSwapBuffers( dc );
 	qglFlush();
 	qwglMakeCurrent( win32.hDC, win32.hGLRC );
-	
+
 }
 
 extern bool Sys_KeyDown( int key );
@@ -243,13 +243,13 @@ void idGLDrawable::mouseMove( float x, float y )
 			// scale
 			float* px = &x;
 			float* px2 = &pressX;
-			
+
 			if( fDiff( y, pressY ) > fDiff( x, pressX ) )
 			{
 				px = &y;
 				px2 = &pressY;
 			}
-			
+
 			if( *px > *px2 )
 			{
 				// zoom in
@@ -268,10 +268,10 @@ void idGLDrawable::mouseMove( float x, float y )
 					scale = 0.001f;
 				}
 			}
-			
+
 			*px2 = *px;
 			::SetCursorPos( pressX, pressY );
-			
+
 		}
 		else if( Sys_KeyDown( VK_SHIFT ) )
 		{
@@ -317,7 +317,7 @@ void idGLDrawable::draw( int x, int y, int w, int h )
 	qglColor3f( 1, 1, 1 );
 	qglVertex2f( w - 3, y + 3 );
 	qglEnd();
-	
+
 }
 
 static int viewAngle = -98;
@@ -340,13 +340,13 @@ void idGLDrawableMaterial::mouseMove( float x, float y )
 			// scale
 			float* px = &x;
 			float* px2 = &pressX;
-			
+
 			if( fDiff( y, pressY ) > fDiff( x, pressX ) )
 			{
 				px = &y;
 				px2 = &pressY;
 			}
-			
+
 			if( *px > *px2 )
 			{
 				// zoom in
@@ -419,7 +419,7 @@ void idGLDrawableMaterial::draw( int x, int y, int w, int h )
 		qglMatrixMode( GL_PROJECTION );
 		qglClearColor( 0.1f, 0.1f, 0.1f, 0.0f );
 		qglClear( GL_COLOR_BUFFER_BIT );
-		
+
 		if( worldDirty )
 		{
 			InitWorld();
@@ -433,10 +433,10 @@ void idGLDrawableMaterial::draw( int x, int y, int w, int h )
 			spawnArgs.Set( "_color", str );
 			gameEdit->ParseSpawnArgsToRenderLight( &spawnArgs, &parms );
 			lightDef = world->AddLightDef( &parms );
-			
+
 			//idImage *img = (mat->GetNumStages() > 0) ? mat->GetStage(0)->texture.image : mat->GetEditorImage();
 			idImage* img = mat->GetEditorImage();
-			
+
 			// foresthale 2014-05-10: the ink shader usually comes first, but we want the SL_DIFFUSE stage
 			if( mat->GetNumStages() > 0 )
 			{
@@ -452,68 +452,68 @@ void idGLDrawableMaterial::draw( int x, int y, int w, int h )
 					}
 				}
 			}
-			
+
 			if( img == NULL )
 			{
 				common->Warning( "Unable to load image for preview for %s", mat->GetName() );
 				return;
 			}
-			
+
 			int width = img->GetUploadWidth();
 			int height = img->GetUploadHeight();
-			
+
 			width *= scale;
 			height *= scale;
-			
+
 			srfTriangles_t* tris = worldModel->AllocSurfaceTriangles( 4, 6 );
 			tris->numVerts = 4;
 			tris->numIndexes = 6;
-			
+
 			tris->indexes[0] = 0;
 			tris->indexes[1] = 1;
 			tris->indexes[2] = 2;
 			tris->indexes[3] = 3;
 			tris->indexes[4] = 1;
 			tris->indexes[5] = 0;
-			
+
 			// foresthale 2014-05-10: BFG brought major changes to the normals/tangents format, so this has been rewritten
 			// changes as follows:
 			// passing in known constant normals/tangent/bitangent because there's no point in doing a cross here, also they must be unit length now
 			// texcoords changed from float to halfFloat, C has no native type for this, so the assignments had to change to use SetTexCoord
-			
+
 			tris->verts[0].xyz.x = 64;
 			tris->verts[0].xyz.y = -xOffset + 0 - width / 2;
 			tris->verts[0].xyz.z = yOffset + 0 - height / 2;
 			tris->verts[0].SetTexCoord( 1.0f, 1.0f );
-			
+
 			tris->verts[1].xyz.x = 64;
 			tris->verts[1].xyz.y = -xOffset + width / 2;
 			tris->verts[1].xyz.z = yOffset + height / 2;
 			tris->verts[1].SetTexCoord( 0.0f, 0.0f );
-			
+
 			tris->verts[2].xyz.x = 64;
 			tris->verts[2].xyz.y = -xOffset + 0 - width / 2;
 			tris->verts[2].xyz.z = yOffset + height / 2;
 			tris->verts[2].SetTexCoord( 1.0f, 0.0f );
-			
+
 			tris->verts[3].xyz.x = 64;
 			tris->verts[3].xyz.y = -xOffset + width / 2;
 			tris->verts[3].xyz.z = yOffset + 0 - height / 2;
 			tris->verts[3].SetTexCoord( 0.0f, 1.0f );
-			
+
 			for( int i = 0; i < 4; i++ )
 			{
 				tris->verts[i].SetNormal( -1.0f, 0.0f, 0.0f );
 				tris->verts[i].SetTangent( 0.0f, -1.0f, 0.0f );
 				tris->verts[i].SetBiTangent( 0.0f, 0.0f, 1.0f );
 			}
-			
+
 			AddTris( tris, mat );
-			
+
 			worldModel->FinishSurfaces();
-			
+
 			renderEntity_t worldEntity;
-			
+
 			memset( &worldEntity, 0, sizeof( worldEntity ) );
 			if( mat->HasGui() )
 			{
@@ -526,10 +526,10 @@ void idGLDrawableMaterial::draw( int x, int y, int w, int h )
 			worldEntity.shaderParms[2] = 1;
 			worldEntity.shaderParms[3] = 1;
 			modelDef = world->AddEntityDef( &worldEntity );
-			
+
 			worldDirty = false;
 		}
-		
+
 		renderView_t	refdef;
 		// render it
 #if 1 //FIX_RADIANT
@@ -537,36 +537,36 @@ void idGLDrawableMaterial::draw( int x, int y, int w, int h )
 		//commonLocal.WaitGameThread();
 		int originalNativeWidth, originalNativeHeight;
 		tr.Editor_BeginView( x + w, y + h, originalNativeWidth, originalNativeHeight );
-		
+
 		//renderSystem->BeginFrame(w, h);
 		memset( &refdef, 0, sizeof( refdef ) );
 		refdef.vieworg.Set( viewAngle, 0, 0 );
-		
+
 		refdef.viewaxis = idAngles( 0, 0, 0 ).ToMat3();
 		refdef.shaderParms[0] = 1;
 		refdef.shaderParms[1] = 1;
 		refdef.shaderParms[2] = 1;
 		refdef.shaderParms[3] = 1;
-		
+
 		refdef.width = SCREEN_WIDTH;
 		refdef.height = SCREEN_HEIGHT;
 		refdef.fov_x = 90;
 		refdef.fov_y = 2 * atan( ( float )h / w ) * idMath::M_RAD2DEG;
-		
+
 		refdef.time[0] = refdef.time[1] = eventLoop->Milliseconds();
-		
+
 		world->RenderScene( &refdef );
 		//int frontEnd, backEnd;
 		//renderSystem->EndFrame( &frontEnd, &backEnd );
-		
+
 		// foresthale 2014-05-10: the tools do not use shaders, so unbind now
 		tr.Editor_EndView( originalNativeWidth, originalNativeHeight );
 #endif
-		
+
 		qglMatrixMode( GL_MODELVIEW );
 		qglLoadIdentity();
 	}
-	
+
 }
 
 void idGLDrawableMaterial::setMedia( const char* name )
@@ -583,7 +583,7 @@ void idGLDrawableMaterial::setMedia( const char* name )
 			//} else {
 			//	img = material->GetEditorImage();
 			//}
-			
+
 			// foresthale 2014-05-10: the ink shader usually comes first, but we want the SL_DIFFUSE stage
 			img = material->GetEditorImage();
 			if( material->GetNumStages() > 0 )
@@ -607,10 +607,10 @@ void idGLDrawableMaterial::setMedia( const char* name )
 		material = NULL;
 	}
 	// set scale to get a good fit
-	
+
 	if( material && img )
 	{
-	
+
 		float size = ( img->GetUploadWidth() > img->GetUploadHeight() ) ? img->GetUploadWidth() : img->GetUploadHeight();
 		// use 128 as base scale of 1.0
 		scale = 128.0 / size;
@@ -659,7 +659,7 @@ void idGLDrawableModel::buttonDown( int _button, float x, float y )
 {
 	pressX = x;
 	pressY = y;
-	
+
 	lastPress.y = -( float )( 2 * x - rect.z ) / rect.z;
 	lastPress.x = -( float )( 2 * y - rect.w ) / rect.w;
 	lastPress.z = 0.0f;
@@ -687,15 +687,15 @@ void idGLDrawableModel::mouseMove( float x, float y )
 			float len = ( lastPress - to ).Length() / ( 2.0f * radius );
 			len = idMath::ClampFloat( -1.0f, 1.0f, len );
 			float phi = 2.0f * asin( len ) ;
-			
+
 			axis.Normalize();
 			axis *= sin( phi / 2.0f );
 			idQuat rot( axis.z, axis.y, axis.x, cos( phi / 2.0f ) );
 			rot.Normalize();
-			
+
 			rotation *= rot;
 			rotation.Normalize();
-			
+
 			lastPress = to;
 			lastPress.z = 0.0f;
 		}
@@ -708,13 +708,13 @@ void idGLDrawableModel::mouseMove( float x, float y )
 				// scale
 				float* px = &x;
 				float* px2 = &pressX;
-				
+
 				if( fDiff( y, pressY ) > fDiff( x, pressX ) )
 				{
 					px = &y;
 					px2 = &pressY;
 				}
-				
+
 				if( *px > *px2 )
 				{
 					light += 0.05f;
@@ -778,15 +778,15 @@ void idGLDrawableModel::draw( int x, int y, int w, int h )
 	{
 		//return;
 	}
-	
+
 	rect.Set( x, y, w, h );
-	
+
 	qglViewport( x, y, w, h );
 	qglScissor( x, y, w, h );
 	qglMatrixMode( GL_PROJECTION );
 	qglClearColor( 0.1f, 0.1f, 0.1f, 0.0f );
 	qglClear( GL_COLOR_BUFFER_BIT );
-	
+
 	if( worldDirty )
 	{
 		//InitWorld();
@@ -801,7 +801,7 @@ void idGLDrawableModel::draw( int x, int y, int w, int h )
 		spawnArgs.Set( "_color", str );
 		gameEdit->ParseSpawnArgsToRenderLight( &spawnArgs, &parms );
 		lightDef = world->AddLightDef( &parms );
-		
+
 		renderEntity_t worldEntity;
 		memset( &worldEntity, 0, sizeof( worldEntity ) );
 		spawnArgs.Clear();
@@ -814,46 +814,46 @@ void idGLDrawableModel::draw( int x, int y, int w, int h )
 		}
 		gameEdit->ParseSpawnArgsToRenderEntity( &spawnArgs, &worldEntity );
 		worldEntity.hModel = worldModel;
-		
+
 		worldEntity.axis = rotation.ToMat3();
-		
+
 		worldEntity.shaderParms[0] = 1;
 		worldEntity.shaderParms[1] = 1;
 		worldEntity.shaderParms[2] = 1;
 		worldEntity.shaderParms[3] = 1;
 		modelDef = world->AddEntityDef( &worldEntity );
-		
+
 		worldDirty = false;
 	}
-	
+
 	renderView_t	refdef;
 	// render it
 #if 1 //FIX_RADIANT
 	// foresthale 2014-05-19: cleaned up editor begin/end rendering code
 	int originalNativeWidth, originalNativeHeight;
 	tr.Editor_BeginView( x + w, y + h, originalNativeWidth, originalNativeHeight );
-	
+
 	memset( &refdef, 0, sizeof( refdef ) );
 	refdef.vieworg.Set( zOffset, xOffset, -yOffset );
-	
+
 	refdef.viewaxis = idAngles( 0, 0, 0 ).ToMat3();
 	refdef.shaderParms[0] = 1;
 	refdef.shaderParms[1] = 1;
 	refdef.shaderParms[2] = 1;
 	refdef.shaderParms[3] = 1;
-	
+
 	refdef.width = SCREEN_WIDTH;
 	refdef.height = SCREEN_HEIGHT;
 	refdef.fov_x = 90;
 	refdef.fov_y = 2 * atan( ( float )h / w ) * idMath::M_RAD2DEG;
-	
+
 	refdef.time[0] = refdef.time[1] = eventLoop->Milliseconds();
-	
+
 	world->RenderScene( &refdef );
-	
+
 	tr.Editor_EndView( originalNativeWidth, originalNativeHeight );
 #endif
-	
+
 	qglMatrixMode( GL_MODELVIEW );
 	qglLoadIdentity();
 }
@@ -1007,7 +1007,7 @@ idGLDrawable::idGLDrawable()
 	yOffset = 0.0;
 	handleMove = false;
 	realTime = 0;
-	
+
 }
 
 void idGLDrawableConsole::draw( int x, int y, int w, int h )
@@ -1020,9 +1020,9 @@ void idGLDrawableConsole::draw( int x, int y, int w, int h )
 	// foresthale 2014-05-19: cleaned up editor begin/end rendering code
 	int originalNativeWidth, originalNativeHeight;
 	tr.Editor_BeginView( x + w, y + h, originalNativeWidth, originalNativeHeight );
-	
+
 	console->Draw( true );
-	
+
 	tr.Editor_EndView( originalNativeWidth, originalNativeHeight );
 #endif
 	qglPopAttrib();
@@ -1036,12 +1036,12 @@ void idGLConsoleWidget::init()
 void idGLConsoleWidget::OnKeyDown( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
 	sysEvent_t	ev;
-	
+
 	memset( &ev, 0, sizeof( ev ) );
 	ev.evType = SE_KEY;
 	ev.evValue2 = 1;
 	ev.evValue = nChar;
-	
+
 	::console->ProcessEvent( &ev, true );
 }
 
@@ -1060,12 +1060,12 @@ END_MESSAGE_MAP()
 void idGLConsoleWidget::OnKeyUp( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
 	sysEvent_t	ev;
-	
+
 	memset( &ev, 0, sizeof( ev ) );
 	ev.evType = SE_KEY;
 	ev.evValue2 = 0;
 	ev.evValue = nChar;
-	
+
 	::console->ProcessEvent( &ev, true );
 }
 
@@ -1077,11 +1077,11 @@ void idGLConsoleWidget::OnPaint()
 void idGLConsoleWidget::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
 	sysEvent_t	ev;
-	
+
 	memset( &ev, 0, sizeof( ev ) );
 	ev.evType = SE_CHAR;
 	ev.evValue = nChar;
-	
+
 	::console->ProcessEvent( &ev, true );
 }
 
@@ -1093,7 +1093,7 @@ void idGLConsoleWidget::OnLButtonDown( UINT nFlags, CPoint point )
 BOOL idGLWidget::OnEraseBkgnd( CDC* pDC )
 {
 	return FALSE;
-	
+
 	//return CWnd::OnEraseBkgnd(pDC);
 }
 

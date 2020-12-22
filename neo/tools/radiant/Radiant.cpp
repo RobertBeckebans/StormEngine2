@@ -40,11 +40,11 @@ If you have questions concerning this license or the applicable additional terms
 
 // foresthale 2014-05-29: let's not use the MFC DEBUG_NEW when we have our own...
 #ifdef ID_DEBUG_NEW_MFC
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+	#ifdef _DEBUG
+		#define new DEBUG_NEW
+		#undef THIS_FILE
+		static char THIS_FILE[] = __FILE__;
+	#endif
 #endif
 
 idCVar radiant_entityMode( "radiant_entityMode", "0", CVAR_TOOL | CVAR_ARCHIVE, "" );
@@ -123,9 +123,9 @@ void RadiantInit( void )
 		common->Printf( "no OpenGL running\n" );
 		return;
 	}
-	
+
 	g_editorAlive = true;
-	
+
 	// allocate a renderWorld and a soundWorld
 	if( g_qeglobals.rw == NULL )
 	{
@@ -136,7 +136,7 @@ void RadiantInit( void )
 	{
 		g_qeglobals.sw = soundSystem->AllocSoundWorld( g_qeglobals.rw );
 	}
-	
+
 	if( g_DoomInstance )
 	{
 		if( ::IsWindowVisible( win32.hWnd ) )
@@ -149,32 +149,34 @@ void RadiantInit( void )
 	else
 	{
 		Sys_GrabMouseCursor( false );
-		
+
 		g_DoomInstance = win32.hInstance;
-		
+
 		InitAfx();
-		
+
 		CWinApp* pApp = AfxGetApp();
 		CWinThread* pThread = AfxGetThread();
-		
+
 		// App global initializations (rare)
 		pApp->InitApplication();
-		
+
 		// Perform specific initializations
 		pThread->InitInstance();
-		
+
 		qglFinish();
 		//qwglMakeCurrent(0, 0);
 		qwglMakeCurrent( win32.hDC, win32.hGLRC );
-		
+
 		// foresthale 2014-05-19: we have to force wglSwapIntervalEXT to 0 or
 		// the editor viewports don't work (at least on nvidia) when the
 		// Media browser is visible, since the r_swapInterval cvar isn't
 		// actually being checked while the editor is running, it is
 		// sufficient to just call wglSwapBuffersEXT right here...
 		if( wglSwapIntervalEXT )
+		{
 			wglSwapIntervalEXT( 0 );
-			
+		}
+
 		// hide the doom window by default
 		::ShowWindow( win32.hWnd, SW_HIDE );
 	}
@@ -189,7 +191,7 @@ void RadiantSync( const char* mapName, const idVec3& viewOrg, const idAngles& vi
 	{
 		RadiantInit();
 	}
-	
+
 	if( g_DoomInstance )
 	{
 		idStr osPath;
@@ -208,7 +210,7 @@ void RadiantRun( void )
 {
 	static bool exceptionErr = false;
 	int show = ::IsWindowVisible( win32.hWnd );
-	
+
 	try
 	{
 		if( !exceptionErr && !show )
@@ -219,7 +221,9 @@ void RadiantRun( void )
 			//qglPopAttrib();
 			//qwglMakeCurrent(0, 0);
 			if( win32.hDC != NULL && win32.hGLRC != NULL )
+			{
 				qwglMakeCurrent( win32.hDC, win32.hGLRC );
+			}
 		}
 	}
 	catch( idException& ex )
@@ -240,24 +244,24 @@ BOOL CRadiantApp::InitInstance()
 {
 	//g_hOpenGL32 = ::LoadLibrary("opengl32.dll");
 	// AfxEnableControlContainer();
-	
+
 	// Standard initialization
 	// If you are not using these features and wish to reduce the size
 	//  of your final executable, you should remove from the following
 	//  the specific initialization routines you do not need.
 	//AfxEnableMemoryTracking(FALSE);
-	
+
 #ifdef _AFXDLL
 	//Enable3dControls();			// Call this when using MFC in a shared DLL
 #else
 	//Enable3dControlsStatic();	// Call this when linking to MFC statically
 #endif
-	
+
 	// If there's a .INI file in the directory use it instead of registry
-	
+
 	char RadiantPath[_MAX_PATH];
 	GetModuleFileName( NULL, RadiantPath, _MAX_PATH );
-	
+
 	// search for exe
 	CFileFind Finder;
 	Finder.FindFile( RadiantPath );
@@ -321,13 +325,13 @@ BOOL CRadiantApp::InitInstance()
 		SetRegistryKey( EDITOR_REGISTRY_KEY );
 		g_qeglobals.use_ini = false;
 	}
-	
+
 	LoadStdProfileSettings();  // Load standard INI file options (including MRU)
-	
-	
+
+
 	// Register the application's document templates.  Document templates
 	//  serve as the connection between documents, frame windows and views.
-	
+
 //	CMultiDocTemplate* pDocTemplate;
 //	pDocTemplate = new CMultiDocTemplate(
 //		IDR_RADIANTYPE,
@@ -337,37 +341,37 @@ BOOL CRadiantApp::InitInstance()
 //	AddDocTemplate(pDocTemplate);
 
 	// create main MDI Frame window
-	
+
 	g_PrefsDlg.LoadPrefs();
-	
+
 	qglEnableClientState( GL_VERTEX_ARRAY );
-	
+
 	CString strTemp = m_lpCmdLine;
 	strTemp.MakeLower();
 	if( strTemp.Find( "builddefs" ) >= 0 )
 	{
 		g_bBuildList = true;
 	}
-	
+
 	CMainFrame* pMainFrame = new CMainFrame;
 	if( !pMainFrame->LoadFrame( IDR_MENU_QUAKE3 ) )
 	{
 		return FALSE;
 	}
-	
+
 	if( pMainFrame->m_hAccelTable )
 	{
 		::DestroyAcceleratorTable( pMainFrame->m_hAccelTable );
 	}
-	
+
 	pMainFrame->LoadAccelTable( MAKEINTRESOURCE( IDR_MINIACCEL ) );
-	
+
 	m_pMainWnd = pMainFrame;
-	
+
 	// The main window has been initialized, so show and update it.
 	pMainFrame->ShowWindow( m_nCmdShow );
 	pMainFrame->UpdateWindow();
-	
+
 	return TRUE;
 }
 
@@ -403,14 +407,14 @@ int CRadiantApp::Run( void )
 {
 	BOOL bIdle = TRUE;
 	LONG lIdleCount = 0;
-	
-	
+
+
 #if _MSC_VER >= 1300
 	MSG* msg = AfxGetCurrentMessage();			// TODO Robert fix me!!
 #else
 	MSG* msg = &m_msgCur;
 #endif
-	
+
 	// phase1: check to see if we can do idle work
 	while( bIdle &&	!::PeekMessage( msg, NULL, NULL, NULL, PM_NOREMOVE ) )
 	{
@@ -420,7 +424,7 @@ int CRadiantApp::Run( void )
 			bIdle = FALSE; // assume "no idle" state
 		}
 	}
-	
+
 	// phase2: pump messages while available
 	do
 	{
@@ -429,17 +433,17 @@ int CRadiantApp::Run( void )
 		{
 			return ExitInstance();
 		}
-		
+
 		// reset "no idle" state after pumping "normal" message
 		if( IsIdleMessage( msg ) )
 		{
 			bIdle = TRUE;
 			lIdleCount = 0;
 		}
-		
+
 	}
 	while( ::PeekMessage( msg, NULL, NULL, NULL, PM_NOREMOVE ) );
-	
+
 	return 0;
 }
 
@@ -484,22 +488,30 @@ bool LoadWindowState( HWND hWnd, const char* pszName )
 {
 	RECT rc;
 	LONG lSize = sizeof( rc );
-	
+
 	if( LoadRegistryInfo( pszName, &rc, &lSize ) )
 	{
 		if( rc.left < 0 )
+		{
 			rc.left = 0;
+		}
 		if( rc.top < 0 )
+		{
 			rc.top = 0;
+		}
 		if( rc.right < rc.left + 16 )
+		{
 			rc.right = rc.left + 16;
+		}
 		if( rc.bottom < rc.top + 16 )
+		{
 			rc.bottom = rc.top + 16;
-			
+		}
+
 		MoveWindow( hWnd, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, FALSE );
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -514,9 +526,9 @@ bool LoadWindowState( HWND hWnd, const char* pszName )
 void Sys_UpdateStatusBar( void )
 {
 	extern int   g_numbrushes, g_numentities;
-	
+
 	char numbrushbuffer[100] = "";
-	
+
 	sprintf( numbrushbuffer, "Brushes: %d Entities: %d", g_numbrushes, g_numentities );
 	Sys_Status( numbrushbuffer, 2 );
 }

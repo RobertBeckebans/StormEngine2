@@ -84,7 +84,7 @@ idAnimatedEntity::~idAnimatedEntity
 idAnimatedEntity::~idAnimatedEntity()
 {
 	damageEffect_t*	de;
-	
+
 	for( de = damageEffects; de; de = damageEffects )
 	{
 		damageEffects = de->next;
@@ -102,7 +102,7 @@ archives object for save game file
 void idAnimatedEntity::Save( idSaveGame* savefile ) const
 {
 	animator.Save( savefile );
-	
+
 	// Wounds are very temporary, ignored at this time
 	//damageEffect_t			*damageEffects;
 }
@@ -117,7 +117,7 @@ unarchives object from save game file
 void idAnimatedEntity::Restore( idRestoreGame* savefile )
 {
 	animator.Restore( savefile );
-	
+
 	// check if the entity has an MD5 model
 	if( animator.ModelHandle() )
 	{
@@ -181,37 +181,37 @@ void idAnimatedEntity::UpdateAnimation()
 	{
 		return;
 	}
-	
+
 	// is the model an MD5?
 	if( !animator.ModelHandle() )
 	{
 		// no, so nothing to do
 		return;
 	}
-	
+
 	// call any frame commands that have happened in the past frame
 	if( !fl.hidden )
 	{
 		animator.ServiceAnims( gameLocal.previousTime, gameLocal.time );
 	}
-	
+
 	// if the model is animating then we have to update it
 	if( !animator.FrameHasChanged( gameLocal.time ) )
 	{
 		// still fine the way it was
 		return;
 	}
-	
+
 	// get the latest frame bounds
 	animator.GetBounds( gameLocal.time, renderEntity.bounds );
 	if( renderEntity.bounds.IsCleared() && !fl.hidden )
 	{
 		gameLocal.DPrintf( "%d: inside out bounds\n", gameLocal.time );
 	}
-	
+
 	// update the renderEntity
 	UpdateVisuals();
-	
+
 	// the animation is updated
 	animator.ClearForceUpdate();
 }
@@ -234,24 +234,24 @@ idAnimatedEntity::SetModel
 void idAnimatedEntity::SetModel( const char* modelname )
 {
 	FreeModelDef();
-	
+
 	renderEntity.hModel = animator.SetModel( modelname );
 	if( !renderEntity.hModel )
 	{
 		idEntity::SetModel( modelname );
 		return;
 	}
-	
+
 	if( !renderEntity.customSkin )
 	{
 		renderEntity.customSkin = animator.ModelDef()->GetDefaultSkin();
 	}
-	
+
 	// set the callback to update the joints
 	renderEntity.callback = idEntity::ModelCallback;
 	animator.GetJoints( &renderEntity.numJoints, &renderEntity.joints );
 	animator.GetBounds( gameLocal.time, renderEntity.bounds );
-	
+
 	UpdateVisuals();
 }
 
@@ -266,7 +266,7 @@ bool idAnimatedEntity::GetJointWorldTransform( jointHandle_t jointHandle, int cu
 	{
 		return false;
 	}
-	
+
 	ConvertLocalToWorldTransform( offset, axis );
 	return true;
 }
@@ -281,27 +281,27 @@ bool idAnimatedEntity::GetJointTransformForAnim( jointHandle_t jointHandle, int 
 	const idAnim*	anim;
 	int				numJoints;
 	idJointMat*		frame;
-	
+
 	anim = animator.GetAnim( animNum );
 	if( !anim )
 	{
 		assert( 0 );
 		return false;
 	}
-	
+
 	numJoints = animator.NumJoints();
 	if( ( jointHandle < 0 ) || ( jointHandle >= numJoints ) )
 	{
 		assert( 0 );
 		return false;
 	}
-	
+
 	frame = ( idJointMat* )_alloca16( numJoints * sizeof( idJointMat ) );
 	gameEdit->ANIM_CreateAnimFrame( animator.ModelHandle(), anim->MD5Anim( 0 ), renderEntity.numJoints, frame, frameTime, animator.ModelDef()->GetVisualOffset(), animator.RemoveOrigin() );
-	
+
 	offset = frame[ jointHandle ].ToVec3();
 	axis = frame[ jointHandle ].ToMat3();
-	
+
 	return true;
 }
 
@@ -317,34 +317,34 @@ void idAnimatedEntity::AddDamageEffect( const trace_t& collision, const idVec3& 
 	jointHandle_t jointNum;
 	idVec3 origin, dir, localDir, localOrigin, localNormal;
 	idMat3 axis;
-	
+
 	if( !g_bloodEffects.GetBool() || renderEntity.joints == NULL )
 	{
 		return;
 	}
-	
+
 	const idDeclEntityDef* def = gameLocal.FindEntityDef( damageDefName, false );
 	if( def == NULL )
 	{
 		return;
 	}
-	
+
 	jointNum = CLIPMODEL_ID_TO_JOINT_HANDLE( collision.c.id );
 	if( jointNum == INVALID_JOINT )
 	{
 		return;
 	}
-	
+
 	dir = velocity;
 	dir.Normalize();
-	
+
 	axis = renderEntity.joints[jointNum].ToMat3() * renderEntity.axis;
 	origin = renderEntity.origin + renderEntity.joints[jointNum].ToVec3() * renderEntity.axis;
-	
+
 	localOrigin = ( collision.c.point - origin ) * axis.Transpose();
 	localNormal = collision.c.normal * axis.Transpose();
 	localDir = dir * axis.Transpose();
-	
+
 	AddLocalDamageEffect( jointNum, localOrigin, localNormal, localDir, def, collision.c.material );
 }
 
@@ -370,23 +370,23 @@ void idAnimatedEntity::AddLocalDamageEffect( jointHandle_t jointNum, const idVec
 	idVec3 origin, dir;
 	idMat3 axis;
 	float flesh_wound_size; // SS2 wound decal size
-	
+
 	SetTimeState ts( timeGroup );
-	
+
 	axis = renderEntity.joints[jointNum].ToMat3() * renderEntity.axis;
 	origin = renderEntity.origin + renderEntity.joints[jointNum].ToVec3() * renderEntity.axis;
-	
+
 	origin = origin + localOrigin * axis;
 	dir = localDir * axis;
-	
+
 	int type = collisionMaterial->GetSurfaceType();
 	if( type == SURFTYPE_NONE )
 	{
 		type = GetDefaultSurfaceType();
 	}
-	
+
 	const char* materialType = gameLocal.sufaceTypeNames[ type ];
-	
+
 	// start impact sound based on material type
 	key = va( "snd_%s", materialType );
 	sound = spawnArgs.GetString( key );
@@ -398,7 +398,7 @@ void idAnimatedEntity::AddLocalDamageEffect( jointHandle_t jointNum, const idVec
 	{
 		StartSoundShader( declManager->FindSound( sound ), SND_CHANNEL_BODY, 0, false, NULL );
 	}
-	
+
 	// blood splats are thrown onto nearby surfaces
 	key = va( "mtr_splat_%s", materialType );
 	splat = spawnArgs.RandomPrefix( key, gameLocal.random );
@@ -410,11 +410,11 @@ void idAnimatedEntity::AddLocalDamageEffect( jointHandle_t jointNum, const idVec
 	{
 		gameLocal.BloodSplat( origin, dir, 64.0f, splat );
 	}
-	
+
 	// SS2 wound decal size
 	spawnArgs.GetFloat( "flesh_wound_size", "20", flesh_wound_size );
 	flesh_wound_size = idMath::ClampFloat( 0.0f, 30.0f, flesh_wound_size );
-	
+
 	// can't see wounds on the player model in single player mode
 	if( !( IsType( idPlayer::Type ) && !common->IsMultiplayer() ) )
 	{
@@ -430,7 +430,7 @@ void idAnimatedEntity::AddLocalDamageEffect( jointHandle_t jointNum, const idVec
 			ProjectOverlay( origin, dir, flesh_wound_size, decal ); // was 20.0f
 		}
 	}
-	
+
 	// a blood spurting wound is added
 	key = va( "smoke_wound_%s", materialType );
 	bleed = spawnArgs.GetString( key );
@@ -443,7 +443,7 @@ void idAnimatedEntity::AddLocalDamageEffect( jointHandle_t jointNum, const idVec
 		de = new( TAG_ENTITY ) damageEffect_t;
 		de->next = this->damageEffects;
 		this->damageEffects = de;
-		
+
 		de->jointNum = jointNum;
 		de->localOrigin = localOrigin;
 		de->localNormal = localNormal;
@@ -460,7 +460,7 @@ idAnimatedEntity::UpdateDamageEffects
 void idAnimatedEntity::UpdateDamageEffects()
 {
 	damageEffect_t*	de, **prev;
-	
+
 	// free any that have timed out
 	prev = &this->damageEffects;
 	while( *prev )
@@ -476,18 +476,18 @@ void idAnimatedEntity::UpdateDamageEffects()
 			prev = &de->next;
 		}
 	}
-	
+
 	if( !g_bloodEffects.GetBool() )
 	{
 		return;
 	}
-	
+
 	// emit a particle for each bleeding wound
 	for( de = this->damageEffects; de; de = de->next )
 	{
 		idVec3 origin, start;
 		idMat3 axis;
-		
+
 		animator.GetJointTransform( de->jointNum, gameLocal.time, origin, axis );
 		axis *= renderEntity.axis;
 		origin = renderEntity.origin + origin * renderEntity.axis;
@@ -510,7 +510,7 @@ bool idAnimatedEntity::ClientReceiveEvent( int event, int time, const idBitMsg& 
 	int materialIndex;
 	jointHandle_t jointNum;
 	idVec3 localOrigin, localNormal, localDir;
-	
+
 	switch( event )
 	{
 		case EVENT_ADD_DAMAGE_EFFECT:
@@ -608,12 +608,12 @@ void idAnimatedEntity::Event_GetJointPos( jointHandle_t jointnum )
 {
 	idVec3 offset;
 	idMat3 axis;
-	
+
 	if( !GetJointWorldTransform( jointnum, gameLocal.time, offset, axis ) )
 	{
 		gameLocal.Warning( "Joint # %d out of range on entity '%s'",  jointnum, name.c_str() );
 	}
-	
+
 	idThread::ReturnVector( offset );
 }
 
@@ -628,12 +628,12 @@ void idAnimatedEntity::Event_GetJointAngle( jointHandle_t jointnum )
 {
 	idVec3 offset;
 	idMat3 axis;
-	
+
 	if( !GetJointWorldTransform( jointnum, gameLocal.time, offset, axis ) )
 	{
 		gameLocal.Warning( "Joint # %d out of range on entity '%s'",  jointnum, name.c_str() );
 	}
-	
+
 	idAngles ang = axis.ToAngles();
 	idVec3 vec( ang[ 0 ], ang[ 1 ], ang[ 2 ] );
 	idThread::ReturnVector( vec );

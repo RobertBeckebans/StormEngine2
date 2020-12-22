@@ -38,30 +38,30 @@ rvGEInsertModifier::rvGEInsertModifier( const char* name, idWindow* window, idWi
 {
 	mParent  = parent;
 	mBefore  = before;
-	
+
 	assert( mParent );
-	
+
 	mUndoParent = window->GetParent( );
 	mUndoBefore = NULL;
 	mUndoRect   = mWrapper->GetClientRect( );
 	mRect		= mWrapper->GetClientRect( );
-	
+
 	// Find the child window the window being inserted is before
 	if( mUndoParent )
 	{
 		int				   index;
 		rvGEWindowWrapper* pwrapper;
-		
+
 		pwrapper = rvGEWindowWrapper::GetWrapper( mUndoParent );
-		
+
 		index = mUndoParent->GetChildIndex( mWindow );
-		
+
 		if( index + 1 < pwrapper->GetChildCount( ) )
 		{
 			mUndoBefore = pwrapper->GetChild( index + 1 );
 		}
 	}
-	
+
 	// Since rectangles are relative to the parent rectangle we need to figure
 	// out the new x and y coordinate as if this window were a child
 	rvGEWindowWrapper* parentWrapper;
@@ -84,10 +84,10 @@ bool rvGEInsertModifier::Apply( void )
 	{
 		mUndoParent->RemoveChild( mWindow );
 	}
-	
+
 	mParent->InsertChild( mWindow, mBefore );
 	mWrapper->SetRect( mRect );
-	
+
 	return true;
 }
 
@@ -102,12 +102,12 @@ added to and re-inserting it back into its original parent
 bool rvGEInsertModifier::Undo( void )
 {
 	mParent->RemoveChild( mWindow );
-	
+
 	if( mUndoParent )
 	{
 		mUndoParent->InsertChild( mWindow, mUndoBefore );
 		mWrapper->SetRect( mUndoRect );
 	}
-	
+
 	return true;
 }

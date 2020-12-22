@@ -12,6 +12,8 @@ option(MONOLITH
 option(OPENAL# Include the libs subdirectory. This will allow the compiler to simplify the include process.
 		"Use OpenAL soft instead of XAudio2" OFF)
 
+option(WINDOWS10
+		"Build for Windows 10" OFF)
 if(UNIX)
 	set(OPENAL TRUE)
 endif()
@@ -159,11 +161,11 @@ elseif(MSVC)
 	
 	# Tell MSVC that we only want Windows 7 Or newer.
 	# More Information: https://msdn.microsoft.com/en-us/library/aa383745%28VS.85%29.aspx
-	add_definitions(
-		-DNTDDI_VERSION=0x06010000
-		-D_WIN32_WINNT=0x0601
-		-DWINVER=0x0601
-		)
+	#add_definitions(
+	#	-DNTDDI_VERSION=0x06010000
+	#	-D_WIN32_WINNT=0x0601
+	#	-DWINVER=0x0601
+	#	)
 	
 	add_definitions(-DWIN32 
 					-D_WINDOWS
@@ -173,6 +175,14 @@ elseif(MSVC)
 					-D_MBCS
 					#-DUSE_OPENAL
 					-DUSE_EXCEPTIONS)
+        ## Check for Version ##
+        if( WINRT OR WINDOWS10 ) # Windows RT
+			add_definitions(-DUSE_WINRT)
+        endif()
+
+        if (USE_INTRINSICS)
+			add_definitions(-DUSE_INTRINSICS)
+        endif()
 					
 	if(NOT CMAKE_CL_64)
 		add_definitions(-D_USE_32BIT_TIME_T)
@@ -1125,26 +1135,21 @@ include_directories(
 #			${CMAKE_CURRENT_SOURCE_DIR}/libs/openal/lib)
 
 if(MSVC)
+	
+	if(WINDOWS10)
+		set(DirectX_LIBRARIES
+			dinput8
+			dsound
+			dxguid
+			#dxerr
+			Xinput
+			xaudio2.lib
+			)
+	else()
+		find_package(DirectX REQUIRED)
+		include_directories(${DirectX_INCLUDE_DIR})
+	endif()
 
-	# if(MSVC_VERSION EQUAL 1700)
-		# set(DirectX_LIBRARIES
-			# dinput8
-
-			# dsound
-			# dxguid
-			# #dxerr
-			# Xinput
-			# xaudio2.lib
-			# )
-		
-		# if(NOT OPENAL)
-			# list(APPEND DirectX_LIBRARIES xaudio2.lib)
-		# endif()
-		
-	# else()
-	find_package(DirectX REQUIRED)
-	include_directories(${DirectX_INCLUDE_DIR})
-	#endif()
 	
 	if(OPENAL)
 		add_definitions(-DUSE_OPENAL)

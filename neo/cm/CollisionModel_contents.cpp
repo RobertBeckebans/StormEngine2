@@ -62,24 +62,24 @@ bool idCollisionModelManagerLocal::TestTrmVertsInBrush( cm_traceWork_t* tw, cm_b
 	int i, j, numVerts, bestPlane;
 	float d, bestd;
 	idVec3* p;
-	
+
 	if( b->checkcount == idCollisionModelManagerLocal::checkCount )
 	{
 		return false;
 	}
 	b->checkcount = idCollisionModelManagerLocal::checkCount;
-	
+
 	if( !( b->contents & tw->contents ) )
 	{
 		return false;
 	}
-	
+
 	// if the brush bounds don't intersect the trace bounds
 	if( !b->bounds.IntersectsBounds( tw->bounds ) )
 	{
 		return false;
 	}
-	
+
 	if( tw->pointTrace )
 	{
 		numVerts = 1;
@@ -88,11 +88,11 @@ bool idCollisionModelManagerLocal::TestTrmVertsInBrush( cm_traceWork_t* tw, cm_b
 	{
 		numVerts = tw->numVerts;
 	}
-	
+
 	for( j = 0; j < numVerts; j++ )
 	{
 		p = &tw->vertices[j].p;
-		
+
 		// see if the point is inside the brush
 		bestPlane = 0;
 		bestd = -idMath::INFINITY;
@@ -169,26 +169,26 @@ bool idCollisionModelManagerLocal::TestTrmInPolygon( cm_traceWork_t* tw, cm_poly
 	cm_trmEdge_t* trmEdge;
 	cm_edge_t* edge;
 	cm_vertex_t* v, *v1, *v2;
-	
+
 	// if already checked this polygon
 	if( p->checkcount == idCollisionModelManagerLocal::checkCount )
 	{
 		return false;
 	}
 	p->checkcount = idCollisionModelManagerLocal::checkCount;
-	
+
 	// if this polygon does not have the right contents behind it
 	if( !( p->contents & tw->contents ) )
 	{
 		return false;
 	}
-	
+
 	// if the polygon bounds don't intersect the trace bounds
 	if( !p->bounds.IntersectsBounds( tw->bounds ) )
 	{
 		return false;
 	}
-	
+
 	// bounds should cross polygon plane
 	switch( tw->bounds.PlaneSide( p->plane ) )
 	{
@@ -203,7 +203,7 @@ bool idCollisionModelManagerLocal::TestTrmInPolygon( cm_traceWork_t* tw, cm_poly
 		default:
 			return false;
 	}
-	
+
 	// if the trace model is convex
 	if( tw->isConvex )
 	{
@@ -217,7 +217,7 @@ bool idCollisionModelManagerLocal::TestTrmInPolygon( cm_traceWork_t* tw, cm_poly
 			{
 				continue;
 			}
-			
+
 			for( j = 0; j < 2; j++ )
 			{
 				v = &tw->model->vertices[edge->vertexNum[j]];
@@ -226,7 +226,7 @@ bool idCollisionModelManagerLocal::TestTrmInPolygon( cm_traceWork_t* tw, cm_poly
 				{
 					continue;
 				}
-				
+
 				bestPlane = 0;
 				bestd = -idMath::INFINITY;
 				for( k = 0; k < tw->numPolys; k++ )
@@ -258,7 +258,7 @@ bool idCollisionModelManagerLocal::TestTrmInPolygon( cm_traceWork_t* tw, cm_poly
 			}
 		}
 	}
-	
+
 	for( i = 0; i < p->numEdges; i++ )
 	{
 		edgeNum = p->edges[i];
@@ -279,14 +279,14 @@ bool idCollisionModelManagerLocal::TestTrmInPolygon( cm_traceWork_t* tw, cm_poly
 		}
 		v->checkcount = idCollisionModelManagerLocal::checkCount;
 	}
-	
+
 	// get side of polygon for each trm vertex
 	for( i = 0; i < tw->numVerts; i++ )
 	{
 		d = p->plane.Distance( tw->vertices[i].p );
 		sides[i] = d < 0.0f ? -1 : 1;
 	}
-	
+
 	// test if any trm edges go through the polygon
 	for( i = 1; i <= tw->numEdges; i++ )
 	{
@@ -344,7 +344,7 @@ bool idCollisionModelManagerLocal::TestTrmInPolygon( cm_traceWork_t* tw, cm_poly
 			return true;
 		}
 	}
-	
+
 	// test if any polygon edges go through the trm polygons
 	for( i = 0; i < p->numEdges; i++ )
 	{
@@ -355,7 +355,7 @@ bool idCollisionModelManagerLocal::TestTrmInPolygon( cm_traceWork_t* tw, cm_poly
 			continue;
 		}
 		edge->checkcount = idCollisionModelManagerLocal::checkCount;
-		
+
 		for( j = 0; j < tw->numPolys; j++ )
 		{
 #if 1
@@ -371,7 +371,7 @@ bool idCollisionModelManagerLocal::TestTrmInPolygon( cm_traceWork_t* tw, cm_poly
 			flip = ( v1->side >> j ) & 1;
 #else
 			float d1, d2;
-			
+
 			v1 = tw->model->vertices + edge->vertexNum[0];
 			d1 = tw->polys[j].plane.Distance( v1->p );
 			v2 = tw->model->vertices + edge->vertexNum[1];
@@ -447,7 +447,7 @@ idCollisionModelManagerLocal::PointNode
 cm_node_t* idCollisionModelManagerLocal::PointNode( const idVec3& p, cm_model_t* model )
 {
 	cm_node_t* node;
-	
+
 	node = model->node;
 	while( node->planeType != -1 )
 	{
@@ -459,7 +459,7 @@ cm_node_t* idCollisionModelManagerLocal::PointNode( const idVec3& p, cm_model_t*
 		{
 			node = node->children[1];
 		}
-		
+
 		assert( node != NULL );
 	}
 	return node;
@@ -478,7 +478,7 @@ int idCollisionModelManagerLocal::PointContents( const idVec3 p, cmHandle_t mode
 	cm_brushRef_t* bref;
 	cm_brush_t* b;
 	idPlane* plane;
-	
+
 	node = idCollisionModelManagerLocal::PointNode( p, idCollisionModelManagerLocal::models[model] );
 	for( bref = node->brushes; bref; bref = bref->next )
 	{
@@ -525,7 +525,7 @@ idCollisionModelManagerLocal::TransformedPointContents
 int	idCollisionModelManagerLocal::TransformedPointContents( const idVec3& p, cmHandle_t model, const idVec3& origin, const idMat3& modelAxis )
 {
 	idVec3 p_l;
-	
+
 	// subtract origin offset
 	p_l = p - origin;
 	if( modelAxis.IsRotated() )
@@ -550,23 +550,23 @@ int idCollisionModelManagerLocal::ContentsTrm( trace_t* results, const idVec3& s
 	idMat3 invModelAxis, tmpAxis;
 	idVec3 dir;
 	ALIGN16( cm_traceWork_t tw );
-	
+
 	// fast point case
 	if( !trm || ( trm->bounds[1][0] - trm->bounds[0][0] <= 0.0f &&
 				  trm->bounds[1][1] - trm->bounds[0][1] <= 0.0f &&
 				  trm->bounds[1][2] - trm->bounds[0][2] <= 0.0f ) )
 	{
-	
+
 		results->c.contents = idCollisionModelManagerLocal::TransformedPointContents( start, model, modelOrigin, modelAxis );
 		results->fraction = ( results->c.contents == 0 );
 		results->endpos = start;
 		results->endAxis = trmAxis;
-		
+
 		return results->c.contents;
 	}
-	
+
 	idCollisionModelManagerLocal::checkCount++;
-	
+
 	tw.trace.fraction = 1.0f;
 	tw.trace.c.contents = 0;
 	tw.trace.c.type = CONTACT_NONE;
@@ -580,18 +580,18 @@ int idCollisionModelManagerLocal::ContentsTrm( trace_t* results, const idVec3& s
 	tw.model = idCollisionModelManagerLocal::models[model];
 	tw.start = start - modelOrigin;
 	tw.end = tw.start;
-	
+
 	model_rotated = modelAxis.IsRotated();
 	if( model_rotated )
 	{
 		invModelAxis = modelAxis.Transpose();
 	}
-	
+
 	// setup trm structure
 	idCollisionModelManagerLocal::SetupTrm( &tw, trm );
-	
+
 	trm_rotated = trmAxis.IsRotated();
-	
+
 	// calculate vertex positions
 	if( trm_rotated )
 	{
@@ -614,7 +614,7 @@ int idCollisionModelManagerLocal::ContentsTrm( trace_t* results, const idVec3& s
 			tw.vertices[i].p *= invModelAxis;
 		}
 	}
-	
+
 	// add offset to start point
 	if( trm_rotated )
 	{
@@ -633,8 +633,8 @@ int idCollisionModelManagerLocal::ContentsTrm( trace_t* results, const idVec3& s
 		tw.start *= invModelAxis;
 		tw.end *= invModelAxis;
 	}
-	
-	
+
+
 	// setup trm vertices
 	tw.size.Clear();
 	for( i = 0; i < tw.numVerts; i++ )
@@ -642,7 +642,7 @@ int idCollisionModelManagerLocal::ContentsTrm( trace_t* results, const idVec3& s
 		// get axial trm size after rotations
 		tw.size.AddPoint( tw.vertices[i].p - tw.start );
 	}
-	
+
 	// setup trm edges
 	for( i = 1; i <= tw.numEdges; i++ )
 	{
@@ -651,7 +651,7 @@ int idCollisionModelManagerLocal::ContentsTrm( trace_t* results, const idVec3& s
 		tw.edges[i].end = tw.vertices[tw.edges[i].vertexNum[1]].p;
 		tw.edges[i].pl.FromLine( tw.edges[i].start, tw.edges[i].end );
 	}
-	
+
 	// setup trm polygons
 	if( trm_rotated & model_rotated )
 	{
@@ -679,7 +679,7 @@ int idCollisionModelManagerLocal::ContentsTrm( trace_t* results, const idVec3& s
 	{
 		tw.polys[i].plane.FitThroughPoint( tw.edges[abs( tw.polys[i].edges[0] )].start );
 	}
-	
+
 	// bounds for full trace, a little bit larger for epsilons
 	for( i = 0; i < 3; i++ )
 	{
@@ -702,15 +702,15 @@ int idCollisionModelManagerLocal::ContentsTrm( trace_t* results, const idVec3& s
 			tw.extents[i] = idMath::Fabs( tw.size[1][i] ) + CM_BOX_EPSILON;
 		}
 	}
-	
+
 	// trace through the model
 	idCollisionModelManagerLocal::TraceThroughModel( &tw );
-	
+
 	*results = tw.trace;
 	results->fraction = ( results->c.contents == 0 );
 	results->endpos = start;
 	results->endAxis = trmAxis;
-	
+
 	return results->c.contents;
 }
 
@@ -724,7 +724,7 @@ int idCollisionModelManagerLocal::Contents( const idVec3& start,
 		cmHandle_t model, const idVec3& modelOrigin, const idMat3& modelAxis )
 {
 	trace_t results;
-	
+
 	if( model < 0 || model > idCollisionModelManagerLocal::maxModels || model > MAX_SUBMODELS )
 	{
 		common->Printf( "idCollisionModelManagerLocal::Contents: invalid model handle\n" );
@@ -735,6 +735,6 @@ int idCollisionModelManagerLocal::Contents( const idVec3& start,
 		common->Printf( "idCollisionModelManagerLocal::Contents: invalid model\n" );
 		return 0;
 	}
-	
+
 	return ContentsTrm( &results, start, trm, trmAxis, contentMask, model, modelOrigin, modelAxis );
 }

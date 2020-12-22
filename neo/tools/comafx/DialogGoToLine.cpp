@@ -35,9 +35,9 @@ If you have questions concerning this license or the applicable additional terms
 #include "DialogGoToLine.h"
 
 #ifdef ID_DEBUG_MEMORY
-#undef new
-#undef DEBUG_NEW
-#define DEBUG_NEW new
+	#undef new
+	#undef DEBUG_NEW
+	#define DEBUG_NEW new
 #endif
 
 
@@ -108,13 +108,13 @@ BOOL DialogGoToLine::OnInitDialog()
 {
 
 	CDialog::OnInitDialog();
-	
+
 	GetDlgItem( IDC_GOTOLINE_STATIC )->SetWindowText( va( "&Line number (%d - %d):", firstLine, lastLine ) );
-	
+
 	numberEdit.SetWindowText( va( "%d", firstLine ) );
 	numberEdit.SetSel( 0, -1 );
 	numberEdit.SetFocus();
-	
+
 	return FALSE; // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }

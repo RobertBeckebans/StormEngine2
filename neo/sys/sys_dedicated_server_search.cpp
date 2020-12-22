@@ -96,22 +96,22 @@ void idDedicatedServerSearch::HandleQueryAck( lobbyAddress_t& addr, idBitMsg& ms
 	for( int i = 0; i < list.Num(); i++ )
 	{
 		serverInfoDedicated_t& query = list[i];
-		
-		
+
+
 		if( query.addr.Compare( addr ) )
 		{
 			// Found the server
 			found = true;
-			
+
 			bool canJoin = msg.ReadBool();
-			
+
 			if( !canJoin )
 			{
 				// If we can't join this server, then remove it
 				list.RemoveIndex( i-- );
 				break;
 			}
-			
+
 			query.serverInfo.Read( msg );
 			query.connectedPlayers.Clear();
 			for( int i = 0; i < query.serverInfo.numPlayers; i++ )
@@ -123,7 +123,7 @@ void idDedicatedServerSearch::HandleQueryAck( lobbyAddress_t& addr, idBitMsg& ms
 			break;
 		}
 	}
-	
+
 	if( !found )
 	{
 		bool canJoin = msg.ReadBool();
@@ -146,8 +146,8 @@ void idDedicatedServerSearch::HandleQueryAck( lobbyAddress_t& addr, idBitMsg& ms
 			list.Append( newServer );
 		}
 	}
-	
-	
+
+
 	if( callback != NULL )
 	{
 		callback->Call();

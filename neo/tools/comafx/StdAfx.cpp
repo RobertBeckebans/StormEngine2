@@ -82,7 +82,7 @@ INT_PTR DefaultOnToolHitTest( const toolTip_t* toolTips, const CDialog* dialog, 
 {
 	CWnd* wnd;
 	RECT clientRect, rect;
-	
+
 	dialog->GetWindowRect( &clientRect );
 	point.x += clientRect.left;
 	point.y += clientRect.top;
@@ -116,16 +116,16 @@ BOOL DefaultOnToolTipNotify( const toolTip_t* toolTips, UINT id, NMHDR* pNMHDR, 
 	// need to handle both ANSI and UNICODE versions of the message
 	TOOLTIPTEXTA* pTTTA = ( TOOLTIPTEXTA* )pNMHDR;
 	TOOLTIPTEXTW* pTTTW = ( TOOLTIPTEXTW* )pNMHDR;
-	
+
 	*pResult = 0;
-	
+
 	UINT nID = pNMHDR->idFrom;
 	if( pTTTA->uFlags & TTF_IDISHWND )
 	{
 		// idFrom is actually the HWND of the tool
 		nID = ::GetDlgCtrlID( ( HWND )nID );
 	}
-	
+
 	int i;
 	for( i = 0; toolTips[i].tip; i++ )
 	{
@@ -134,12 +134,12 @@ BOOL DefaultOnToolTipNotify( const toolTip_t* toolTips, UINT id, NMHDR* pNMHDR, 
 			break;
 		}
 	}
-	
+
 	if( !toolTips[i].tip )
 	{
 		return FALSE;
 	}
-	
+
 	if( pNMHDR->code == TTN_NEEDTEXTA )
 	{
 		lstrcpyn( pTTTA->szText, toolTips[i].tip, sizeof( pTTTA->szText ) );
@@ -200,7 +200,7 @@ float EditVerifyFloat( CEdit* edit, bool allowNegative )
 	CString strIn, strOut;
 	bool dot = false;
 	int start, end;
-	
+
 	edit->GetSel( start, end );
 	edit->GetWindowText( strIn );
 	for( int i = 0; i < strIn.GetLength(); i++ )
@@ -223,9 +223,9 @@ float EditVerifyFloat( CEdit* edit, bool allowNegative )
 	}
 	edit->SetWindowText( strOut );
 	edit->SetSel( start, end );
-	
+
 	return atof( strOut.GetBuffer( 0 ) );
-	
+
 }
 
 /*
@@ -236,7 +236,7 @@ SpinFloatString
 void SpinFloatString( CString& str, bool up )
 {
 	int i, dotIndex = -1, digitIndex = -1;
-	
+
 	for( i = 0; str[i]; i++ )
 	{
 		if( str[i] == '.' )
@@ -259,7 +259,7 @@ void SpinFloatString( CString& str, bool up )
 		str.SetString( "1" );
 		return;
 	}
-	
+
 	if( dotIndex != -1 )
 	{
 		str.Delete( dotIndex, 1 );
@@ -272,7 +272,7 @@ void SpinFloatString( CString& str, bool up )
 	{
 		dotIndex = i;
 	}
-	
+
 	if( up )
 	{
 		if( str[digitIndex] == '9' )
@@ -362,7 +362,7 @@ EditSpinFloat
 float EditSpinFloat( CEdit* edit, bool up )
 {
 	CString str;
-	
+
 	edit->GetWindowText( str );
 	SpinFloatString( str, up );
 	edit->SetWindowText( str );
@@ -377,7 +377,7 @@ SetSafeComboBoxSelection
 int SetSafeComboBoxSelection( CComboBox* combo, const char* string, int skip )
 {
 	int index;
-	
+
 	index = combo->FindString( -1, string );
 	if( index == -1 )
 	{
@@ -391,7 +391,7 @@ int SetSafeComboBoxSelection( CComboBox* combo, const char* string, int skip )
 		}
 		combo->SetCurSel( index );
 	}
-	
+
 	return index;
 }
 
@@ -403,7 +403,7 @@ GetComboBoxSelection
 int GetSafeComboBoxSelection( CComboBox* combo, CString& string, int skip )
 {
 	int index;
-	
+
 	index = combo->GetCurSel();
 	if( index == CB_ERR )
 	{
@@ -421,7 +421,7 @@ int GetSafeComboBoxSelection( CComboBox* combo, CString& string, int skip )
 	{
 		string = "";
 	}
-	
+
 	return index;
 }
 
@@ -433,7 +433,7 @@ UnsetSafeComboBoxSelection
 int UnsetSafeComboBoxSelection( CComboBox* combo, CString& string )
 {
 	int skip, index;
-	
+
 	skip = combo->FindString( -1, string );
 	index = combo->GetCurSel();
 	if( index == CB_ERR )
@@ -448,6 +448,6 @@ int UnsetSafeComboBoxSelection( CComboBox* combo, CString& string )
 		}
 		combo->SetCurSel( index );
 	}
-	
+
 	return index;
 }

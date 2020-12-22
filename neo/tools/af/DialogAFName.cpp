@@ -109,14 +109,14 @@ BOOL DialogAFName::OnInitDialog()
 {
 	CEdit* edit;
 	CString str;
-	
+
 	CDialog::OnInitDialog();
-	
+
 	edit = ( CEdit* )GetDlgItem( IDC_EDIT_AF_NAME );
 	edit->SetFocus();
 	edit->GetWindowText( str );
 	edit->SetSel( 0, str.GetLength() );
-	
+
 	return FALSE;
 }
 
@@ -130,13 +130,13 @@ void EditVerifyName( CEdit* edit )
 	CString strIn, strOut;
 	int start, end;
 	static bool entered = false;
-	
+
 	if( entered )
 	{
 		return;
 	}
 	entered = true;
-	
+
 	edit->GetSel( start, end );
 	edit->GetWindowText( strIn );
 	for( int i = 0; i < strIn.GetLength(); i++ )
@@ -150,7 +150,7 @@ void EditVerifyName( CEdit* edit )
 	}
 	edit->SetWindowText( strOut );
 	edit->SetSel( start, end );
-	
+
 	entered = false;
 }
 

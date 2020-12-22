@@ -54,30 +54,30 @@ edge silhouettes.
 void R_CalcInteractionFacingDmap( const idDmapRenderEntityLocal* ent, const srfDmapTriangles_t* tri, const idDmapRenderLightLocal* light, srfCullInfo_t& cullInfo )
 {
 	idVec3 localLightOrigin;
-	
+
 	if( cullInfo.facing != NULL )
 	{
 		return;
 	}
-	
+
 	R_GlobalPointToLocal( ent->modelMatrix, light->globalLightOrigin, localLightOrigin );
-	
+
 	int numFaces = tri->numIndexes / 3;
-	
+
 	if( !tri->facePlanes || !tri->facePlanesCalculated )
 	{
 		R_DeriveFacePlanesDmap( const_cast<srfDmapTriangles_t*>( tri ) );
 	}
-	
+
 	cullInfo.facing = ( byte* )R_StaticAlloc( ( numFaces + 1 ) * sizeof( cullInfo.facing[0] ) );
-	
+
 	// calculate back face culling
 	float* planeSide = ( float* )_alloca16( numFaces * sizeof( float ) );
-	
+
 	// exact geometric cull against face
 	dmapSIMDProcessor->Dot( planeSide, localLightOrigin, tri->facePlanes, numFaces );
 	dmapSIMDProcessor->CmpGE( cullInfo.facing, planeSide, 0.0f, numFaces );
-	
+
 	cullInfo.facing[numFaces] = 1;	// for dangling edges to reference
 }
 
@@ -94,39 +94,39 @@ vertex is clearly inside, the entire triangle will be accepted.
 void R_CalcInteractionCullBitsDmap( const idDmapRenderEntityLocal* ent, const srfDmapTriangles_t* tri, const idDmapRenderLightLocal* light, srfCullInfo_t& cullInfo )
 {
 	int i, frontBits;
-	
+
 	if( cullInfo.cullBits != NULL )
 	{
 		return;
 	}
-	
+
 	frontBits = 0;
-	
+
 	// cull the triangle surface bounding box
 	for( i = 0; i < 6; i++ )
 	{
-	
+
 		R_GlobalPlaneToLocal( ent->modelMatrix, -light->frustum[i], cullInfo.localClipPlanes[i] );
-		
+
 		// get front bits for the whole surface
 		if( tri->bounds.PlaneDistance( cullInfo.localClipPlanes[i] ) >= LIGHT_CLIP_EPSILON )
 		{
 			frontBits |= 1 << i;
 		}
 	}
-	
+
 	// if the surface is completely inside the light frustum
 	if( frontBits == ( ( 1 << 6 ) - 1 ) )
 	{
 		cullInfo.cullBits = LIGHT_CULL_ALL_FRONT;
 		return;
 	}
-	
+
 	cullInfo.cullBits = ( byte* )R_StaticAlloc( tri->numVerts * sizeof( cullInfo.cullBits[0] ) );
 	dmapSIMDProcessor->Memset( cullInfo.cullBits, 0, tri->numVerts * sizeof( cullInfo.cullBits[0] ) );
-	
+
 	float* planeSide = ( float* )_alloca16( tri->numVerts * sizeof( float ) );
-	
+
 	for( i = 0; i < 6; i++ )
 	{
 		// if completely infront of this clipping plane

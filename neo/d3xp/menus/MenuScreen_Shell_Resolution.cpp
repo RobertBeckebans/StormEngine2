@@ -50,19 +50,19 @@ idMenuScreen_Shell_Resolution::Initialize
 void idMenuScreen_Shell_Resolution::Initialize( idMenuHandler* data )
 {
 	idMenuScreen::Initialize( data );
-	
+
 	if( data != NULL )
 	{
 		menuGUI = data->GetGUI();
 	}
-	
+
 	SetSpritePath( "menuResolution" );
-	
+
 	options = new( TAG_SWF ) idMenuWidget_DynamicList();
 	options->SetNumVisibleOptions( NUM_SETTING_OPTIONS );
 	options->SetSpritePath( GetSpritePath(), "info", "options" );
 	options->SetWrappingAllowed( true );
-	
+
 	while( options->GetChildren().Num() < NUM_SETTING_OPTIONS )
 	{
 		idMenuWidget_Button* const buttonWidget = new( TAG_SWF ) idMenuWidget_Button();
@@ -71,17 +71,17 @@ void idMenuScreen_Shell_Resolution::Initialize( idMenuHandler* data )
 		options->AddChild( buttonWidget );
 	}
 	options->Initialize( data );
-	
+
 	AddChild( options );
-	
+
 	btnBack = new( TAG_SWF ) idMenuWidget_Button();
 	btnBack->Initialize( data );
 	btnBack->SetLabel( "#str_swf_header_system_options" ); // was #str_00183
 	btnBack->SetSpritePath( GetSpritePath(), "info", "btnBack" );
 	btnBack->AddEventAction( WIDGET_EVENT_PRESS ).Set( WIDGET_ACTION_GO_BACK );
-	
+
 	AddChild( btnBack );
-	
+
 	options->AddEventAction( WIDGET_EVENT_SCROLL_DOWN ).Set( new( TAG_SWF ) idWidgetActionHandler( options, WIDGET_ACTION_EVENT_SCROLL_DOWN_START_REPEATER, WIDGET_EVENT_SCROLL_DOWN ) );
 	options->AddEventAction( WIDGET_EVENT_SCROLL_UP ).Set( new( TAG_SWF ) idWidgetActionHandler( options, WIDGET_ACTION_EVENT_SCROLL_UP_START_REPEATER, WIDGET_EVENT_SCROLL_UP ) );
 	options->AddEventAction( WIDGET_EVENT_SCROLL_DOWN_RELEASE ).Set( new( TAG_SWF ) idWidgetActionHandler( options, WIDGET_ACTION_EVENT_STOP_REPEATER, WIDGET_EVENT_SCROLL_DOWN_RELEASE ) );
@@ -113,7 +113,7 @@ void idMenuScreen_Shell_Resolution::Update()
 				buttonInfo->label = "#str_swf_back";
 			}
 			buttonInfo->action.Set( WIDGET_ACTION_GO_BACK );
-			
+
 			buttonInfo = cmdBar->GetButton( idMenuWidget_CommandBar::BUTTON_JOY1 );
 			if( menuData->GetPlatform() != 2 )
 			{
@@ -122,7 +122,7 @@ void idMenuScreen_Shell_Resolution::Update()
 			buttonInfo->action.Set( WIDGET_ACTION_PRESS_FOCUSED );
 		}
 	}
-	
+
 	idSWFScriptObject& root = GetSWFObject()->GetRootObject();
 	if( BindSprite( root ) )
 	{
@@ -132,19 +132,19 @@ void idMenuScreen_Shell_Resolution::Update()
 			heading->SetText( "#str_02154" );
 			heading->SetStrokeInfo( true, 0.75f, 1.75f );
 		}
-		
+
 		idSWFSpriteInstance* gradient = GetSprite()->GetScriptObject()->GetNestedSprite( "info", "gradient" );
 		if( gradient != NULL && heading != NULL )
 		{
 			gradient->SetXPos( heading->GetTextLength() );
 		}
 	}
-	
+
 	if( btnBack != NULL )
 	{
 		btnBack->BindSprite( root );
 	}
-	
+
 	idMenuScreen::Update();
 }
 
@@ -159,11 +159,11 @@ void idMenuScreen_Shell_Resolution::ShowScreen( const mainMenuTransition_t trans
 
 	originalOption.fullscreen = r_fullscreen.GetInteger();
 	originalOption.vidmode = r_vidMode.GetInteger();
-	
+
 	idList< idList< idStr, TAG_IDLIB_LIST_MENU >, TAG_IDLIB_LIST_MENU > menuOptions;
 	menuOptions.Alloc().Alloc() = "#str_swf_disabled";
 	optionData.Append( optionData_t( 0, 0 ) );
-	
+
 	int viewIndex = 0;
 	idList< idList<vidMode_t> > displays;
 	for( int displayNum = 0 ; ; displayNum++ )
@@ -199,7 +199,7 @@ void idMenuScreen_Shell_Resolution::ShowScreen( const mainMenuTransition_t trans
 			optionData.Append( thisOption );
 		}
 	}
-	
+
 	options->SetListData( menuOptions );
 	options->SetViewIndex( viewIndex );
 	const int topOfLastPage = menuOptions.Num() - NUM_SETTING_OPTIONS;
@@ -218,7 +218,7 @@ void idMenuScreen_Shell_Resolution::ShowScreen( const mainMenuTransition_t trans
 		options->SetViewOffset( viewIndex );
 		options->SetFocusIndex( 0 );
 	}
-	
+
 	idMenuScreen::ShowScreen( transitionType );
 }
 
@@ -244,15 +244,15 @@ bool idMenuScreen_Shell_Resolution::HandleAction( idWidgetAction& action, const 
 	{
 		return true;
 	}
-	
+
 	if( menuData->ActiveScreen() != SHELL_AREA_RESOLUTION )
 	{
 		return false;
 	}
-	
+
 	widgetAction_t actionType = action.GetType();
 	const idSWFParmList& parms = action.GetParms();
-	
+
 	switch( actionType )
 	{
 		case WIDGET_ACTION_GO_BACK:
@@ -269,14 +269,14 @@ bool idMenuScreen_Shell_Resolution::HandleAction( idWidgetAction& action, const 
 				{
 					selectionIndex = parms[0].ToInteger();
 				}
-				
+
 				if( options->GetFocusIndex() != selectionIndex )
 				{
 					options->SetFocusIndex( selectionIndex );
 					options->SetViewIndex( options->GetViewOffset() + selectionIndex );
 				}
 				const optionData_t& currentOption = optionData[options->GetViewIndex()];
-				
+
 				if( currentOption == originalOption )
 				{
 					// No change
@@ -296,7 +296,7 @@ bool idMenuScreen_Shell_Resolution::HandleAction( idWidgetAction& action, const 
 					r_vidMode.SetInteger( currentOption.vidmode );
 					cvarSystem->ClearModifiedFlags( CVAR_ARCHIVE );
 					cmdSystem->BufferCommandText( CMD_EXEC_APPEND, "vid_restart\n" );
-					
+
 					class idSWFFuncAcceptVideoChanges : public idSWFScriptFunction_RefCounted
 					{
 					public:
@@ -340,6 +340,6 @@ bool idMenuScreen_Shell_Resolution::HandleAction( idWidgetAction& action, const 
 			return true;
 		}
 	}
-	
+
 	return idMenuWidget::HandleAction( action, event, widget, forceHandled );
 }

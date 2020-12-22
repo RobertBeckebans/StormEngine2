@@ -162,7 +162,7 @@ public:
 	{
 		return sizeof( *this ) + mEvent->Size();
 	}
-	
+
 	idStr				mName;
 	idGuiScriptList*	mEvent;
 };
@@ -181,7 +181,7 @@ class idWindow
 public:
 	idWindow( idUserInterfaceLocal* gui );
 	virtual ~idWindow();
-	
+
 	enum
 	{
 		ON_MOUSEENTER = 0,
@@ -198,7 +198,7 @@ public:
 		ON_NAMEDEVENT,
 		SCRIPT_COUNT
 	};
-	
+
 	enum
 	{
 		ADJUST_MOVE = 0,
@@ -211,14 +211,14 @@ public:
 		ADJUST_TOPRIGHT,
 		ADJUST_BOTTOMLEFT
 	};
-	
+
 	static const char* ScriptNames[SCRIPT_COUNT];
-	
+
 	static const idRegEntry RegisterVars[];
 	static const int		NumRegisterVars;
-	
+
 	idWindow* SetFocus( idWindow* w, bool scripts = true );
-	
+
 	idWindow* SetCapture( idWindow* w );
 	void SetParent( idWindow* w );
 	void SetFlag( unsigned int f );
@@ -248,7 +248,7 @@ public:
 	size_t Size();
 	virtual size_t Allocated();
 	idStr* GetStrPtrByName( const char* _name );
-	
+
 	virtual idWinVar* GetWinVarByName( const char* _name, bool winLookup = false, drawWin_t** owner = NULL );
 	// DG: the return value is a pointer, so use intptr_t
 	intptr_t GetWinVarOffset( idWinVar* wv, drawWin_t* dw );
@@ -270,13 +270,13 @@ public:
 	{
 		return name;
 	};
-	
+
 	virtual bool Parse( idTokenParser* src, bool rebuild = true );
 	virtual bool Parse( idParser* src, bool rebuild = true );
 	virtual const char* HandleEvent( const sysEvent_t* event, bool* updateVisuals );
 	void	CalcRects( float x, float y );
 	virtual void Redraw( float x, float y, bool hud );
-	
+
 	virtual void ArchiveToDictionary( idDict* dict, bool useNames = true );
 	virtual void InitFromDictionary( idDict* dict, bool byName = true );
 	virtual void PostParse();
@@ -299,7 +299,7 @@ public:
 	virtual void StateChanged( bool redraw );
 	virtual void ReadFromDemoFile( class idDemoFile* f, bool rebuild = true );
 	virtual void WriteToDemoFile( class idDemoFile* f );
-	
+
 	// SaveGame support
 	void			WriteSaveGameString( const char* string, idFile* savefile );
 	void			WriteSaveGameTransition( idTransitionData& trans, idFile* savefile );
@@ -310,7 +310,7 @@ public:
 	void			FixupTransitions();
 	virtual void HasAction() {};
 	virtual void HasScripts() {};
-	
+
 	void FixupParms();
 	void GetScriptString( const char* name, idStr& out );
 	void SetScriptParams();
@@ -323,9 +323,9 @@ public:
 	void AddTransition( idWinVar* dest, idVec4 from, idVec4 to, int time, float accelTime, float decelTime );
 	void ResetTime( int time );
 	void ResetCinematics();
-	
+
 	int NumTransitions();
-	
+
 	bool ParseScript( idTokenParser* src, idGuiScriptList& list, int* timeParm = NULL, bool allowIf = false );
 	bool ParseScript( idParser* src, idGuiScriptList& list, int* timeParm = NULL, bool allowIf = false );
 	bool RunScript( int n );
@@ -355,32 +355,32 @@ public:
 	{
 		comment = p;
 	}
-	
+
 	idStr cmd;
-	
+
 	virtual void RunNamedEvent( const char* eventName );
-	
+
 	void		AddDefinedVar( idWinVar* var );
-	
+
 	idWindow*	FindChildByPoint( float x, float y, idWindow* below = NULL );
 	int			GetChildIndex( idWindow* window );
 	int			GetChildCount();
 	idWindow*	GetChild( int index );
 	void		RemoveChild( idWindow* win );
 	bool		InsertChild( idWindow* win, idWindow* before );
-	
+
 	void		ScreenToClient( idRectangle* rect );
 	void		ClientToScreen( idRectangle* rect );
-	
+
 	bool		UpdateFromDictionary( idDict& dict );
-	
+
 protected:
 
 	friend		class rvGEWindowWrapper;
-	
+
 	idWindow*	FindChildByPoint( float x, float y, idWindow** below );
 	void		SetDefaults();
-	
+
 	friend class idSimpleWindow;
 	friend class idUserInterfaceLocal;
 	bool IsSimple();
@@ -390,7 +390,7 @@ protected:
 	void Time();
 	bool RunTimeEvents( int time );
 	void Dump();
-	
+
 	int ExpressionTemporary();
 	wexpOp_t* ExpressionOp();
 	// DG: a, b, component and the return values are really pointers, so use intptr_t
@@ -417,7 +417,7 @@ protected:
 	void ParseVec4( idTokenParser* src, idVec4& out );
 	void ParseVec4( idParser* src, idVec4& out );
 	void ConvertRegEntry( const char* name, idTokenParser* src, idStr& out, int tabs );
-	
+
 	float actualX;					// physical coords
 	float actualY;					// ''
 	int	  childID;					// this childs id
@@ -426,7 +426,7 @@ protected:
 	idRectangle drawRect;			// overall rect
 	idRectangle clientRect;			// client area
 	idVec2	origin;
-	
+
 	int timeLine;					// time stamp used for various fx
 	float xOffset;
 	float yOffset;
@@ -440,12 +440,12 @@ protected:
 	idStr	name;
 	idStr	comment;
 	idVec2	shear;
-	
+
 	class idFont* font;
 	signed char	textShadow;
 	unsigned char cursor;					//
 	signed char	textAlign;
-	
+
 	idWinBool	noTime;					//
 	idWinBool	visible;				//
 	idWinBool	noEvents;
@@ -459,43 +459,43 @@ protected:
 	idWinFloat	rotate;
 	idWinStr	text;
 	idWinBackground	backGroundName;			//
-	
+
 	idList<idWinVar*, TAG_OLD_UI> definedVars;
 	idList<idWinVar*, TAG_OLD_UI> updateVars;
-	
+
 	idRectangle textRect;			// text extented rect
 	const idMaterial* background;         // background asset
-	
+
 	idWindow* parent;				// parent window
 	idList<idWindow*, TAG_OLD_UI> children;		// child windows
 	idList<drawWin_t, TAG_OLD_UI> drawWindows;
-	
+
 	idWindow* focusedChild;			// if a child window has the focus
 	idWindow* captureChild;			// if a child window has mouse capture
 	idWindow* overChild;			// if a child window has mouse capture
 	bool hover;
-	
+
 	idUserInterfaceLocal* gui;
-	
+
 	static idCVar gui_debug;
 	static idCVar gui_edit;
-	
+
 	idGuiScriptList* scripts[SCRIPT_COUNT];
 	bool* saveTemps;
-	
+
 	idList<idTimeLineEvent*, TAG_OLD_UI> timeLineEvents;
 	idList<idTransitionData, TAG_OLD_UI> transitions;
-	
+
 	static bool registerIsTemporary[MAX_EXPRESSION_REGISTERS]; // statics to assist during parsing
-	
+
 	idList<wexpOp_t, TAG_OLD_UI> ops;			   	// evaluate to make expressionRegisters
 	idList<float, TAG_OLD_UI> expressionRegisters;
 	idList<wexpOp_t, TAG_OLD_UI>* saveOps;			   	// evaluate to make expressionRegisters
 	idList<rvNamedEvent*, TAG_OLD_UI>		namedEvents;		//  added named events
 	idList<float, TAG_OLD_UI>* saveRegs;
-	
+
 	idRegisterList regList;
-	
+
 	idWinBool	hideCursor;
 };
 

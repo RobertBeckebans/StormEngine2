@@ -56,19 +56,19 @@ void idMenuWidget_List::Update()
 	{
 		return;
 	}
-	
+
 	idSWFScriptObject& root = GetSWFObject()->GetRootObject();
-	
+
 	if( !BindSprite( root ) )
 	{
 		return;
 	}
-	
+
 	for( int optionIndex = 0; optionIndex < GetNumVisibleOptions(); ++optionIndex )
 	{
 		const int childIndex = GetViewOffset() + optionIndex;
 		bool shown = false;
-		
+
 		if( optionIndex < GetChildren().Num() )
 		{
 			idMenuWidget& child = GetChildByIndex( optionIndex );
@@ -81,7 +81,7 @@ void idMenuWidget_List::Update()
 				shown = true;
 			}
 		}
-		
+
 		if( !shown )
 		{
 			// hide the item
@@ -92,13 +92,13 @@ void idMenuWidget_List::Update()
 			}
 		}
 	}
-	
+
 	idSWFSpriteInstance* const upSprite = GetSprite()->GetScriptObject()->GetSprite( "upIndicator" );
 	if( upSprite != NULL )
 	{
 		upSprite->SetVisible( GetViewOffset() > 0 );
 	}
-	
+
 	idSWFSpriteInstance* const downSprite = GetSprite()->GetScriptObject()->GetSprite( "downIndicator" );
 	if( downSprite != NULL )
 	{
@@ -115,7 +115,7 @@ bool idMenuWidget_List::HandleAction( idWidgetAction& action, const idWidgetEven
 {
 
 	const idSWFParmList& parms = action.GetParms();
-	
+
 	if( action.GetType() == WIDGET_ACTION_SCROLL_VERTICAL )
 	{
 		const scrollType_t scrollType = static_cast< scrollType_t >( event.arg );
@@ -133,7 +133,7 @@ bool idMenuWidget_List::HandleAction( idWidgetAction& action, const idWidgetEven
 		}
 		return true;
 	}
-	
+
 	return idMenuWidget::HandleAction( action, event, widget, forceHandled );
 }
 
@@ -158,10 +158,10 @@ chose to move through the list.
 void idMenuWidget_List::CalculatePositionFromIndexDelta( int& outIndex, int& outOffset, const int currentIndex, const int currentOffset, const int windowSize, const int maxSize, const int indexDelta, const bool allowWrapping, const bool wrapAround ) const
 {
 	assert( indexDelta != 0 );
-	
+
 	int newIndex = currentIndex + indexDelta;
 	bool wrapped = false;
-	
+
 	if( indexDelta > 0 )
 	{
 		// moving down the list
@@ -207,7 +207,7 @@ void idMenuWidget_List::CalculatePositionFromIndexDelta( int& outIndex, int& out
 			}
 		}
 	}
-	
+
 	// calculate the offset
 	if( newIndex - currentOffset >= windowSize )
 	{
@@ -228,9 +228,9 @@ void idMenuWidget_List::CalculatePositionFromIndexDelta( int& outIndex, int& out
 	{
 		outOffset = currentOffset;
 	}
-	
+
 	outIndex = newIndex;
-	
+
 	// the intended behavior is that outOffset and outIndex are always within maxSize of each
 	// other, as they are meant to model a window of items that should be visible in the list.
 	assert( outIndex - outOffset < windowSize );
@@ -247,9 +247,9 @@ void idMenuWidget_List::CalculatePositionFromOffsetDelta( int& outIndex, int& ou
 	// shouldn't be setting both indexDelta AND offsetDelta
 	// FIXME: make this simpler code - just pass a boolean to control it?
 	assert( offsetDelta != 0 );
-	
+
 	const int newOffset = Max( currentIndex + offsetDelta, 0 );
-	
+
 	if( newOffset >= maxSize )
 	{
 		// scrolling past the end - just scroll all the way to the end
@@ -266,7 +266,7 @@ void idMenuWidget_List::CalculatePositionFromOffsetDelta( int& outIndex, int& ou
 	{
 		outIndex = outOffset = newOffset;
 	}
-	
+
 	// the intended behavior is that outOffset and outIndex are always within maxSize of each
 	// other, as they are meant to model a window of items that should be visible in the list.
 	assert( outIndex - outOffset < windowSize );
@@ -285,9 +285,9 @@ void idMenuWidget_List::Scroll( const int scrollAmount, const bool wrapAround )
 	{
 		return;
 	}
-	
+
 	int newIndex, newOffset;
-	
+
 	CalculatePositionFromIndexDelta( newIndex, newOffset, GetViewIndex(), GetViewOffset(), GetNumVisibleOptions(), GetTotalNumberOfOptions(), scrollAmount, IsWrappingAllowed(), wrapAround );
 	if( newOffset != GetViewOffset() )
 	{
@@ -298,7 +298,7 @@ void idMenuWidget_List::Scroll( const int scrollAmount, const bool wrapAround )
 		}
 		Update();
 	}
-	
+
 	if( newIndex != GetViewIndex() )
 	{
 		SetViewIndex( newIndex );
@@ -318,16 +318,16 @@ void idMenuWidget_List::ScrollOffset( const int scrollAmount )
 	{
 		return;
 	}
-	
+
 	int newIndex, newOffset;
-	
+
 	CalculatePositionFromOffsetDelta( newIndex, newOffset, GetViewIndex(), GetViewOffset(), GetNumVisibleOptions(), GetTotalNumberOfOptions(), scrollAmount );
 	if( newOffset != GetViewOffset() )
 	{
 		SetViewOffset( newOffset );
 		Update();
 	}
-	
+
 	if( newIndex != GetViewIndex() )
 	{
 		SetViewIndex( newIndex );
@@ -351,14 +351,14 @@ void idMenuWidget_GameBrowserList::Update()
 	{
 		return;
 	}
-	
+
 	idSWFScriptObject& root = GetSWFObject()->GetRootObject();
-	
+
 	if( !BindSprite( root ) )
 	{
 		return;
 	}
-	
+
 	for( int optionIndex = 0; optionIndex < GetNumVisibleOptions(); ++optionIndex )
 	{
 		const int childIndex = GetViewOffset() + optionIndex;
@@ -383,13 +383,13 @@ void idMenuWidget_GameBrowserList::Update()
 			}
 		}
 	}
-	
+
 	idSWFSpriteInstance* const upSprite = GetSprite()->GetScriptObject()->GetSprite( "upIndicator" );
 	if( upSprite != NULL )
 	{
 		upSprite->SetVisible( GetViewOffset() > 0 );
 	}
-	
+
 	idSWFSpriteInstance* const downSprite = GetSprite()->GetScriptObject()->GetSprite( "downIndicator" );
 	if( downSprite != NULL )
 	{
@@ -409,24 +409,24 @@ bool idMenuWidget_GameBrowserList::PrepareListElement( idMenuWidget& widget, con
 	{
 		return false;
 	}
-	
+
 	idMenuWidget_ServerButton* const button = dynamic_cast< idMenuWidget_ServerButton* >( &widget );
 	if( button == NULL )
 	{
 		return false;
 	}
-	
+
 	if( games[childIndex].serverName.IsEmpty() )
 	{
 		return false;
 	}
-	
+
 	const idBrowserEntry_t entry = games[childIndex];
-	
+
 	button->SetButtonInfo( entry.serverName, entry.mapName, entry.modeName, entry.index, entry.players, entry.maxPlayers, entry.joinable, entry.validMap );
-	
+
 	return true;
-	
+
 }
 
 /*
@@ -448,7 +448,7 @@ void idMenuWidget_GameBrowserList::AddGame( idStr name_, idStrId mapName_, idStr
 {
 
 	idBrowserEntry_t entry;
-	
+
 	entry.serverName = name_;
 	entry.index = index_;
 	entry.players = players_;
@@ -457,7 +457,7 @@ void idMenuWidget_GameBrowserList::AddGame( idStr name_, idStrId mapName_, idStr
 	entry.validMap = validMap_;
 	entry.mapName = mapName_;
 	entry.modeName = modeName_;
-	
+
 	games.Append( entry );
 }
 
@@ -483,9 +483,9 @@ int idMenuWidget_GameBrowserList::GetServerIndex()
 	{
 		return games[ GetViewIndex() ].index;
 	}
-	
+
 	return -1;
-	
+
 }
 
 //*********************************************************************************
@@ -504,14 +504,14 @@ void idMenuWidget_ControlList::Update()
 	{
 		return;
 	}
-	
+
 	idSWFScriptObject& root = GetSWFObject()->GetRootObject();
-	
+
 	if( !BindSprite( root ) )
 	{
 		return;
 	}
-	
+
 	for( int optionIndex = 0; optionIndex < GetNumVisibleOptions(); ++optionIndex )
 	{
 		const int childIndex = GetViewOffset() + optionIndex;
@@ -536,13 +536,13 @@ void idMenuWidget_ControlList::Update()
 			}
 		}
 	}
-	
+
 	idSWFSpriteInstance* const upSprite = GetSprite()->GetScriptObject()->GetSprite( "upIndicator" );
 	if( upSprite != NULL )
 	{
 		upSprite->SetVisible( GetViewOffset() > 0 );
 	}
-	
+
 	idSWFSpriteInstance* const downSprite = GetSprite()->GetScriptObject()->GetSprite( "downIndicator" );
 	if( downSprite != NULL )
 	{
@@ -562,20 +562,20 @@ bool idMenuWidget_ControlList::PrepareListElement( idMenuWidget& widget, const i
 	{
 		return false;
 	}
-	
+
 	idMenuWidget_ControlButton* const button = dynamic_cast< idMenuWidget_ControlButton* >( &widget );
 	if( button == NULL )
 	{
 		return false;
 	}
-	
+
 	if( controls[childIndex].label.IsEmpty() )
 	{
 		return false;
 	}
-	
+
 	const idControlEntry_t entry = controls[childIndex];
-	
+
 	//button->SetButtonInfo( entry.serverName, entry.mapName, entry.modeName, entry.index, entry.players, entry.maxPlayers, entry.joinable, entry.validMap );
 	button->ClearEventActions();
 	button->SetLabel( entry.label );
@@ -584,7 +584,7 @@ bool idMenuWidget_ControlList::PrepareListElement( idMenuWidget& widget, const i
 	button->SetupEvents( entry.repeat, entry.fieldIndex );
 	button->AddEventAction( WIDGET_EVENT_PRESS ).Set( WIDGET_ACTION_ADJUST_FIELD, 1, entry.repeat, entry.fieldIndex );
 	return true;
-	
+
 }
 
 /*
@@ -606,13 +606,13 @@ void idMenuWidget_ControlList::AddButton( idStr label_, idMenuDataSource* dataSo
 {
 
 	idControlEntry_t entry;
-	
+
 	entry.label = label_;
 	entry.type = OPTION_BUTTON_TEXT;
 	entry.dataSource = dataSource_;
 	entry.repeat = repeat_;
 	entry.fieldIndex = fieldIndex_;
-	
+
 	controls.Append( entry );
 }
 
@@ -620,13 +620,13 @@ void idMenuWidget_ControlList::AddButtonInfo( idStr label_, idMenuDataSource* da
 {
 	// TODO: Possibly Remove This.
 	idControlEntry_t entry;
-	
+
 	entry.label = label_;
 	entry.type = OPTION_BUTTON_INFO;
 	entry.dataSource = dataSource_;
 	entry.repeat = repeat_;
 	entry.fieldIndex = fieldIndex_;
-	
+
 	controls.Append( entry );
 }
 
@@ -634,26 +634,26 @@ void idMenuWidget_ControlList::AddFullTextSlider( idStr label_, idMenuDataSource
 {
 
 	idControlEntry_t entry;
-	
+
 	entry.label = label_;
 	entry.type = OPTION_BUTTON_FULL_TEXT_SLIDER;
 	entry.dataSource = dataSource_;
 	entry.repeat = repeat_;
 	entry.fieldIndex = fieldIndex_;
-	
+
 	controls.Append( entry );
 }
 void idMenuWidget_ControlList::AddTextSlider( idStr label_, idMenuDataSource* dataSource_, int fieldIndex_, int repeat_ )
 {
 
 	idControlEntry_t entry;
-	
+
 	entry.label = label_;
 	entry.type = OPTION_SLIDER_TEXT;
 	entry.dataSource = dataSource_;
 	entry.repeat = repeat_;
 	entry.fieldIndex = fieldIndex_;
-	
+
 	controls.Append( entry );
 }
 
@@ -661,13 +661,13 @@ void idMenuWidget_ControlList::AddSliderBar( idStr label_, idMenuDataSource* dat
 {
 
 	idControlEntry_t entry;
-	
+
 	entry.label = label_;
 	entry.type = OPTION_SLIDER_BAR;
 	entry.dataSource = dataSource_;
 	entry.repeat = repeat_;
 	entry.fieldIndex = fieldIndex_;
-	
+
 	controls.Append( entry );
 }
 
@@ -675,13 +675,13 @@ void idMenuWidget_ControlList::AddSliderToggle( idStr label_, idMenuDataSource* 
 {
 
 	idControlEntry_t entry;
-	
+
 	entry.label = label_;
 	entry.type = OPTION_SLIDER_TOGGLE;
 	entry.dataSource = dataSource_;
 	entry.repeat = repeat_;
 	entry.fieldIndex = fieldIndex_;
-	
+
 	controls.Append( entry );
 }
 /*

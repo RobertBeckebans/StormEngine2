@@ -46,37 +46,37 @@ void idPhysics_Monster::CheckGround( monsterPState_t& state )
 {
 	trace_t groundTrace;
 	idVec3 down;
-	
+
 	if( gravityNormal == vec3_zero )
 	{
 		state.onGround = false;
 		groundEntityPtr = NULL;
 		return;
 	}
-	
+
 	down = state.origin + gravityNormal * CONTACT_EPSILON;
 	gameLocal.clip.Translation( groundTrace, state.origin, down, clipModel, clipModel->GetAxis(), clipMask, self );
-	
+
 	if( groundTrace.fraction == 1.0f )
 	{
 		state.onGround = false;
 		groundEntityPtr = NULL;
 		return;
 	}
-	
+
 	groundEntityPtr = gameLocal.entities[ groundTrace.c.entityNum ];
-	
+
 	if( ( groundTrace.c.normal * -gravityNormal ) < minFloorCosine )
 	{
 		state.onGround = false;
 		return;
 	}
-	
+
 	state.onGround = true;
-	
+
 	// let the entity know about the collision
 	self->Collide( groundTrace, state.velocity );
-	
+
 	// apply impact to a non world floor entity
 	if( groundTrace.c.entityNum != ENTITYNUM_WORLD && groundEntityPtr.GetEntity() )
 	{
@@ -99,15 +99,15 @@ monsterMoveResult_t idPhysics_Monster::SlideMove( idVec3& start, idVec3& velocit
 	int i;
 	trace_t tr;
 	idVec3 move;
-	
+
 	blockingEntity = NULL;
 	move = delta;
 	for( i = 0; i < 3; i++ )
 	{
 		gameLocal.clip.Translation( tr, start, start + move, clipModel, clipModel->GetAxis(), clipMask, self );
-		
+
 		start = tr.endpos;
-		
+
 		if( tr.fraction == 1.0f )
 		{
 			if( i > 0 )
@@ -116,18 +116,18 @@ monsterMoveResult_t idPhysics_Monster::SlideMove( idVec3& start, idVec3& velocit
 			}
 			return MM_OK;
 		}
-		
+
 		if( tr.c.entityNum != ENTITYNUM_NONE )
 		{
 			assert( tr.c.entityNum < MAX_GENTITIES );
 			blockingEntity = gameLocal.entities[ tr.c.entityNum ];
 		}
-		
+
 		// clip the movement delta and velocity
 		move.ProjectOntoPlane( tr.c.normal, OVERCLIP );
 		velocity.ProjectOntoPlane( tr.c.normal, OVERCLIP );
 	}
-	
+
 	return MM_BLOCKED;
 }
 
@@ -146,12 +146,12 @@ monsterMoveResult_t idPhysics_Monster::StepMove( idVec3& start, idVec3& velocity
 	monsterMoveResult_t result1, result2;
 	float	stepdist;
 	float	nostepdist;
-	
+
 	if( delta == vec3_origin )
 	{
 		return MM_OK;
 	}
-	
+
 	// try to move without stepping up
 	noStepPos = start;
 	noStepVel = velocity;
@@ -164,7 +164,7 @@ monsterMoveResult_t idPhysics_Monster::StepMove( idVec3& start, idVec3& velocity
 			start = noStepPos;
 			return MM_OK;
 		}
-		
+
 		// try to step down so that we walk down slopes and stairs at a normal rate
 		down = noStepPos + gravityNormal * maxStepHeight;
 		gameLocal.clip.Translation( tr, noStepPos, down, clipModel, clipModel->GetAxis(), clipMask, self );
@@ -179,7 +179,7 @@ monsterMoveResult_t idPhysics_Monster::StepMove( idVec3& start, idVec3& velocity
 			return MM_OK;
 		}
 	}
-	
+
 	if( blockingEntity && blockingEntity->IsType( idActor::Type ) )
 	{
 		// try to step down in case walking into an actor while going down steps
@@ -189,12 +189,12 @@ monsterMoveResult_t idPhysics_Monster::StepMove( idVec3& start, idVec3& velocity
 		velocity = noStepVel;
 		return MM_BLOCKED;
 	}
-	
+
 	if( gravityNormal == vec3_zero )
 	{
 		return result1;
 	}
-	
+
 	// try to step up
 	up = start - gravityNormal * maxStepHeight;
 	gameLocal.clip.Translation( tr, start, up, clipModel, clipModel->GetAxis(), clipMask, self );
@@ -204,7 +204,7 @@ monsterMoveResult_t idPhysics_Monster::StepMove( idVec3& start, idVec3& velocity
 		velocity = noStepVel;
 		return result1;
 	}
-	
+
 	// try to move at the stepped up position
 	stepPos = tr.endpos;
 	stepVel = velocity;
@@ -215,12 +215,12 @@ monsterMoveResult_t idPhysics_Monster::StepMove( idVec3& start, idVec3& velocity
 		velocity = noStepVel;
 		return result1;
 	}
-	
+
 	// step down again
 	down = stepPos + gravityNormal * maxStepHeight;
 	gameLocal.clip.Translation( tr, stepPos, down, clipModel, clipModel->GetAxis(), clipMask, self );
 	stepPos = tr.endpos;
-	
+
 	// if the move is further without stepping up, or the slope is too steap, don't step up
 	nostepdist = ( noStepPos - start ).LengthSqr();
 	stepdist = ( stepPos - start ).LengthSqr();
@@ -230,10 +230,10 @@ monsterMoveResult_t idPhysics_Monster::StepMove( idVec3& start, idVec3& velocity
 		velocity = noStepVel;
 		return MM_SLIDING;
 	}
-	
+
 	start = stepPos;
 	velocity = stepVel;
-	
+
 	return MM_STEPPED;
 }
 
@@ -281,7 +281,7 @@ idPhysics_Monster::idPhysics_Monster()
 	memset( &current, 0, sizeof( current ) );
 	current.atRest = -1;
 	saved = current;
-	
+
 	delta.Zero();
 	maxStepHeight = 18.0f;
 	minFloorCosine = 0.7f;
@@ -333,16 +333,16 @@ void idPhysics_Monster::Save( idSaveGame* savefile ) const
 
 	idPhysics_Monster_SavePState( savefile, current );
 	idPhysics_Monster_SavePState( savefile, saved );
-	
+
 	savefile->WriteFloat( maxStepHeight );
 	savefile->WriteFloat( minFloorCosine );
 	savefile->WriteVec3( delta );
-	
+
 	savefile->WriteBool( forceDeltaMove );
 	savefile->WriteBool( fly );
 	savefile->WriteBool( useVelocityMove );
 	savefile->WriteBool( noImpact );
-	
+
 	savefile->WriteInt( ( int )moveResult );
 	savefile->WriteObject( blockingEntity );
 }
@@ -357,16 +357,16 @@ void idPhysics_Monster::Restore( idRestoreGame* savefile )
 
 	idPhysics_Monster_RestorePState( savefile, current );
 	idPhysics_Monster_RestorePState( savefile, saved );
-	
+
 	savefile->ReadFloat( maxStepHeight );
 	savefile->ReadFloat( minFloorCosine );
 	savefile->ReadVec3( delta );
-	
+
 	savefile->ReadBool( forceDeltaMove );
 	savefile->ReadBool( fly );
 	savefile->ReadBool( useVelocityMove );
 	savefile->ReadBool( noImpact );
-	
+
 	savefile->ReadInt( ( int& )moveResult );
 	savefile->ReadObject( reinterpret_cast<idClass*&>( blockingEntity ) );
 }
@@ -495,13 +495,13 @@ bool idPhysics_Monster::Evaluate( int timeStepMSec, int endTimeMSec )
 	idVec3 masterOrigin, oldOrigin;
 	idMat3 masterAxis;
 	float timeStep;
-	
+
 	timeStep = MS2SEC( timeStepMSec );
-	
+
 	moveResult = MM_OK;
 	blockingEntity = NULL;
 	oldOrigin = current.origin;
-	
+
 	// if bound to a master
 	if( masterEntity )
 	{
@@ -514,23 +514,23 @@ bool idPhysics_Monster::Evaluate( int timeStepMSec, int endTimeMSec )
 		masterDeltaYaw = masterYaw - masterDeltaYaw;
 		return true;
 	}
-	
+
 	// if the monster is at rest
 	if( current.atRest >= 0 )
 	{
 		return false;
 	}
-	
+
 	ActivateContactEntities();
-	
+
 	// move the monster velocity into the frame of a pusher
 	current.velocity -= current.pushVelocity;
-	
+
 	clipModel->Unlink();
-	
+
 	// check if on the ground
 	idPhysics_Monster::CheckGround( current );
-	
+
 	// if not on the ground or moving upwards
 	float upspeed;
 	if( gravityNormal != vec3_zero )
@@ -558,7 +558,7 @@ bool idPhysics_Monster::Evaluate( int timeStepMSec, int endTimeMSec )
 			moveResult = idPhysics_Monster::SlideMove( current.origin, current.velocity, delta );
 			delta.Zero();
 		}
-		
+
 		if( !fly )
 		{
 			current.velocity += gravityVector * timeStep;
@@ -574,9 +574,9 @@ bool idPhysics_Monster::Evaluate( int timeStepMSec, int endTimeMSec )
 		{
 			current.velocity = delta / timeStep;
 		}
-		
+
 		current.velocity -= ( current.velocity * gravityNormal ) * gravityNormal;
-		
+
 		if( delta == vec3_origin )
 		{
 			Rest();
@@ -588,22 +588,22 @@ bool idPhysics_Monster::Evaluate( int timeStepMSec, int endTimeMSec )
 			delta.Zero();
 		}
 	}
-	
+
 	clipModel->Link( gameLocal.clip, self, 0, current.origin, clipModel->GetAxis() );
-	
+
 	// get all the ground contacts
 	EvaluateContacts();
-	
+
 	// move the monster velocity back into the world frame
 	current.velocity += current.pushVelocity;
 	current.pushVelocity.Zero();
-	
+
 	if( IsOutsideWorld() )
 	{
 		gameLocal.Warning( "clip model outside world bounds for entity '%s' at (%s)", self->name.c_str(), current.origin.ToString( 0 ) );
 		Rest();
 	}
-	
+
 	return ( current.origin != oldOrigin );
 }
 
@@ -692,9 +692,9 @@ idPhysics_Monster::RestoreState
 void idPhysics_Monster::RestoreState()
 {
 	current = saved;
-	
+
 	clipModel->Link( gameLocal.clip, self, 0, current.origin, clipModel->GetAxis() );
-	
+
 	EvaluateContacts();
 }
 
@@ -707,7 +707,7 @@ void idPhysics_Monster::SetOrigin( const idVec3& newOrigin, int id )
 {
 	idVec3 masterOrigin;
 	idMat3 masterAxis;
-	
+
 	current.localOrigin = newOrigin;
 	if( masterEntity )
 	{
@@ -756,7 +756,7 @@ void idPhysics_Monster::Rotate( const idRotation& rotation, int id )
 {
 	idVec3 masterOrigin;
 	idMat3 masterAxis;
-	
+
 	current.origin *= rotation;
 	if( masterEntity )
 	{
@@ -824,7 +824,7 @@ void idPhysics_Monster::SetMaster( idEntity* master, BindFlags flags )
 {
 	idVec3 masterOrigin;
 	idMat3 masterAxis;
-	
+
 	if( master )
 	{
 		if( !masterEntity )
@@ -834,7 +834,7 @@ void idPhysics_Monster::SetMaster( idEntity* master, BindFlags flags )
 			current.localOrigin = ( current.origin - masterOrigin ) * masterAxis.Transpose();
 			masterEntity = master;
 			masterYaw = masterAxis[0].ToYaw();
-			
+
 			if( ( flags & BFL_SNAPXFORM ) != 0 )
 			{
 				current.localOrigin.Zero();

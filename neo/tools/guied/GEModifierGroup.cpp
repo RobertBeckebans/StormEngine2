@@ -40,12 +40,12 @@ rvGEModifierGroup::rvGEModifierGroup( ) :
 rvGEModifierGroup::~rvGEModifierGroup( )
 {
 	int i;
-	
+
 	for( i = 0; i < mModifiers.Num(); i ++ )
 	{
 		delete mModifiers[i];
 	}
-	
+
 	mModifiers.Clear( );
 }
 
@@ -53,12 +53,12 @@ bool rvGEModifierGroup::Append( rvGEModifier* mod )
 {
 	// All modifiers must be the same type
 	assert( !mModifiers.Num() || !idStr::Icmp( mod->GetName( ), mModifiers[0]->GetName( ) ) );
-	
+
 	if( !mModifiers.Num( ) )
 	{
 		mName = mod->GetName( );
 	}
-	
+
 	mModifiers.Append( mod );
 	return true;
 }
@@ -66,7 +66,7 @@ bool rvGEModifierGroup::Append( rvGEModifier* mod )
 bool rvGEModifierGroup::IsValid( void )
 {
 	int i;
-	
+
 	for( i = 0; i < mModifiers.Num(); i ++ )
 	{
 		if( !mModifiers[i]->IsValid( ) )
@@ -74,31 +74,31 @@ bool rvGEModifierGroup::IsValid( void )
 			return false;
 		}
 	}
-	
+
 	return true;
 }
 
 bool rvGEModifierGroup::Apply( void )
 {
 	int i;
-	
+
 	for( i = 0; i < mModifiers.Num(); i ++ )
 	{
 		mModifiers[i]->Apply( );
 	}
-	
+
 	return true;
 }
 
 bool rvGEModifierGroup::Undo( void )
 {
 	int i;
-	
+
 	for( i = 0; i < mModifiers.Num(); i ++ )
 	{
 		mModifiers[i]->Undo( );
 	}
-	
+
 	return true;
 }
 
@@ -106,12 +106,12 @@ bool rvGEModifierGroup::CanMerge( rvGEModifier* mergebase )
 {
 	rvGEModifierGroup*	merge = ( rvGEModifierGroup* ) mergebase;
 	int					i;
-	
+
 	if( mModifiers.Num() != merge->mModifiers.Num( ) )
 	{
 		return false;
 	}
-	
+
 	// Double check the merge is possible
 	for( i = 0; i < mModifiers.Num(); i ++ )
 	{
@@ -119,18 +119,18 @@ bool rvGEModifierGroup::CanMerge( rvGEModifier* mergebase )
 		{
 			return false;
 		}
-		
+
 		if( idStr::Icmp( mModifiers[i]->GetName( ), merge->mModifiers[i]->GetName( ) ) )
 		{
 			return false;
 		}
-		
+
 		if( !mModifiers[i]->CanMerge( merge->mModifiers[i] ) )
 		{
 			return false;
 		}
 	}
-	
+
 	return true;
 }
 
@@ -138,12 +138,12 @@ bool rvGEModifierGroup::Merge( rvGEModifier* mergebase )
 {
 	rvGEModifierGroup*	merge = ( rvGEModifierGroup* ) mergebase;
 	int					i;
-	
+
 	// Double check the merge is possible
 	for( i = 0; i < mModifiers.Num(); i ++ )
 	{
 		mModifiers[i]->Merge( merge->mModifiers[i] );
 	}
-	
+
 	return true;
 }

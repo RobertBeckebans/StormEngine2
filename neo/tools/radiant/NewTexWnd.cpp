@@ -39,11 +39,11 @@ If you have questions concerning this license or the applicable additional terms
 
 // foresthale 2014-05-29: let's not use the MFC DEBUG_NEW when we have our own...
 #ifdef ID_DEBUG_NEW_MFC
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+	#ifdef _DEBUG
+		#define new DEBUG_NEW
+		#undef THIS_FILE
+		static char THIS_FILE[] = __FILE__;
+	#endif
 #endif
 
 /*
@@ -121,14 +121,14 @@ BOOL CNewTexWnd::PreCreateWindow( CREATESTRUCT& cs )
 			Error( "CNewTexWnd RegisterClass: failed" );
 		}
 	}
-	
+
 	cs.lpszClass = TEXTURE_WINDOW_CLASS;
 	cs.lpszName = "TEX";
 	if( cs.style != QE3_CHILDSTYLE && cs.style != QE3_STYLE )
 	{
 		cs.style = QE3_SPLITTER_STYLE;
 	}
-	
+
 	return CWnd::PreCreateWindow( cs );
 }
 
@@ -142,16 +142,16 @@ int CNewTexWnd::OnCreate( LPCREATESTRUCT lpCreateStruct )
 	{
 		return -1;
 	}
-	
+
 	ShowScrollBar( SB_VERT, g_PrefsDlg.m_bTextureScrollbar );
 	m_bNeedRange = true;
-	
+
 	hdcTexture = GetDC();
 	QEW_SetupPixelFormat( hdcTexture->m_hDC, false );
-	
+
 	EnableToolTips( TRUE );
 	EnableTrackingToolTips( TRUE );
-	
+
 	return 0;
 }
 
@@ -218,33 +218,33 @@ const idMaterial* CNewTexWnd::NextPos()
 		{
 			return NULL;
 		}
-		
+
 		mat = declManager->MaterialByIndex( currentIndex, false );
-		
+
 		currentIndex++;
-		
+
 		//if (mat->getName()[0] == '(') { // fake color texture
 		//	continue;
 		//}
-		
+
 		if( !mat->IsValid() )
 		{
 			continue;
 		}
-		
+
 		if( !mat->TestMaterialFlag( MF_EDITOR_VISIBLE ) )
 		{
 			continue;
 		}
 		break;
 	}
-	
+
 	// ensure it is uploaded
 	declManager->FindMaterial( mat->GetName() );
-	
+
 	int width = mat->GetEditorImage()->GetUploadWidth() * ( ( float )g_PrefsDlg.m_nTextureScale / 100 );
 	int height = mat->GetEditorImage()->GetUploadHeight() * ( ( float )g_PrefsDlg.m_nTextureScale / 100 );
-	
+
 	if( current.x + width > rectClient.Width() - 8 && currentRow )
 	{
 		// go to the next row unless the texture is the first on the row
@@ -252,15 +252,15 @@ const idMaterial* CNewTexWnd::NextPos()
 		current.y -= currentRow + FONT_HEIGHT + 4;
 		currentRow = 0;
 	}
-	
+
 	draw = current;
-	
+
 	// Is our texture larger than the row? If so, grow the row height to match it
 	if( currentRow < height )
 	{
 		currentRow = height;
 	}
-	
+
 	// never go less than 64, or the names get all crunched up
 	current.x += width < 64 ? 64 : width;
 	current.x += 8;
@@ -275,9 +275,9 @@ void CNewTexWnd::OnPaint()
 {
 
 	CPaintDC	dc( this );	// device context for painting
-	
+
 	int nOld = g_qeglobals.d_texturewin.m_nTotalHeight;
-	
+
 	//hdcTexture = GetDC();
 	if( !qwglMakeCurrent( dc.GetSafeHdc(), win32.hGLRC ) )
 	{
@@ -287,7 +287,7 @@ void CNewTexWnd::OnPaint()
 	{
 		// foresthale 2014-05-19: set up familiar state for editors before we draw anything
 		tr.Editor_SetupState();
-		
+
 		const char*	name;
 		qglClearColor
 		(
@@ -305,7 +305,7 @@ void CNewTexWnd::OnPaint()
 		qglDisable( GL_BLEND );
 		qglOrtho( 0, rectClient.Width(), origin.y - rectClient.Height(), origin.y, -100, 100 );
 		qglPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-		
+
 		// init stuff
 		current.x = 8;
 		current.y = -8;
@@ -318,10 +318,10 @@ void CNewTexWnd::OnPaint()
 			{
 				break;
 			}
-			
+
 			int width = mat->GetEditorImage()->GetUploadWidth() * ( ( float )g_PrefsDlg.m_nTextureScale / 100 );
 			int height = mat->GetEditorImage()->GetUploadHeight() * ( ( float )g_PrefsDlg.m_nTextureScale / 100 );
-			
+
 			// Is this texture visible?
 			if( ( draw.y - height - FONT_HEIGHT < origin.y ) && ( draw.y > origin.y - rectClient.Height() ) )
 			{
@@ -335,10 +335,10 @@ void CNewTexWnd::OnPaint()
 				qglVertex2f( draw.x + 1 + width, draw.y - height - 1 - FONT_HEIGHT );
 				qglVertex2f( draw.x + 1 + width, draw.y + 1 - FONT_HEIGHT );
 				qglEnd();
-				
+
 				// Draw the texture
 				float	fScale = ( g_PrefsDlg.m_bHiColorTextures == TRUE ) ? ( ( float )g_PrefsDlg.m_nTextureScale / 100 ) : 1.0;
-				
+
 				mat->GetEditorImage()->Bind();
 				QE_CheckOpenGLForErrors();
 				qglColor3f( 1, 1, 1 );
@@ -352,35 +352,35 @@ void CNewTexWnd::OnPaint()
 				qglTexCoord2f( 0, 1 );
 				qglVertex2f( draw.x, draw.y - FONT_HEIGHT - height );
 				qglEnd();
-				
+
 				// draw the selection border
 				if( !idStr::Icmp( g_qeglobals.d_texturewin.texdef.name, mat->GetName() ) )
 				{
 					qglLineWidth( 3 );
 					qglColor3f( 1, 0, 0 );
 					globalImages->BindNull();
-					
+
 					qglBegin( GL_LINE_LOOP );
 					qglVertex2f( draw.x - 4, draw.y - FONT_HEIGHT + 4 );
 					qglVertex2f( draw.x - 4, draw.y - FONT_HEIGHT - height - 4 );
 					qglVertex2f( draw.x + 4 + width, draw.y - FONT_HEIGHT - height - 4 );
 					qglVertex2f( draw.x + 4 + width, draw.y - FONT_HEIGHT + 4 );
 					qglEnd();
-					
+
 					qglLineWidth( 1 );
 				}
-				
+
 				// draw the texture name
 				globalImages->BindNull();
 				qglColor3f( 1, 1, 1 );
 				qglRasterPos2f( draw.x, draw.y - FONT_HEIGHT + 2 );
-				
+
 				// don't draw the directory name
 				for( name = mat->GetName(); *name && *name != '/' && *name != '\\'; name++ )
 				{
 					;
 				}
-				
+
 				if( !*name )
 				{
 					name = mat->GetName();
@@ -393,22 +393,22 @@ void CNewTexWnd::OnPaint()
 				//qglCallLists(va("%s -- %d, %d" strlen(name), GL_UNSIGNED_BYTE, name);
 			}
 		}
-		
+
 		g_qeglobals.d_texturewin.m_nTotalHeight = abs( draw.y ) + 100;
-		
+
 		// reset the current texture
 		globalImages->BindNull();
 		qglFinish();
 		qwglSwapBuffers( dc.GetSafeHdc() );
 		TRACE( "Texture Paint\n" );
 	}
-	
+
 	if( g_PrefsDlg.m_bTextureScrollbar && ( m_bNeedRange || g_qeglobals.d_texturewin.m_nTotalHeight != nOld ) )
 	{
 		m_bNeedRange = false;
 		SetScrollRange( SB_VERT, 0, g_qeglobals.d_texturewin.m_nTotalHeight, TRUE );
 	}
-	
+
 	//ReleaseDC(hdcTexture);
 }
 
@@ -419,7 +419,7 @@ void CNewTexWnd::OnPaint()
 void CNewTexWnd::OnVScroll( UINT nSBCode, UINT nPos, CScrollBar* pScrollBar )
 {
 	CWnd::OnVScroll( nSBCode, nPos, pScrollBar );
-	
+
 	int n = GetScrollPos( SB_VERT );
 	switch( nSBCode )
 	{
@@ -428,43 +428,43 @@ void CNewTexWnd::OnVScroll( UINT nSBCode, UINT nPos, CScrollBar* pScrollBar )
 			n = ( n - 15 > 0 ) ? n - 15 : 0;
 			break;
 		}
-		
+
 		case SB_LINEDOWN:
 		{
 			n = ( n + 15 < g_qeglobals.d_texturewin.m_nTotalHeight ) ? n + 15 : n;
 			break;
 		}
-		
+
 		case SB_PAGEUP:
 		{
 			n = ( n - g_qeglobals.d_texturewin.height > 0 ) ? n - g_qeglobals.d_texturewin.height : 0;
 			break;
 		}
-		
+
 		case SB_PAGEDOWN:
 		{
 			n = ( n + g_qeglobals.d_texturewin.height < g_qeglobals.d_texturewin.m_nTotalHeight ) ? n + g_qeglobals.d_texturewin.height : n;
 			break;
 		}
-		
+
 		case SB_THUMBPOSITION:
 		{
 			n = nPos;
 			break;
 		}
-		
+
 		case SB_THUMBTRACK:
 		{
 			n = nPos;
 			break;
 		}
 	}
-	
+
 	SetScrollPos( SB_VERT, n );
 	origin.y = -n;
 	Invalidate();
 	UpdateWindow();
-	
+
 	// Sys_UpdateWindows(W_TEXTURE);
 }
 
@@ -495,7 +495,7 @@ BOOL CNewTexWnd::Create
 		hdcTexture = GetDC();
 		QEW_SetupPixelFormat( hdcTexture->m_hDC, false );
 	}
-	
+
 	return ret;
 }
 
@@ -505,12 +505,12 @@ const idMaterial* CNewTexWnd::getMaterialAtPoint( CPoint point )
 	// init stuff
 	int my = rectClient.Height() - 1 - point.y;
 	my += origin.y - rectClient.Height();
-	
+
 	current.x = 8;
 	current.y = -8;
 	currentRow = 0;
 	currentIndex = 0;
-	
+
 	while( 1 )
 	{
 		const idMaterial* mat = NextPos();
@@ -518,7 +518,7 @@ const idMaterial* CNewTexWnd::getMaterialAtPoint( CPoint point )
 		{
 			return NULL;
 		}
-		
+
 		int width = mat->GetEditorImage()->GetUploadWidth() * ( ( float )g_PrefsDlg.m_nTextureScale / 100 );
 		int height = mat->GetEditorImage()->GetUploadHeight() * ( ( float )g_PrefsDlg.m_nTextureScale / 100 );
 		//if (point.x > draw.x && point.x - draw.x < width && my < draw.y && my + draw.y < height + FONT_HEIGHT) {
@@ -526,9 +526,9 @@ const idMaterial* CNewTexWnd::getMaterialAtPoint( CPoint point )
 		{
 			return mat;
 		}
-		
+
 	}
-	
+
 }
 /*
  =======================================================================================================================
@@ -537,11 +537,11 @@ const idMaterial* CNewTexWnd::getMaterialAtPoint( CPoint point )
 void CNewTexWnd::OnLButtonDown( UINT nFlags, CPoint point )
 {
 	cursor = point;
-	
+
 	SetFocus();
 	bool fitScale = Sys_KeyDown( VK_CONTROL );
 	bool edit = Sys_KeyDown( VK_SHIFT ) && !fitScale;
-	
+
 	const idMaterial* mat = getMaterialAtPoint( point );
 	if( mat )
 	{
@@ -551,7 +551,7 @@ void CNewTexWnd::OnLButtonDown( UINT nFlags, CPoint point )
 	{
 		Sys_Status( "Did not select a texture\n", 0 );
 	}
-	
+
 	//
 	UpdateSurfaceDialog();
 	UpdatePatchInspector();
@@ -564,7 +564,7 @@ void CNewTexWnd::OnLButtonDown( UINT nFlags, CPoint point )
 void CNewTexWnd::OnMButtonDown( UINT nFlags, CPoint point )
 {
 	CWnd::OnMButtonDown( nFlags, point );
-	
+
 }
 
 /*
@@ -614,12 +614,12 @@ extern float	fDiff( float f1, float f2 );
 void CNewTexWnd::OnMouseMove( UINT nFlags, CPoint point )
 {
 	int scale = 1;
-	
+
 	if( Sys_KeyDown( VK_SHIFT ) )
 	{
 		scale = 4;
 	}
-	
+
 	// rbutton = drag texture origin
 	if( Sys_KeyDown( VK_RBUTTON ) )
 	{
@@ -629,13 +629,13 @@ void CNewTexWnd::OnMouseMove( UINT nFlags, CPoint point )
 			{
 				long*	px = &point.x;
 				long*	px2 = &cursor.x;
-				
+
 				if( fDiff( point.y, cursor.y ) > fDiff( point.x, cursor.x ) )
 				{
 					px = &point.y;
 					px2 = &cursor.y;
 				}
-				
+
 				if( *px > *px2 )
 				{
 					// zoom in
@@ -654,7 +654,7 @@ void CNewTexWnd::OnMouseMove( UINT nFlags, CPoint point )
 						g_PrefsDlg.m_nTextureScale = 1;
 					}
 				}
-				
+
 				*px2 = *px;
 				CPoint screen = cursor;
 				ClientToScreen( &screen );
@@ -670,7 +670,7 @@ void CNewTexWnd::OnMouseMove( UINT nFlags, CPoint point )
 				{
 					origin.y = 0;
 				}
-				
+
 				//Sys_SetCursorPos(cursor.x, cursor.y);
 				CPoint screen = cursor;
 				ClientToScreen( &screen );
@@ -679,12 +679,12 @@ void CNewTexWnd::OnMouseMove( UINT nFlags, CPoint point )
 				{
 					SetScrollPos( SB_VERT, abs( origin.y ) );
 				}
-				
+
 				InvalidateRect( NULL, false );
 				UpdateWindow();
 			}
 		}
-		
+
 		return;
 	}
 }
@@ -706,9 +706,9 @@ void Texture_SetTexture( texdef_t* texdef, brushprimit_texdef_t*	brushprimit_tex
 		Sys_Status( "Can't select an entity texture\n", 0 );
 		return;
 	}
-	
+
 	g_qeglobals.d_texturewin.texdef = *texdef;
-	
+
 	//
 	// store the texture coordinates for new brush primitive mode be sure that all the
 	// callers are using the default 2x2 texture
@@ -717,21 +717,21 @@ void Texture_SetTexture( texdef_t* texdef, brushprimit_texdef_t*	brushprimit_tex
 	{
 		g_qeglobals.d_texturewin.brushprimit_texdef = *brushprimit_texdef;
 	}
-	
+
 	g_dlgFind.updateTextures( texdef->name );
-	
+
 	if( !g_dlgFind.isOpen() && bSetSelection )
 	{
 		Select_SetTexture( texdef, brushprimit_texdef, bFitScale );
 	}
-	
+
 	g_Inspectors->texWnd.EnsureTextureIsVisible( texdef->name );
-	
+
 	if( g_Inspectors->mediaDlg.IsWindowVisible() )
 	{
 		g_Inspectors->mediaDlg.SelectCurrentItem( true, g_qeglobals.d_texturewin.texdef.name, CDialogTextures::MATERIALS );
 	}
-	
+
 	g_qeglobals.d_texturewin.texdef = *texdef;
 	// store the texture coordinates for new brush primitive mode be sure that all the
 	// callers are using the default 2x2 texture
@@ -740,11 +740,11 @@ void Texture_SetTexture( texdef_t* texdef, brushprimit_texdef_t*	brushprimit_tex
 	{
 		g_qeglobals.d_texturewin.brushprimit_texdef = *brushprimit_texdef;
 	}
-	
-	
+
+
 	Sys_UpdateWindows( W_TEXTURE );
-	
-	
+
+
 }
 
 const idMaterial* Texture_LoadLight( const char* name )
@@ -804,7 +804,7 @@ const idMaterial* Texture_ForName( const char* name )
 void Texture_ShowInuse( void )
 {
 	Texture_HideAll();
-	
+
 	brush_t* b;
 	for( b = active_brushes.next; b != NULL && b != &active_brushes; b = b->next )
 	{
@@ -820,7 +820,7 @@ void Texture_ShowInuse( void )
 			}
 		}
 	}
-	
+
 	for( b = selected_brushes.next; b != NULL && b != &selected_brushes; b = b->next )
 	{
 		if( b->pPatch )
@@ -835,9 +835,9 @@ void Texture_ShowInuse( void )
 			}
 		}
 	}
-	
+
 	Sys_UpdateWindows( W_TEXTURE );
-	
+
 	g_Inspectors->SetWindowText( "Textures (in use)" );
 }
 
@@ -859,9 +859,9 @@ void Texture_SetMode( int iMenu )
 	int		iMode;
 	HMENU	hMenu;
 	bool	texturing = true;
-	
+
 	hMenu = GetMenu( g_pParentWnd->GetSafeHwnd() );
-	
+
 	switch( iMenu )
 	{
 		case ID_VIEW_NEAREST:
@@ -882,19 +882,19 @@ void Texture_SetMode( int iMenu )
 		case ID_VIEW_TRILINEAR:
 			iMode = GL_LINEAR_MIPMAP_LINEAR;
 			break;
-			
+
 		case ID_TEXTURES_WIREFRAME:
 			iMode = 0;
 			texturing = false;
 			break;
-			
+
 		case ID_TEXTURES_FLATSHADE:
 		default:
 			iMode = 0;
 			texturing = false;
 			break;
 	}
-	
+
 	CheckMenuItem( hMenu, ID_VIEW_NEAREST, MF_BYCOMMAND | MF_UNCHECKED );
 	CheckMenuItem( hMenu, ID_VIEW_NEARESTMIPMAP, MF_BYCOMMAND | MF_UNCHECKED );
 	CheckMenuItem( hMenu, ID_VIEW_LINEAR, MF_BYCOMMAND | MF_UNCHECKED );
@@ -903,12 +903,12 @@ void Texture_SetMode( int iMenu )
 	CheckMenuItem( hMenu, ID_VIEW_TRILINEAR, MF_BYCOMMAND | MF_UNCHECKED );
 	CheckMenuItem( hMenu, ID_TEXTURES_WIREFRAME, MF_BYCOMMAND | MF_UNCHECKED );
 	CheckMenuItem( hMenu, ID_TEXTURES_FLATSHADE, MF_BYCOMMAND | MF_UNCHECKED );
-	
+
 	CheckMenuItem( hMenu, iMenu, MF_BYCOMMAND | MF_CHECKED );
-	
+
 	g_qeglobals.d_savedinfo.iTexMenu = iMenu;
 	texture_mode = iMode;
-	
+
 	if( !texturing && iMenu == ID_TEXTURES_WIREFRAME )
 	{
 		g_pParentWnd->GetCamera()->Camera().draw_mode = cd_wire;
@@ -923,13 +923,13 @@ void Texture_SetMode( int iMenu )
 		Sys_UpdateWindows( W_ALL );
 		return;
 	}
-	
+
 	if( g_pParentWnd->GetCamera()->Camera().draw_mode != cd_texture )
 	{
 		g_pParentWnd->GetCamera()->Camera().draw_mode = cd_texture;
 		Map_BuildBrushData();
 	}
-	
+
 	Sys_UpdateWindows( W_ALL );
 }
 
@@ -943,7 +943,7 @@ void CNewTexWnd::EnsureTextureIsVisible( const char* name )
 	current.y = -8;
 	currentRow = 0;
 	currentIndex = 0;
-	
+
 	while( 1 )
 	{
 		const idMaterial* mat = NextPos();
@@ -951,10 +951,10 @@ void CNewTexWnd::EnsureTextureIsVisible( const char* name )
 		{
 			break;
 		}
-		
+
 		int width = mat->GetEditorImage()->GetUploadWidth() * ( ( float )g_PrefsDlg.m_nTextureScale / 100 );
 		int height = mat->GetEditorImage()->GetUploadHeight() * ( ( float )g_PrefsDlg.m_nTextureScale / 100 );
-		
+
 		if( !idStr::Icmp( name, mat->GetName() ) )
 		{
 			if( current.y > origin.y )
@@ -963,18 +963,18 @@ void CNewTexWnd::EnsureTextureIsVisible( const char* name )
 				Sys_UpdateWindows( W_TEXTURE );
 				return;
 			}
-			
+
 			if( current.y - height - 2 * FONT_HEIGHT < origin.y - rectClient.Height() )
 			{
 				origin.y = current.y - height - 2 * FONT_HEIGHT + rectClient.Height();
 				Sys_UpdateWindows( W_TEXTURE );
 				return;
 			}
-			
+
 			return;
 		}
 	}
-	
+
 }
 
 
@@ -984,7 +984,7 @@ BOOL CNewTexWnd::OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult )
 	CPoint point;
 	GetCursorPos( &point );
 	const idMaterial* mat = getMaterialAtPoint( point );
-	
+
 	if( mat )
 	{
 		TOOLTIPTEXT* pTTT = ( TOOLTIPTEXT* )pNMHDR;

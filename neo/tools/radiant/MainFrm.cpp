@@ -65,11 +65,11 @@ If you have questions concerning this license or the applicable additional terms
 
 // foresthale 2014-05-29: let's not use the MFC DEBUG_NEW when we have our own...
 #ifdef ID_DEBUG_NEW_MFC
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+	#ifdef _DEBUG
+		#define new DEBUG_NEW
+		#undef THIS_FILE
+		static char THIS_FILE[] = __FILE__;
+	#endif
 #endif
 
 // globals
@@ -124,14 +124,14 @@ SCommandInfo	g_Commands[] =
 	{ "Texture_InvertX",         'I', RAD_CONTROL | RAD_SHIFT, ID_CURVE_NEGATIVETEXTUREY },
 	{ "Texture_InvertY",         'I', RAD_SHIFT, ID_CURVE_NEGATIVETEXTUREX },
 	{ "Texture_ToggleLock",      'T', RAD_SHIFT, ID_TOGGLE_LOCK },
-	
+
 	{ "Texture_ShowAllTextures", 'A', RAD_CONTROL, ID_TEXTURES_SHOWALL },
-	
+
 	{ "Edit_Copy",              'C', RAD_CONTROL, ID_EDIT_COPYBRUSH },
 	{ "Edit_Paste",             'V', RAD_CONTROL, ID_EDIT_PASTEBRUSH },
 	{ "Edit_Undo",              'Z', RAD_CONTROL, ID_EDIT_UNDO },
 	{ "Edit_Redo",              'Y', RAD_CONTROL, ID_EDIT_REDO },
-	
+
 	{ "Camera_Forward",          VK_UP, 0, ID_CAMERA_FORWARD },
 	{ "Camera_Back",             VK_DOWN, 0, ID_CAMERA_BACK },
 	{ "Camera_Left",             VK_LEFT, 0, ID_CAMERA_LEFT },
@@ -145,13 +145,13 @@ SCommandInfo	g_Commands[] =
 	{ "Camera_UpFloor",          VK_PRIOR, 0, ID_VIEW_UPFLOOR },
 	{ "Camera_DownFloor",        VK_NEXT, 0, ID_VIEW_DOWNFLOOR },
 	{ "Camera_CenterView",       VK_END, 0, ID_VIEW_CENTER },
-	
+
 	{ "Grid_ZoomOut",            VK_INSERT, 0, ID_VIEW_ZOOMOUT },
 	{ "FileSaveCopy",            'C', RAD_CONTROL | RAD_ALT | RAD_SHIFT, D3XP_ID_FILE_SAVE_COPY },
 	{ "ShowHideModels",          'M', RAD_CONTROL, D3XP_ID_SHOW_MODELS },
 	{ "NextView",                VK_HOME, 0, ID_VIEW_NEXTVIEW },
 	{ "Grid_ZoomIn",             VK_DELETE, 0, ID_VIEW_ZOOMIN },
-	
+
 	{ "Grid_SetPoint5",          '4', RAD_SHIFT, ID_GRID_POINT5 },
 	{ "Grid_SetPoint25",         '3', RAD_SHIFT, ID_GRID_POINT25 },
 	{ "Grid_SetPoint125",        '2', RAD_SHIFT, ID_GRID_POINT125 },
@@ -165,18 +165,18 @@ SCommandInfo	g_Commands[] =
 	{ "Grid_Set64",              '7', 0, ID_GRID_64 },
 	{ "Grid_Down",               219, 0, ID_GRID_PREV },
 	{ "Grid_Up",                 221, 0, ID_GRID_NEXT },
-	
+
 	{ "Grid_Toggle",             '0', 0, ID_GRID_TOGGLE },
 	{ "Grid_ToggleSizePaint",    'Q', RAD_PRESS, ID_SELECTION_TOGGLESIZEPAINT },
-	
+
 	{ "Grid_PrecisionCursorMode", VK_F11, 0 , ID_PRECISION_CURSOR_CYCLE},
-	
+
 	{ "Grid_NextView",           VK_TAB, RAD_CONTROL, ID_VIEW_NEXTVIEW },
 	{ "Grid_ToggleCrosshairs",   'X', RAD_SHIFT, ID_VIEW_CROSSHAIR },
-	
+
 	{ "Grid_ZZoomOut",           VK_INSERT, RAD_CONTROL, ID_VIEW_ZZOOMOUT },
 	{ "Grid_ZZoomIn",            VK_DELETE, RAD_CONTROL, ID_VIEW_ZZOOMIN },
-	
+
 	{ "Brush_Make3Sided",        '3', RAD_CONTROL, ID_BRUSH_3SIDED },
 	{ "Brush_Make4Sided",        '4', RAD_CONTROL, ID_BRUSH_4SIDED },
 	{ "Brush_Make5Sided",        '5', RAD_CONTROL, ID_BRUSH_5SIDED },
@@ -184,16 +184,16 @@ SCommandInfo	g_Commands[] =
 	{ "Brush_Make7Sided",        '7', RAD_CONTROL, ID_BRUSH_7SIDED },
 	{ "Brush_Make8Sided",        '8', RAD_CONTROL, ID_BRUSH_8SIDED },
 	{ "Brush_Make9Sided",        '9', RAD_CONTROL, ID_BRUSH_9SIDED },
-	
+
 	{ "Leak_NextSpot",           'K', RAD_CONTROL | RAD_SHIFT, ID_MISC_NEXTLEAKSPOT },
 	{ "Leak_PrevSpot",           'L', RAD_CONTROL | RAD_SHIFT, ID_MISC_PREVIOUSLEAKSPOT },
-	
+
 	{ "File_Open",               'O', RAD_CONTROL, ID_FILE_OPEN },
 	{ "File_Save",               'S', RAD_CONTROL, ID_FILE_SAVE },
-	
+
 	{ "TAB",                      VK_TAB, 0, ID_PATCH_TAB },
 	{ "TAB",                      VK_TAB, RAD_SHIFT, ID_PATCH_TAB },
-	
+
 	{ "Patch_BendMode",           'B', 0, ID_PATCH_BEND },
 	{ "Patch_FreezeVertices",     'F', 0, ID_CURVE_FREEZE },
 	{ "Patch_UnFreezeVertices",   'F', RAD_CONTROL, ID_CURVE_UNFREEZE },
@@ -213,21 +213,21 @@ SCommandInfo	g_Commands[] =
 	{ "Patch_Naturalize",         'N', RAD_CONTROL, ID_PATCH_NATURALIZE },
 	{ "Patch_SnapToGrid",         'G', RAD_CONTROL, ID_SELECT_SNAPTOGRID },
 	{ "Patch_CapCurrentCurve",    'C', RAD_SHIFT, ID_CURVE_CAP },
-	
+
 	{ "Clipper_Toggle",          'X', 0, ID_VIEW_CLIPPER },
 	{ "Clipper_ClipSelected",    VK_RETURN, 0, ID_CLIP_SELECTED },
 	{ "Clipper_SplitSelected",   VK_RETURN, RAD_SHIFT, ID_SPLIT_SELECTED },
 	{ "Clipper_FlipClip",        VK_RETURN, RAD_CONTROL, ID_FLIP_CLIP },
-	
+
 	{ "CameraClip_ZoomOut",       219, RAD_CONTROL, ID_VIEW_CUBEOUT },
 	{ "CameraClip_ZoomIn",        221, RAD_CONTROL, ID_VIEW_CUBEIN },
 	{ "CameraClip_Toggle",        220, RAD_CONTROL, ID_VIEW_CUBICCLIPPING },
-	
+
 	{ "ViewTab_EntityInfo",     'N', 0, ID_VIEW_ENTITY },
 	{ "ViewTab_Console",        'O', 0, ID_VIEW_CONSOLE },
 	{ "ViewTab_Textures",       'T', 0, ID_VIEW_TEXTURE },
 	{ "ViewTab_MediaBrowser",   'M', 0, ID_VIEW_MEDIABROWSER },
-	
+
 	{ "Window_SurfaceInspector", 'S', 0, ID_TEXTURES_INSPECTOR },
 	{ "Window_PatchInspector",  'S', RAD_SHIFT, ID_PATCH_INSPECTOR },
 	{ "Window_EntityList",      'I', 0, ID_EDIT_ENTITYINFO },
@@ -237,7 +237,7 @@ SCommandInfo	g_Commands[] =
 	{ "Window_ToggleZ",         'Z', RAD_CONTROL | RAD_SHIFT, ID_TOGGLEZ },
 	{ "Window_LightEditor",     'J', 0, ID_PROJECTED_LIGHT },
 	{ "Window_EntityColor",     'K', 0, ID_MISC_SELECTENTITYCOLOR },
-	
+
 	{ "Selection_DragEdges",     'E', 0, ID_SELECTION_DRAGEDGES },
 	{ "Selection_DragVertices",  'V', 0, ID_SELECTION_DRAGVERTECIES },
 	{ "Selection_Clone",         VK_SPACE, 0, ID_SELECTION_CLONE },
@@ -245,7 +245,7 @@ SCommandInfo	g_Commands[] =
 	{ "Selection_UnSelect",      VK_ESCAPE, 0, ID_SELECTION_DESELECT },
 	{ "Selection_Invert",        'I' , 0 , ID_SELECTION_INVERT },
 	{ "Selection_ToggleMoveOnly", 'W', 0, ID_SELECTION_MOVEONLY },
-	
+
 	{ "Selection_MoveDown",     VK_SUBTRACT, 0, ID_SELECTION_MOVEDOWN },
 	{ "Selection_MoveUp",       VK_ADD, 0, ID_SELECTION_MOVEUP },
 	{ "Selection_DumpBrush",    'D', RAD_SHIFT, ID_SELECTION_PRINT },
@@ -257,19 +257,19 @@ SCommandInfo	g_Commands[] =
 	{ "Selection_Connect",      'K', RAD_CONTROL, ID_SELECTION_CONNECT },
 	{ "Selection_Ungroup",      'G', RAD_SHIFT, ID_SELECTION_UNGROUPENTITY },
 	{ "Selection_CSGMerge",     'M', RAD_SHIFT, ID_SELECTION_CSGMERGE },
-	
+
 	{ "Selection_CenterOrigin",           'O', RAD_SHIFT, ID_SELECTION_CENTER_ORIGIN },
 	{ "Selection_SelectCompleteEntity",   'E' , RAD_CONTROL | RAD_ALT | RAD_SHIFT , ID_SELECT_COMPLETE_ENTITY },
 	{ "Selection_SelectAllOfType",        'A', RAD_SHIFT, ID_SELECT_ALL },
-	
+
 	{ "Show_ToggleLights",       '0' , RAD_ALT , ID_VIEW_SHOWLIGHTS },
 	{ "Show_TogglePatches",      'P', RAD_CONTROL, ID_VIEW_SHOWCURVES },
 	{ "Show_ToggleClip",         'L', RAD_CONTROL, ID_VIEW_SHOWCLIP },
-	
+
 	{ "Show_HideSelected",       'H', 0, ID_VIEW_HIDESHOW_HIDESELECTED },
 	{ "Show_ShowHidden",         'H', RAD_SHIFT, ID_VIEW_HIDESHOW_SHOWHIDDEN },
 	{ "Show_HideNotSelected",    'H', RAD_CONTROL | RAD_SHIFT, ID_VIEW_HIDESHOW_HIDENOTSELECTED },
-	
+
 	{ "Render_ToggleSound",      VK_F9, 0, ID_VIEW_RENDERSOUND },
 	{ "Render_ToggleSelections", VK_F8, 0, ID_VIEW_RENDERSELECTION },
 	{ "Render_RebuildData",      VK_F7, 0, ID_VIEW_REBUILDRENDERDATA },
@@ -277,17 +277,17 @@ SCommandInfo	g_Commands[] =
 	{ "Render_ToggleEntityOutlines", VK_F5, 0, ID_VIEW_RENDERENTITYOUTLINES },
 	{ "Render_ToggleRealtimeBuild",  VK_F4, 0, ID_VIEW_REALTIMEREBUILD },
 	{ "Render_Toggle",           VK_F3, 0, ID_VIEW_RENDERMODE },
-	
+
 	{ "Find_Textures",    'F', RAD_SHIFT, ID_TEXTURE_REPLACEALL },
 	{ "Find_Entity",       VK_F3, RAD_CONTROL, ID_MISC_FINDORREPLACEENTITY},
 	{ "Find_NextEntity",   VK_F3, RAD_SHIFT, ID_MISC_FINDNEXTENT},
-	
+
 	{ "_ShowDOOM",               VK_F2, 0, ID_SHOW_DOOM },
-	
+
 	{ "Rotate_MouseRotate",            'R', 0, ID_SELECT_MOUSEROTATE },
 	{ "Rotate_ToggleFlatRotation",     'R', RAD_CONTROL, ID_VIEW_CAMERAUPDATE },
 	{ "Rotate_CycleRotationAxis",      'R', RAD_SHIFT, ID_TOGGLE_ROTATELOCK },
-	
+
 	{ "_AutoCaulk",	             'A', RAD_CONTROL | RAD_SHIFT, ID_AUTOCAULK },	// ctrl-shift-a, since SHIFT-A is already taken
 };
 
@@ -790,7 +790,7 @@ void HandlePopup( CWnd* pWindow, unsigned int uId )
 	// Get the current position of the mouse
 	CPoint	ptMouse;
 	GetCursorPos( &ptMouse );
-	
+
 	// Load up a menu that has the options we are looking for in it
 	CMenu	mnuPopup;
 	VERIFY( mnuPopup.LoadMenu( uId ) );
@@ -802,7 +802,7 @@ void HandlePopup( CWnd* pWindow, unsigned int uId )
 		pWindow
 	);
 	mnuPopup.DestroyMenu();
-	
+
 	// Set focus back to window
 	pWindow->SetFocus();
 }
@@ -840,82 +840,82 @@ void CMainFrame::SetButtonMenuStates()
 		pMenu->CheckMenuItem( ID_VIEW_SHOW_SHOWVISPORTALS, MF_BYCOMMAND | MF_CHECKED );
 		pMenu->CheckMenuItem( ID_VIEW_SHOW_NODRAW, MF_BYCOMMAND | MF_CHECKED );
 		pMenu->CheckMenuItem( ID_VIEW_SHOWANGLES, MF_BYCOMMAND | MF_CHECKED );
-		
+
 		if( !g_qeglobals.d_savedinfo.show_names )
 		{
 			pMenu->CheckMenuItem( ID_VIEW_SHOWNAMES, MF_BYCOMMAND | MF_UNCHECKED );
 		}
-		
+
 		if( !g_qeglobals.d_savedinfo.show_coordinates )
 		{
 			pMenu->CheckMenuItem( ID_VIEW_SHOWCOORDINATES, MF_BYCOMMAND | MF_UNCHECKED );
 		}
-		
+
 		if( g_qeglobals.d_savedinfo.exclude & EXCLUDE_LIGHTS )
 		{
 			pMenu->CheckMenuItem( ID_VIEW_SHOWLIGHTS, MF_BYCOMMAND | MF_UNCHECKED );
 		}
-		
+
 		if( g_qeglobals.d_savedinfo.exclude & EXCLUDE_COMBATNODES )
 		{
 			pMenu->CheckMenuItem( ID_VIEW_SHOWCOMBATNODES, MF_BYCOMMAND | MF_UNCHECKED );
 		}
-		
+
 		if( g_qeglobals.d_savedinfo.exclude & EXCLUDE_ENT )
 		{
 			pMenu->CheckMenuItem( ID_VIEW_ENTITY, MF_BYCOMMAND | MF_UNCHECKED );
 		}
-		
+
 		if( g_qeglobals.d_savedinfo.exclude & EXCLUDE_PATHS )
 		{
 			pMenu->CheckMenuItem( ID_VIEW_SHOWPATH, MF_BYCOMMAND | MF_UNCHECKED );
 		}
-		
+
 		if( g_qeglobals.d_savedinfo.exclude & EXCLUDE_DYNAMICS )
 		{
 			pMenu->CheckMenuItem( ID_VIEW_SHOWWATER, MF_BYCOMMAND | MF_UNCHECKED );
 		}
-		
+
 		if( g_qeglobals.d_savedinfo.exclude & EXCLUDE_WORLD )
 		{
 			pMenu->CheckMenuItem( ID_VIEW_SHOWWORLD, MF_BYCOMMAND | MF_UNCHECKED );
 		}
-		
+
 		if( g_qeglobals.d_savedinfo.exclude & EXCLUDE_CLIP )
 		{
 			pMenu->CheckMenuItem( ID_VIEW_SHOWCLIP, MF_BYCOMMAND | MF_UNCHECKED );
 		}
-		
+
 		if( g_qeglobals.d_savedinfo.exclude & EXCLUDE_TRIGGERS )
 		{
 			pMenu->CheckMenuItem( ID_VIEW_SHOWTRIGGERS, MF_BYCOMMAND | MF_UNCHECKED );
 		}
-		
+
 		if( g_qeglobals.d_savedinfo.exclude & EXCLUDE_HINT )
 		{
 			pMenu->CheckMenuItem( ID_VIEW_SHOWHINT, MF_BYCOMMAND | MF_UNCHECKED );
 		}
-		
+
 		if( g_qeglobals.d_savedinfo.exclude & EXCLUDE_CAULK )
 		{
 			pMenu->CheckMenuItem( ID_VIEW_SHOWCAULK, MF_BYCOMMAND | MF_UNCHECKED );
 		}
-		
+
 		if( g_qeglobals.d_savedinfo.exclude & EXCLUDE_VISPORTALS )
 		{
 			pMenu->CheckMenuItem( ID_VIEW_SHOW_SHOWVISPORTALS, MF_BYCOMMAND | MF_UNCHECKED );
 		}
-		
+
 		if( g_qeglobals.d_savedinfo.exclude & EXCLUDE_NODRAW )
 		{
 			pMenu->CheckMenuItem( ID_VIEW_SHOW_NODRAW, MF_BYCOMMAND | MF_UNCHECKED );
 		}
-		
+
 		if( g_qeglobals.d_savedinfo.exclude & EXCLUDE_ANGLES )
 		{
 			pMenu->CheckMenuItem( ID_VIEW_SHOWANGLES, MF_BYCOMMAND | MF_UNCHECKED );
 		}
-		
+
 		pMenu->CheckMenuItem( ID_TOGGLE_LOCK, MF_BYCOMMAND | ( g_PrefsDlg.m_bTextureLock ) ? MF_CHECKED : MF_UNCHECKED );
 		pMenu->CheckMenuItem
 		(
@@ -941,7 +941,7 @@ void CMainFrame::SetButtonMenuStates()
 				( g_PrefsDlg.m_bCubicClipping ) ? TRUE : FALSE
 			);
 		}
-		
+
 		int n = g_PrefsDlg.m_nTextureScale;
 		int id;
 		switch( n )
@@ -962,10 +962,10 @@ void CMainFrame::SetButtonMenuStates()
 				id = ID_TEXTURES_TEXTUREWINDOWSCALE_100;
 				break;
 		}
-		
+
 		CheckTextureScale( id );
 	}
-	
+
 	if( g_qeglobals.d_project_entity )
 	{
 		// FillTextureMenu(); // redundant but i'll clean it up later.. yeah right..
@@ -984,7 +984,7 @@ void CMainFrame::ShowMenuItemKeyBindings( CMenu* pMenu )
 	int				i, j;
 	char			key[1024], *ptr;
 	MENUITEMINFO	MenuItemInfo;
-	
+
 	// return;
 	for( i = 0; i < g_nCommandCount; i++ )
 	{
@@ -997,18 +997,18 @@ void CMainFrame::ShowMenuItemKeyBindings( CMenu* pMenu )
 		{
 			continue;
 		}
-		
+
 		if( MenuItemInfo.fType != MFT_STRING )
 		{
 			continue;
 		}
-		
+
 		ptr = strchr( key, '\t' );
 		if( ptr )
 		{
 			*ptr = '\0';
 		}
-		
+
 		strcat( key, "\t" );
 		if( g_Commands[i].m_nModifiers )  	// are there modifiers present?
 		{
@@ -1016,18 +1016,18 @@ void CMainFrame::ShowMenuItemKeyBindings( CMenu* pMenu )
 			{
 				strcat( key, "Shift-" );
 			}
-			
+
 			if( g_Commands[i].m_nModifiers & RAD_ALT )
 			{
 				strcat( key, "Alt-" );
 			}
-			
+
 			if( g_Commands[i].m_nModifiers & RAD_CONTROL )
 			{
 				strcat( key, "Ctrl-" );
 			}
 		}
-		
+
 		for( j = 0; j < g_nKeyCount; j++ )
 		{
 			if( g_Commands[i].m_nKey == g_Keys[j].m_nVKKey )
@@ -1036,12 +1036,12 @@ void CMainFrame::ShowMenuItemKeyBindings( CMenu* pMenu )
 				break;
 			}
 		}
-		
+
 		if( j >= g_nKeyCount )
 		{
 			sprintf( &key[strlen( key )], "%c", g_Commands[i].m_nKey );
 		}
-		
+
 		memset( &MenuItemInfo, 0, sizeof( MENUITEMINFO ) );
 		MenuItemInfo.cbSize = sizeof( MENUITEMINFO );
 		MenuItemInfo.fMask = MIIM_TYPE;
@@ -1062,10 +1062,10 @@ void MFCCreate( HINSTANCE hInstance )
 	HMENU hMenu = NULL;
 	int i = sizeof( g_qeglobals.d_savedinfo );
 	long l = i;
-	
+
 	g_qeglobals.d_savedinfo.exclude |= ( EXCLUDE_HINT | EXCLUDE_CLIP );
 	LoadRegistryInfo( "radiant_SavedInfo", &g_qeglobals.d_savedinfo, &l );
-	
+
 	int nOldSize = g_qeglobals.d_savedinfo.iSize;
 	if( g_qeglobals.d_savedinfo.iSize != sizeof( g_qeglobals.d_savedinfo ) )
 	{
@@ -1074,11 +1074,11 @@ void MFCCreate( HINSTANCE hInstance )
 		g_qeglobals.d_savedinfo.fGamma = 1.0;
 		g_qeglobals.d_savedinfo.iTexMenu = ID_VIEW_BILINEARMIPMAP;
 		g_qeglobals.d_savedinfo.m_nTextureTweak = 1.0;
-		
+
 		//g_qeglobals.d_savedinfo.exclude = INCLUDE_EASY | INCLUDE_NORMAL | INCLUDE_HARD | INCLUDE_DEATHMATCH;
 		g_qeglobals.d_savedinfo.show_coordinates = true;
 		g_qeglobals.d_savedinfo.show_names       = false;
-		
+
 		for( i = 0 ; i < 3 ; i++ )
 		{
 			g_qeglobals.d_savedinfo.colors[COLOR_TEXTUREBACK][i] = 0;
@@ -1087,32 +1087,32 @@ void MFCCreate( HINSTANCE hInstance )
 			g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR][i] = 0.5;
 			g_qeglobals.d_savedinfo.colors[COLOR_CAMERABACK][i] = 0.25;
 		}
-		
+
 		g_qeglobals.d_savedinfo.colors[COLOR_GRIDBLOCK][0] = 0.0;
 		g_qeglobals.d_savedinfo.colors[COLOR_GRIDBLOCK][1] = 0.0;
 		g_qeglobals.d_savedinfo.colors[COLOR_GRIDBLOCK][2] = 1.0;
-		
+
 		g_qeglobals.d_savedinfo.colors[COLOR_GRIDTEXT][0] = 0.0;
 		g_qeglobals.d_savedinfo.colors[COLOR_GRIDTEXT][1] = 0.0;
 		g_qeglobals.d_savedinfo.colors[COLOR_GRIDTEXT][2] = 0.0;
-		
+
 		g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][0] = 1.0;
 		g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][1] = 0.0;
 		g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][2] = 0.0;
-		
+
 		g_qeglobals.d_savedinfo.colors[COLOR_CLIPPER][0] = 0.0;
 		g_qeglobals.d_savedinfo.colors[COLOR_CLIPPER][1] = 0.0;
 		g_qeglobals.d_savedinfo.colors[COLOR_CLIPPER][2] = 1.0;
-		
+
 		g_qeglobals.d_savedinfo.colors[COLOR_BRUSHES][0] = 0.0;
 		g_qeglobals.d_savedinfo.colors[COLOR_BRUSHES][1] = 0.0;
 		g_qeglobals.d_savedinfo.colors[COLOR_BRUSHES][2] = 0.0;
-		
+
 		g_qeglobals.d_savedinfo.colors[COLOR_VIEWNAME][0] = 0.5;
 		g_qeglobals.d_savedinfo.colors[COLOR_VIEWNAME][1] = 0.0;
 		g_qeglobals.d_savedinfo.colors[COLOR_VIEWNAME][2] = 0.75;
-		
-		
+
+
 		// old size was smaller, reload original prefs
 		if( nOldSize > 0 && nOldSize < sizeof( g_qeglobals.d_savedinfo ) )
 		{
@@ -1120,7 +1120,7 @@ void MFCCreate( HINSTANCE hInstance )
 			LoadRegistryInfo( "radiant_SavedInfo", &g_qeglobals.d_savedinfo, &l );
 		}
 	}
-	
+
 	// foresthale 2014-05-23: set the default material to be caulk
 	g_qeglobals.d_texturewin.texdef.SetName( "textures/common/caulk" );
 }
@@ -1136,36 +1136,36 @@ int CMainFrame::OnCreate( LPCREATESTRUCT lpCreateStruct )
 	ASSERT( nResult != 0 );
 	pBuffer[g_strAppPath.ReverseFind( '\\' ) + 1] = '\0';
 	g_strAppPath.ReleaseBuffer();
-	
+
 	com_editors |= EDITOR_RADIANT;
-	
+
 	InitCommonControls();
 	g_qeglobals.d_hInstance = AfxGetInstanceHandle();
 	MFCCreate( AfxGetInstanceHandle() );
-	
+
 	// g_PrefsDlg.LoadPrefs();
 	if( CFrameWnd::OnCreate( lpCreateStruct ) == -1 )
 	{
 		return -1;
 	}
-	
+
 	UINT	nID = ( g_PrefsDlg.m_bWideToolbar ) ? IDR_TOOLBAR_ADVANCED : IDR_TOOLBAR1;
-	
+
 	if( !m_wndToolBar.CreateEx( this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP
 								| CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC ) || !m_wndToolBar.LoadToolBar( nID ) )
 	{
 		TRACE0( "Failed to create toolbar\n" );
 		return -1;	// fail to create
 	}
-	
+
 	if( !m_wndStatusBar.Create( this ) || !m_wndStatusBar.SetIndicators( indicators, sizeof( indicators ) / sizeof( UINT ) ) )
 	{
 		TRACE0( "Failed to create status bar\n" );
 		return -1;	// fail to create
 	}
-	
+
 	m_bCamPreview = true;
-	
+
 	m_wndToolBar.GetToolBarCtrl().CheckButton( ID_SCALELOCKX, FALSE );
 	m_wndToolBar.GetToolBarCtrl().CheckButton( ID_SCALELOCKY, FALSE );
 	m_wndToolBar.GetToolBarCtrl().CheckButton( ID_SCALELOCKZ, FALSE );
@@ -1179,36 +1179,36 @@ int CMainFrame::OnCreate( LPCREATESTRUCT lpCreateStruct )
 	m_wndToolBar.GetToolBarCtrl().CheckButton( ID_SELECTION_MOVEONLY, FALSE );
 	m_wndToolBar.GetToolBarCtrl().CheckButton( ID_SOUND_SHOWSOUNDVOLUMES, g_qeglobals.d_savedinfo.showSoundAlways );
 	m_wndToolBar.GetToolBarCtrl().CheckButton( ID_SOUND_SHOWSELECTEDSOUNDVOLUMES, g_qeglobals.d_savedinfo.showSoundWhenSelected );
-	
+
 	m_wndToolBar.EnableDocking( CBRS_ALIGN_ANY );
 	EnableDocking( CBRS_ALIGN_ANY );
 	DockControlBar( &m_wndToolBar );
-	
+
 	g_nScaleHow = 0;
-	
+
 	m_wndTextureBar.Create( this, IDD_TEXTUREBAR, CBRS_BOTTOM, 7433 );
 	m_wndTextureBar.EnableDocking( CBRS_ALIGN_ANY );
 	DockControlBar( &m_wndTextureBar );
-	
+
 	g_qeglobals.d_lpMruMenu = CreateMruMenuDefault();
-	
+
 	m_bAutoMenuEnable = FALSE;
-	
+
 	LoadCommandMap();
-	
+
 	CMenu* pMenu = GetMenu();
 	ShowMenuItemKeyBindings( pMenu );
-	
+
 	CFont*	pFont = new CFont();
 	pFont->CreatePointFont( g_PrefsDlg.m_nStatusSize * 10, "Arial" );
 	m_wndStatusBar.SetFont( pFont );
-	
-	
+
+
 	if( g_PrefsDlg.m_bRunBefore == FALSE )
 	{
 		g_PrefsDlg.m_bRunBefore = TRUE;
 		g_PrefsDlg.SavePrefs();
-		
+
 		/*
 		 * if (MessageBox("Would you like QERadiant to build and load a default project?
 		 * If this is the first time you have run QERadiant or you are not familiar with
@@ -1224,22 +1224,22 @@ int CMainFrame::OnCreate( LPCREATESTRUCT lpCreateStruct )
 			Map_LoadFile( g_PrefsDlg.m_strLastMap.GetBuffer( 0 ) );
 		}
 	}
-	
+
 	SetGridStatus();
 	SetTexValStatus();
 	SetButtonMenuStates();
 	LoadBarState( "RadiantToolBars2" );
-	
+
 	SetActiveXY( m_pXYWnd );
 	m_pXYWnd->SetFocus();
-	
+
 	PostMessage( WM_KEYDOWN, 'O', NULL );
-	
+
 	if( radiant_entityMode.GetBool() )
 	{
 		g_qeglobals.d_savedinfo.exclude |= ( EXCLUDE_PATHS | EXCLUDE_CLIP | EXCLUDE_CAULK | EXCLUDE_VISPORTALS | EXCLUDE_NODRAW | EXCLUDE_TRIGGERS );
 	}
-	
+
 	Sys_UpdateWindows( W_ALL );
 	return 0;
 }
@@ -1252,7 +1252,9 @@ int CMainFrame::OnCreate( LPCREATESTRUCT lpCreateStruct )
 void FindReplace( CString& strContents, const char* pTag, const char* pValue )
 {
 	if( strcmp( pTag, pValue ) == 0 )
+	{
 		return;
+	}
 	for( int nPos = strContents.Find( pTag ); nPos >= 0; nPos = strContents.Find( pTag ) )
 	{
 		int nRightLen = strContents.GetLength() - strlen( pTag ) - nPos;
@@ -1270,7 +1272,7 @@ void CMainFrame::LoadCommandMap()
 	char	pBuff[1024];
 	strINI = g_strAppPath;
 	strINI += "\\radiant.ini";
-	
+
 	for( int i = 0; i < g_nCommandCount; i++ )
 	{
 		int nLen = GetPrivateProfileString( "Commands", g_Commands[i].m_strCommand, "", pBuff, 1024, strINI );
@@ -1279,7 +1281,7 @@ void CMainFrame::LoadCommandMap()
 			CString strBuff = pBuff;
 			strBuff.TrimLeft();
 			strBuff.TrimRight();
-			
+
 			int nSpecial = strBuff.Find( "+alt" );
 			g_Commands[i].m_nModifiers = 0;
 			if( nSpecial >= 0 )
@@ -1287,21 +1289,21 @@ void CMainFrame::LoadCommandMap()
 				g_Commands[i].m_nModifiers |= RAD_ALT;
 				FindReplace( strBuff, "+alt", "" );
 			}
-			
+
 			nSpecial = strBuff.Find( "+ctrl" );
 			if( nSpecial >= 0 )
 			{
 				g_Commands[i].m_nModifiers |= RAD_CONTROL;
 				FindReplace( strBuff, "+ctrl", "" );
 			}
-			
+
 			nSpecial = strBuff.Find( "+shift" );
 			if( nSpecial >= 0 )
 			{
 				g_Commands[i].m_nModifiers |= RAD_SHIFT;
 				FindReplace( strBuff, "+shift", "" );
 			}
-			
+
 			strBuff.TrimLeft();
 			strBuff.TrimRight();
 			strBuff.MakeUpper();
@@ -1376,7 +1378,7 @@ void CMainFrame::CreateQEChildren()
 	{
 		bProjectLoaded = QE_LoadProject( EDITOR_DEFAULT_PROJECT );
 	}
-	
+
 	if( !bProjectLoaded )
 	{
 		CFileDialog dlgFile( true, NULL, NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, EDITOR_WINDOWTEXT " Project files (*.qe4, *.prj)|*.qe4|*.prj||",	this );
@@ -1385,16 +1387,16 @@ void CMainFrame::CreateQEChildren()
 			bProjectLoaded = QE_LoadProject( dlgFile.GetPathName().GetBuffer( 0 ) );
 		}
 	}
-	
+
 	if( !bProjectLoaded )
 	{
 		Error( "Unable to load project file. It was unavailable in the scripts path and the default could not be found" );
 	}
-	
+
 	QE_Init();
-	
+
 	common->Printf( "Entering message loop\n" );
-	
+
 	m_bDoLoop = true;
 	SetTimer( QE_TIMER0, 100, NULL );
 	SetTimer( QE_TIMER1, g_PrefsDlg.m_nAutoSave * 60 * 1000, NULL );
@@ -1430,7 +1432,7 @@ void CMainFrame::RoutineProcessing()
 		double	time = 0.0;
 		static double oldtime = 0.0;
 		double	delta = 0.0;
-		
+
 		time = Sys_DoubleTime();
 		delta = time - oldtime;
 		oldtime = time;
@@ -1438,13 +1440,13 @@ void CMainFrame::RoutineProcessing()
 		{
 			delta = 0.2;
 		}
-		
+
 		// run time dependant behavior
 		if( m_pCamWnd )
 		{
 			m_pCamWnd->Cam_MouseControl( delta );
 		}
-		
+
 		if( g_PrefsDlg.m_bQE4Painting && g_nUpdateBits )
 		{
 			int nBits = g_nUpdateBits;	// this is done to keep this routine from being
@@ -1473,17 +1475,17 @@ bool MouseDown()
 	{
 		return true;
 	}
-	
+
 	if( ::GetAsyncKeyState( VK_RBUTTON ) )
 	{
 		return true;
 	}
-	
+
 	if( ::GetAsyncKeyState( VK_MBUTTON ) )
 	{
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -1495,7 +1497,7 @@ bool MouseDown()
 void CMainFrame::OnTimer( UINT_PTR nIDEvent )
 {
 	static bool autoSavePending = false;
-	
+
 	if( nIDEvent == QE_TIMER0 && !MouseDown() )
 	{
 		QE_CountBrushesAndUpdateStatusBar();
@@ -1531,14 +1533,14 @@ bool LoadWindowPlacement( HWND hwnd, const char* pName )
 {
 	WINDOWPLACEMENT wp;
 	wp.length = sizeof( WINDOWPLACEMENT );
-	
+
 	LONG lSize = sizeof( wp );
 	if( LoadRegistryInfo( pName, &wp, &lSize ) )
 	{
 		::SetWindowPlacement( hwnd, &wp );
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -1563,96 +1565,96 @@ void SaveWindowPlacement( HWND hwnd, const char* pName )
 void CMainFrame::OnDestroy()
 {
 	KillTimer( QE_TIMER0 );
-	
+
 	SaveBarState( "RadiantToolBars2" );
-	
+
 	// FIXME original mru stuff needs replaced with mfc stuff
 	SaveMruInReg( g_qeglobals.d_lpMruMenu, "Software\\" EDITOR_REGISTRY_KEY "\\MRU" );
-	
+
 	DeleteMruMenu( g_qeglobals.d_lpMruMenu );
-	
+
 	SaveRegistryInfo( "radiant_SavedInfo", &g_qeglobals.d_savedinfo, sizeof( g_qeglobals.d_savedinfo ) );
-	
+
 	SaveWindowPlacement( GetSafeHwnd(), "radiant_MainWindowPlace" );
-	
+
 	SaveWindowPlacement( m_pXYWnd->GetSafeHwnd(), "radiant_xywindow" );
 	SaveWindowPlacement( m_pXZWnd->GetSafeHwnd(), "radiant_xzwindow" );
 	SaveWindowPlacement( m_pYZWnd->GetSafeHwnd(), "radiant_yzwindow" );
 	SaveWindowPlacement( m_pCamWnd->GetSafeHwnd(), "radiant_camerawindow" );
 	SaveWindowPlacement( m_pZWnd->GetSafeHwnd(), "radiant_zwindow" );
 	SaveWindowState( g_Inspectors->texWnd.GetSafeHwnd(), "radiant_texwindow" );
-	
+
 	if( m_pXYWnd->GetSafeHwnd() )
 	{
 		m_pXYWnd->SendMessage( WM_DESTROY, 0, 0 );
 	}
-	
+
 	delete m_pXYWnd;
 	m_pXYWnd = NULL;
-	
+
 	if( m_pYZWnd->GetSafeHwnd() )
 	{
 		m_pYZWnd->SendMessage( WM_DESTROY, 0, 0 );
 	}
-	
+
 	delete m_pYZWnd;
 	m_pYZWnd = NULL;
-	
+
 	if( m_pXZWnd->GetSafeHwnd() )
 	{
 		m_pXZWnd->SendMessage( WM_DESTROY, 0, 0 );
 	}
-	
+
 	delete m_pXZWnd;
 	m_pXZWnd = NULL;
-	
+
 	if( m_pZWnd->GetSafeHwnd() )
 	{
 		m_pZWnd->SendMessage( WM_DESTROY, 0, 0 );
 	}
-	
+
 	delete m_pZWnd;
 	m_pZWnd = NULL;
-	
+
 	if( m_pCamWnd->GetSafeHwnd() )
 	{
 		m_pCamWnd->SendMessage( WM_DESTROY, 0, 0 );
 	}
-	
+
 	delete m_pCamWnd;
 	m_pCamWnd = NULL;
-	
+
 	if( idStr::Icmp( currentmap, "unnamed.map" ) != 0 )
 	{
 		g_PrefsDlg.m_strLastMap = currentmap;
 		g_PrefsDlg.SavePrefs();
 	}
-	
+
 	CleanUpEntities();
-	
+
 	while( active_brushes.next != &active_brushes )
 	{
 		Brush_Free( active_brushes.next, false );
 	}
-	
+
 	while( selected_brushes.next != &selected_brushes )
 	{
 		Brush_Free( selected_brushes.next, false );
 	}
-	
+
 	while( filtered_brushes.next != &filtered_brushes )
 	{
 		Brush_Free( filtered_brushes.next, false );
 	}
-	
+
 	while( entities.next != &entities )
 	{
 		Entity_Free( entities.next );
 	}
-	
-	
+
+
 	g_qeglobals.d_project_entity->epairs.Clear();
-	
+
 	entity_t*	pEntity = g_qeglobals.d_project_entity->next;
 	while( pEntity != NULL && pEntity != g_qeglobals.d_project_entity )
 	{
@@ -1660,14 +1662,14 @@ void CMainFrame::OnDestroy()
 		Entity_Free( pEntity );
 		pEntity = pNextEntity;
 	}
-	
+
 	Texture_Cleanup();
-	
+
 	if( world_entity )
 	{
 		Entity_Free( world_entity );
 	}
-	
+
 	//
 	// FIXME: idMaterial
 	// if (notexture) { // Timo // Surface properties plugin #ifdef _DEBUG if (
@@ -1676,10 +1678,10 @@ void CMainFrame::OnDestroy()
 	// GETPLUGINTEXDEF(notexture)->DecRef(); Mem_Free(notexture); }
 	// if (current_texture) free(current_texture);
 	//
-	
+
 	// FIXME: idMaterial FreeShaders();
 	CFrameWnd::OnDestroy();
-	
+
 	AfxGetApp()->ExitInstance();
 }
 
@@ -1703,7 +1705,7 @@ void CMainFrame::OnClose()
 void CMainFrame::OnKeyUp( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
 	// run through our list to see if we have a handler for nChar
-	
+
 	for( int i = 0; i < g_nCommandCount; i++ )
 	{
 		if( g_Commands[i].m_nKey == nChar )  	// find a match?
@@ -1721,7 +1723,7 @@ void CMainFrame::OnKeyUp( UINT nChar, UINT nRepCnt, UINT nFlags )
 							bGo = false;
 						}
 					}
-					
+
 					if( nModifiers & RAD_CONTROL )
 					{
 						if( !( GetAsyncKeyState( VK_CONTROL ) & 0x8000 ) )
@@ -1729,7 +1731,7 @@ void CMainFrame::OnKeyUp( UINT nChar, UINT nRepCnt, UINT nFlags )
 							bGo = false;
 						}
 					}
-					
+
 					if( nModifiers & RAD_SHIFT )
 					{
 						if( !( GetAsyncKeyState( VK_SHIFT ) & 0x8000 ) )
@@ -1744,18 +1746,18 @@ void CMainFrame::OnKeyUp( UINT nChar, UINT nRepCnt, UINT nFlags )
 					{
 						bGo = false;
 					}
-					
+
 					if( GetAsyncKeyState( VK_CONTROL ) & 0x8000 )
 					{
 						bGo = false;
 					}
-					
+
 					if( GetAsyncKeyState( VK_SHIFT ) & 0x8000 )
 					{
 						bGo = false;
 					}
 				}
-				
+
 				if( bGo )
 				{
 					SendMessage( WM_COMMAND, g_Commands[i].m_nCommand, 0 );
@@ -1783,7 +1785,7 @@ bool CamOK( unsigned int nKey )
 			return false;
 		}
 	}
-	
+
 	return true;
 }
 
@@ -1798,7 +1800,7 @@ void CMainFrame::OnSysKeyDown( UINT nChar, UINT nRepCnt, UINT nFlags )
 	{
 		OnKeyDown( nChar, nRepCnt, nFlags );
 	}
-	
+
 	CFrameWnd::OnSysKeyDown( nChar, nRepCnt, nFlags );
 }
 
@@ -1819,17 +1821,17 @@ void CMainFrame::OnKeyDown( UINT nChar, UINT nRepCnt, UINT nFlags )
 			{
 				nState |= RAD_ALT;
 			}
-			
+
 			if( GetAsyncKeyState( VK_CONTROL ) & 0x8000 )
 			{
 				nState |= RAD_CONTROL;
 			}
-			
+
 			if( GetAsyncKeyState( VK_SHIFT ) & 0x8000 )
 			{
 				nState |= RAD_SHIFT;
 			}
-			
+
 			if( ( g_Commands[i].m_nModifiers & 0x7 ) == nState )
 			{
 				SendMessage( WM_COMMAND, g_Commands[i].m_nCommand, 0 );
@@ -1837,7 +1839,7 @@ void CMainFrame::OnKeyDown( UINT nChar, UINT nRepCnt, UINT nFlags )
 			}
 		}
 	}
-	
+
 	CFrameWnd::OnKeyDown( nChar, nRepCnt, nFlags );
 }
 
@@ -1850,80 +1852,80 @@ BOOL CMainFrame::OnCreateClient( LPCREATESTRUCT lpcs, CCreateContext* pContext )
 
 	g_Inspectors = new CInspectorDialog( this );
 	g_Inspectors->Create( IDD_DIALOG_INSPECTORS, this );
-	
+
 	LoadWindowPlacement( g_Inspectors->GetSafeHwnd(), "radiant_InspectorsWindow" );
 	g_Inspectors->ShowWindow( SW_SHOW );
-	
+
 	CRect r;
 	g_Inspectors->GetWindowRect( r );
-	
+
 	//stupid hack to get the window resize itself properly
 	r.DeflateRect( 0, 0, 0, 1 );
 	g_Inspectors->MoveWindow( r );
 	r.InflateRect( 0, 0, 0, 1 );
 	g_Inspectors->MoveWindow( r );
-	
-	
+
+
 	if( !LoadWindowPlacement( GetSafeHwnd(), "radiant_MainWindowPlace" ) )
 	{
 	}
-	
+
 	CRect rect( 5, 25, 100, 100 );
 	CRect rctParent;
 	GetClientRect( rctParent );
-	
+
 	m_pCamWnd = new CCamWnd();
 	m_pCamWnd->Create( CAMERA_WINDOW_CLASS, "", QE3_CHILDSTYLE, rect, this, 1234 );
-	
+
 	m_pZWnd = new CZWnd();
 	m_pZWnd->Create( Z_WINDOW_CLASS, "", QE3_CHILDSTYLE, rect, this, 1238 );
-	
+
 	m_pXYWnd = new CXYWnd();
 	m_pXYWnd->Create( XY_WINDOW_CLASS, "", QE3_CHILDSTYLE, rect, this, 1235 );
 	m_pXYWnd->SetViewType( XY );
-	
+
 	m_pXZWnd = new CXYWnd();
 	m_pXZWnd->Create( XY_WINDOW_CLASS, "", QE3_CHILDSTYLE, rect, this, 1236 );
 	m_pXZWnd->SetViewType( XZ );
-	
+
 	m_pYZWnd = new CXYWnd();
 	m_pYZWnd->Create( XY_WINDOW_CLASS, "", QE3_CHILDSTYLE, rect, this, 1237 );
 	m_pYZWnd->SetViewType( YZ );
-	
+
 	m_pCamWnd->SetXYFriend( m_pXYWnd );
-	
+
 	CRect	rctWork;
-	
+
 	LoadWindowPlacement( m_pXYWnd->GetSafeHwnd(), "radiant_xywindow" );
 	LoadWindowPlacement( m_pXZWnd->GetSafeHwnd(), "radiant_xzwindow" );
 	LoadWindowPlacement( m_pYZWnd->GetSafeHwnd(), "radiant_yzwindow" );
 	LoadWindowPlacement( m_pCamWnd->GetSafeHwnd(), "radiant_camerawindow" );
 	LoadWindowPlacement( m_pZWnd->GetSafeHwnd(), "radiant_zwindow" );
-	
+
 	if( !g_PrefsDlg.m_bXZVis )
 	{
 		m_pXZWnd->ShowWindow( SW_HIDE );
 	}
-	
+
 	if( !g_PrefsDlg.m_bYZVis )
 	{
 		m_pYZWnd->ShowWindow( SW_HIDE );
 	}
-	
+
 	if( !g_PrefsDlg.m_bZVis )
 	{
 		m_pZWnd->ShowWindow( SW_HIDE );
 	}
-	
+
 	CreateQEChildren();
-	
+
 	if( m_pXYWnd )
 	{
 		m_pXYWnd->SetActive( true );
 	}
-	
+
 	Texture_SetMode( g_qeglobals.d_savedinfo.iTexMenu );
-	
+
 	g_Inspectors->SetMode( W_CONSOLE );
 	return TRUE;
 }
@@ -1937,10 +1939,10 @@ CRect	g_rctOld( 0, 0, 0, 0 );
 void CMainFrame::OnSize( UINT nType, int cx, int cy )
 {
 	CFrameWnd::OnSize( nType, cx, cy );
-	
+
 	CRect	rctParent;
 	GetClientRect( rctParent );
-	
+
 	UINT	nID;
 	UINT	nStyle;
 	int		nWidth;
@@ -2081,7 +2083,7 @@ void CMainFrame::OnFileSave()
 	{
 		Map_SaveFile( currentmap, false );
 	}
-	
+
 	// DHM - _D3XP
 	SetTimer( QE_TIMER1, g_PrefsDlg.m_nAutoSave * 60 * 1000, NULL );
 }
@@ -2105,9 +2107,9 @@ void CMainFrame::OnFileSaveCopy()
 	char aFilter[260] = "Map\0*.map\0\0";
 	char aTitle[260] = "Save a Copy\0";
 	OPENFILENAME afn;
-	
+
 	memset( &afn, 0, sizeof( OPENFILENAME ) );
-	
+
 	CString strPath = ValueForKey( g_qeglobals.d_project_entity, "basepath" );
 	AddSlash( strPath );
 	strPath += "maps";
@@ -2115,10 +2117,10 @@ void CMainFrame::OnFileSaveCopy()
 	{
 		strPath += va( "\\%s", g_PrefsDlg.m_strMaps );
 	}
-	
+
 	/* Place the terminating null character in the szFile. */
 	aFile[0] = '\0';
-	
+
 	/* Set the members of the OPENFILENAME structure. */
 	afn.lStructSize = sizeof( OPENFILENAME );
 	afn.hwndOwner = g_pParentWnd->GetSafeHwnd();
@@ -2131,16 +2133,16 @@ void CMainFrame::OnFileSaveCopy()
 	afn.lpstrInitialDir = strPath;
 	afn.lpstrTitle = aTitle;
 	afn.Flags = OFN_SHOWHELP | OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_OVERWRITEPROMPT;
-	
+
 	/* Display the Open dialog box. */
 	if( !GetSaveFileName( &afn ) )
 	{
 		return; // canceled
 	}
-	
+
 	DefaultExtension( afn.lpstrFile, ".map" );
 	Map_SaveFile( afn.lpstrFile, false );	// ignore region
-	
+
 	// Set the title back to the current working map
 	Sys_SetTitle( currentmap );
 }
@@ -2151,7 +2153,7 @@ void CMainFrame::OnFileSaveCopy()
 void CMainFrame::OnViewShowModels()
 {
 	g_qeglobals.d_savedinfo.exclude ^= EXCLUDE_MODELS;
-	
+
 	Sys_UpdateWindows( W_ALL );
 }
 
@@ -2165,17 +2167,17 @@ void CMainFrame::OnView100()
 	{
 		m_pXYWnd->SetScale( 1 );
 	}
-	
+
 	if( m_pXZWnd )
 	{
 		m_pXZWnd->SetScale( 1 );
 	}
-	
+
 	if( m_pYZWnd )
 	{
 		m_pYZWnd->SetScale( 1 );
 	}
-	
+
 	Sys_UpdateWindows( W_XY | W_XY_OVERLAY );
 }
 
@@ -2245,30 +2247,32 @@ BOOL DoMru( HWND hWnd, WORD wId )
 	char szFileName[128];
 	OFSTRUCT of;
 	BOOL fExist;
-	
+
 	GetMenuItem( g_qeglobals.d_lpMruMenu, wId, TRUE, szFileName, sizeof( szFileName ) );
-	
+
 	// Test if the file exists.
-	
+
 	fExist = OpenFile( szFileName , &of, OF_EXIST ) != HFILE_ERROR;
-	
+
 	if( fExist )
 	{
-	
+
 		// Place the file on the top of MRU.
 		AddNewItem( g_qeglobals.d_lpMruMenu, ( LPSTR )szFileName );
-		
+
 		// Now perform opening this file !!!
 		Map_LoadFile( szFileName );
 	}
 	else
 		// Remove the file on MRU.
+	{
 		DelMenuItem( g_qeglobals.d_lpMruMenu, wId, TRUE );
-		
+	}
+
 	// Refresh the File menu.
 	PlaceMenuMRUItem( g_qeglobals.d_lpMruMenu, GetSubMenu( GetMenu( hWnd ), 0 ),
 					  ID_FILE_EXIT );
-					  
+
 	return fExist;
 }
 
@@ -2297,7 +2301,7 @@ void CMainFrame::OnViewNearest( unsigned int nID )
 void CMainFrame::OnTextureWad( unsigned int nID )
 {
 	Sys_BeginWait();
-	
+
 	// FIXME: idMaterial Texture_ShowDirectory (nID);
 	Sys_UpdateWindows( W_ALL );
 }
@@ -2319,10 +2323,10 @@ void RunBsp( const char* command )
 	char	sys[2048];
 	char	name[2048];
 	char*	in;
-	
+
 	// bring the console window forward for feedback
 	g_Inspectors->SetMode( W_CONSOLE );
-	
+
 	// decide if we are doing a .map or a .reg
 	strcpy( name, currentmap );
 	if( region_active )
@@ -2331,12 +2335,12 @@ void RunBsp( const char* command )
 		StripExtension( name );
 		strcat( name, ".reg" );
 	}
-	
+
 	if( !Map_SaveFile( name, region_active ) )
 	{
 		return;
 	}
-	
+
 	// name should be a full pathname, but we only
 	// want to pass the maps/ part to dmap
 	in = strstr( name, "maps/" );
@@ -2348,13 +2352,13 @@ void RunBsp( const char* command )
 	{
 		in = name;
 	}
-	
+
 	if( idStr::Icmpn( command, "bspext", strlen( "runbsp" ) ) == 0 )
 	{
 		PROCESS_INFORMATION ProcessInformation;
 		STARTUPINFO	startupinfo;
 		char buff[2048];
-		
+
 		idStr base = cvarSystem->GetCVarString( "fs_basepath" );
 		idStr cd = cvarSystem->GetCVarString( "fs_cdpath" );
 		idStr paths;
@@ -2368,7 +2372,7 @@ void RunBsp( const char* command )
 			paths += "+set fs_cdpath ";
 			paths += cd;
 		}
-		
+
 		::GetModuleFileName( AfxGetApp()->m_hInstance, buff, sizeof( buff ) );
 		if( strlen( command ) > strlen( "bspext" ) )
 		{
@@ -2378,14 +2382,14 @@ void RunBsp( const char* command )
 		{
 			idStr::snPrintf( sys, sizeof( sys ), "%s %s +set r_fullscreen 0 +dmap editorOutput %s +quit", buff, paths.c_str(), in );
 		}
-		
+
 		::GetStartupInfo( &startupinfo );
 		if( !CreateProcess( NULL, sys, NULL, NULL, FALSE, 0, NULL, NULL, &startupinfo, &ProcessInformation ) )
 		{
 			common->Printf( "Could not start bsp process %s %s/n", buff, sys );
 		}
 		g_pParentWnd->SetFocus();
-		
+
 	}
 	else     // assumes bsp is the command
 	{
@@ -2397,9 +2401,9 @@ void RunBsp( const char* command )
 		{
 			idStr::snPrintf( sys, sizeof( sys ), "dmap %s", in );
 		}
-		
+
 		cmdSystem->BufferCommandText( CMD_EXEC_NOW, "disconnect\n" );
-		
+
 		// issue the bsp command
 		Dmap_f( idCmdArgs( sys, false ) );
 	}
@@ -2411,9 +2415,9 @@ void CMainFrame::OnBspCommand( unsigned int nID )
 	{
 		Map_Snapshot();
 	}
-	
+
 	RunBsp( bsp_commands[LOWORD( nID - CMD_BSPCOMMAND )] );
-	
+
 	// DHM - _D3XP
 	SetTimer( QE_TIMER1, g_PrefsDlg.m_nAutoSave * 60 * 1000, NULL );
 }
@@ -2448,7 +2452,7 @@ void CMainFrame::OnViewShowclip()
 	{
 		CheckMenuItem( ::GetMenu( GetSafeHwnd() ), ID_VIEW_SHOWCLIP, MF_BYCOMMAND | MF_CHECKED );
 	}
-	
+
 	Sys_UpdateWindows( W_XY | W_CAMERA );
 }
 
@@ -2466,7 +2470,7 @@ void CMainFrame::OnViewShowTriggers()
 	{
 		CheckMenuItem( ::GetMenu( GetSafeHwnd() ), ID_VIEW_SHOWTRIGGERS, MF_BYCOMMAND | MF_CHECKED );
 	}
-	
+
 	Sys_UpdateWindows( W_XY | W_CAMERA );
 }
 
@@ -2500,7 +2504,7 @@ void CMainFrame::OnViewShowent()
 	{
 		CheckMenuItem( ::GetMenu( GetSafeHwnd() ), ID_VIEW_SHOWENT, MF_BYCOMMAND | MF_CHECKED );
 	}
-	
+
 	Sys_UpdateWindows( W_XY | W_CAMERA );
 }
 
@@ -2518,7 +2522,7 @@ void CMainFrame::OnViewShowlights()
 	{
 		CheckMenuItem( ::GetMenu( GetSafeHwnd() ), ID_VIEW_SHOWLIGHTS, MF_BYCOMMAND | MF_CHECKED );
 	}
-	
+
 	Sys_UpdateWindows( W_XY | W_CAMERA );
 }
 
@@ -2553,7 +2557,7 @@ void CMainFrame::OnViewShowpath()
 	{
 		CheckMenuItem( ::GetMenu( GetSafeHwnd() ), ID_VIEW_SHOWPATH, MF_BYCOMMAND | MF_CHECKED );
 	}
-	
+
 	Sys_UpdateWindows( W_XY | W_CAMERA );
 }
 
@@ -2571,7 +2575,7 @@ void CMainFrame::OnViewShowCombatNodes()
 	{
 		CheckMenuItem( ::GetMenu( GetSafeHwnd() ), ID_VIEW_SHOWCOMBATNODES, MF_BYCOMMAND | MF_CHECKED );
 	}
-	
+
 	Sys_UpdateWindows( W_XY | W_CAMERA );
 }
 
@@ -2589,7 +2593,7 @@ void CMainFrame::OnViewShowwater()
 	{
 		CheckMenuItem( ::GetMenu( GetSafeHwnd() ), ID_VIEW_SHOWWATER, MF_BYCOMMAND | MF_CHECKED );
 	}
-	
+
 	Sys_UpdateWindows( W_XY | W_CAMERA );
 }
 
@@ -2607,7 +2611,7 @@ void CMainFrame::OnViewShowworld()
 	{
 		CheckMenuItem( ::GetMenu( GetSafeHwnd() ), ID_VIEW_SHOWWORLD, MF_BYCOMMAND | MF_CHECKED );
 	}
-	
+
 	Sys_UpdateWindows( W_XY | W_CAMERA );
 }
 
@@ -2664,7 +2668,7 @@ void CMainFrame::OnViewZoomin()
 			m_pXYWnd->SetScale( 256.0f );
 		}
 	}
-	
+
 	if( m_pXZWnd && m_pXZWnd->Active() )
 	{
 		m_pXZWnd->SetScale( m_pXZWnd->Scale() * 5.0f / 4.0f );
@@ -2673,7 +2677,7 @@ void CMainFrame::OnViewZoomin()
 			m_pXZWnd->SetScale( 256.0f );
 		}
 	}
-	
+
 	if( m_pYZWnd && m_pYZWnd->Active() )
 	{
 		m_pYZWnd->SetScale( m_pYZWnd->Scale() * 5.0f / 4.0f );
@@ -2682,7 +2686,7 @@ void CMainFrame::OnViewZoomin()
 			m_pYZWnd->SetScale( 256.0f );
 		}
 	}
-	
+
 	Sys_UpdateWindows( W_XY | W_XY_OVERLAY );
 }
 
@@ -2700,7 +2704,7 @@ void CMainFrame::OnViewZoomout()
 			m_pXYWnd->SetScale( 0.1f / 32.0f );
 		}
 	}
-	
+
 	if( m_pXZWnd && m_pXZWnd->Active() )
 	{
 		m_pXZWnd->SetScale( m_pXZWnd->Scale() * 4.0f / 5.0f );
@@ -2709,7 +2713,7 @@ void CMainFrame::OnViewZoomout()
 			m_pXZWnd->SetScale( 0.1f / 32.0f );
 		}
 	}
-	
+
 	if( m_pYZWnd && m_pYZWnd->Active() )
 	{
 		m_pYZWnd->SetScale( m_pYZWnd->Scale() * 4.0f / 5.0f );
@@ -2718,7 +2722,7 @@ void CMainFrame::OnViewZoomout()
 			m_pYZWnd->SetScale( 0.1f / 32.0f );
 		}
 	}
-	
+
 	Sys_UpdateWindows( W_XY | W_XY_OVERLAY );
 }
 
@@ -2733,7 +2737,7 @@ void CMainFrame::OnViewZzoomin()
 	{
 		z.scale = 4.0f;
 	}
-	
+
 	Sys_UpdateWindows( W_Z | W_Z_OVERLAY );
 }
 
@@ -2748,7 +2752,7 @@ void CMainFrame::OnViewZzoomout()
 	{
 		z.scale = 0.125f;
 	}
-	
+
 	Sys_UpdateWindows( W_Z | W_Z_OVERLAY );
 }
 
@@ -2814,9 +2818,9 @@ void CMainFrame::OnGrid1( unsigned int nID )
 			//	g_qeglobals.d_gridsize = 0.0625f;
 			//	break;
 	}
-	
+
 	UpdateGrid();
-	
+
 	SetGridStatus();
 	SetGridChecks( nID );
 	Sys_UpdateWindows( W_XY | W_Z );
@@ -2922,17 +2926,17 @@ bool DoColor( int iIndex )
 	COLORREF cr = ( int )( g_qeglobals.d_savedinfo.colors[iIndex][0] * 255 ) +
 				  ( ( ( int )( g_qeglobals.d_savedinfo.colors[iIndex][1] * 255 ) ) << 8 ) +
 				  ( ( ( int )( g_qeglobals.d_savedinfo.colors[iIndex][2] * 255 ) ) << 16 );
-				  
+
 	CDialogColorPicker dlg( cr );
-	
+
 	dlg.UpdateParent = UpdateRadiantColor;
-	
+
 	if( dlg.DoModal() == IDOK )
 	{
 		g_qeglobals.d_savedinfo.colors[iIndex][0] = ( dlg.GetColor() & 255 ) / 255.0;
 		g_qeglobals.d_savedinfo.colors[iIndex][1] = ( ( dlg.GetColor() >> 8 ) & 255 ) / 255.0;
 		g_qeglobals.d_savedinfo.colors[iIndex][2] = ( ( dlg.GetColor() >> 16 ) & 255 ) / 255.0;
-		
+
 		Sys_UpdateWindows( W_ALL );
 		return true;
 	}
@@ -2967,7 +2971,7 @@ void CMainFrame::OnMiscSelectentitycolor()
 			}
 		}
 	}
-	
+
 	if( DoColor( COLOR_ENTITY ) )
 	{
 		char	buffer[100];
@@ -2996,19 +3000,19 @@ LPCSTR String_ToLower( LPCSTR psString )
 	const int iBufferSize = 4096;
 	static char sString[8][iBufferSize];
 	static int iIndex = 0;
-	
+
 	if( strlen( psString ) >= iBufferSize )
 	{
 		assert( 0 );
 		common->Printf( "String_ToLower(): Warning, input string was %d bytes too large, performing strlwr() inline!\n", strlen( psString ) - ( iBufferSize - 1 ) );
 		return strlwr( const_cast<char*>( psString ) );
 	}
-	
+
 	iIndex = ++ iIndex & 7;
-	
+
 	strcpy( sString[iIndex], psString );
 	strlwr( sString[iIndex] );
-	
+
 	return sString[iIndex];
 }
 
@@ -3018,15 +3022,15 @@ bool FindNextBrush( brush_t* pPrevFoundBrush )	// can be NULL for fresh search
 	bool bFoundSomething = false;
 	entity_t* pLastFoundEnt;
 	brush_t*  pLastFoundBrush;
-	
+
 	CWaitCursor waitcursor;
-	
+
 	Select_Deselect( true );	// bool bDeSelectToListBack
-	
+
 	// see whether to start search from prev_brush->next by checking if prev_brush is still in the active list...
 	//
 	brush_t* pStartBrush = active_brushes.next;
-	
+
 	if( pPrevFoundBrush && !gbSelectAllMatchingEnts )
 	{
 		brush_t* pPrev = NULL;
@@ -3040,13 +3044,13 @@ bool FindNextBrush( brush_t* pPrevFoundBrush )	// can be NULL for fresh search
 			pPrev = b;
 		}
 	}
-	
+
 	// now do the search proper...
 	//
 	int iBrushesScanned = 0;
 	int iBrushesSelected = 0;
 	int iEntsScanned = 0;
-	
+
 	brush_t* pNextBrush;
 	for( brush_t* b = pStartBrush; b != &active_brushes ; b = pNextBrush )
 	{
@@ -3060,30 +3064,34 @@ bool FindNextBrush( brush_t* pPrevFoundBrush )	// can be NULL for fresh search
 		{
 			pNextBrush = pNextBrush->next;
 		}
-		
+
 		iBrushesScanned++;
-		
+
 		// a simple progress bar so they don't think it's locked up on long searches...
 		//
 		static int iDotBodge = 0;
 		if( !( ++iDotBodge & 15 ) )
-			common->Printf( "." );	// cut down on printing
-			
+		{
+			common->Printf( "." );    // cut down on printing
+		}
+
 		bool bMatch = false;
 		entity_t* ent = b->owner;
-		
+
 		if( ent && ent != world_entity )	// needed!
 		{
 			iEntsScanned++;
 			if( FilterBrush( b ) )
+			{
 				continue;
-				
+			}
+
 			// only check the find-key if there was one specified...
 			//
 			if( !strFindKey.IsEmpty() )
 			{
 				const char* psEntFoundValue = ValueForKey( ent, strFindKey );
-				
+
 				if( strlen( psEntFoundValue )
 						&&
 						(
@@ -3134,22 +3142,24 @@ bool FindNextBrush( brush_t* pPrevFoundBrush )	// can be NULL for fresh search
 					}
 				}
 			}
-			
+
 			if( bMatch )
 			{
 				bFoundSomething = true;
 				pLastFoundEnt	= ent;
 				pLastFoundBrush	= b;
 				iBrushesSelected++;
-				
+
 				g_bScreenUpdates = false;	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-				
+
 				Select_Brush( b );
-				
+
 				g_bScreenUpdates = true;	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-				
+
 				if( !gbSelectAllMatchingEnts )
+				{
 					break;
+				}
 			}
 		}
 	}
@@ -3157,11 +3167,11 @@ bool FindNextBrush( brush_t* pPrevFoundBrush )	// can be NULL for fresh search
 	{
 		common->Printf( "\nBrushes Selected: %d           (Brushes Scanned %d, Ents Scanned %d)\n", iBrushesSelected, iBrushesScanned, iEntsScanned );
 	}
-	
+
 	if( bFoundSomething )
 	{
 		idVec3 v3Origin;
-		
+
 		if( pLastFoundEnt->origin[0] != 0.0f || pLastFoundEnt->origin[1] != 0.0f || pLastFoundEnt->origin[2] != 0.0f )
 		{
 			VectorCopy( pLastFoundEnt->origin, v3Origin );
@@ -3174,7 +3184,7 @@ bool FindNextBrush( brush_t* pPrevFoundBrush )	// can be NULL for fresh search
 			v3Origin[1] = ( pLastFoundBrush->mins[1] + pLastFoundBrush->maxs[1] ) / 2;
 			v3Origin[2] = ( pLastFoundBrush->mins[2] + pLastFoundBrush->maxs[2] ) / 2;
 		}
-		
+
 		// got one, jump the camera to it...
 		//
 		VectorCopy( v3Origin, g_pParentWnd->GetCamera()->Camera().origin );
@@ -3182,19 +3192,19 @@ bool FindNextBrush( brush_t* pPrevFoundBrush )	// can be NULL for fresh search
 		g_pParentWnd->GetCamera()->Camera().angles[0] = 0;
 		g_pParentWnd->GetCamera()->Camera().angles[1] = 90;
 		g_pParentWnd->GetCamera()->Camera().angles[2] = 0;
-		
+
 		// force main screen into XY camera mode (just in case)...
 		//
 		g_pParentWnd->SetActiveXY( g_pParentWnd->GetXYWnd() );
 		g_pParentWnd->GetXYWnd()->PositionView();
-		
+
 		Sys_UpdateWindows( W_ALL );
 		//
 		// and record for next find request (F3)...
 		//
 		gpPrevEntBrushFound = pLastFoundBrush;
 	}
-	
+
 	return bFoundSomething;
 }
 
@@ -3212,14 +3222,16 @@ void CMainFrame::OnMiscFindOrReplaceEntity()
 			{
 				next = b->next;	// important to do this here, in case brush gets linked to a different list
 				entity_t* ent = b->owner;
-				
+
 				if( ent )	// needed!
 				{
 					if( FilterBrush( b ) )
+					{
 						continue;
-						
+					}
+
 					const char* psEntFoundValue = ValueForKey( ent, strFindKey );
-					
+
 					if( stricmp( strFindValue, psEntFoundValue ) == 0 ||		// found this exact key/value
 							( strlen( psEntFoundValue ) &&	strFindValue.IsEmpty() ) // or any value for this key if blank value search specified
 					  )
@@ -3274,7 +3286,7 @@ void CMainFrame::OnMiscSetViewPos()
 	{
 		idVec3 v3Viewpos;
 		float fYaw = 0;
-		
+
 		psNewCoords.Remove( ',' );
 		int iArgsFound = sscanf( psNewCoords, "%f %f %f", &v3Viewpos[0], &v3Viewpos[1], &v3Viewpos[2] );
 		if( iArgsFound == 3 )
@@ -3286,7 +3298,7 @@ void CMainFrame::OnMiscSetViewPos()
 			{
 				fYaw = 0;	// jic
 			}
-			
+
 			g_pParentWnd->GetCamera()->Camera().angles[YAW] = fYaw;
 			VectorCopy( v3Viewpos, g_pParentWnd->GetCamera()->Camera().origin );
 			VectorCopy( v3Viewpos, g_pParentWnd->GetXYWnd()->GetOrigin() );
@@ -3451,7 +3463,7 @@ void CMainFrame::OnBrushFlipx()
 {
 	Undo_Start( "flip X" );
 	Undo_AddBrushList( &selected_brushes );
-	
+
 	Select_FlipAxis( 0 );
 	for( brush_t* b = selected_brushes.next; b != &selected_brushes; b = b->next )
 	{
@@ -3477,7 +3489,7 @@ void CMainFrame::OnBrushFlipy()
 {
 	Undo_Start( "flip Y" );
 	Undo_AddBrushList( &selected_brushes );
-	
+
 	Select_FlipAxis( 1 );
 	for( brush_t* b = selected_brushes.next; b != &selected_brushes; b = b->next )
 	{
@@ -3488,7 +3500,7 @@ void CMainFrame::OnBrushFlipy()
 			{
 				continue;
 			}
-			
+
 			if( a == 90 || a == 270 )
 			{
 				a += 180;
@@ -3509,9 +3521,9 @@ void CMainFrame::OnBrushFlipy()
 			{
 				a -= 90;
 			}
-			
+
 			a = ( int )a % 360;
-			
+
 			char	buf[16];
 			SetKeyValue( b->owner, "angle", itoa( a, buf, 10 ) );
 			Brush_Build( b );
@@ -3629,10 +3641,10 @@ void CMainFrame::OnSelectionArbitraryrotation()
 	// if (ActiveXY()) ActiveXY()->UndoCopy();
 	Undo_Start( "arbitrary rotation" );
 	Undo_AddBrushList( &selected_brushes );
-	
+
 	CRotateDlg	dlg;
 	dlg.DoModal();
-	
+
 	// DoRotate ();
 	Undo_EndBrushList( &selected_brushes );
 	Undo_End();
@@ -3704,17 +3716,17 @@ void CMainFrame::OnSelectionCsgmerge()
 void CMainFrame::OnSelectionDelete()
 {
 	brush_t* brush;
-	
+
 	// if (ActiveXY()) ActiveXY()->UndoCopy();
 	Undo_Start( "delete" );
 	Undo_AddBrushList( &selected_brushes );
-	
+
 	// add all deleted entities to the undo
 	for( brush = selected_brushes.next; brush != &selected_brushes; brush = brush->next )
 	{
 		Undo_AddEntity( brush->owner );
 	}
-	
+
 	// NOTE: Select_Delete does NOT delete entities
 	Select_Delete();
 	Undo_EndBrushList( &selected_brushes );
@@ -3787,7 +3799,7 @@ void CMainFrame::OnSelectionDragedges()
 		{
 			g_qeglobals.d_select_mode = sel_edge;
 		}
-		
+
 		Sys_UpdateWindows( W_ALL );
 	}
 }
@@ -3818,7 +3830,7 @@ void CMainFrame::OnSelectionDragvertecies()
 				g_qeglobals.d_select_mode = sel_vertex;
 			}
 		}
-		
+
 		Sys_UpdateWindows( W_ALL );
 	}
 }
@@ -3845,7 +3857,7 @@ void CMainFrame::OnSelectionSelectcompletetall()
 	//if (ActiveXY()) {
 	//	ActiveXY()->UndoCopy();
 	//}
-	
+
 	Select_CompleteTall();
 }
 
@@ -3938,12 +3950,12 @@ void CMainFrame::OnViewChange()
 void CMainFrame::OnViewCameraupdate()
 {
 	g_qeglobals.flatRotation++;
-	
+
 	if( g_qeglobals.flatRotation > 2 )
 	{
 		g_qeglobals.flatRotation = 0;
 	}
-	
+
 	if( g_qeglobals.flatRotation )
 	{
 		g_qeglobals.rotateAxis = 0;
@@ -3999,7 +4011,7 @@ void CMainFrame::OnViewClipper()
 			{
 				OnSelectMouserotate();
 			}
-			
+
 			ActiveXY()->SetClipMode( true );
 			m_wndToolBar.GetToolBarCtrl().CheckButton( ID_VIEW_CLIPPER );
 		}
@@ -4017,7 +4029,7 @@ void CMainFrame::OnCameraAngledown()
 	{
 		m_pCamWnd->Camera().angles[0] = -85;
 	}
-	
+
 	Sys_UpdateWindows( W_CAMERA | W_XY_OVERLAY );
 }
 
@@ -4032,7 +4044,7 @@ void CMainFrame::OnCameraAngleup()
 	{
 		m_pCamWnd->Camera().angles[0] = 85;
 	}
-	
+
 	Sys_UpdateWindows( W_CAMERA | W_XY_OVERLAY );
 }
 
@@ -4043,7 +4055,7 @@ void CMainFrame::OnCameraAngleup()
 void CMainFrame::OnCameraBack()
 {
 	VectorMA( m_pCamWnd->Camera().origin, -SPEED_MOVE, m_pCamWnd->Camera().forward, m_pCamWnd->Camera().origin );
-	
+
 	int nUpdate = ( g_PrefsDlg.m_bCamXYUpdate ) ? ( W_CAMERA | W_XY ) : ( W_CAMERA );
 	Sys_UpdateWindows( nUpdate );
 }
@@ -4065,7 +4077,7 @@ void CMainFrame::OnCameraDown()
 void CMainFrame::OnCameraForward()
 {
 	VectorMA( m_pCamWnd->Camera().origin, SPEED_MOVE, m_pCamWnd->Camera().forward, m_pCamWnd->Camera().origin );
-	
+
 	int nUpdate = ( g_PrefsDlg.m_bCamXYUpdate ) ? ( W_CAMERA | W_XY ) : ( W_CAMERA );
 	Sys_UpdateWindows( nUpdate );
 }
@@ -4077,7 +4089,7 @@ void CMainFrame::OnCameraForward()
 void CMainFrame::OnCameraLeft()
 {
 	m_pCamWnd->Camera().angles[1] += SPEED_TURN;
-	
+
 	int nUpdate = ( g_PrefsDlg.m_bCamXYUpdate ) ? ( W_CAMERA | W_XY ) : ( W_CAMERA );
 	Sys_UpdateWindows( nUpdate );
 }
@@ -4089,7 +4101,7 @@ void CMainFrame::OnCameraLeft()
 void CMainFrame::OnCameraRight()
 {
 	m_pCamWnd->Camera().angles[1] -= SPEED_TURN;
-	
+
 	int nUpdate = ( g_PrefsDlg.m_bCamXYUpdate ) ? ( W_CAMERA | W_XY ) : ( W_CAMERA );
 	Sys_UpdateWindows( nUpdate );
 }
@@ -4101,7 +4113,7 @@ void CMainFrame::OnCameraRight()
 void CMainFrame::OnCameraStrafeleft()
 {
 	VectorMA( m_pCamWnd->Camera().origin, -SPEED_MOVE, m_pCamWnd->Camera().right, m_pCamWnd->Camera().origin );
-	
+
 	int nUpdate = ( g_PrefsDlg.m_bCamXYUpdate ) ? ( W_CAMERA | W_XY ) : ( W_CAMERA );
 	Sys_UpdateWindows( nUpdate );
 }
@@ -4113,7 +4125,7 @@ void CMainFrame::OnCameraStrafeleft()
 void CMainFrame::OnCameraStraferight()
 {
 	VectorMA( m_pCamWnd->Camera().origin, SPEED_MOVE, m_pCamWnd->Camera().right, m_pCamWnd->Camera().origin );
-	
+
 	int nUpdate = ( g_PrefsDlg.m_bCamXYUpdate ) ? ( W_CAMERA | W_XY ) : ( W_CAMERA );
 	Sys_UpdateWindows( nUpdate );
 }
@@ -4152,9 +4164,9 @@ void CMainFrame::OnPrefs()
 		{
 			MessageBox( "You need to restart Q3Radiant for the view changes to take place." );
 		}
-		
+
 		g_Inspectors->texWnd.UpdatePrefs();
-		
+
 		CMenu*	pMenu = GetMenu();
 		if( pMenu )
 		{
@@ -4234,13 +4246,13 @@ void CMainFrame::OnTogglez()
 void CMainFrame::OnToggleLock()
 {
 	g_PrefsDlg.m_bTextureLock = !g_PrefsDlg.m_bTextureLock;
-	
+
 	CMenu*	pMenu = GetMenu();
 	if( pMenu )
 	{
 		pMenu->CheckMenuItem( ID_TOGGLE_LOCK, MF_BYCOMMAND | ( g_PrefsDlg.m_bTextureLock ) ? MF_CHECKED : MF_UNCHECKED );
 	}
-	
+
 	g_PrefsDlg.SavePrefs();
 	SetGridStatus();
 }
@@ -4282,7 +4294,7 @@ void CMainFrame::OnViewNextview()
 	{
 		m_pXYWnd->SetViewType( XY );
 	}
-	
+
 	m_pXYWnd->PositionView();
 	if( g_qeglobals.flatRotation )
 	{
@@ -4365,25 +4377,25 @@ void CMainFrame::UpdateWindows( int nBits )
 	{
 		return;
 	}
-	
+
 	if( nBits & ( W_XY | W_XY_OVERLAY ) )
 	{
 		if( m_pXYWnd )
 		{
 			m_pXYWnd->RedrawWindow( NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW );
 		}
-		
+
 		if( m_pXZWnd )
 		{
 			m_pXZWnd->RedrawWindow( NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW );
 		}
-		
+
 		if( m_pYZWnd )
 		{
 			m_pYZWnd->RedrawWindow( NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW );
 		}
 	}
-	
+
 	if( nBits & W_CAMERA || ( ( nBits & W_CAMERA_IFON ) && m_bCamPreview ) )
 	{
 		if( m_pCamWnd )
@@ -4391,7 +4403,7 @@ void CMainFrame::UpdateWindows( int nBits )
 			m_pCamWnd->RedrawWindow( NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW );
 		}
 	}
-	
+
 	if( nBits & ( W_Z | W_Z_OVERLAY ) )
 	{
 		if( m_pZWnd )
@@ -4399,7 +4411,7 @@ void CMainFrame::UpdateWindows( int nBits )
 			m_pZWnd->RedrawWindow( NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW );
 		}
 	}
-	
+
 	if( nBits & W_TEXTURE )
 	{
 		g_Inspectors->texWnd.RedrawWindow( NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW );
@@ -4456,7 +4468,7 @@ void CMainFrame::OnClipSelected()
 		}
 		else if( g_bAxialMode )
 		{
-		
+
 		}
 		//else if (g_bPatchBendMode) {
 		//	Patch_InsDelHandleENTER();
@@ -4507,7 +4519,7 @@ void CMainFrame::OnToggleviewXz()
 		{
 			m_pXZWnd->ShowWindow( SW_SHOW );
 		}
-		
+
 		g_PrefsDlg.m_bXZVis ^= 1;
 		g_PrefsDlg.SavePrefs();
 	}
@@ -4530,7 +4542,7 @@ void CMainFrame::OnToggleviewYz()
 		{
 			m_pYZWnd->ShowWindow( SW_SHOW );
 		}
-		
+
 		g_PrefsDlg.m_bYZVis ^= 1;
 		g_PrefsDlg.SavePrefs();
 	}
@@ -4626,35 +4638,35 @@ void CMainFrame::OnColorSetoriginal()
 		g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR][i] = 0.5f;
 		g_qeglobals.d_savedinfo.colors[COLOR_CAMERABACK][i] = 0.25f;
 	}
-	
+
 	g_qeglobals.d_savedinfo.colors[COLOR_GRIDBLOCK][0] = 0.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_GRIDBLOCK][1] = 0.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_GRIDBLOCK][2] = 1.0f;
-	
+
 	g_qeglobals.d_savedinfo.colors[COLOR_GRIDTEXT][0] = 0.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_GRIDTEXT][1] = 0.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_GRIDTEXT][2] = 0.0f;
-	
+
 	g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][0] = 1.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][1] = 0.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][2] = 0.0f;
-	
+
 	g_qeglobals.d_savedinfo.colors[COLOR_CLIPPER][0] = 0.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_CLIPPER][1] = 0.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_CLIPPER][2] = 1.0f;
-	
+
 	g_qeglobals.d_savedinfo.colors[COLOR_BRUSHES][0] = 0.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_BRUSHES][1] = 0.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_BRUSHES][2] = 0.0f;
-	
+
 	g_qeglobals.d_savedinfo.colors[COLOR_VIEWNAME][0] = 0.5f;
 	g_qeglobals.d_savedinfo.colors[COLOR_VIEWNAME][1] = 0.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_VIEWNAME][2] = 0.75f;
-	
+
 	g_qeglobals.d_savedinfo.colors[COLOR_PRECISION_CROSSHAIR][0] = 1.0;
 	g_qeglobals.d_savedinfo.colors[COLOR_PRECISION_CROSSHAIR][1] = 0.0;
 	g_qeglobals.d_savedinfo.colors[COLOR_PRECISION_CROSSHAIR][2] = 1.0;
-	
+
 	Sys_UpdateWindows( W_ALL );
 }
 
@@ -4672,35 +4684,35 @@ void CMainFrame::OnColorSetqer()
 		g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR][i] = 0.5f;
 		g_qeglobals.d_savedinfo.colors[COLOR_CAMERABACK][i] = 0.25f;
 	}
-	
+
 	g_qeglobals.d_savedinfo.colors[COLOR_GRIDBLOCK][0] = 0.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_GRIDBLOCK][1] = 0.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_GRIDBLOCK][2] = 1.0f;
-	
+
 	g_qeglobals.d_savedinfo.colors[COLOR_GRIDTEXT][0] = 0.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_GRIDTEXT][1] = 0.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_GRIDTEXT][2] = 0.0f;
-	
+
 	g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][0] = 1.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][1] = 0.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][2] = 0.0f;
-	
+
 	g_qeglobals.d_savedinfo.colors[COLOR_CLIPPER][0] = 0.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_CLIPPER][1] = 0.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_CLIPPER][2] = 1.0f;
-	
+
 	g_qeglobals.d_savedinfo.colors[COLOR_BRUSHES][0] = 0.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_BRUSHES][1] = 0.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_BRUSHES][2] = 0.0f;
-	
+
 	g_qeglobals.d_savedinfo.colors[COLOR_VIEWNAME][0] = 0.5f;
 	g_qeglobals.d_savedinfo.colors[COLOR_VIEWNAME][1] = 0.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_VIEWNAME][2] = 0.75f;
-	
+
 	g_qeglobals.d_savedinfo.colors[COLOR_PRECISION_CROSSHAIR][0] = 1.0;
 	g_qeglobals.d_savedinfo.colors[COLOR_PRECISION_CROSSHAIR][1] = 0.0;
 	g_qeglobals.d_savedinfo.colors[COLOR_PRECISION_CROSSHAIR][2] = 1.0;
-	
+
 	Sys_UpdateWindows( W_ALL );
 }
 
@@ -4732,8 +4744,8 @@ void CMainFrame::OnColorSetSuperMal()
 	g_qeglobals.d_savedinfo.colors[COLOR_VIEWNAME][0] = 0.5f;
 	g_qeglobals.d_savedinfo.colors[COLOR_VIEWNAME][1] = 0.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_VIEWNAME][2] = 0.74f;
-	
-	
+
+
 	Sys_UpdateWindows( W_ALL );
 }
 
@@ -4750,39 +4762,39 @@ void CMainFrame::OnColorSetblack()
 		g_qeglobals.d_savedinfo.colors[COLOR_GRIDMINOR][i] = 0.0f;
 		g_qeglobals.d_savedinfo.colors[COLOR_CAMERABACK][i] = 0.25f;
 	}
-	
+
 	g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR][0] = 0.3f;
 	g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR][1] = 0.5f;
 	g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR][2] = 0.5f;
-	
+
 	g_qeglobals.d_savedinfo.colors[COLOR_GRIDBLOCK][0] = 0.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_GRIDBLOCK][1] = 0.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_GRIDBLOCK][2] = 1.0f;
-	
+
 	g_qeglobals.d_savedinfo.colors[COLOR_GRIDTEXT][0] = 1.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_GRIDTEXT][1] = 1.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_GRIDTEXT][2] = 1.0f;
-	
+
 	g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][0] = 1.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][1] = 0.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][2] = 0.0f;
-	
+
 	g_qeglobals.d_savedinfo.colors[COLOR_CLIPPER][0] = 0.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_CLIPPER][1] = 0.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_CLIPPER][2] = 1.0f;
-	
+
 	g_qeglobals.d_savedinfo.colors[COLOR_BRUSHES][0] = 1.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_BRUSHES][1] = 1.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_BRUSHES][2] = 1.0f;
-	
+
 	g_qeglobals.d_savedinfo.colors[COLOR_VIEWNAME][0] = 0.7f;
 	g_qeglobals.d_savedinfo.colors[COLOR_VIEWNAME][1] = 0.7f;
 	g_qeglobals.d_savedinfo.colors[COLOR_VIEWNAME][2] = 0.0f;
-	
+
 	g_qeglobals.d_savedinfo.colors[COLOR_PRECISION_CROSSHAIR][0] = 1.0;
 	g_qeglobals.d_savedinfo.colors[COLOR_PRECISION_CROSSHAIR][1] = 0.0;
 	g_qeglobals.d_savedinfo.colors[COLOR_PRECISION_CROSSHAIR][2] = 1.0;
-	
+
 	Sys_UpdateWindows( W_ALL );
 }
 
@@ -4796,7 +4808,7 @@ void CMainFrame::OnColorSetMax()
 		g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR][i] = 0.89f;
 		g_qeglobals.d_savedinfo.colors[COLOR_CAMERABACK][i] = 0.25f;
 	}
-	
+
 	g_qeglobals.d_savedinfo.colors[COLOR_GRIDBLOCK][0] = 1.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_GRIDBLOCK][1] = 1.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_GRIDBLOCK][2] = 1.0f;
@@ -4815,17 +4827,17 @@ void CMainFrame::OnColorSetMax()
 	g_qeglobals.d_savedinfo.colors[COLOR_VIEWNAME][0] = 0.5f;
 	g_qeglobals.d_savedinfo.colors[COLOR_VIEWNAME][1] = 0.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_VIEWNAME][2] = 0.75f;
-	
+
 	//g_qeglobals.d_savedinfo.colors[COLOR_CAMERABACK][0] = 0.0f;
 	//g_qeglobals.d_savedinfo.colors[COLOR_CAMERABACK][1] = 1.0f;
 	//g_qeglobals.d_savedinfo.colors[COLOR_CAMERABACK][2] = 1.0f;
-	
+
 	g_qeglobals.d_savedinfo.colors[COLOR_PRECISION_CROSSHAIR][0] = 1.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_PRECISION_CROSSHAIR][1] = 0.0f;
 	g_qeglobals.d_savedinfo.colors[COLOR_PRECISION_CROSSHAIR][2] = 1.0f;
-	
+
 	Sys_UpdateWindows( W_ALL );
-	
+
 }
 
 /*
@@ -4836,7 +4848,7 @@ void CMainFrame::OnSnaptogrid()
 {
 	g_PrefsDlg.m_bNoClamp ^= 1;
 	g_PrefsDlg.SavePrefs();
-	
+
 	CMenu*	pMenu = GetMenu();
 	if( pMenu )
 	{
@@ -4853,7 +4865,7 @@ void CMainFrame::OnSelectScale()
 	// if (ActiveXY()) ActiveXY()->UndoCopy();
 	Undo_Start( "scale" );
 	Undo_AddBrushList( &selected_brushes );
-	
+
 	CScaleDialog	dlg;
 	if( dlg.DoModal() == IDOK )
 	{
@@ -4867,7 +4879,7 @@ void CMainFrame::OnSelectScale()
 			common->Printf( "Warning.. Tried to scale by a zero value." );
 		}
 	}
-	
+
 	Undo_EndBrushList( &selected_brushes );
 	Undo_End();
 }
@@ -4884,7 +4896,7 @@ void CMainFrame::OnSelectMouserotate()
 		{
 			OnViewClipper();
 		}
-		
+
 		if( ActiveXY()->RotateMode() )
 		{
 			ActiveXY()->SetRotateMode( false );
@@ -4992,7 +5004,7 @@ void CMainFrame::OnSelectionTextureDec()
 	{
 		g_qeglobals.d_savedinfo.m_nTextureTweak -= 1.0f;
 	}
-	
+
 	SetTexValStatus();
 }
 
@@ -5016,7 +5028,7 @@ void CMainFrame::OnSelectionTextureInc()
 	{
 		g_qeglobals.d_savedinfo.m_nTextureTweak += 1.0f;
 	}
-	
+
 	SetTexValStatus();
 }
 
@@ -5141,20 +5153,20 @@ void CMainFrame::OnGridNext()
 	{
 		return;
 	}
-	
+
 	g_qeglobals.d_gridsize *= 2.0f;
-	
+
 	float	minGrid = MIN_GRID;
 	int		id = ID_GRID_START;
-	
+
 	while( minGrid < g_qeglobals.d_gridsize && id < ID_GRID_END )
 	{
 		minGrid *= 2.0f;
 		id++;
 	}
-	
+
 	UpdateGrid();
-	
+
 	SetGridChecks( id );
 	SetGridStatus();
 	Sys_UpdateWindows( W_XY | W_Z );
@@ -5170,20 +5182,20 @@ void CMainFrame::OnGridPrev()
 	{
 		return;
 	}
-	
+
 	g_qeglobals.d_gridsize /= 2;
-	
+
 	float	maxGrid = MAX_GRID;
 	int		id = ID_GRID_END;
-	
+
 	while( maxGrid > g_qeglobals.d_gridsize && id > ID_GRID_START )
 	{
 		maxGrid /= 2.0f;
 		id--;
 	}
-	
+
 	UpdateGrid();
-	
+
 	SetGridChecks( id );
 	SetGridStatus();
 	Sys_UpdateWindows( W_XY | W_Z );
@@ -5249,7 +5261,7 @@ void CMainFrame::OnScalelockx()
 	{
 		m_wndToolBar.GetToolBarCtrl().CheckButton( ID_SCALELOCKX );
 	}
-	
+
 	g_nScaleHow ^= SCALE_X;
 }
 
@@ -5267,7 +5279,7 @@ void CMainFrame::OnScalelocky()
 	{
 		m_wndToolBar.GetToolBarCtrl().CheckButton( ID_SCALELOCKY );
 	}
-	
+
 	g_nScaleHow ^= SCALE_Y;
 }
 
@@ -5285,7 +5297,7 @@ void CMainFrame::OnScalelockz()
 	{
 		m_wndToolBar.GetToolBarCtrl().CheckButton( ID_SCALELOCKZ );
 	}
-	
+
 	g_nScaleHow ^= SCALE_Z;
 }
 
@@ -5301,14 +5313,14 @@ void CMainFrame::OnSelectMousescale()
 		{
 			OnViewClipper();
 		}
-		
+
 		if( ActiveXY()->RotateMode() )
 		{
 			// SetRotateMode(false) always works
 			ActiveXY()->SetRotateMode( false );
 			m_wndToolBar.GetToolBarCtrl().CheckButton( ID_SELECT_MOUSESCALE, FALSE );
 		}
-		
+
 		if( ActiveXY()->ScaleMode() )
 		{
 			ActiveXY()->SetScaleMode( false );
@@ -5359,7 +5371,7 @@ void CMainFrame::OnViewCubein()
 	{
 		g_PrefsDlg.m_nCubicScale = 1;
 	}
-	
+
 	g_PrefsDlg.SavePrefs();
 	Sys_UpdateWindows( W_CAMERA );
 	SetTexValStatus();
@@ -5376,7 +5388,7 @@ void CMainFrame::OnViewCubeout()
 	{
 		g_PrefsDlg.m_nCubicScale = 99;
 	}
-	
+
 	g_PrefsDlg.SavePrefs();
 	Sys_UpdateWindows( W_CAMERA );
 	SetTexValStatus();
@@ -5389,7 +5401,7 @@ void CMainFrame::OnViewCubeout()
 void CMainFrame::OnViewCubicclipping()
 {
 	g_PrefsDlg.m_bCubicClipping ^= 1;
-	
+
 	CMenu*	pMenu = GetMenu();
 	if( pMenu )
 	{
@@ -5399,7 +5411,7 @@ void CMainFrame::OnViewCubicclipping()
 			MF_BYCOMMAND | ( g_PrefsDlg.m_bCubicClipping ) ? MF_CHECKED : MF_UNCHECKED
 		);
 	}
-	
+
 	m_wndToolBar.GetToolBarCtrl().CheckButton( ID_VIEW_CUBICCLIPPING, ( g_PrefsDlg.m_bCubicClipping ) ? TRUE : FALSE );
 	g_PrefsDlg.SavePrefs();
 	Map_BuildBrushData();
@@ -5432,13 +5444,13 @@ void CMainFrame::OnSelectionMovedown()
 {
 	Undo_Start( "move up" );
 	Undo_AddBrushList( &selected_brushes );
-	
+
 	idVec3	vAmt;
 	vAmt[0] = vAmt[1] = 0.0f;
 	vAmt[2] = -g_qeglobals.d_gridsize;
 	Select_Move( vAmt );
 	Sys_UpdateWindows( W_CAMERA | W_XY | W_Z );
-	
+
 	Undo_EndBrushList( &selected_brushes );
 	Undo_End();
 }
@@ -5555,7 +5567,7 @@ void CMainFrame::OnTexturesLoad()
 	bi.lpfn = NULL;
 	bi.lParam = NULL;
 	bi.iImage = 0;
-	
+
 	LPITEMIDLIST	pidlBrowse;
 	pidlBrowse = SHBrowseForFolder( &bi );
 	if( pidlBrowse )
@@ -5696,7 +5708,7 @@ void CMainFrame::OnViewShowcurves()
 	{
 		CheckMenuItem( ::GetMenu( GetSafeHwnd() ), ID_VIEW_SHOWCURVES, MF_BYCOMMAND | MF_CHECKED );
 	}
-	
+
 	Sys_UpdateWindows( W_XY | W_CAMERA );
 }
 
@@ -5754,16 +5766,16 @@ void CMainFrame::NudgeSelection( int nDirection, float fAmount )
 			nAxis = 1;
 			fAmount = -fAmount;
 		}
-		
+
 		if( nDirection == 2 || nDirection == 3 )
 		{
 			fAmount = -fAmount;
 		}
-		
+
 		float	fDeg = -fAmount;
-		
+
 		g_pParentWnd->ActiveXY()->Rotation()[nAxis] += fAmount;
-		
+
 		CString strStatus;
 		strStatus.Format
 		(
@@ -5782,7 +5794,7 @@ void CMainFrame::NudgeSelection( int nDirection, float fAmount )
 		{
 			fAmount = -fAmount;
 		}
-		
+
 		idVec3	v;
 		v[0] = v[1] = v[2] = 1.0f;
 		if( fAmount > 0 )
@@ -5797,7 +5809,7 @@ void CMainFrame::NudgeSelection( int nDirection, float fAmount )
 			v[1] = 0.9f;
 			v[2] = 0.9f;
 		}
-		
+
 		Select_Scale
 		(
 			( g_nScaleHow & SCALE_X ) ? v[0] : 1.0f,
@@ -5828,7 +5840,7 @@ void CMainFrame::NudgeSelection( int nDirection, float fAmount )
 			nDim = ActiveXY()->GetViewType() == XY ? 1 : 2;
 			fAmount = -fAmount;
 		}
-		
+
 		Nudge( nDim, fAmount );
 	}
 }
@@ -5912,10 +5924,10 @@ void CMainFrame::OnCurveSimplepatchmesh()
 {
 	Undo_Start( "make simpe patch mesh" );
 	Undo_AddBrushList( &selected_brushes );
-	
+
 	CPatchDensityDlg	dlg;
 	dlg.DoModal();
-	
+
 	Undo_EndBrushList( &selected_brushes );
 	Undo_End();
 }
@@ -6046,7 +6058,7 @@ void CMainFrame::OnCurveInsertcolumn()
 {
 	Undo_Start( "insert colum" );
 	Undo_AddBrushList( &selected_brushes );
-	
+
 	// Patch_AdjustSelectedRowCols(0, 2);
 	Patch_AdjustSelected( true, true, true );
 	Sys_UpdateWindows( W_ALL );
@@ -6062,7 +6074,7 @@ void CMainFrame::OnCurveInsertrow()
 {
 	Undo_Start( "insert row" );
 	Undo_AddBrushList( &selected_brushes );
-	
+
 	// Patch_AdjustSelectedRowCols(2, 0);
 	Patch_AdjustSelected( true, false, true );
 	Sys_UpdateWindows( W_ALL );
@@ -6161,7 +6173,7 @@ void CMainFrame::OnCurveInsertInsertrow()
 void CMainFrame::OnCurveNegative()
 {
 	Patch_ToggleInverted();
-	
+
 	// Sys_UpdateWindows(W_ALL);
 }
 
@@ -6172,7 +6184,7 @@ void CMainFrame::OnCurveNegative()
 void CMainFrame::OnCurveNegativeTextureX()
 {
 	Select_FlipTexture( false );
-	
+
 	// Sys_UpdateWindows(W_ALL);
 }
 
@@ -6325,12 +6337,12 @@ void CMainFrame::OnPatchTab()
 						break;
 					}
 				}
-				
+
 				if( b2 == &e->brushes )
 				{
 					b2 = b2->onext;
 				}
-				
+
 				Select_Brush( b2, false );
 				Sys_UpdateWindows( W_ALL );
 			}
@@ -6356,12 +6368,12 @@ void CMainFrame::OnCurvePatchdensetube()
 {
 	Undo_Start( "dense cylinder" );
 	Undo_AddBrushList( &selected_brushes );
-	
+
 	Patch_BrushToMesh( false );
 	OnCurveInsertAddrow();
 	OnCurveInsertInsertrow();
 	Sys_UpdateWindows( W_ALL );
-	
+
 	Undo_EndBrushList( &selected_brushes );
 	Undo_End();
 }
@@ -6374,14 +6386,14 @@ void CMainFrame::OnCurvePatchverydensetube()
 {
 	Undo_Start( "very dense cylinder" );
 	Undo_AddBrushList( &selected_brushes );
-	
+
 	Patch_BrushToMesh( false );
 	OnCurveInsertAddrow();
 	OnCurveInsertInsertrow();
 	OnCurveInsertAddrow();
 	OnCurveInsertInsertrow();
 	Sys_UpdateWindows( W_ALL );
-	
+
 	Undo_EndBrushList( &selected_brushes );
 	Undo_End();
 }
@@ -6474,10 +6486,10 @@ void CMainFrame::OnCurvePatchsquare()
 {
 	Undo_Start( "square cylinder" );
 	Undo_AddBrushList( &selected_brushes );
-	
+
 	Patch_BrushToMesh( false, false, false, true );
 	Sys_UpdateWindows( W_ALL );
-	
+
 	Undo_EndBrushList( &selected_brushes );
 	Undo_End();
 }
@@ -6498,7 +6510,7 @@ void CMainFrame::CheckTextureScale( int id )
 		pMenu->CheckMenuItem( ID_TEXTURES_TEXTUREWINDOWSCALE_200, MF_BYCOMMAND | MF_UNCHECKED );
 		pMenu->CheckMenuItem( id, MF_BYCOMMAND | MF_CHECKED );
 	}
-	
+
 	g_PrefsDlg.SavePrefs();
 	//FIXME: idMaterial
 	//Texture_ResetPosition();
@@ -6594,14 +6606,14 @@ void CMainFrame::OnCurveThicken()
 {
 	Undo_Start( "curve thicken" );
 	Undo_AddBrushList( &selected_brushes );
-	
+
 	CDialogThick	dlg;
 	if( dlg.DoModal() == IDOK )
 	{
 		Patch_Thicken( dlg.m_nAmount, ( dlg.m_bSeams != FALSE ) );
 		Sys_UpdateWindows( W_ALL );
 	}
-	
+
 	Undo_EndBrushList( &selected_brushes );
 	Undo_End();
 }
@@ -6704,7 +6716,7 @@ void CMainFrame::OnViewShowhint()
 	{
 		CheckMenuItem( ::GetMenu( GetSafeHwnd() ), ID_VIEW_SHOWHINT, MF_BYCOMMAND | MF_CHECKED );
 	}
-	
+
 	Sys_UpdateWindows( W_XY | W_CAMERA );
 }
 
@@ -6771,7 +6783,7 @@ void CMainFrame::OnViewShowcaulk()
 	{
 		CheckMenuItem( ::GetMenu( GetSafeHwnd() ), ID_VIEW_SHOWCAULK, MF_BYCOMMAND | MF_CHECKED );
 	}
-	
+
 	Sys_UpdateWindows( W_XY | W_CAMERA );
 }
 
@@ -6825,7 +6837,7 @@ void CMainFrame::OnViewShowangles()
 	{
 		CheckMenuItem( ::GetMenu( GetSafeHwnd() ), ID_VIEW_SHOWANGLES, MF_BYCOMMAND | MF_CHECKED );
 	}
-	
+
 	Sys_UpdateWindows( W_XY | W_CAMERA );
 }
 
@@ -6846,7 +6858,7 @@ void CMainFrame::OnEditSaveprefab()
 	);
 	char		CurPath[1024];
 	::GetCurrentDirectory( 1024, CurPath );
-	
+
 	dlgFile.m_ofn.lpstrInitialDir = CurPath;
 	if( dlgFile.DoModal() == IDOK )
 	{
@@ -6886,10 +6898,10 @@ void CMainFrame::OnCurveMoreendcapsbevelsSquarebevel()
 {
 	Undo_Start( "square bevel" );
 	Undo_AddBrushList( &selected_brushes );
-	
+
 	Patch_BrushToMesh( false, true, false, true );
 	Sys_UpdateWindows( W_ALL );
-	
+
 	Undo_EndBrushList( &selected_brushes );
 	Undo_End();
 }
@@ -6902,10 +6914,10 @@ void CMainFrame::OnCurveMoreendcapsbevelsSquareendcap()
 {
 	Undo_Start( "square endcap" );
 	Undo_AddBrushList( &selected_brushes );
-	
+
 	Patch_BrushToMesh( false, false, true, true );
 	Sys_UpdateWindows( W_ALL );
-	
+
 	Undo_EndBrushList( &selected_brushes );
 	Undo_End();
 }
@@ -6918,9 +6930,9 @@ void CMainFrame::OnBrushPrimitivesSphere()
 {
 	Undo_Start( "make sphere" );
 	Undo_AddBrushList( &selected_brushes );
-	
+
 	DoSides( false, true );
-	
+
 	Undo_EndBrushList( &selected_brushes );
 	Undo_End();
 }
@@ -7035,7 +7047,7 @@ void CMainFrame::OnShowLightvolumes()
 void CMainFrame::OnActivate( UINT nState, CWnd* pWndOther, BOOL bMinimized )
 {
 	CFrameWnd::OnActivate( nState, pWndOther, bMinimized );
-	
+
 	if( nState != WA_INACTIVE )
 	{
 		common->ActivateTool( true );
@@ -7043,7 +7055,7 @@ void CMainFrame::OnActivate( UINT nState, CWnd* pWndOther, BOOL bMinimized )
 		{
 			::ShowWindow( win32.hWnd, SW_HIDE );
 		}
-		
+
 		// start playing the editor sound world
 		soundSystem->SetPlayingSoundWorld( g_qeglobals.sw );
 	}
@@ -7105,13 +7117,13 @@ void CMainFrame::OnSplineTest()
 {
 	long	start = GetTickCount();
 	g_splineList->startCamera( start );
-	
+
 	float	cycle = g_splineList->getTotalTime();
 	long	msecs = cycle * 1000;
 	long	current = start;
 	idVec3	lookat( 0, 0, 0 );
 	idVec3	dir;
-	
+
 	while( current < start + msecs )
 	{
 		float	fov;
@@ -7121,7 +7133,7 @@ void CMainFrame::OnSplineTest()
 		g_pParentWnd->UpdateWindows( W_XY | W_CAMERA );
 		current = GetTickCount();
 	}
-	
+
 	g_splineList->setRunning( false );
 }
 
@@ -7225,7 +7237,7 @@ void CMainFrame::OnSelectionMoveonly()
 void CMainFrame::OnSelectBrushlight()
 {
 	// TODO: Add your command handler code here
-	
+
 }
 
 void CMainFrame::OnSelectionCombine()
@@ -7236,16 +7248,16 @@ void CMainFrame::OnSelectionCombine()
 		Sys_Beep();
 		return;
 	}
-	
+
 	entity_t* e1 = g_qeglobals.d_select_order[0]->owner;
-	
+
 	if( e1 == world_entity )
 	{
 		Sys_Status( "First selection must not be world.", 0 );
 		Sys_Beep();
 		return;
 	}
-	
+
 	idStr str;
 	idMat3 mat;
 	idVec3 v;
@@ -7268,7 +7280,7 @@ void CMainFrame::OnSelectionCombine()
 		SetKeyValue( e1, "light_rotation", str, false );
 		e1->lightRotation = mat;
 	}
-	
+
 	bool setModel = true;
 	for( brush_t* b = selected_brushes.next; b != &selected_brushes; b = b->next )
 	{
@@ -7302,12 +7314,12 @@ void CMainFrame::OnSelectionCombine()
 			Entity_LinkBrush( e1, b );
 		}
 	}
-	
+
 	if( setModel )
 	{
 		SetKeyValue( e1, "model", ValueForKey( e1, "name" ) );
 	}
-	
+
 	Select_Deselect();
 	Select_Brush( g_qeglobals.d_select_order[0] );
 	Sys_UpdateWindows( W_XY | W_CAMERA );
@@ -7389,7 +7401,7 @@ void CMainFrame::OnAxialTextureByWidth()
 {
 	// temp test code
 	int faceCount = g_ptrSelectedFaces.GetSize();
-	
+
 	if( faceCount > 0 )
 	{
 		for( int i = 0; i < faceCount; i++ )
@@ -7399,14 +7411,14 @@ void CMainFrame::OnAxialTextureByWidth()
 		}
 		Sys_UpdateWindows( W_CAMERA );
 	}
-	
+
 }
 
 void CMainFrame::OnAxialTextureByHeight()
 {
 	// temp test code
 	int faceCount = g_ptrSelectedFaces.GetSize();
-	
+
 	if( faceCount > 0 )
 	{
 		for( int i = 0; i < faceCount; i++ )
@@ -7490,7 +7502,7 @@ void CMainFrame::OnViewShowShowvisportals()
 	{
 		CheckMenuItem( ::GetMenu( GetSafeHwnd() ), ID_VIEW_SHOW_SHOWVISPORTALS, MF_BYCOMMAND | MF_CHECKED );
 	}
-	
+
 	Sys_UpdateWindows( W_XY | W_CAMERA );
 }
 
@@ -7504,7 +7516,7 @@ void CMainFrame::OnViewShowNoDraw()
 	{
 		CheckMenuItem( ::GetMenu( GetSafeHwnd() ), ID_VIEW_SHOW_NODRAW, MF_BYCOMMAND | MF_CHECKED );
 	}
-	
+
 	Sys_UpdateWindows( W_XY | W_CAMERA );
 }
 
@@ -7581,19 +7593,19 @@ void CMainFrame::OnSelectCompleteEntity()
 {
 	brush_t* b = NULL;
 	entity_t* e = NULL;
-	
+
 	b = selected_brushes.next;
 	if( b == &selected_brushes )
 	{
 		return; //no brushes selected
 	}
-	
+
 	e = b->owner;
 	if( b->owner == world_entity )
 	{
 		return; //don't select the world entity
 	}
-	
+
 	for( b = e->brushes.onext; b != &e->brushes; b = b->onext )
 	{
 		Select_Brush( b , false );
@@ -7622,12 +7634,12 @@ void CMainFrame::OnGenerateMaterialsList()
 {
 	idStrList mtrList;
 	idStr     mtrName, mtrFileName;
-	
-	
+
+
 	g_Inspectors->consoleWnd.ExecuteCommand( "clear" );
 	Sys_BeginWait();
 	common->Printf( "Generating list of active materials...\n" );
-	
+
 	for( brush_t* b = active_brushes.next ; b != &active_brushes ; b = b->next )
 	{
 		if( b->pPatch )
@@ -7637,7 +7649,7 @@ void CMainFrame::OnGenerateMaterialsList()
 			{
 				mtrList.Insert( mtrName );
 			}
-			
+
 		}
 		else
 		{
@@ -7648,26 +7660,26 @@ void CMainFrame::OnGenerateMaterialsList()
 				{
 					mtrList.Insert( mtrName );
 				}
-				
+
 			}
 		}
 	}
-	
+
 	mtrList.Sort();
 	for( int i = 0 ; i < mtrList.Num() ; i++ )
 	{
 		common->Printf( "%s\n" , mtrList[i].c_str() );
 	}
-	
+
 	mtrFileName = currentmap;
 //	mtrFileName.ExtractFileName( mtrFileName );
 	mtrFileName = mtrFileName.StripPath();
-	
+
 	common->Printf( "Done...found %i unique materials\n" , mtrList.Num() );
 	mtrFileName = mtrFileName + idStr( "_Materials.txt" );
 	g_Inspectors->SetMode( W_CONSOLE , true );
 	g_Inspectors->consoleWnd.SetConsoleText( va( "condump %s" , mtrFileName.c_str() ) );
-	
+
 	Sys_EndWait();
 }
 

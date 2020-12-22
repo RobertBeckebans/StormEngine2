@@ -41,9 +41,9 @@ If you have questions concerning this license or the applicable additional terms
 #include "DialogSoundGroup.h"
 
 #ifdef ID_DEBUG_MEMORY
-#undef new
-#undef DEBUG_NEW
-#define DEBUG_NEW new
+	#undef new
+	#undef DEBUG_NEW
+	#define DEBUG_NEW new
 #endif
 
 extern HTREEITEM FindTreeItem( CTreeCtrl* tree, HTREEITEM root, const char* text, HTREEITEM forceParent );
@@ -156,13 +156,13 @@ void SoundEditorInit( const idDict* spawnArgs )
 						"Set r_fullscreen to 0 and vid_restart.\n" );
 		return;
 	}
-	
+
 	if( g_SoundDialog == NULL )
 	{
 		InitAfx();
 		g_SoundDialog = new CDialogSound();
 	}
-	
+
 	if( g_SoundDialog->GetSafeHwnd() == NULL )
 	{
 		g_SoundDialog->Create( IDD_DIALOG_SOUND );
@@ -172,12 +172,12 @@ void SoundEditorInit( const idDict* spawnArgs )
 				g_SoundDialog->SetWindowPos( NULL, rct.left, rct.top, 0,0, SWP_NOSIZE );
 		*/
 	}
-	
+
 	idKeyInput::ClearStates();
-	
+
 	g_SoundDialog->ShowWindow( SW_SHOW );
 	g_SoundDialog->SetFocus();
-	
+
 	if( spawnArgs )
 	{
 		const char* name = spawnArgs->GetString( "name" );
@@ -193,7 +193,7 @@ void SoundEditorRun( void )
 #else
 	MSG* msg = &m_msgCur;
 #endif
-	
+
 	while( ::PeekMessage( msg, NULL, NULL, NULL, PM_NOREMOVE ) )
 	{
 		// pump message
@@ -232,7 +232,7 @@ void CDialogSound::OnDestroy()
 {
 
 	com_editors &= ~EDITOR_SOUND;
-	
+
 	return CDialog::OnDestroy();
 }
 
@@ -243,7 +243,7 @@ void CDialogSound::Set( const idDict* source )
 	{
 		return;
 	}
-	
+
 	fVolume = source->GetFloat( "s_volume", "0" );
 	fMin = source->GetFloat( "s_mindistance", "1" );
 	fMax = source->GetFloat( "s_maxdistance", "10" );
@@ -315,7 +315,7 @@ void CDialogSound::SetVolume( float vol )
 	list.SetNum( 128 );
 	int count = gameEdit->GetSelectedEntities( list.Ptr(), list.Num() );
 	list.SetNum( count );
-	
+
 	if( count )
 	{
 		// we might be in either the game or the editor
@@ -324,7 +324,7 @@ void CDialogSound::SetVolume( float vol )
 		{
 			sw->PlayShaderDirectly( "" );
 		}
-		
+
 		for( int i = 0; i < count; i++ )
 		{
 			const idDict* dict = gameEdit->EntityGetSpawnArgs( list[i] );
@@ -350,13 +350,13 @@ void CDialogSound::ApplyChanges( bool volumeOnly, bool updateInUseTree )
 {
 	idList<idEntity*> list;
 	float vol;
-	
+
 	vol = fVolume;
-	
+
 	list.SetNum( 128 );
 	int count = gameEdit->GetSelectedEntities( list.Ptr(), list.Num() );
 	list.SetNum( count );
-	
+
 	if( count )
 	{
 		// we might be in either the game or the editor
@@ -365,7 +365,7 @@ void CDialogSound::ApplyChanges( bool volumeOnly, bool updateInUseTree )
 		{
 			sw->PlayShaderDirectly( "" );
 		}
-		
+
 		for( int i = 0; i < count; i++ )
 		{
 			const idDict* dict = gameEdit->EntityGetSpawnArgs( list[i] );
@@ -400,7 +400,7 @@ void CDialogSound::ApplyChanges( bool volumeOnly, bool updateInUseTree )
 			}
 		}
 	}
-	
+
 	AddGroups();
 	AddSpeakers();
 	if( updateInUseTree )
@@ -420,30 +420,30 @@ void CDialogSound::OnChangeEditVolume()
 	// send this notification unless you override the CDialog::OnInitDialog()
 	// function and call CRichEditCtrl().SetEventMask()
 	// with the ENM_CHANGE flag ORed into the mask.
-	
+
 	// TODO: Add your control notification handler code here
-	
+
 }
 
 HTREEITEM CDialogSound::AddStrList( const char* root, const idStrList& list, int id )
 {
 	idStr		out;
-	
+
 	HTREEITEM	base = treeSounds.InsertItem( root );
 	HTREEITEM	item = base;
 	HTREEITEM	add;
-	
+
 	int count = list.Num();
-	
+
 	idStr	last, path, path2;
 	for( int i = 0; i < count; i++ )
 	{
 		idStr name = list[i];
-		
+
 		// now break the name down convert to slashes
 		name.BackSlashesToSlashes();
 		name.Strip( ' ' );
-		
+
 		int index;
 		int len = last.Length();
 		if( len == 0 )
@@ -467,7 +467,7 @@ HTREEITEM CDialogSound::AddStrList( const char* root, const idStrList& list, int
 		{
 			last.Empty();
 		}
-		
+
 		index = 0;
 		item = base;
 		path = "";
@@ -485,7 +485,7 @@ HTREEITEM CDialogSound::AddStrList( const char* root, const idStrList& list, int
 				{
 					newItem = *check;
 				}
-				
+
 				//HTREEITEM newItem = FindTreeItem(&treeSounds, item, name.Left(index, out), item);
 				if( newItem == NULL )
 				{
@@ -494,7 +494,7 @@ HTREEITEM CDialogSound::AddStrList( const char* root, const idStrList& list, int
 					treeSounds.SetItemData( newItem, WAVEDIR );
 					treeSounds.SetItemImage( newItem, 0, 1 );
 				}
-				
+
 				assert( newItem );
 				item = newItem;
 				name.Right( name.Length() - index - 1, out );
@@ -519,14 +519,14 @@ void CDialogSound::AddSounds( bool rootItems )
 	idStrList list( 1024 );
 	idStrList list2( 1024 );
 	HTREEITEM base = treeSounds.InsertItem( "Sound Shaders" );
-	
+
 	for( i = 0; i < declManager->GetNumDecls( DECL_SOUND ) ; i++ )
 	{
 		const idSoundShader* poo = declManager->SoundByIndex( i, false );
 		list.AddUnique( poo->GetFileName() );
 	}
 	list.Sort();
-	
+
 	for( i = 0; i < list.Num(); i++ )
 	{
 		HTREEITEM child = treeSounds.InsertItem( list[i], base );
@@ -549,7 +549,7 @@ void CDialogSound::AddSounds( bool rootItems )
 			treeSounds.SetItemImage( child2, 2, 2 );
 		}
 	}
-	
+
 	idFileList* files;
 	files = fileSystem->ListFilesTree( "sound", ".wav|.ogg", true );
 	AddStrList( "Wave files", files->GetList(), WAVES );
@@ -561,7 +561,7 @@ void CDialogSound::AddGroups()
 	comboGroups.ResetContent();
 	idStr work;
 	CWaitCursor cursor;
-	
+
 	idList<const char*> list;
 	list.SetNum( 1024 );
 	int count = gameEdit->MapGetUniqueMatchingKeyVals( "soundgroup", list.Ptr(), list.Num() );
@@ -609,18 +609,18 @@ void CDialogSound::AddSpeakers()
 {
 	UpdateData( TRUE );
 	comboSpeakers.ResetContent();
-	
+
 	CWaitCursor cursor;
 	idList< const char*> list;
 	list.SetNum( 512 );
-	
+
 	CString group( "" );
 	if( bGroupOnly && comboGroups.GetCurSel() >= 0 )
 	{
 		comboGroups.GetLBText( comboGroups.GetCurSel(), group );
 	}
 	int count = gameEdit->MapGetEntitiesMatchingClassWithString( "speaker", group, list.Ptr(), list.Num() );
-	
+
 	for( int i = 0; i < count; i++ )
 	{
 		comboSpeakers.AddString( list[i] );
@@ -630,17 +630,17 @@ void CDialogSound::AddSpeakers()
 BOOL CDialogSound::OnInitDialog()
 {
 	CDialog::OnInitDialog();
-	
+
 	// Indicate the sound dialog is opened
 	com_editors |= EDITOR_SOUND;
-	
+
 	inUseTree = NULL;
 	AddSounds( true );
 	AddGroups();
 	AddSpeakers();
 	AddInUseSounds();
 	SetWaveSize();
-	
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -665,7 +665,7 @@ void CDialogSound::OnBtnPlaysound()
 			sw->PlayShaderDirectly( playSound );
 		}
 	}
-	
+
 }
 
 void CDialogSound::OnDblclkTreeSounds( NMHDR* pNMHDR, LRESULT* pResult )
@@ -675,7 +675,7 @@ void CDialogSound::OnDblclkTreeSounds( NMHDR* pNMHDR, LRESULT* pResult )
 	GetCursorPos( &pt );
 	treeSounds.ScreenToClient( &pt );
 	HTREEITEM item = treeSounds.HitTest( pt );
-	
+
 	if( item )
 	{
 		DWORD dw = treeSounds.GetItemData( item );
@@ -734,7 +734,7 @@ void CDialogSound::OnSelchangedTreeSounds( NMHDR* pNMHDR, LRESULT* pResult )
 			}
 		}
 	}
-	
+
 	*pResult = 0;
 }
 
@@ -746,11 +746,11 @@ void CDialogSound::OnCheckPlay()
 void CDialogSound::OnBtnEdit()
 {
 	const idDecl* decl = declManager->FindDeclWithoutParsing( DECL_SOUND, strShader, false );
-	
+
 	if( decl )
 	{
 		DialogDeclEditor* declEditor;
-		
+
 		declEditor = new DialogDeclEditor;
 		declEditor->Create( IDD_DIALOG_DECLEDITOR, GetParent() );
 		declEditor->LoadDecl( const_cast<idDecl*>( decl ) );
@@ -767,8 +767,8 @@ void CDialogSound::OnBtnDrop()
 	idVec3		org;
 	idDict		args;
 	idAngles	viewAngles;
-	
-	
+
+
 	gameEdit->PlayerGetViewAngles( viewAngles );
 	gameEdit->PlayerGetEyePosition( org );
 	org += idAngles( 0, viewAngles.yaw, 0 ).ToForward() * 80 + idVec3( 0, 0, 1 );
@@ -778,8 +778,8 @@ void CDialogSound::OnBtnDrop()
 	args.Set( "s_shader", strShader );
 	args.Set( "s_looping", "1" );
 	args.Set( "s_shakes", "0" );
-	
-	
+
+
 	idStr name = gameEdit->GetUniqueEntityName( "speaker" );
 	bool nameValid = false;
 	while( !nameValid )
@@ -803,9 +803,9 @@ void CDialogSound::OnBtnDrop()
 			}
 		}
 	}
-	
+
 	args.Set( "name", name.c_str() );
-	
+
 	idEntity* ent = NULL;
 	gameEdit->SpawnEntityDef( args, &ent );
 	if( ent )
@@ -814,7 +814,7 @@ void CDialogSound::OnBtnDrop()
 		gameEdit->ClearEntitySelection();
 		gameEdit->AddSelectedEntity( ent );
 	}
-	
+
 	gameEdit->MapAddEntity( &args );
 	const idDict* dict = gameEdit->MapGetEntityDict( args.GetString( "name" ) );
 	Set( dict );
@@ -825,11 +825,11 @@ void CDialogSound::OnBtnDrop()
 void CDialogSound::OnBtnGroup()
 {
 	idList<idEntity*> list;
-	
+
 	list.SetNum( 128 );
 	int count = gameEdit->GetSelectedEntities( list.Ptr(), list.Num() );
 	list.SetNum( count );
-	
+
 	bool removed = false;
 	if( count )
 	{
@@ -858,13 +858,13 @@ void CDialogSound::OnBtnGroup()
 			}
 		}
 	}
-	
+
 	if( removed )
 	{
 		AddGroups();
 		AddSpeakers();
 	}
-	
+
 }
 
 void CDialogSound::OnBtnSavemapas()
@@ -911,11 +911,11 @@ void CDialogSound::UpdateSelectedOrigin( float x, float y, float z )
 	idList<idEntity*> list;
 	idVec3 origin;
 	idVec3 vec( x, y, z );
-	
+
 	list.SetNum( 128 );
 	int count = gameEdit->GetSelectedEntities( list.Ptr(), list.Num() );
 	list.SetNum( count );
-	
+
 	if( count )
 	{
 		for( int i = 0; i < count; i++ )
@@ -986,7 +986,7 @@ void CDialogSound::OnSelchangeComboGroups()
 	{
 		CString group;
 		comboGroups.GetLBText( comboGroups.GetCurSel(), group );
-		
+
 		idList< const char*> list;
 		list.SetNum( 512 );
 		int count = gameEdit->MapGetEntitiesMatchingClassWithString( "speaker", group, list.Ptr(), list.Num() );

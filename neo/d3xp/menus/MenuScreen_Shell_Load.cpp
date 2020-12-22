@@ -42,18 +42,18 @@ idMenuScreen_Shell_Load::Initialize
 void idMenuScreen_Shell_Load::Initialize( idMenuHandler* data )
 {
 	idMenuScreen::Initialize( data );
-	
+
 	if( data != NULL )
 	{
 		menuGUI = data->GetGUI();
 	}
-	
+
 	SetSpritePath( "menuLoad" );
-	
+
 	saveInfo = new( TAG_SWF ) idMenuWidget_Shell_SaveInfo();
 	saveInfo->SetSpritePath( GetSpritePath(), "info", "details" );
 	saveInfo->Initialize( data );
-	
+
 	options = new( TAG_SWF ) idMenuWidget_DynamicList();
 	options->SetNumVisibleOptions( NUM_LOAD_OPTIONS );
 	options->SetSpritePath( GetSpritePath(), "info", "options" );
@@ -67,10 +67,10 @@ void idMenuScreen_Shell_Load::Initialize( idMenuHandler* data )
 		options->AddChild( buttonWidget );
 	}
 	options->Initialize( data );
-	
+
 	AddChild( options );
 	AddChild( saveInfo );
-	
+
 	btnBack = new( TAG_SWF ) idMenuWidget_Button();
 	btnBack->Initialize( data );
 	idMenuHandler_Shell* handler = dynamic_cast< idMenuHandler_Shell* >( data );
@@ -84,17 +84,17 @@ void idMenuScreen_Shell_Load::Initialize( idMenuHandler* data )
 	}
 	btnBack->SetSpritePath( GetSpritePath(), "info", "btnBack" );
 	btnBack->AddEventAction( WIDGET_EVENT_PRESS ).Set( WIDGET_ACTION_GO_BACK );
-	
+
 	AddChild( btnBack );
-	
+
 	btnDelete = new idMenuWidget_Button();
 	btnDelete->Initialize( data );
 	btnDelete->SetLabel( "" );
 	btnDelete->AddEventAction( WIDGET_EVENT_PRESS ).Set( WIDGET_ACTION_JOY3_ON_PRESS );
 	btnDelete->SetSpritePath( GetSpritePath(), "info", "btnDelete" );
-	
+
 	AddChild( btnDelete );
-	
+
 	options->AddEventAction( WIDGET_EVENT_SCROLL_DOWN ).Set( new( TAG_SWF ) idWidgetActionHandler( options, WIDGET_ACTION_EVENT_SCROLL_DOWN_START_REPEATER, WIDGET_EVENT_SCROLL_DOWN ) );
 	options->AddEventAction( WIDGET_EVENT_SCROLL_UP ).Set( new( TAG_SWF ) idWidgetActionHandler( options, WIDGET_ACTION_EVENT_SCROLL_UP_START_REPEATER, WIDGET_EVENT_SCROLL_UP ) );
 	options->AddEventAction( WIDGET_EVENT_SCROLL_DOWN_RELEASE ).Set( new( TAG_SWF ) idWidgetActionHandler( options, WIDGET_ACTION_EVENT_STOP_REPEATER, WIDGET_EVENT_SCROLL_DOWN_RELEASE ) );
@@ -114,7 +114,7 @@ void idMenuScreen_Shell_Load::Update()
 {
 
 	UpdateSaveEnumerations();
-	
+
 	idSWFScriptObject& root = GetSWFObject()->GetRootObject();
 	if( BindSprite( root ) )
 	{
@@ -124,19 +124,19 @@ void idMenuScreen_Shell_Load::Update()
 			heading->SetText( "#str_swf_load_heading" );	// LOAD GAME
 			heading->SetStrokeInfo( true, 0.75f, 1.75f );
 		}
-		
+
 		idSWFSpriteInstance* gradient = GetSprite()->GetScriptObject()->GetNestedSprite( "info", "gradient" );
 		if( gradient != NULL && heading != NULL )
 		{
 			gradient->SetXPos( heading->GetTextLength() );
 		}
 	}
-	
+
 	if( btnBack != NULL )
 	{
 		btnBack->BindSprite( root );
 	}
-	
+
 	idMenuScreen::Update();
 }
 
@@ -151,7 +151,7 @@ void idMenuScreen_Shell_Load::UpdateSaveEnumerations()
 	const saveGameDetailsList_t& saveGameInfo = session->GetSaveGameManager().GetEnumeratedSavegames();
 	sortedSaves = saveGameInfo;
 	sortedSaves.Sort( idSort_SavesByDate() );
-	
+
 	if( options != NULL )
 	{
 		idList< idList< idStr, TAG_IDLIB_LIST_MENU >, TAG_IDLIB_LIST_MENU > saveList;
@@ -169,7 +169,7 @@ void idMenuScreen_Shell_Load::UpdateSaveEnumerations()
 		}
 		else
 		{
-		
+
 			saveList.SetNum( sortedSaves.Num() );
 			for( int slot = 0; slot < sortedSaves.Num(); ++slot )
 			{
@@ -200,7 +200,7 @@ void idMenuScreen_Shell_Load::UpdateSaveEnumerations()
 		options->SetListData( saveList );
 		options->Update();
 	}
-	
+
 	if( menuData != NULL )
 	{
 		idMenuWidget_CommandBar* cmdBar = menuData->GetCmdBar();
@@ -214,9 +214,9 @@ void idMenuScreen_Shell_Load::UpdateSaveEnumerations()
 				buttonInfo->label = "#str_swf_back";	// BACK
 			}
 			buttonInfo->action.Set( WIDGET_ACTION_GO_BACK );
-			
-			
-			
+
+
+
 			if( sortedSaves.Num() > 0 && !session->GetSaveGameManager().IsWorking() )
 			{
 				buttonInfo = cmdBar->GetButton( idMenuWidget_CommandBar::BUTTON_JOY1 );
@@ -225,14 +225,14 @@ void idMenuScreen_Shell_Load::UpdateSaveEnumerations()
 					buttonInfo->label = "#str_swf_load_heading";	// LOAD GAME
 				}
 				buttonInfo->action.Set( WIDGET_ACTION_PRESS_FOCUSED );
-				
+
 				buttonInfo = cmdBar->GetButton( idMenuWidget_CommandBar::BUTTON_JOY3 );
 				if( menuData->GetPlatform() != 2 )
 				{
 					buttonInfo->label = "#str_swf_load_delete";	// DELETE GAME
 				}
 				buttonInfo->action.Set( WIDGET_ACTION_JOY3_ON_PRESS );
-				
+
 				if( btnDelete != NULL )
 				{
 					idSWFScriptObject& root = GetSWFObject()->GetRootObject();
@@ -266,12 +266,12 @@ void idMenuScreen_Shell_Load::UpdateSaveEnumerations()
 			cmdBar->Update();
 		}
 	}
-	
+
 	if( saveInfo != NULL )
 	{
 		saveInfo->Update();
 	}
-	
+
 	if( options != NULL && options->GetTotalNumberOfOptions() > 0 && options->GetViewIndex() >= options->GetTotalNumberOfOptions() )
 	{
 		options->SetViewIndex( options->GetTotalNumberOfOptions() - 1 );
@@ -316,7 +316,7 @@ void idMenuScreen_Shell_Load::LoadDamagedGame( int index )
 	{
 		return;
 	}
-	
+
 	class idSWFScriptFunction_LoadDamaged : public idSWFScriptFunction_RefCounted
 	{
 	public:
@@ -343,14 +343,14 @@ void idMenuScreen_Shell_Load::LoadDamagedGame( int index )
 		bool accept;
 		idMenuScreen_Shell_Load* screen;
 	};
-	
+
 	idStaticList< idSWFScriptFunction*, 4 > callbacks;
 	callbacks.Append( new( TAG_SWF ) idSWFScriptFunction_LoadDamaged( GDM_LOAD_DAMAGED_FILE, true, index, this ) );
 	callbacks.Append( new( TAG_SWF ) idSWFScriptFunction_LoadDamaged( GDM_LOAD_DAMAGED_FILE, false, index, this ) );
 	idStaticList< idStrId, 4 > optionText;
 	optionText.Append( idStrId( "#str_swf_load_delete" ) );	// DELETE
 	optionText.Append( idStrId( "#STR_SWF_CANCEL" ) );
-	
+
 	common->Dialog().AddDynamicDialog( GDM_LOAD_DAMAGED_FILE, callbacks, optionText, false, "" );
 }
 
@@ -380,24 +380,24 @@ void idMenuScreen_Shell_Load::LoadGame( int index )
 	{
 		return;
 	}
-	
+
 	if( index < GetSortedSaves().Num() && GetSortedSaves()[index].damaged )
 	{
 		LoadDamagedGame( index );
 		return;
 	}
-	
+
 	bool isDead = false;
 	idPlayer* player = gameLocal.GetLocalPlayer();
 	if( player != NULL && player->health <= 0 )
 	{
 		isDead = true;
 	}
-	
+
 	idMenuHandler_Shell* mgr = dynamic_cast< idMenuHandler_Shell* >( menuData );
 	if( mgr != NULL && mgr->GetInGame() && !isDead )
 	{
-	
+
 		class idSWFScriptFunction_LoadDialog : public idSWFScriptFunction_RefCounted
 		{
 		public:
@@ -412,7 +412,7 @@ void idMenuScreen_Shell_Load::LoadGame( int index )
 				common->Dialog().ClearDialog( msg );
 				if( accept && name != NULL )
 				{
-				
+
 					cmdSystem->AppendCommandText( va( "loadgame %s\n", name ) );
 				}
 				return idSWFScriptVar();
@@ -422,20 +422,20 @@ void idMenuScreen_Shell_Load::LoadGame( int index )
 			bool accept;
 			const char* name;
 		};
-		
+
 		if( index < sortedSaves.Num() )
 		{
 			const idStr& name = sortedSaves[ index ].slotName;
 			common->Dialog().AddDialog( GDM_SP_LOAD_SAVE, DIALOG_ACCEPT_CANCEL, new idSWFScriptFunction_LoadDialog( GDM_SP_LOAD_SAVE, true, name.c_str() ), new idSWFScriptFunction_LoadDialog( GDM_SP_LOAD_SAVE, false, name.c_str() ), false );
 		}
-		
+
 	}
 	else
 	{
 		if( index < sortedSaves.Num() )
 		{
 			const idStr& name = sortedSaves[ index ].slotName;
-			
+
 			cmdSystem->AppendCommandText( va( "loadgame %s\n", name.c_str() ) );
 		}
 	}
@@ -478,9 +478,9 @@ void idMenuScreen_Shell_Load::DeleteGame( int index )
 		bool accept;
 		idMenuScreen_Shell_Load* screen;
 	};
-	
+
 	common->Dialog().AddDialog( GDM_DELETE_SAVE, DIALOG_ACCEPT_CANCEL, new idSWFScriptFunction_DeleteGame( GDM_DELETE_SAVE, true, index, this ), new idSWFScriptFunction_DeleteGame( GDM_DELETE_SAVE, false, index, this ), false );
-	
+
 }
 
 /*
@@ -498,7 +498,7 @@ bool idMenuScreen_Shell_Load::HandleAction( idWidgetAction& action, const idWidg
 			return false;
 		}
 	}
-	
+
 	widgetAction_t actionType = action.GetType();
 	const idSWFParmList& parms = action.GetParms();
 	switch( actionType )
@@ -513,7 +513,7 @@ bool idMenuScreen_Shell_Load::HandleAction( idWidgetAction& action, const idWidg
 			{
 				return true;
 			}
-			
+
 			int selectionIndex = options->GetViewIndex();
 			DeleteGame( selectionIndex );
 			return true;
@@ -539,17 +539,17 @@ bool idMenuScreen_Shell_Load::HandleAction( idWidgetAction& action, const idWidg
 			{
 				return true;
 			}
-			
+
 			if( sortedSaves.Num() == 0 )
 			{
 				return true;
 			}
-			
+
 			int selectionIndex = options->GetViewIndex();
 			if( parms.Num() == 1 )
 			{
 				selectionIndex = parms[0].ToInteger();
-				
+
 				if( selectionIndex != options->GetFocusIndex() )
 				{
 					options->SetViewIndex( options->GetViewOffset() + selectionIndex );
@@ -564,7 +564,7 @@ bool idMenuScreen_Shell_Load::HandleAction( idWidgetAction& action, const idWidg
 			{
 				LoadGame( options->GetViewIndex() );
 			}
-			
+
 			return true;
 		}
 		case WIDGET_ACTION_SCROLL_VERTICAL:
@@ -572,6 +572,6 @@ bool idMenuScreen_Shell_Load::HandleAction( idWidgetAction& action, const idWidg
 			return true;
 		}
 	}
-	
+
 	return idMenuWidget::HandleAction( action, event, widget, forceHandled );
 }

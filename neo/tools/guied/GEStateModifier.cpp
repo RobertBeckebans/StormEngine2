@@ -40,7 +40,7 @@ rvGEStateModifier::rvGEStateModifier( const char* name, idWindow* window, idDict
 	//Ross T 1/6/2015 - commented out this mDict copy because it seems completely
 	//redundant (copy constructor happens two lines above) and was causing a bug with adding keys
 	//mDict.Copy ( dict );
-	
+
 	// Make a copy of the current dictionary
 	mUndoDict.Copy( mWrapper->GetStateDict() );
 }
@@ -80,7 +80,7 @@ bool rvGEStateModifier::SetState( idDict& dict )
 {
 	const idKeyValue*	key;
 	int					i;
-	
+
 	// Delete any key thats gone in the new dict
 	for( i = 0; i < mWrapper->GetStateDict().GetNumKeyVals(); i ++ )
 	{
@@ -90,8 +90,8 @@ bool rvGEStateModifier::SetState( idDict& dict )
 			continue;
 		}
 	}
-	
+
 	mWrapper->SetState( dict );
-	
+
 	return true;
 }

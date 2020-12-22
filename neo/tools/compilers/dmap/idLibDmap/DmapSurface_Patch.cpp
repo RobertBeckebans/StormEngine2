@@ -61,7 +61,7 @@ void idDmapSurface_Patch::PutOnCurve()
 {
 	int i, j;
 	idDmapDrawVert prev, next;
-	
+
 	assert( expanded == true );
 	// put all the approximating points on the curve
 	for( i = 0; i < width; i++ )
@@ -73,7 +73,7 @@ void idDmapSurface_Patch::PutOnCurve()
 			LerpVert( prev, next, verts[j * maxWidth + i] );
 		}
 	}
-	
+
 	for( j = 0; j < height; j++ )
 	{
 		for( i = 1; i < width; i += 2 )
@@ -93,7 +93,7 @@ idDmapSurface_Patch::ProjectPointOntoVector
 void idDmapSurface_Patch::ProjectPointOntoVector( const idVec3& point, const idVec3& vStart, const idVec3& vEnd, idVec3& vProj )
 {
 	idVec3 pVec, vec;
-	
+
 	pVec = point - vStart;
 	vec = vEnd - vStart;
 	vec.Normalize();
@@ -113,7 +113,7 @@ void idDmapSurface_Patch::RemoveLinearColumnsRows()
 	int i, j, k;
 	float len, maxLength;
 	idVec3 proj, dir;
-	
+
 	assert( expanded == true );
 	for( j = 1; j < width - 1; j++ )
 	{
@@ -179,7 +179,7 @@ idDmapSurface_Patch::ResizeExpanded
 void idDmapSurface_Patch::ResizeExpanded( int newHeight, int newWidth )
 {
 	int i, j;
-	
+
 	assert( expanded == true );
 	if( newHeight <= maxHeight && newWidth <= maxWidth )
 	{
@@ -209,7 +209,7 @@ idDmapSurface_Patch::Collapse
 void idDmapSurface_Patch::Collapse()
 {
 	int i, j;
-	
+
 	if( !expanded )
 	{
 		idLib::common->FatalError( "idDmapSurface_Patch::Collapse: patch not expanded" );
@@ -236,7 +236,7 @@ idDmapSurface_Patch::Expand
 void idDmapSurface_Patch::Expand()
 {
 	int i, j;
-	
+
 	if( expanded )
 	{
 		idLib::common->FatalError( "idDmapSurface_Patch::Expand: patch alread expanded" );
@@ -298,19 +298,19 @@ void idDmapSurface_Patch::GenerateNormals()
 	{
 		{ 0, 1 }, { 1, 1 }, { 1, 0 }, { 1, -1 }, { 0, -1 }, { -1, -1 }, { -1, 0 }, { -1, 1 }
 	};
-	
+
 	assert( expanded == false );
-	
+
 	//
 	// if all points are coplanar, set all normals to that plane
 	//
 	idVec3		extent[3];
 	float		offset;
-	
+
 	extent[0] = verts[width - 1].xyz - verts[0].xyz;
 	extent[1] = verts[( height - 1 ) * width + width - 1].xyz - verts[0].xyz;
 	extent[2] = verts[( height - 1 ) * width].xyz - verts[0].xyz;
-	
+
 	norm = extent[0].Cross( extent[1] );
 	if( norm.LengthSqr() == 0.0f )
 	{
@@ -320,11 +320,11 @@ void idDmapSurface_Patch::GenerateNormals()
 			norm = extent[1].Cross( extent[2] );
 		}
 	}
-	
+
 	// wrapped patched may not get a valid normal here
 	if( norm.Normalize() != 0.0f )
 	{
-	
+
 		offset = verts[0].xyz * norm;
 		for( i = 1; i < width * height; i++ )
 		{
@@ -334,7 +334,7 @@ void idDmapSurface_Patch::GenerateNormals()
 				break;
 			}
 		}
-		
+
 		if( i == width * height )
 		{
 			// all are coplanar
@@ -345,7 +345,7 @@ void idDmapSurface_Patch::GenerateNormals()
 			return;
 		}
 	}
-	
+
 	// check for wrapped edge cases, which should smooth across themselves
 	wrapWidth = false;
 	for( i = 0; i < height; i++ )
@@ -360,7 +360,7 @@ void idDmapSurface_Patch::GenerateNormals()
 	{
 		wrapWidth = true;
 	}
-	
+
 	wrapHeight = false;
 	for( i = 0; i < width; i++ )
 	{
@@ -374,7 +374,7 @@ void idDmapSurface_Patch::GenerateNormals()
 	{
 		wrapHeight = true;
 	}
-	
+
 	for( i = 0; i < width; i++ )
 	{
 		for( j = 0; j < height; j++ )
@@ -385,7 +385,7 @@ void idDmapSurface_Patch::GenerateNormals()
 			{
 				around[k] = vec3_origin;
 				good[k] = false;
-				
+
 				for( dist = 1; dist <= 3; dist++ )
 				{
 					x = i + neighbors[k][0] * dist;
@@ -412,7 +412,7 @@ void idDmapSurface_Patch::GenerateNormals()
 							y = 1 + y - height;
 						}
 					}
-					
+
 					if( x < 0 || x >= width || y < 0 || y >= height )
 					{
 						break;					// edge of patch
@@ -430,7 +430,7 @@ void idDmapSurface_Patch::GenerateNormals()
 					}
 				}
 			}
-			
+
 			sum = vec3_origin;
 			for( k = 0; k < 8; k++ )
 			{
@@ -465,7 +465,7 @@ idDmapSurface_Patch::GenerateIndexes
 void idDmapSurface_Patch::GenerateIndexes()
 {
 	int i, j, v1, v2, v3, v4, index;
-	
+
 	indexes.SetNum( ( width - 1 ) * ( height - 1 ) * 2 * 3 );
 	index = 0;
 	for( i = 0; i < width - 1; i++ )
@@ -484,7 +484,7 @@ void idDmapSurface_Patch::GenerateIndexes()
 			indexes[index++] = v3;
 		}
 	}
-	
+
 	GenerateEdgeIndexes();
 }
 
@@ -498,7 +498,7 @@ void idDmapSurface_Patch::SampleSinglePatchPoint( const idDmapDrawVert ctrl[3][3
 	float	vCtrl[3][8];
 	int		vPoint;
 	int		axis;
-	
+
 	// find the control points for the v coordinate
 	for( vPoint = 0; vPoint < 3; vPoint++ )
 	{
@@ -530,20 +530,20 @@ void idDmapSurface_Patch::SampleSinglePatchPoint( const idDmapDrawVert ctrl[3][3
 			vCtrl[vPoint][axis] = qA * u * u + qB * u + qC;
 		}
 	}
-	
+
 	// interpolate the v value
 	for( axis = 0; axis < 8; axis++ )
 	{
 		float a, b, c;
 		float qA, qB, qC;
-		
+
 		a = vCtrl[0][axis];
 		b = vCtrl[1][axis];
 		c = vCtrl[2][axis];
 		qA = a - 2.0f * b + c;
 		qB = 2.0f * b - 2.0f * a;
 		qC = a;
-		
+
 		if( axis < 3 )
 		{
 			out->xyz[axis] = qA * v * v + qB * v + qC;
@@ -568,7 +568,7 @@ void idDmapSurface_Patch::SampleSinglePatch( const idDmapDrawVert ctrl[3][3], in
 {
 	int		i, j;
 	float	u, v;
-	
+
 	horzSub++;
 	vertSub++;
 	for( i = 0; i < horzSub; i++ )
@@ -594,13 +594,13 @@ void idDmapSurface_Patch::SubdivideExplicit( int horzSubdivisions, int vertSubdi
 	int outWidth = ( ( width - 1 ) / 2 * horzSubdivisions ) + 1;
 	int outHeight = ( ( height - 1 ) / 2 * vertSubdivisions ) + 1;
 	idDmapDrawVert* dv = new( TAG_IDLIB_SURFACE )idDmapDrawVert[outWidth * outHeight];
-	
+
 	// generate normals for the control mesh
 	if( genNormals )
 	{
 		GenerateNormals();
 	}
-	
+
 	int baseCol = 0;
 	for( i = 0; i + 2 < width; i += 2 )
 	{
@@ -624,20 +624,20 @@ void idDmapSurface_Patch::SubdivideExplicit( int horzSubdivisions, int vertSubdi
 	{
 		verts[i] = dv[i];
 	}
-	
+
 	delete[] dv;
-	
+
 	width = maxWidth = outWidth;
 	height = maxHeight = outHeight;
 	expanded = false;
-	
+
 	if( removeLinear )
 	{
 		Expand();
 		RemoveLinearColumnsRows();
 		Collapse();
 	}
-	
+
 	// normalize all the lerped normals
 	if( genNormals )
 	{
@@ -646,7 +646,7 @@ void idDmapSurface_Patch::SubdivideExplicit( int horzSubdivisions, int vertSubdi
 			verts[i].normal.Normalize();
 		}
 	}
-	
+
 	GenerateIndexes();
 }
 
@@ -662,19 +662,19 @@ void idDmapSurface_Patch::Subdivide( float maxHorizontalError, float maxVertical
 	idVec3		prevxyz, nextxyz, midxyz;
 	idVec3		delta;
 	float		maxHorizontalErrorSqr, maxVerticalErrorSqr, maxLengthSqr;
-	
+
 	// generate normals for the control mesh
 	if( genNormals )
 	{
 		GenerateNormals();
 	}
-	
+
 	maxHorizontalErrorSqr = Square( maxHorizontalError );
 	maxVerticalErrorSqr = Square( maxVerticalError );
 	maxLengthSqr = Square( maxLength );
-	
+
 	Expand();
-	
+
 	// horizontal subdivisions
 	for( j = 0; j + 2 < width; j += 2 )
 	{
@@ -688,7 +688,7 @@ void idDmapSurface_Patch::Subdivide( float maxHorizontalError, float maxVertical
 				midxyz[l] = ( verts[i * maxWidth + j].xyz[l] + verts[i * maxWidth + j + 1].xyz[l] * 2.0f +
 							  verts[i * maxWidth + j + 2].xyz[l] ) * 0.25f;
 			}
-			
+
 			if( maxLength > 0.0f )
 			{
 				// if the span length is too long, force a subdivision
@@ -704,26 +704,26 @@ void idDmapSurface_Patch::Subdivide( float maxHorizontalError, float maxVertical
 				break;
 			}
 		}
-		
+
 		if( i == height )
 		{
 			continue;	// didn't need subdivision
 		}
-		
+
 		if( width + 2 >= maxWidth )
 		{
 			ResizeExpanded( maxHeight, maxWidth + 4 );
 		}
-		
+
 		// insert two columns and replace the peak
 		width += 2;
-		
+
 		for( i = 0; i < height; i++ )
 		{
 			idDmapSurface_Patch::LerpVert( verts[i * maxWidth + j], verts[i * maxWidth + j + 1], prev );
 			idDmapSurface_Patch::LerpVert( verts[i * maxWidth + j + 1], verts[i * maxWidth + j + 2], next );
 			idDmapSurface_Patch::LerpVert( prev, next, mid );
-			
+
 			for( k = width - 1; k > j + 3; k-- )
 			{
 				verts[i * maxWidth + k] = verts[i * maxWidth + k - 2];
@@ -732,11 +732,11 @@ void idDmapSurface_Patch::Subdivide( float maxHorizontalError, float maxVertical
 			verts[i * maxWidth + j + 2] = mid;
 			verts[i * maxWidth + j + 3] = next;
 		}
-		
+
 		// back up and recheck this set again, it may need more subdivision
 		j -= 2;
 	}
-	
+
 	// vertical subdivisions
 	for( j = 0; j + 2 < height; j += 2 )
 	{
@@ -750,7 +750,7 @@ void idDmapSurface_Patch::Subdivide( float maxHorizontalError, float maxVertical
 				midxyz[l] = ( verts[j * maxWidth + i].xyz[l] + verts[( j + 1 ) * maxWidth + i].xyz[l] * 2.0f +
 							  verts[( j + 2 ) * maxWidth + i].xyz[l] ) * 0.25f;
 			}
-			
+
 			if( maxLength > 0.0f )
 			{
 				// if the span length is too long, force a subdivision
@@ -766,26 +766,26 @@ void idDmapSurface_Patch::Subdivide( float maxHorizontalError, float maxVertical
 				break;
 			}
 		}
-		
+
 		if( i == width )
 		{
 			continue;	// didn't need subdivision
 		}
-		
+
 		if( height + 2 >= maxHeight )
 		{
 			ResizeExpanded( maxHeight + 4, maxWidth );
 		}
-		
+
 		// insert two columns and replace the peak
 		height += 2;
-		
+
 		for( i = 0; i < width; i++ )
 		{
 			LerpVert( verts[j * maxWidth + i], verts[( j + 1 )*maxWidth + i], prev );
 			LerpVert( verts[( j + 1 )*maxWidth + i], verts[( j + 2 )*maxWidth + i], next );
 			LerpVert( prev, next, mid );
-			
+
 			for( k = height - 1; k > j + 3; k-- )
 			{
 				verts[k * maxWidth + i] = verts[( k - 2 ) * maxWidth + i];
@@ -794,17 +794,17 @@ void idDmapSurface_Patch::Subdivide( float maxHorizontalError, float maxVertical
 			verts[( j + 2 )*maxWidth + i] = mid;
 			verts[( j + 3 )*maxWidth + i] = next;
 		}
-		
+
 		// back up and recheck this set again, it may need more subdivision
 		j -= 2;
 	}
-	
+
 	PutOnCurve();
-	
+
 	RemoveLinearColumnsRows();
-	
+
 	Collapse();
-	
+
 	// normalize all the lerped normals
 	if( genNormals )
 	{
@@ -813,6 +813,6 @@ void idDmapSurface_Patch::Subdivide( float maxHorizontalError, float maxVertical
 			verts[i].normal.Normalize();
 		}
 	}
-	
+
 	GenerateIndexes();
 }

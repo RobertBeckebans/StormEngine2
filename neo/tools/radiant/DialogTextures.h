@@ -58,7 +58,7 @@ public:
 	idGLWidget m_wndPreview;
 	CTreeCtrl	m_treeTextures;
 	//}}AFX_DATA
-	
+
 	CImageList m_image;
 	idGLDrawable m_testDrawable;
 	idGLDrawableMaterial m_drawMaterial;
@@ -70,7 +70,7 @@ public:
 	bool setTexture;
 	bool ignoreCollapse;
 	int mode;
-	
+
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CDialogTextures)
@@ -78,7 +78,7 @@ protected:
 	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	virtual BOOL PreCreateWindow( CREATESTRUCT& cs );
 	//}}AFX_VIRTUAL
-	
+
 // Implementation
 protected:
 	void addStrList( const char* root, const idStrList& list, int id );
@@ -110,10 +110,10 @@ protected:
 	afx_msg void OnCheckHideroot();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
-	
+
 	idHashTable<HTREEITEM>	quickTree;
 	idStr					itemName;
-	
+
 public:
 	virtual BOOL PreTranslateMessage( MSG* pMsg );
 	afx_msg void OnSetFocus( CWnd* pOldWnd );

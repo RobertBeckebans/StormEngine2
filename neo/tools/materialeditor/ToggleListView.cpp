@@ -84,7 +84,7 @@ void ToggleListView::SetToggleIcons( LPCSTR disabled, LPCSTR on, LPCSTR off )
 	{
 		onIcon = NULL;
 	}
-	
+
 	if( off )
 	{
 		offIcon = ( HICON )LoadImage( AfxGetInstanceHandle(), off, IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR | LR_LOADMAP3DCOLORS );
@@ -93,7 +93,7 @@ void ToggleListView::SetToggleIcons( LPCSTR disabled, LPCSTR on, LPCSTR off )
 	{
 		offIcon = NULL;
 	}
-	
+
 	if( disabled )
 	{
 		disabledIcon = ( HICON )LoadImage( AfxGetInstanceHandle(), disabled, IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR | LR_LOADMAP3DCOLORS );
@@ -115,12 +115,14 @@ void ToggleListView::SetToggleState( int index, int toggleState, bool notify )
 {
 	CListCtrl& list = GetListCtrl();
 	assert( index >= 0 && index < list.GetItemCount() );
-	
+
 	int oldState = GetToggleState( index );
 	list.SetItemData( index, toggleState );
-	
+
 	if( notify && oldState != toggleState )
+	{
 		OnStateChanged( index, toggleState );
+	}
 }
 
 /**
@@ -131,7 +133,7 @@ int ToggleListView::GetToggleState( int index )
 {
 	CListCtrl& list = GetListCtrl();
 	assert( index >= 0 && index < list.GetItemCount() );
-	
+
 	DWORD data = list.GetItemData( index );
 	return data;
 }
@@ -142,24 +144,26 @@ int ToggleListView::GetToggleState( int index )
 int ToggleListView::OnCreate( LPCREATESTRUCT lpCreateStruct )
 {
 	if( CListView::OnCreate( lpCreateStruct ) == -1 )
+	{
 		return -1;
-		
+	}
+
 	CListCtrl& list = GetListCtrl();
-	
+
 	list.SetExtendedStyle( LVS_EX_FULLROWSELECT );
-	
+
 	//Turn off the horizontal scroll bar
 	//Todo: Figure out why the damn scroll bar pops up
 	list.ModifyStyle( WS_HSCROLL, 0L );
-	
-	
+
+
 	//Insert the one column
 	LVCOLUMN col;
 	col.mask = 0;
 	list.InsertColumn( 0, &col );
-	
+
 	SetToggleIcons();
-	
+
 	return 0;
 }
 
@@ -169,7 +173,7 @@ int ToggleListView::OnCreate( LPCREATESTRUCT lpCreateStruct )
 void ToggleListView::OnSize( UINT nType, int cx, int cy )
 {
 	CListView::OnSize( nType, cx, cy );
-	
+
 	CListCtrl& list = GetListCtrl();
 	list.SetColumnWidth( 0, cx - 1 );
 }
@@ -188,25 +192,25 @@ void ToggleListView::MeasureItem( LPMEASUREITEMSTRUCT lpMeasureItemStruct )
 void ToggleListView::OnNMClick( NMHDR* pNMHDR, LRESULT* pResult )
 {
 	CListCtrl& list = GetListCtrl();
-	
+
 	DWORD dwpos = GetMessagePos();
-	
+
 	LVHITTESTINFO info;
 	info.pt.x = LOWORD( dwpos );
 	info.pt.y = HIWORD( dwpos );
-	
+
 	::MapWindowPoints( HWND_DESKTOP, pNMHDR->hwndFrom, &info.pt, 1 );
-	
+
 	int index = list.HitTest( &info );
 	if( index != -1 )
 	{
 		int toggleState = GetToggleState( index );
 		if( toggleState != TOGGLE_STATE_DISABLED )
 		{
-		
+
 			RECT	rItem;
 			list.GetItemRect( index, &rItem, LVIR_BOUNDS );
-			
+
 			if( info.pt.x < TOGGLELIST_ITEMHEIGHT )
 			{
 				if( toggleState == TOGGLE_STATE_ON )
@@ -231,7 +235,7 @@ BOOL ToggleListView::PreCreateWindow( CREATESTRUCT& cs )
 	//Set the required style for the toggle view
 	cs.style &= ~LVS_TYPEMASK;
 	cs.style |= LVS_REPORT | LVS_OWNERDRAWFIXED | LVS_NOCOLUMNHEADER | LVS_SHOWSELALWAYS;
-	
+
 	return CListView::PreCreateWindow( cs );
 }
 
@@ -243,36 +247,36 @@ void ToggleListView::DrawItem( LPDRAWITEMSTRUCT lpDrawItemStruct )
 
 	CListCtrl& ListCtrl = GetListCtrl();
 	int nItem = lpDrawItemStruct->itemID;
-	
+
 	// get item data
 	LV_ITEM lvi;
 	_TCHAR szBuff[MAX_PATH];
-	
+
 	memset( &lvi, 0, sizeof( LV_ITEM ) );
 	lvi.mask = LVIF_TEXT;
 	lvi.iItem = nItem;
 	lvi.pszText = szBuff;
 	lvi.cchTextMax = sizeof( szBuff );
 	ListCtrl.GetItem( &lvi );
-	
+
 	RECT rDraw;
-	
-	
+
+
 	CopyRect( &rDraw, &lpDrawItemStruct->rcItem );
 	rDraw.right = rDraw.left + TOGGLELIST_ITEMHEIGHT;
 	rDraw.top ++;
-	
+
 	rDraw.right ++;
 	FrameRect( lpDrawItemStruct->hDC, &rDraw, ( HBRUSH )GetStockObject( BLACK_BRUSH ) );
 	rDraw.right --;
-	
+
 	FillRect( lpDrawItemStruct->hDC, &rDraw, GetSysColorBrush( COLOR_3DFACE ) );
-	
+
 	Draw3dRect( lpDrawItemStruct->hDC, &rDraw, GetSysColorBrush( COLOR_3DHILIGHT ), GetSysColorBrush( COLOR_3DSHADOW ) );
-	
+
 	InflateRect( &rDraw, -3, -3 );
 	Draw3dRect( lpDrawItemStruct->hDC, &rDraw, GetSysColorBrush( COLOR_3DSHADOW ), GetSysColorBrush( COLOR_3DHILIGHT ) );
-	
+
 	switch( GetToggleState( lvi.iItem ) )
 	{
 		case TOGGLE_STATE_DISABLED:
@@ -294,11 +298,11 @@ void ToggleListView::DrawItem( LPDRAWITEMSTRUCT lpDrawItemStruct )
 			}
 			break;
 	};
-	
+
 	CopyRect( &rDraw, &lpDrawItemStruct->rcItem );
 	rDraw.left += TOGGLELIST_ITEMHEIGHT;
 	rDraw.left += 1;
-	
+
 	if( lpDrawItemStruct->itemState & ODS_SELECTED )
 	{
 		FillRect( lpDrawItemStruct->hDC, &rDraw, GetSysColorBrush( COLOR_HIGHLIGHT ) );
@@ -307,13 +311,13 @@ void ToggleListView::DrawItem( LPDRAWITEMSTRUCT lpDrawItemStruct )
 	{
 		FillRect( lpDrawItemStruct->hDC, &rDraw, GetSysColorBrush( COLOR_WINDOW ) );
 	}
-	
+
 	rDraw.left += TEXT_OFFSET;
-	
+
 	int colorIndex = ( ( lpDrawItemStruct->itemState & ODS_SELECTED ) ? COLOR_HIGHLIGHTTEXT : COLOR_WINDOWTEXT );
 	SetTextColor( lpDrawItemStruct->hDC, GetSysColor( colorIndex ) );
 	DrawText( lpDrawItemStruct->hDC, szBuff, strlen( szBuff ), &rDraw, DT_LEFT | DT_VCENTER | DT_SINGLELINE );
-	
+
 }
 
 
@@ -323,16 +327,16 @@ void ToggleListView::DrawItem( LPDRAWITEMSTRUCT lpDrawItemStruct )
 void ToggleListView::Draw3dRect( HDC hDC, RECT* rect, HBRUSH topLeft, HBRUSH bottomRight )
 {
 	RECT rOut;
-	
+
 	SetRect( &rOut, rect->left, rect->top, rect->right - 1, rect->top + 1 );
 	FillRect( hDC, &rOut, topLeft );
-	
+
 	SetRect( &rOut, rect->left, rect->top, rect->left + 1, rect->bottom );
 	FillRect( hDC, &rOut, topLeft );
-	
+
 	SetRect( &rOut, rect->right, rect->top, rect->right - 1, rect->bottom );
 	FillRect( hDC, &rOut, bottomRight );
-	
+
 	SetRect( &rOut, rect->left, rect->bottom, rect->right, rect->bottom - 1 );
 	FillRect( hDC, &rOut, bottomRight );
 }

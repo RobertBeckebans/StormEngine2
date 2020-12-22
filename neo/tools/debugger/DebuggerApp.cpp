@@ -71,27 +71,27 @@ bool rvDebuggerApp::Initialize( HINSTANCE instance )
 	INITCOMMONCONTROLSEX ex;
 	ex.dwICC = ICC_USEREX_CLASSES | ICC_LISTVIEW_CLASSES | ICC_WIN95_CLASSES;
 	ex.dwSize = sizeof( INITCOMMONCONTROLSEX );
-	
+
 	mInstance = instance;
-	
+
 	mOptions.Load( );
-	
+
 	mDebuggerWindow = new rvDebuggerWindow;
-	
+
 	if( !mDebuggerWindow->Create( instance ) )
 	{
 		delete mDebuggerWindow;
 		return false;
 	}
-	
+
 	// Initialize the network connection for the debugger
 	if( !mClient.Initialize( ) )
 	{
 		return false;
 	}
-	
+
 	mAccelerators = LoadAccelerators( mInstance, MAKEINTRESOURCE( IDR_DBG_ACCELERATORS ) );
-	
+
 	return true;
 }
 
@@ -105,21 +105,21 @@ Process windows messages
 bool rvDebuggerApp::ProcessWindowMessages( void )
 {
 	MSG	msg;
-	
+
 	while( PeekMessage( &msg, NULL, 0, 0, PM_NOREMOVE ) )
 	{
 		if( !GetMessage( &msg, NULL, 0, 0 ) )
 		{
 			return false;
 		}
-		
+
 		if( !TranslateAccelerator( &msg ) )
 		{
 			TranslateMessage( &msg );
 			DispatchMessage( &msg );
 		}
 	}
-	
+
 	return true;
 }
 
@@ -136,7 +136,7 @@ bool rvDebuggerApp::TranslateAccelerator( LPMSG msg )
 	{
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -153,16 +153,16 @@ int rvDebuggerApp::Run( void )
 	while( ProcessWindowMessages( ) )
 	{
 		mClient.ProcessMessages( );
-		
+
 		Sleep( 0 );
 	}
-	
+
 	mClient.Shutdown( );
 	mOptions.Save( );
-	
+
 	delete mDebuggerWindow;
 	mDebuggerWindow = NULL;
-	
+
 	return 1;
 }
 
@@ -171,12 +171,14 @@ void rvDebuggerApp::RunOnce( void )
 	if( mDebuggerWindow )
 	{
 		if( ProcessWindowMessages( ) )
+		{
 			mClient.ProcessMessages( );
+		}
 		else
 		{
 			mClient.Shutdown( );
 			mOptions.Save( );
-			
+
 			delete mDebuggerWindow;
 			mDebuggerWindow = NULL;
 		}

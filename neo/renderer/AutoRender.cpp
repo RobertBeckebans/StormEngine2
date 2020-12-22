@@ -58,8 +58,8 @@ int idAutoRender::Run()
 	{
 		RenderFrame();
 	}
-	
-	
+
+
 	return 0;
 }
 
@@ -76,23 +76,23 @@ void idAutoRender::StartBackgroundAutoSwaps( autoRenderIconType_t iconType )
 	{
 		EndBackgroundAutoSwaps();
 	}
-	
+
 	autoRenderIcon = iconType;
-	
+
 	idLib::Printf( "Starting Background AutoSwaps\n" );
-	
+
 	const bool captureToImage = true;
 	common->UpdateScreen( captureToImage );
-	
+
 	// unbind any shaders prior to entering the background autoswaps so we don't run
 	// into any problems with cached vertex shader indices from the main thread
 	renderProgManager.Unbind();
-	
+
 	// unbind all texture units so we don't run into a race condition where the device is owned
 	// by the autorender thread but an image is trying to be unset from the main thread because
 	// it is getting purged before our our first frame has been rendered.
 	globalImages->UnbindAll();
-	
+
 	// DG: set name to "BGAutoSwaps" because Linux has a 16char (incl. \0) namelimit for threads
 	StartThread( "BGAutoSwaps", CORE_0B, THREAD_NORMAL, AUTO_RENDER_STACK_SIZE );
 	// DG end
@@ -106,9 +106,9 @@ idAutoRender::EndBackgroundAutoSwaps
 void idAutoRender::EndBackgroundAutoSwaps()
 {
 	idLib::Printf( "End Background AutoSwaps\n" );
-	
+
 	StopThread();
-	
+
 }
 
 /*
@@ -123,7 +123,7 @@ void idAutoRender::RenderFrame()
 	float loadingIconPosY = 0.6f;
 	float loadingIconScale = 0.025f;
 	float loadingIconSpeed = 0.095f;
-	
+
 	if( autoRenderIcon == AUTORENDER_HELLICON )
 	{
 		loadingIconPosX = 0.85f;
@@ -135,18 +135,18 @@ void idAutoRender::RenderFrame()
 	{
 		loadingIconPosY = 0.73f;
 	}
-	
-	
+
+
 	GL_SetDefaultState();
-	
+
 	GL_Cull( CT_TWO_SIDED );
-	
+
 	const bool stereoRender = false;
-	
+
 	const int width = renderSystem->GetWidth();
 	const int height = renderSystem->GetHeight();
 	const int guardBand = height / 24;
-	
+
 	if( stereoRender )
 	{
 		for( int viewNum = 0 ; viewNum < 2; viewNum++ )
@@ -162,7 +162,7 @@ void idAutoRender::RenderFrame()
 		RenderBackground();
 		RenderLoadingIcon( loadingIconPosX, loadingIconPosY, loadingIconScale, loadingIconSpeed );
 	}
-	
+
 }
 
 /*
@@ -173,32 +173,32 @@ idAutoRender::RenderBackground
 void idAutoRender::RenderBackground()
 {
 	GL_SelectTexture( 0 );
-	
+
 	globalImages->currentRenderImage->Bind();
-	
+
 	GL_State( GLS_DEPTHFUNC_ALWAYS | GLS_SRCBLEND_ONE | GLS_DSTBLEND_ZERO );
-	
+
 	float mvpMatrix[16] = { 0 };
 	mvpMatrix[0] = 1;
 	mvpMatrix[5] = 1;
 	mvpMatrix[10] = 1;
 	mvpMatrix[15] = 1;
-	
+
 	// Set Parms
 	float texS[4] = { 1.0f, 0.0f, 0.0f, 0.0f };
 	float texT[4] = { 0.0f, 1.0f, 0.0f, 0.0f };
 	renderProgManager.SetRenderParm( RENDERPARM_TEXTUREMATRIX_S, texS );
 	renderProgManager.SetRenderParm( RENDERPARM_TEXTUREMATRIX_T, texT );
-	
+
 	// disable texgen
 	float texGenEnabled[4] = { 0, 0, 0, 0 };
 	renderProgManager.SetRenderParm( RENDERPARM_TEXGEN_0_ENABLED, texGenEnabled );
-	
+
 	// set matrix
 	renderProgManager.SetRenderParms( RENDERPARM_MVPMATRIX_X, mvpMatrix, 4 );
-	
+
 	renderProgManager.BindShader_TextureVertexColor();
-	
+
 	RB_DrawElementsWithCounters( &backEnd.unitSquareSurface );
 }
 
@@ -212,7 +212,7 @@ void idAutoRender::RenderLoadingIcon( float fracX, float fracY, float size, floa
 
 	float s = 0.0f;
 	float c = 1.0f;
-	
+
 	if( autoRenderIcon != AUTORENDER_HELLICON )
 	{
 		if( Sys_Milliseconds() >= nextRotateTime )
@@ -223,20 +223,20 @@ void idAutoRender::RenderLoadingIcon( float fracX, float fracY, float size, floa
 		float angle = DEG2RAD( currentRotation );
 		idMath::SinCos( angle, s, c );
 	}
-	
+
 	const float pixelAspect = renderSystem->GetPixelAspect();
 	const float screenWidth = renderSystem->GetWidth();
 	const float screenHeight = renderSystem->GetHeight();
-	
+
 	const float minSize = Min( screenWidth, screenHeight );
 	if( minSize <= 0.0f )
 	{
 		return;
 	}
-	
+
 	float scaleX = size * minSize / screenWidth;
 	float scaleY = size * minSize / screenHeight;
-	
+
 	float scale[16] = { 0 };
 	scale[0] = c * scaleX / pixelAspect;
 	scale[1] = -s * scaleY;
@@ -244,10 +244,10 @@ void idAutoRender::RenderLoadingIcon( float fracX, float fracY, float size, floa
 	scale[5] = c * scaleY;
 	scale[10] = 1.0f;
 	scale[15] = 1.0f;
-	
+
 	scale[12] = fracX;
 	scale[13] = fracY;
-	
+
 	float ortho[16] = { 0 };
 	ortho[0] = 2.0f;
 	ortho[5] = -2.0f;
@@ -256,14 +256,14 @@ void idAutoRender::RenderLoadingIcon( float fracX, float fracY, float size, floa
 	ortho[13] = 1.0f;
 	ortho[14] = -1.0f;
 	ortho[15] = 1.0f;
-	
+
 	float finalOrtho[16];
 	R_MatrixMultiply( scale, ortho, finalOrtho );
-	
+
 	float projMatrixTranspose[16];
 	R_MatrixTranspose( finalOrtho, projMatrixTranspose );
 	renderProgManager.SetRenderParms( RENDERPARM_MVPMATRIX_X, projMatrixTranspose, 4 );
-	
+
 	float a = 1.0f;
 	if( autoRenderIcon == AUTORENDER_HELLICON )
 	{
@@ -271,9 +271,9 @@ void idAutoRender::RenderLoadingIcon( float fracX, float fracY, float size, floa
 		a = idMath::Sin( alpha );
 		a = 0.35f + ( 0.65f * idMath::Fabs( a ) );
 	}
-	
+
 	GL_SelectTexture( 0 );
-	
+
 	if( autoRenderIcon == AUTORENDER_HELLICON )
 	{
 		globalImages->hellLoadingIconImage->Bind();
@@ -282,25 +282,25 @@ void idAutoRender::RenderLoadingIcon( float fracX, float fracY, float size, floa
 	{
 		globalImages->loadingIconImage->Bind();
 	}
-	
+
 	GL_State( GLS_DEPTHFUNC_ALWAYS | GLS_SRCBLEND_SRC_ALPHA | GLS_DSTBLEND_ONE_MINUS_SRC_ALPHA );
-	
+
 	// Set Parms
 	float texS[4] = { 1.0f, 0.0f, 0.0f, 0.0f };
 	float texT[4] = { 0.0f, 1.0f, 0.0f, 0.0f };
 	renderProgManager.SetRenderParm( RENDERPARM_TEXTUREMATRIX_S, texS );
 	renderProgManager.SetRenderParm( RENDERPARM_TEXTUREMATRIX_T, texT );
-	
+
 	if( autoRenderIcon == AUTORENDER_HELLICON )
 	{
 		GL_Color( 1.0f, 1.0f, 1.0f, a );
 	}
-	
+
 	// disable texgen
 	float texGenEnabled[4] = { 0, 0, 0, 0 };
 	renderProgManager.SetRenderParm( RENDERPARM_TEXGEN_0_ENABLED, texGenEnabled );
-	
+
 	renderProgManager.BindShader_TextureVertexColor();
-	
+
 	RB_DrawElementsWithCounters( &backEnd.unitSquareSurface );
 }

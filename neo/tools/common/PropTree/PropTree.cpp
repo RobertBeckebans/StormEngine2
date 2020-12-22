@@ -36,11 +36,11 @@ If you have questions concerning this license or the applicable additional terms
 
 // foresthale 2014-05-29: let's not use the MFC DEBUG_NEW when we have our own...
 #ifdef ID_DEBUG_NEW_MFC
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+	#ifdef _DEBUG
+		#define new DEBUG_NEW
+		#undef THIS_FILE
+		static char THIS_FILE[] = __FILE__;
+	#endif
 #endif
 
 #define PROPTREEITEM_EXPANDCOLUMN		16			// width of the expand column
@@ -104,10 +104,12 @@ CPropTree::CPropTree() :
 	m_bDisableInput( FALSE )
 {
 	m_Root.Expand();
-	
+
 	// init global resources only once
 	if( !s_nInstanceCount )
+	{
 		InitGlobalResources();
+	}
 	s_nInstanceCount++;
 }
 
@@ -115,12 +117,14 @@ CPropTree::CPropTree() :
 CPropTree::~CPropTree()
 {
 	DeleteAllItems();
-	
+
 	s_nInstanceCount--;
-	
+
 	// free global resource when ALL CPropTrees are destroyed
 	if( !s_nInstanceCount )
+	{
 		FreeGlobalResources();
+	}
 }
 
 
@@ -146,9 +150,9 @@ const POINT& CPropTree::GetOrigin()
 BOOL CPropTree::Create( DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID )
 {
 	CWnd* pWnd = this;
-	
+
 	LPCTSTR pszCreateClass = AfxRegisterWndClass( CS_HREDRAW | CS_VREDRAW, ::LoadCursor( NULL, IDC_ARROW ) );
-	
+
 	return pWnd->Create( pszCreateClass, _T( "" ), dwStyle, rect, pParentWnd, nID );
 }
 
@@ -156,39 +160,41 @@ BOOL CPropTree::Create( DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT 
 int CPropTree::OnCreate( LPCREATESTRUCT lpCreateStruct )
 {
 	if( CWnd::OnCreate( lpCreateStruct ) == -1 )
+	{
 		return -1;
-		
+	}
+
 	DWORD dwStyle;
 	CRect rc;
-	
+
 	GetClientRect( rc );
-	
+
 	// create CPropTreeList
 	//
-	
+
 	dwStyle = WS_VISIBLE | WS_CHILD | WS_VSCROLL;
-	
+
 	if( !m_List.Create( dwStyle, rc, this, 100 ) )
 	{
 		TRACE0( "Failed to create CPropTreeList\n" );
 		return -1;
 	}
-	
+
 	m_List.SetPropOwner( this );
-	
+
 	// create CPropTreeInfo
 	//
-	
+
 	dwStyle &= ~WS_VSCROLL;
-	
+
 	if( !m_Info.Create( _T( "" ), dwStyle, rc, this ) )
 	{
 		TRACE0( "Failed to create CPropTreeInfo\n" );
 		return -1;
 	}
-	
+
 	m_Info.SetPropOwner( this );
-	
+
 	return 0;
 }
 
@@ -211,15 +217,21 @@ void CPropTree::ResizeChildWindows( int cx, int cy )
 	if( m_bShowInfo )
 	{
 		if( IsWindow( m_List.m_hWnd ) )
+		{
 			m_List.MoveWindow( 0, 0, cx, cy - m_nInfoHeight );
-			
+		}
+
 		if( IsWindow( m_Info.m_hWnd ) )
+		{
 			m_Info.MoveWindow( 0, cy - m_nInfoHeight, cx, m_nInfoHeight );
+		}
 	}
 	else
 	{
 		if( IsWindow( m_List.m_hWnd ) )
+		{
 			m_List.MoveWindow( 0, 0, cx, cy );
+		}
 	}
 }
 
@@ -228,22 +240,22 @@ void CPropTree::InitGlobalResources()
 {
 	NONCLIENTMETRICS info;
 	info.cbSize = sizeof( info );
-	
+
 	::SystemParametersInfo( SPI_GETNONCLIENTMETRICS, sizeof( info ), &info, 0 );
-	
+
 	LOGFONT lf;
 	memset( &lf, 0, sizeof( LOGFONT ) );
-	
+
 	CWindowDC dc( NULL );
 	lf.lfCharSet = ( BYTE )GetTextCharsetInfo( dc.GetSafeHdc(), NULL, 0 );
-	
+
 	lf.lfHeight = info.lfMenuFont.lfHeight;
 	lf.lfWeight = info.lfMenuFont.lfWeight;
 	lf.lfItalic = info.lfMenuFont.lfItalic;
-	
+
 	// check if we should use system font
 	_tcscpy( lf.lfFaceName, info.lfMenuFont.lfFaceName );
-	
+
 	BOOL fUseSystemFont = ( info.lfMenuFont.lfCharSet > SYMBOL_CHARSET );
 	if( !fUseSystemFont )
 	{
@@ -259,10 +271,10 @@ void CPropTree::InitGlobalResources()
 			_tcscpy( lf.lfFaceName, strDefaultFontName );
 		}
 	}
-	
+
 	s_pNormalFont = new CFont;
 	s_pNormalFont->CreateFontIndirect( &lf );
-	
+
 	lf.lfWeight = FW_BOLD;
 	s_pBoldFont = new CFont;
 	s_pBoldFont->CreateFontIndirect( &lf );
@@ -276,7 +288,7 @@ void CPropTree::FreeGlobalResources()
 		delete s_pNormalFont;
 		s_pNormalFont = NULL;
 	}
-	
+
 	if( s_pBoldFont )
 	{
 		delete s_pBoldFont;
@@ -324,23 +336,29 @@ CPropTreeItem* CPropTree::GetVisibleList()
 void CPropTree::AddToVisibleList( CPropTreeItem* pItem )
 {
 	if( !pItem )
+	{
 		return;
-		
+	}
+
 	// check for an empty visible list
 	if( !m_pVisbleList )
+	{
 		m_pVisbleList = pItem;
+	}
 	else
 	{
 		// Add the new item to the end of the list
 		CPropTreeItem* pNext;
-		
+
 		pNext = m_pVisbleList;
 		while( pNext->GetNextVisible() )
+		{
 			pNext = pNext->GetNextVisible();
-			
+		}
+
 		pNext->SetNextVisible( pItem );
 	}
-	
+
 	pItem->SetNextVisible( NULL );
 }
 
@@ -348,25 +366,31 @@ void CPropTree::AddToVisibleList( CPropTreeItem* pItem )
 BOOL CPropTree::EnumItems( CPropTreeItem* pItem, ENUMPROPITEMPROC proc, LPARAM lParam )
 {
 	if( !pItem || !proc )
+	{
 		return FALSE;
-		
+	}
+
 	CPropTreeItem* pNext;
-	
+
 	// don't count the root item in any enumerations
 	if( pItem != &m_Root && !proc( this, pItem, lParam ) )
+	{
 		return FALSE;
-		
+	}
+
 	// recurse thru all child items
 	pNext = pItem->GetChild();
-	
+
 	while( pNext )
 	{
 		if( !EnumItems( pNext, proc, lParam ) )
+		{
 			return FALSE;
-			
+		}
+
 		pNext = pNext->GetSibling();
 	}
-	
+
 	return TRUE;
 }
 
@@ -380,10 +404,12 @@ void CPropTree::SetOriginOffset( LONG nOffset )
 void CPropTree::UpdatedItems()
 {
 	if( !IsWindow( m_hWnd ) )
+	{
 		return;
-		
+	}
+
 	Invalidate();
-	
+
 	m_List.UpdateResize();
 	m_List.Invalidate();
 }
@@ -413,16 +439,20 @@ LONG CPropTree::GetColumn()
 void CPropTree::SetColumn( LONG nColumn )
 {
 	CRect rc;
-	
+
 	GetClientRect( rc );
-	
+
 	if( rc.IsRectEmpty() )
+	{
 		nColumn = __max( PROPTREEITEM_EXPANDCOLUMN, nColumn );
+	}
 	else
+	{
 		nColumn = __min( __max( PROPTREEITEM_EXPANDCOLUMN, nColumn ), rc.Width() - PROPTREEITEM_EXPANDCOLUMN );
-		
+	}
+
 	m_Origin.x = nColumn;
-	
+
 	Invalidate();
 }
 
@@ -430,20 +460,24 @@ void CPropTree::SetColumn( LONG nColumn )
 void CPropTree::Delete( CPropTreeItem* pItem )
 {
 	if( pItem && pItem != &m_Root && SendNotify( PTN_DELETEITEM, pItem ) )
+	{
 		return;
-		
+	}
+
 	// passing in a NULL item is the same as calling DeleteAllItems
 	if( !pItem )
+	{
 		pItem = &m_Root;
-		
+	}
+
 	// Clear the visible list before anything gets deleted
 	ClearVisibleList();
-	
+
 	// delete children
-	
+
 	CPropTreeItem* pIter;
 	CPropTreeItem* pNext;
-	
+
 	pIter = pItem->GetChild();
 	while( pIter )
 	{
@@ -451,27 +485,35 @@ void CPropTree::Delete( CPropTreeItem* pItem )
 		DeleteItem( pIter );
 		pIter = pNext;
 	}
-	
+
 	// unlink from tree
 	if( pItem->GetParent() )
 	{
 		if( pItem->GetParent()->GetChild() == pItem )
+		{
 			pItem->GetParent()->SetChild( pItem->GetSibling() );
+		}
 		else
 		{
 			pIter = pItem->GetParent()->GetChild();
 			while( pIter->GetSibling() && pIter->GetSibling() != pItem )
+			{
 				pIter = pIter->GetSibling();
-				
+			}
+
 			if( pIter->GetSibling() )
+			{
 				pIter->SetSibling( pItem->GetSibling() );
+			}
 		}
 	}
-	
+
 	if( pItem != &m_Root )
 	{
 		if( pItem == GetFocusedItem() )
+		{
 			SetFocusedItem( NULL );
+		}
 		delete pItem;
 	}
 }
@@ -481,10 +523,12 @@ void CPropTree::SetFocusedItem( CPropTreeItem* pItem )
 {
 	m_pFocus = pItem;
 	EnsureVisible( m_pFocus );
-	
+
 	if( !IsWindow( m_hWnd ) )
+	{
 		return;
-		
+	}
+
 	Invalidate();
 }
 
@@ -492,9 +536,9 @@ void CPropTree::SetFocusedItem( CPropTreeItem* pItem )
 void CPropTree::ShowInfoText( BOOL bShow )
 {
 	m_bShowInfo = bShow;
-	
+
 	CRect rc;
-	
+
 	GetClientRect( rc );
 	ResizeChildWindows( rc.Width(), rc.Height() );
 }
@@ -503,14 +547,18 @@ void CPropTree::ShowInfoText( BOOL bShow )
 BOOL CPropTree::IsItemVisible( CPropTreeItem* pItem )
 {
 	if( !pItem )
+	{
 		return FALSE;
-		
+	}
+
 	for( CPropTreeItem* pNext = m_pVisbleList; pNext; pNext = pNext->GetNextVisible() )
 	{
 		if( pNext == pItem )
+		{
 			return TRUE;
+		}
 	}
-	
+
 	return FALSE;
 }
 
@@ -518,45 +566,51 @@ BOOL CPropTree::IsItemVisible( CPropTreeItem* pItem )
 void CPropTree::EnsureVisible( CPropTreeItem* pItem )
 {
 	if( !pItem )
+	{
 		return;
-		
+	}
+
 	// item is not scroll visible (expand all parents)
 	if( !IsItemVisible( pItem ) )
 	{
 		CPropTreeItem* pParent;
-		
+
 		pParent = pItem->GetParent();
 		while( pParent )
 		{
 			pParent->Expand();
 			pParent = pParent->GetParent();
 		}
-		
+
 		UpdatedItems();
 		UpdateWindow();
 	}
-	
+
 	ASSERT( IsItemVisible( pItem ) );
-	
+
 	CRect rc;
-	
+
 	m_List.GetClientRect( rc );
 	rc.OffsetRect( 0, m_Origin.y );
 	rc.bottom -= pItem->GetHeight();
-	
+
 	CPoint pt;
-	
+
 	pt = pItem->GetLocation();
-	
+
 	if( !rc.PtInRect( pt ) )
 	{
 		LONG oy;
-		
+
 		if( pt.y < rc.top )
+		{
 			oy = pt.y;
+		}
 		else
+		{
 			oy = pt.y - rc.Height() + pItem->GetHeight();
-			
+		}
+
 		m_List.OnVScroll( SB_THUMBTRACK, oy, NULL );
 	}
 }
@@ -565,35 +619,43 @@ void CPropTree::EnsureVisible( CPropTreeItem* pItem )
 CPropTreeItem* CPropTree::InsertItem( CPropTreeItem* pItem, CPropTreeItem* pParent )
 {
 	if( !pItem )
+	{
 		return NULL;
-		
+	}
+
 	if( !pParent )
+	{
 		pParent = &m_Root;
-		
+	}
+
 	if( !pParent->GetChild() )
+	{
 		pParent->SetChild( pItem );
+	}
 	else
 	{
 		// add to end of the sibling list
 		CPropTreeItem* pNext;
-		
+
 		pNext = pParent->GetChild();
 		while( pNext->GetSibling() )
+		{
 			pNext = pNext->GetSibling();
-			
+		}
+
 		pNext->SetSibling( pItem );
 	}
-	
+
 	pItem->SetParent( pParent );
 	pItem->SetPropOwner( this );
-	
+
 	// auto generate a default ID
 	pItem->SetCtrlID( m_nLastUID++ );
-	
+
 	SendNotify( PTN_INSERTITEM, pItem );
-	
+
 	UpdatedItems();
-	
+
 	return pItem;
 }
 
@@ -602,34 +664,42 @@ CPropTreeItem* CPropTree::InsertItem( CPropTreeItem* pItem, CPropTreeItem* pPare
 LONG CPropTree::HitTest( const POINT& pt )
 {
 	POINT p = pt;
-	
+
 	CPropTreeItem* pItem;
-	
+
 	// convert screen to tree coordinates
 	p.y += m_Origin.y;
-	
+
 	if( ( pItem = FindItem( pt ) ) != NULL )
 	{
 		if( !pItem->IsRootLevel() && pt.x >= m_Origin.x - PROPTREEITEM_COLRNG && pt.x <= m_Origin.x + PROPTREEITEM_COLRNG )
+		{
 			return HTCOLUMN;
-			
+		}
+
 		if( pItem->HitButton( p ) )
 		{
 			return HTBUTTON;
 		}
-		
+
 		if( pt.x > m_Origin.x + PROPTREEITEM_COLRNG )
+		{
 			return HTATTRIBUTE;
-			
+		}
+
 		if( pItem->HitExpand( p ) )
+		{
 			return HTEXPAND;
-			
+		}
+
 		if( pItem->HitCheckBox( p ) )
+		{
 			return HTCHECKBOX;
-			
+		}
+
 		return HTLABEL;
 	}
-	
+
 	return HTCLIENT;
 }
 
@@ -637,20 +707,22 @@ LONG CPropTree::HitTest( const POINT& pt )
 CPropTreeItem* CPropTree::FindItem( const POINT& pt )
 {
 	CPropTreeItem* pItem;
-	
+
 	CPoint p = pt;
-	
+
 	// convert screen to tree coordinates
 	p.y += m_Origin.y;
-	
+
 	// search the visible list for the item
 	for( pItem = m_pVisbleList; pItem; pItem = pItem->GetNextVisible() )
 	{
 		CPoint ipt = pItem->GetLocation();
 		if( p.y >= ipt.y && p.y < ipt.y + pItem->GetHeight() )
+		{
 			return pItem;
+		}
 	}
-	
+
 	return NULL;
 }
 
@@ -658,9 +730,9 @@ CPropTreeItem* CPropTree::FindItem( const POINT& pt )
 CPropTreeItem* CPropTree::FindItem( UINT nCtrlID )
 {
 	s_pFound = NULL;
-	
+
 	EnumItems( &m_Root, EnumFindItem, nCtrlID );
-	
+
 	return s_pFound;
 }
 
@@ -668,13 +740,13 @@ CPropTreeItem* CPropTree::FindItem( UINT nCtrlID )
 BOOL CALLBACK CPropTree::EnumFindItem( CPropTree*, CPropTreeItem* pItem, LPARAM lParam )
 {
 	ASSERT( pItem != NULL );
-	
+
 	if( pItem->GetCtrlID() == ( UINT )lParam )
 	{
 		s_pFound = pItem;
 		return FALSE;
 	}
-	
+
 	return TRUE;
 }
 
@@ -688,19 +760,23 @@ BOOL CPropTree::IsDisableInput()
 void CPropTree::DisableInput( BOOL bDisable )
 {
 	m_bDisableInput = bDisable;
-	
+
 	CWnd* pWnd;
-	
+
 	if( ( pWnd = GetParent() ) != NULL )
+	{
 		pWnd->EnableWindow( !bDisable );
+	}
 }
 
 
 void CPropTree::SelectItems( CPropTreeItem* pItem, BOOL bSelect )
 {
 	if( !pItem )
+	{
 		pItem = &m_Root;
-		
+	}
+
 	EnumItems( pItem, EnumSelectAll, ( LPARAM )bSelect );
 }
 
@@ -708,20 +784,22 @@ void CPropTree::SelectItems( CPropTreeItem* pItem, BOOL bSelect )
 CPropTreeItem* CPropTree::FocusFirst()
 {
 	CPropTreeItem* pold;
-	
+
 	pold = m_pFocus;
-	
+
 	SetFocusedItem( m_pVisbleList );
-	
+
 	if( m_pFocus )
 	{
 		SelectItems( NULL, FALSE );
 		m_pFocus->Select();
 	}
-	
+
 	if( pold != m_pFocus )
+	{
 		SendNotify( PTN_SELCHANGE, m_pFocus );
-		
+	}
+
 	return m_pFocus;
 }
 
@@ -730,28 +808,32 @@ CPropTreeItem* CPropTree::FocusLast()
 {
 	CPropTreeItem* pNext;
 	CPropTreeItem* pChange;
-	
+
 	pChange = m_pFocus;
-	
+
 	pNext = m_pVisbleList;
-	
+
 	if( pNext )
 	{
 		while( pNext->GetNextVisible() )
+		{
 			pNext = pNext->GetNextVisible();
-			
+		}
+
 		SetFocusedItem( pNext );
-		
+
 		if( m_pFocus )
 		{
 			SelectItems( NULL, FALSE );
 			m_pFocus->Select();
 		}
 	}
-	
+
 	if( pChange != m_pFocus )
+	{
 		SendNotify( PTN_SELCHANGE, m_pFocus );
-		
+	}
+
 	return pNext;
 }
 
@@ -760,35 +842,43 @@ CPropTreeItem* CPropTree::FocusPrev()
 {
 	CPropTreeItem* pNext;
 	CPropTreeItem* pChange;
-	
+
 	pChange = m_pFocus;
-	
+
 	if( m_pFocus == NULL )
 	{
 		// get the last visible item
 		pNext = m_pVisbleList;
 		while( pNext && pNext->GetNextVisible() )
+		{
 			pNext = pNext->GetNextVisible();
+		}
 	}
 	else
 	{
 		pNext = m_pVisbleList;
 		while( pNext && pNext->GetNextVisible() != m_pFocus )
+		{
 			pNext = pNext->GetNextVisible();
+		}
 	}
-	
+
 	if( pNext )
+	{
 		SetFocusedItem( pNext );
-		
+	}
+
 	if( m_pFocus )
 	{
 		SelectItems( NULL, FALSE );
 		m_pFocus->Select();
 	}
-	
+
 	if( pChange != m_pFocus )
+	{
 		SendNotify( PTN_SELCHANGE, m_pFocus );
-		
+	}
+
 	return pNext;
 }
 
@@ -797,28 +887,38 @@ CPropTreeItem* CPropTree::FocusNext()
 {
 	CPropTreeItem* pNext;
 	CPropTreeItem* pChange;
-	
+
 	pChange = m_pFocus;
-	
+
 	if( m_pFocus == NULL )
+	{
 		pNext = m_pVisbleList;
+	}
 	else if( m_pFocus->GetNextVisible() )
+	{
 		pNext = m_pFocus->GetNextVisible();
+	}
 	else
+	{
 		pNext = NULL;
-		
+	}
+
 	if( pNext )
+	{
 		SetFocusedItem( pNext );
-		
+	}
+
 	if( m_pFocus )
 	{
 		SelectItems( NULL, FALSE );
 		m_pFocus->Select();
 	}
-	
+
 	if( pChange != m_pFocus )
+	{
 		SendNotify( PTN_SELCHANGE, m_pFocus );
-		
+	}
+
 	return pNext;
 }
 
@@ -832,10 +932,12 @@ void CPropTree::UpdateMoveAllItems()
 void CPropTree::RefreshItems( CPropTreeItem* pItem )
 {
 	if( !pItem )
+	{
 		pItem = &m_Root;
-		
+	}
+
 	EnumItems( pItem, EnumRefreshAll );
-	
+
 	UpdatedItems();
 }
 
@@ -843,10 +945,12 @@ void CPropTree::RefreshItems( CPropTreeItem* pItem )
 BOOL CALLBACK CPropTree::EnumSelectAll( CPropTree*, CPropTreeItem* pItem, LPARAM lParam )
 {
 	if( !pItem )
+	{
 		return FALSE;
-		
+	}
+
 	pItem->Select( ( BOOL )lParam );
-	
+
 	return TRUE;
 }
 
@@ -854,10 +958,12 @@ BOOL CALLBACK CPropTree::EnumSelectAll( CPropTree*, CPropTreeItem* pItem, LPARAM
 BOOL CALLBACK CPropTree::EnumRefreshAll( CPropTree*, CPropTreeItem* pItem, LPARAM )
 {
 	if( !pItem )
+	{
 		return FALSE;
-		
+	}
+
 	pItem->OnRefresh();
-	
+
 	return TRUE;
 }
 
@@ -865,10 +971,12 @@ BOOL CALLBACK CPropTree::EnumRefreshAll( CPropTree*, CPropTreeItem* pItem, LPARA
 BOOL CALLBACK CPropTree::EnumMoveAll( CPropTree*, CPropTreeItem* pItem, LPARAM )
 {
 	if( !pItem )
+	{
 		return FALSE;
-		
+	}
+
 	pItem->OnMove();
-	
+
 	return TRUE;
 }
 
@@ -876,16 +984,20 @@ BOOL CALLBACK CPropTree::EnumMoveAll( CPropTree*, CPropTreeItem* pItem, LPARAM )
 LRESULT CPropTree::SendNotify( UINT nNotifyCode, CPropTreeItem* pItem )
 {
 	if( !IsWindow( m_hWnd ) )
+	{
 		return 0L;
-		
+	}
+
 	if( !( GetStyle() & PTS_NOTIFY ) )
+	{
 		return 0L;
-		
+	}
+
 	NMPROPTREE nmmp;
 	LPNMHDR lpnm;
-	
+
 	lpnm = NULL;
-	
+
 	switch( nNotifyCode )
 	{
 		case PTN_INSERTITEM:
@@ -902,17 +1014,17 @@ LRESULT CPropTree::SendNotify( UINT nNotifyCode, CPropTreeItem* pItem )
 			nmmp.pItem = pItem;
 			break;
 	}
-	
+
 	if( lpnm )
 	{
 		UINT id = ( UINT )::GetMenu( m_hWnd );
 		lpnm->code = nNotifyCode;
 		lpnm->hwndFrom = m_hWnd;
 		lpnm->idFrom = id;
-		
+
 		return GetParent()->SendMessage( WM_NOTIFY, ( WPARAM )id, ( LPARAM )lpnm );
 	}
-	
+
 	return 0L;
 }
 
@@ -927,7 +1039,7 @@ void CPropTree::OnEnable( BOOL bEnable )
 void CPropTree::OnSysColorChange()
 {
 	CWnd::OnSysColorChange();
-	
+
 	Invalidate();
 }
 

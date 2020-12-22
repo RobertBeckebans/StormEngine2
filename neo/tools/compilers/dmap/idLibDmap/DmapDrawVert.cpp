@@ -43,7 +43,7 @@ int idDmapShadowVert::CreateShadowCache( idDmapShadowVert* vertexCache, const id
 		vertexCache[i * 2 + 0].xyzw[1] = verts[i].xyz[1];
 		vertexCache[i * 2 + 0].xyzw[2] = verts[i].xyz[2];
 		vertexCache[i * 2 + 0].xyzw[3] = 1.0f;
-		
+
 		vertexCache[i * 2 + 1].xyzw[0] = verts[i].xyz[0];
 		vertexCache[i * 2 + 1].xyzw[1] = verts[i].xyz[1];
 		vertexCache[i * 2 + 1].xyzw[2] = verts[i].xyz[2];

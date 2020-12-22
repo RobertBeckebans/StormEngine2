@@ -43,14 +43,14 @@ class idDeclEmail : public idDecl
 {
 public:
 	idDeclEmail() {}
-	
+
 	virtual size_t			Size() const;
 	virtual const char* 	DefaultDefinition() const;
 	virtual bool			Parse( const char* text, const int textLength, bool allowBinaryVersion );
 	virtual void			FreeData();
 	virtual void			Print() const;
 	virtual void			List() const;
-	
+
 	const char* 			GetFrom() const
 	{
 		return from;
@@ -71,7 +71,7 @@ public:
 	{
 		return to;
 	}
-	
+
 private:
 	idStr					text;
 	idStr					subject;
@@ -85,14 +85,14 @@ class idDeclVideo : public idDecl
 {
 public:
 	idDeclVideo() : preview( NULL ), video( NULL ), audio( NULL ) {};
-	
+
 	virtual size_t			Size() const;
 	virtual const char* 	DefaultDefinition() const;
 	virtual bool			Parse( const char* text, const int textLength, bool allowBinaryVersion );
 	virtual void			FreeData();
 	virtual void			Print() const;
 	virtual void			List() const;
-	
+
 	const idMaterial* 		GetRoq() const
 	{
 		return video;
@@ -113,7 +113,7 @@ public:
 	{
 		return preview;
 	}
-	
+
 private:
 	const idMaterial* 		preview;
 	const idMaterial* 		video;
@@ -127,14 +127,14 @@ class idDeclAudio : public idDecl
 {
 public:
 	idDeclAudio() : audio( NULL ) {};
-	
+
 	virtual size_t			Size() const;
 	virtual const char* 	DefaultDefinition() const;
 	virtual bool			Parse( const char* text, const int textLength, bool allowBinaryVersion );
 	virtual void			FreeData();
 	virtual void			Print() const;
 	virtual void			List() const;
-	
+
 	const char* 			GetAudioName() const
 	{
 		return audioName;
@@ -147,7 +147,7 @@ public:
 	{
 		return info;
 	}
-	
+
 private:
 	const idSoundShader* 	audio;
 	idStr					audioName;
@@ -161,14 +161,14 @@ public:
 	{
 		originalEmails = originalVideos = 0;
 	};
-	
+
 	virtual size_t			Size() const;
 	virtual const char* 	DefaultDefinition() const;
 	virtual bool			Parse( const char* text, const int textLength, bool allowBinaryVersion );
 	virtual void			FreeData();
 	virtual void			Print() const;
 	virtual void			List() const;
-	
+
 	virtual void			AddVideo( const idDeclVideo* video, bool unique = true ) const
 	{
 		if( unique )
@@ -203,7 +203,7 @@ public:
 		}
 	}
 	virtual void			RemoveAddedEmailsAndVideos() const;
-	
+
 	virtual const int		GetNumVideos() const
 	{
 		return videos.Num();
@@ -228,9 +228,9 @@ public:
 	{
 		return ( index < 0 || index > emails.Num() ? NULL : emails[index] );
 	}
-	
+
 	virtual void			SetSecurity( const char* sec ) const;
-	
+
 	const char* 			GetPdaName() const
 	{
 		return pdaName;
@@ -259,7 +259,7 @@ public:
 	{
 		return title;
 	}
-	
+
 private:
 	mutable idList<const idDeclVideo*>	videos;
 	mutable idList<const idDeclAudio*>	audios;

@@ -121,7 +121,7 @@ void DialogAFConstraintFixed::LoadConstraint( idDeclAF_Constraint* c )
 {
 
 	constraint = c;
-	
+
 	// update displayed values
 	UpdateData( FALSE );
 }
@@ -139,7 +139,7 @@ void DialogAFConstraintFixed::SaveConstraint( void )
 		return;
 	}
 	UpdateData( TRUE );
-	
+
 	AFDialogSetFileModified();
 }
 

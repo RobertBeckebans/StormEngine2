@@ -36,11 +36,11 @@ If you have questions concerning this license or the applicable additional terms
 
 // foresthale 2014-05-29: let's not use the MFC DEBUG_NEW when we have our own...
 #ifdef ID_DEBUG_NEW_MFC
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+	#ifdef _DEBUG
+		#define new DEBUG_NEW
+		#undef THIS_FILE
+		static char THIS_FILE[] = __FILE__;
+	#endif
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
@@ -158,13 +158,13 @@ void CPatchDialog::OnSelchangeComboRow()
 void CPatchDialog::OnSelchangeComboType()
 {
 	// TODO: Add your control notification handler code here
-	
+
 }
 
 void CPatchDialog::OnOK()
 {
 	m_Patch = NULL;
-	
+
 	CDialog::OnOK();
 }
 
@@ -178,17 +178,17 @@ void CPatchDialog::OnDeltaposSpin( NMHDR* pNMHDR, LRESULT* pResult )
 BOOL CPatchDialog::OnInitDialog()
 {
 	CDialog::OnInitDialog();
-	
+
 	m_wndHScale.SetRange( 0, 1000 );
 	m_wndVScale.SetRange( 0, 1000 );
 	m_wndHShift.SetRange( 0, 1000 );
 	m_wndVShift.SetRange( 0, 1000 );
 	m_wndRotate.SetRange( 0, 1000 );
-	
+
 	GetPatchInfo();
-	
+
 	// TODO: Add extra initialization here
-	
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -247,7 +247,7 @@ void UpdatePatchInspector()
 	{
 		g_PatchDialog.UpdateInfo();
 	}
-	
+
 }
 
 void CPatchDialog::OnDestroy()
@@ -264,7 +264,7 @@ void CPatchDialog::OnDestroy()
 void CPatchDialog::UpdateRowColInfo()
 {
 	m_fX = m_fY = m_fZ = m_fS = m_fT = 0.0;
-	
+
 	if( m_Patch != NULL )
 	{
 		int r = m_wndRows.GetCurSel();
@@ -310,52 +310,72 @@ void CPatchDialog::OnApply()
 void CPatchDialog::UpdateSpinners( bool bUp, int nID )
 {
 	texdef_t td;
-	
+
 	td.rotate = 0.0;
 	td.scale[0] = td.scale[1] = 0.0;
 	td.shift[0] = td.shift[1] = 0.0;
 	td.value = 0;
-	
-	
+
+
 	UpdateData( TRUE );
-	
+
 	if( nID == IDC_SPIN_ROTATE )
 	{
 		if( bUp )
+		{
 			td.rotate = m_fRotate;
+		}
 		else
+		{
 			td.rotate = -m_fRotate;
+		}
 	}
 	else if( nID == IDC_SPIN_HSCALE )
 	{
 		if( bUp )
+		{
 			td.scale[0] = 1 - m_fHScale;
+		}
 		else
+		{
 			td.scale[0] = 1 + m_fHScale;
+		}
 	}
 	else if( nID == IDC_SPIN_VSCALE )
 	{
 		if( bUp )
+		{
 			td.scale[1] = 1 - m_fVScale;
+		}
 		else
+		{
 			td.scale[1] = 1 + m_fVScale;
+		}
 	}
-	
+
 	else if( nID == IDC_SPIN_HSHIFT )
 	{
 		if( bUp )
+		{
 			td.shift[0] = m_fHShift;
+		}
 		else
+		{
 			td.shift[0] = -m_fHShift;
+		}
 	}
 	else if( nID == IDC_SPIN_VSHIFT )
 	{
 		if( bUp )
+		{
 			td.shift[1] = m_fVShift;
+		}
 		else
+		{
 			td.shift[1] = -m_fVShift;
+		}
 	}
-	
+
 	Patch_SetTextureInfo( &td );
 	Sys_UpdateWindows( W_CAMERA );
 }

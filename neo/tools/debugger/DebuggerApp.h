@@ -33,19 +33,19 @@ If you have questions concerning this license or the applicable additional terms
 #include "../../sys/win32/win_local.h"
 
 #ifndef REGISTRYOPTIONS_H_
-#include "../common/RegistryOptions.h"
+	#include "../common/RegistryOptions.h"
 #endif
 
 #ifndef DEBUGGERWINDOW_H_
-#include "DebuggerWindow.h"
+	#include "DebuggerWindow.h"
 #endif
 
 #ifndef DEBUGGERMESSAGES_H_
-#include "DebuggerMessages.h"
+	#include "DebuggerMessages.h"
 #endif
 
 #ifndef DEBUGGERCLIENT_H_
-#include "DebuggerClient.h"
+	#include "DebuggerClient.h"
 #endif
 
 class rvDebuggerApp
@@ -54,19 +54,19 @@ public:
 
 	rvDebuggerApp( );
 	~rvDebuggerApp( );
-	
+
 	bool				Initialize( HINSTANCE hInstance );
 	int					Run( void );
 	void				RunOnce( void );
-	
+
 	rvRegistryOptions&	GetOptions( void );
 	rvDebuggerClient&	GetClient( void );
 	rvDebuggerWindow&	GetWindow( void );
-	
+
 	HINSTANCE			GetInstance( void );
-	
+
 	bool				TranslateAccelerator( LPMSG msg );
-	
+
 protected:
 
 	rvRegistryOptions	mOptions;
@@ -74,7 +74,7 @@ protected:
 	HINSTANCE			mInstance;
 	rvDebuggerClient	mClient;
 	HACCEL				mAccelerators;
-	
+
 private:
 	bool	ProcessWindowMessages( void );
 };

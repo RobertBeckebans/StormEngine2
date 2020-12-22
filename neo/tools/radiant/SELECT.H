@@ -59,14 +59,14 @@ public:
 		nType = type;
 		priority = p;
 	}
-	
+
 	void Set( brush_t* b, idVec3 v, int type )
 	{
 		pBrush = b;
 		VectorCopy( v, vec );
 		nType = type;
 	}
-	
+
 	bool PointWithin( idVec3 p, int nView = -1 );
 };
 

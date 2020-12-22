@@ -35,25 +35,25 @@ class rvRegistryOptions
 public:
 
 	static const int MAX_MRU_SIZE = 4;
-	
+
 	rvRegistryOptions();
-	
+
 	void			Init( const char* key );
-	
+
 	// Write the options to the registery
 	bool			Save( void );
-	
+
 	// Read the options from the registry
 	bool			Load( void );
-	
+
 	// Window placement routines
 	void			SetWindowPlacement( const char* name, HWND hwnd );
 	bool			GetWindowPlacement( const char* name, HWND hwnd );
-	
+
 	// List view column sizes
 	void			SetColumnWidths( const char* name, HWND list );
 	void			GetColumnWidths( const char* name, HWND list );
-	
+
 	// Set routines
 	void			SetFloat( const char* name, float v );
 	void			SetLong( const char* name, long v );
@@ -61,7 +61,7 @@ public:
 	void			SetString( const char* name, const char* v );
 	void			SetVec4( const char* name, idVec4& v );
 	void			SetBinary( const char* name, const unsigned char* data, int size );
-	
+
 	// Get routines
 	float			GetFloat( const char* name );
 	long			GetLong( const char* name );
@@ -69,12 +69,12 @@ public:
 	const char*		GetString( const char* name );
 	idVec4			GetVec4( const char* name );
 	void			GetBinary( const char* name, unsigned char* data, int size );
-	
+
 	// MRU related methods
 	void			AddRecentFile( const char* filename );
 	const char*		GetRecentFile( int index );
 	int				GetRecentFileCount( void );
-	
+
 private:
 
 	idList<idStr>	mRecentFiles;

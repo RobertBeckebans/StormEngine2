@@ -59,23 +59,23 @@ void MaterialPreviewPropView::AddLight( void )
 {
 	int i, count, lightShaderIndex = 0;
 	const idMaterial* mat;
-	
+
 	CPropTreeItemButton*	pRoot;
 	CPropTreeItemCombo*		pCombo;
 	CPropTreeItemColor*		pColor;
 	CPropTreeItemCheck*		pCheck;
 	CPropTreeItemEdit*		pEdit;
-	
+
 	//Increase the number of lights
 	numLights++;
-	
+
 	pRoot = ( CPropTreeItemButton* )m_Tree.InsertItem( new CPropTreeItemButton() );
 	pRoot->SetLabelText( _T( va( "Light #%d", numLights ) ) );
 	pRoot->SetInfoText( _T( va( "Parameters for light number %d.", numLights ) ) );
 	pRoot->SetButtonText( "Remove" );
 	pRoot->SetCtrlID( numLights - 1 );
 	pRoot->Expand();
-	
+
 	pCombo = ( CPropTreeItemCombo* )m_Tree.InsertItem( new CPropTreeItemCombo(), pRoot );
 	pCombo->SetLabelText( _T( "Shader" ) );
 	pCombo->SetInfoText( _T( "Set the light shader." ) );
@@ -86,40 +86,40 @@ void MaterialPreviewPropView::AddLight( void )
 	for( i = 0; i < count; i++ )
 	{
 		mat = declManager->MaterialByIndex( i, false );
-		
+
 		idStr materialName = mat->GetName();
 		materialName.ToLower();
-		
+
 		if( materialName.Left( 7 ) == "lights/" || materialName.Left( 5 ) == "fogs/" )
 		{
 			pCombo->InsertString( lightShaderIndex, materialName );
 			pCombo->SetItemData( lightShaderIndex, lightShaderIndex );
-			
+
 			if( materialName == "lights/defaultpointlight" )
 			{
 				pCombo->SetCurSel( lightShaderIndex );
 			}
-			
+
 			lightShaderIndex++;
 		}
 	}
-	
+
 	pColor = ( CPropTreeItemColor* )m_Tree.InsertItem( new CPropTreeItemColor(), pRoot );
 	pColor->SetLabelText( _T( "Color" ) );
 	pColor->SetInfoText( _T( "Color of the light." ) );
 	pColor->SetItemValue( ( LPARAM )RGB( 0xff, 0xff, 0xff ) ); // default as color white
-	
+
 	pEdit = ( CPropTreeItemEdit* )m_Tree.InsertItem( new CPropTreeItemEdit(), pRoot );
 	pEdit->SetLabelText( _T( "Radius" ) );
 	pEdit->SetInfoText( _T( "Radius of the light." ) );
 	pEdit->SetItemValue( ( LPARAM )_T( "300.0" ) );
-	
+
 	pCheck = ( CPropTreeItemCheck* )m_Tree.InsertItem( new CPropTreeItemCheck(), pRoot );
 	pCheck->SetLabelText( _T( "Move light" ) );
 	pCheck->SetInfoText( _T( "When checked, allow light to move." ) );
 	pCheck->CreateCheckBox();
 	pCheck->SetCheckState( BST_CHECKED );
-	
+
 	if( materialPreview )
 	{
 		materialPreview->OnAddLight();
@@ -134,12 +134,12 @@ void MaterialPreviewPropView::InitializePropTree( void )
 	CPropTreeItem*		pParmRoot;
 	CPropTreeItemCheck*	pCheck;
 	CPropTreeItemEdit*	pEdit;
-	
+
 	pRoot = m_Tree.InsertItem( new CPropTreeItem() );
 	pRoot->SetLabelText( _T( "Preview Properties" ) );
 	pRoot->SetInfoText( _T( "Properties for the preview window." ) );
 	pRoot->Expand(); // have this item expanded by default
-	
+
 	CPropTreeItemCombo* pCombo;
 	pCombo = ( CPropTreeItemCombo* )m_Tree.InsertItem( new CPropTreeItemCombo(), pRoot );
 	pCombo->SetLabelText( _T( "Model Type" ) );
@@ -161,9 +161,9 @@ void MaterialPreviewPropView::InitializePropTree( void )
 	pCombo->SetItemData( 5, 5 );
 	pCombo->SetItemData( 6, 6 );
 	pCombo->SetItemData( 7, 7 );
-	
+
 	pCombo->SetCurSel( 0 );
-	
+
 	// Custom model entry
 	/*pEdit = (CPropTreeItemEdit*)m_Tree.InsertItem( new CPropTreeItemEdit(), pRoot );
 	pEdit->SetLabelText(_T("Custom Model"));
@@ -175,20 +175,20 @@ void MaterialPreviewPropView::InitializePropTree( void )
 	pCutomButton->SetLabelText( _T( "Custom Model" ) );
 	pCutomButton->SetInfoText( _T( "Specify any model to display the current material." ) );
 	pCutomButton->SetItemValue( ( LPARAM )_T( "" ) );
-	
+
 	// Checkbox for showing debug light spheres
 	pCheck = ( CPropTreeItemCheck* )m_Tree.InsertItem( new CPropTreeItemCheck(), pRoot );
 	pCheck->SetLabelText( _T( "Show Lights" ) );
 	pCheck->SetInfoText( _T( "Show the light origin sphere and number in the preview." ) );
 	pCheck->CreateCheckBox();
 	pCheck->SetCheckState( BST_CHECKED );
-	
+
 	// Local and Global shader parms
 	pParmRoot = m_Tree.InsertItem( new CPropTreeItem() );
 	pParmRoot->SetLabelText( _T( "Local Parms" ) );
 	pParmRoot->SetInfoText( _T( "Local shaderparms for the model being displayed." ) );
 	pParmRoot->Expand( FALSE ); // have this item NOT expanded by default
-	
+
 	for( i = 0; i < MAX_ENTITY_SHADER_PARMS; i++ )
 	{
 		pEdit = ( CPropTreeItemEdit* )m_Tree.InsertItem( new CPropTreeItemEdit(), pParmRoot );
@@ -203,12 +203,12 @@ void MaterialPreviewPropView::InitializePropTree( void )
 			pEdit->SetItemValue( ( LPARAM )_T( "0" ) );
 		}
 	}
-	
+
 	pParmRoot = m_Tree.InsertItem( new CPropTreeItem() );
 	pParmRoot->SetLabelText( _T( "Global Parms" ) );
 	pParmRoot->SetInfoText( _T( "Global shaderparms for the renderworld being displayed." ) );
 	pParmRoot->Expand( FALSE ); // have this item NOT expanded by default
-	
+
 	for( i = 0; i < MAX_GLOBAL_SHADER_PARMS; i++ )
 	{
 		pEdit = ( CPropTreeItemEdit* )m_Tree.InsertItem( new CPropTreeItemEdit(), pParmRoot );
@@ -223,23 +223,23 @@ void MaterialPreviewPropView::InitializePropTree( void )
 			pEdit->SetItemValue( ( LPARAM )_T( "0" ) );
 		}
 	}
-	
+
 	// Lights
-	
+
 	pRoot = m_Tree.InsertItem( new CPropTreeItem() );
 	pRoot->SetLabelText( _T( "" ) );
 	pRoot->SetInfoText( _T( "" ) );
-	
+
 	CPropTreeItemButton* pButton;
 	pButton = ( CPropTreeItemButton* )m_Tree.InsertItem( new CPropTreeItemButton() );
 	pButton->SetButtonText( _T( " Add Light " ) );
 	pButton->SetLabelText( _T( "Preview Lights" ) );
 	pButton->SetInfoText( _T( "Test the button." ) );
-	
+
 	pRoot = m_Tree.InsertItem( new CPropTreeItem() );
 	pRoot->SetLabelText( _T( "" ) );
 	pRoot->SetInfoText( _T( "" ) );
-	
+
 	AddLight();
 }
 
@@ -280,82 +280,82 @@ void MaterialPreviewPropView::OnPropertyChangeNotification( NMHDR* nmhdr, LRESUL
 	NMPROPTREE*		nmProp;
 	CPropTreeItem*	item;
 	CPropTreeItem*	parent;
-	
+
 	nmProp = ( NMPROPTREE* )nmhdr;
 	item = nmProp->pItem;
-	
+
 	// Determine which light this item modifies
 	parent = item->GetParent();
 	if( parent )
 	{
 		lightId = parent->GetCtrlID();
 	}
-	
+
 	idStr	itemLabel = item->GetLabelText();
-	
+
 	if( itemLabel == "Model Type" )
 	{
 		materialPreview->OnModelChange( item->GetItemValue() );
-		
+
 	}
 	else if( itemLabel == "Custom Model" )
 	{
 		materialPreview->OnCustomModelChange( ( const char* )item->GetItemValue() );
-		
+
 	}
 	else if( itemLabel == "Show Lights" )
 	{
 		materialPreview->OnShowLightsChange( item->GetItemValue() ? true : false );
-		
+
 	}
 	else if( itemLabel == "Shader" )
 	{
 		CPropTreeItemCombo*	combo = ( CPropTreeItemCombo* )item;
 		CString materialName;
-		
+
 		combo->GetLBText( combo->GetCurSel(), materialName );
-		
+
 		materialPreview->OnLightShaderChange( lightId, materialName.GetBuffer() );
-		
+
 	}
 	else if( itemLabel == "Radius" )
 	{
 		materialPreview->OnLightRadiusChange( lightId, atof( ( char* )item->GetItemValue() ) );
-		
+
 	}
 	else if( itemLabel == "Color" )
 	{
 		color = item->GetItemValue();
-		
+
 		testColor.x = ( float )GetRValue( color ) * ( float )( 1.f / 255.f );
 		testColor.y = ( float )GetGValue( color ) * ( float )( 1.f / 255.f );
 		testColor.z = ( float )GetBValue( color ) * ( float )( 1.f / 255.f );
-		
+
 		materialPreview->OnLightColorChange( lightId, testColor );
-		
+
 	}
 	else if( itemLabel == "Move light" )
 	{
 		materialPreview->OnLightAllowMoveChange( lightId, item->GetItemValue() ? true : false );
-		
+
 	}
 	else if( itemLabel.Left( 4 ) == "parm" )
 	{
 		int index;
-		
+
 		itemLabel.Strip( "parm" );
 		index = atoi( itemLabel.c_str() );
-		
+
 		materialPreview->OnLocalParmChange( index, atof( ( char* )item->GetItemValue() ) );
-		
+
 	}
 	else if( itemLabel.Left( 6 ) == "global" )
 	{
 		int index;
-		
+
 		itemLabel.Strip( "global" );
 		index = atoi( itemLabel.c_str() );
-		
+
 		materialPreview->OnGlobalParmChange( index, atof( ( char* )item->GetItemValue() ) );
 	}
 }
@@ -364,29 +364,29 @@ void MaterialPreviewPropView::OnPropertyButtonClick( NMHDR* nmhdr, LRESULT* lres
 {
 	NMPROPTREE*		nmProp;
 	CPropTreeItem*	item;
-	
+
 	nmProp = ( NMPROPTREE* )nmhdr;
 	item = nmProp->pItem;
-	
+
 	idStr	itemLabel = item->GetLabelText();
-	
+
 	if( itemLabel == "Preview Lights" )
 	{
 		AddLight();
-		
+
 	}
 	else if( itemLabel.Left( 5 ) == "Light" )
 	{
 		CPropTreeItem*	light;
 		int lightId = item->GetCtrlID();
 		int testLightNum = 0;
-		
+
 		m_Tree.DeleteItem( item );
-		
+
 		for( light = m_Tree.GetRootItem()->GetChild(); light != NULL; light = light->GetSibling() )
 		{
 			idStr label = light->GetLabelText();
-			
+
 			if( label.Left( 5 ) == "Light" )
 			{
 				testLightNum++;
@@ -395,9 +395,9 @@ void MaterialPreviewPropView::OnPropertyButtonClick( NMHDR* nmhdr, LRESULT* lres
 				light->SetCtrlID( testLightNum - 1 );
 			}
 		}
-		
+
 		materialPreview->OnDeleteLight( lightId );
-		
+
 		numLights--;
 	}
 	else if( itemLabel == "Custom Model" )

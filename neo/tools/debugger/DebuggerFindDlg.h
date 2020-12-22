@@ -37,19 +37,19 @@ class rvDebuggerFindDlg
 public:
 
 	rvDebuggerFindDlg( );
-	
+
 	bool	DoModal( rvDebuggerWindow* window );
-	
+
 	const char*		GetFindText( void );
-	
+
 protected:
 
 	HWND	mWnd;
-	
+
 private:
 
 	static char		mFindText[ 256 ];
-	
+
 	static INT_PTR	CALLBACK DlgProc( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam );
 };
 

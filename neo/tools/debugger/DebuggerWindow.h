@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 #define DEBUGGERWINDOW_H_
 
 #ifndef DEBUGGERSCRIPT_H_
-#include "DebuggerScript.h"
+	#include "DebuggerScript.h"
 #endif
 
 class rvDebuggerWatch
@@ -53,26 +53,26 @@ public:
 
 	rvDebuggerWindow( );
 	~rvDebuggerWindow( );
-	
+
 	bool			Create( HINSTANCE hInstance );
-	
+
 	static bool		Activate( void );
-	
+
 	void			ProcessNetMessage( msg_t& msg );
-	
+
 	void			Printf( const char* format, ... );
-	
+
 	HWND			GetWindow( void );
-	
+
 	void			AddWatch( const char* name, bool update = true );
-	
+
 	HINSTANCE		GetInstance( void );
-	
+
 protected:
 
 	bool					FindPrev( const char* text = NULL );
 	bool					FindNext( const char* text = NULL );
-	
+
 	void					UpdateWatch( void );
 	void					UpdateWindowMenu( void );
 	void					UpdateScript( void );
@@ -82,11 +82,11 @@ protected:
 	void					UpdateRecentFiles( void );
 	bool					OpenScript( const char* filename, int lineNumber = -1 );
 	void					EnableWindows( bool state );
-	
+
 	int						GetSelectedText( idStr& text );
-	
+
 	void					ToggleBreakpoint( void );
-	
+
 	HWND							mWnd;
 	HWND							mWndScript;
 	HWND							mWndOutput;
@@ -99,52 +99,52 @@ protected:
 	HWND							mWndThreads;
 	HWND							mWndToolTips;
 	HWND							mWndToolbar;
-	
+
 	HMENU							mRecentFileMenu;
 	int								mRecentFileInsertPos;
-	
+
 	WNDPROC							mOldWatchProc;
 	WNDPROC							mOldScriptProc;
 	idStr							mTooltipVar;
 	idStr							mTooltipValue;
-	
+
 	HINSTANCE						mInstance;
 	HIMAGELIST						mImageList;
-	
+
 	RECT							mSplitterRect;
 	bool							mSplitterDrag;
-	
+
 	idList<rvDebuggerScript*>		mScripts;
 	int								mActiveScript;
 	int								mLastActiveScript;
 	int								mCurrentStackDepth;
-	
+
 	HMENU							mWindowMenu;
 	int								mWindowMenuPos;
-	
+
 	int								mZoomScaleNum;
 	int								mZoomScaleDem;
 	int								mMarginSize;
-	
+
 	idStr							mFind;
-	
+
 	rvDebuggerClient*				mClient;
-	
+
 	rvDebuggerWatchList				mWatches;
-	
+
 private:
 
 	bool		RegisterClass( void );
 	void		CreateToolbar( void );
 	bool		InitRecentFiles( void );
-	
+
 	int			HandleInitMenu( WPARAM wParam, LPARAM lParam );
 	int			HandleCommand( WPARAM wParam, LPARAM lParam );
 	int			HandleCreate( WPARAM wparam, LPARAM lparam );
 	int			HandleActivate( WPARAM wparam, LPARAM lparam );
 	int			HandleDrawItem( WPARAM wparam, LPARAM lparam );
 	void		HandleTooltipGetDispInfo( WPARAM wparam, LPARAM lparam );
-	
+
 	static LRESULT CALLBACK WndProc( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam );
 	static LRESULT CALLBACK MarginWndProc( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam );
 	static LRESULT CALLBACK ScriptWndProc( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam );

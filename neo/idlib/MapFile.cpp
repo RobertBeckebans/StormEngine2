@@ -41,12 +41,12 @@ static void ComputeAxisBase( const idVec3& normal, idVec3& texS, idVec3& texT )
 {
 	float RotY, RotZ;
 	idVec3 n;
-	
+
 	// do some cleaning
 	n[0] = ( idMath::Fabs( normal[0] ) < 1e-6f ) ? 0.0f : normal[0];
 	n[1] = ( idMath::Fabs( normal[1] ) < 1e-6f ) ? 0.0f : normal[1];
 	n[2] = ( idMath::Fabs( normal[2] ) < 1e-6f ) ? 0.0f : normal[2];
-	
+
 	RotY = -atan2( n[2], idMath::Sqrt( n[1] * n[1] + n[0] * n[0] ) );
 	RotZ = atan2( n[1], n[0] );
 	// rotate (0,1,0) and (0,0,1) to compute texS and texT
@@ -68,7 +68,7 @@ void idMapBrushSide::GetTextureVectors( idVec4 v[2] ) const
 {
 	int i;
 	idVec3 texX, texY;
-	
+
 	ComputeAxisBase( plane.Normal(), texX, texY );
 	for( i = 0; i < 2; i++ )
 	{
@@ -90,19 +90,19 @@ idMapPatch* idMapPatch::Parse( idLexer& src, const idVec3& origin, bool patchDef
 	idDrawVert* vert;
 	idToken		token;
 	int			i, j;
-	
+
 	if( !src.ExpectTokenString( "{" ) )
 	{
 		return NULL;
 	}
-	
+
 	// read the material (we had an implicit 'textures/' in the old format...)
 	if( !src.ReadToken( &token ) )
 	{
 		src.Error( "idMapPatch::Parse: unexpected EOF" );
 		return NULL;
 	}
-	
+
 	// Parse it
 	if( patchDef3 )
 	{
@@ -120,9 +120,9 @@ idMapPatch* idMapPatch::Parse( idLexer& src, const idVec3& origin, bool patchDef
 			return NULL;
 		}
 	}
-	
+
 	idMapPatch* patch = new( TAG_IDLIB ) idMapPatch( info[0], info[1] );
-	
+
 	patch->SetSize( info[0], info[1] );
 	if( version < 2.0f )
 	{
@@ -132,21 +132,21 @@ idMapPatch* idMapPatch::Parse( idLexer& src, const idVec3& origin, bool patchDef
 	{
 		patch->SetMaterial( token );
 	}
-	
+
 	if( patchDef3 )
 	{
 		patch->SetHorzSubdivisions( info[2] );
 		patch->SetVertSubdivisions( info[3] );
 		patch->SetExplicitlySubdivided( true );
 	}
-	
+
 	if( patch->GetWidth() < 0 || patch->GetHeight() < 0 )
 	{
 		src.Error( "idMapPatch::Parse: bad size" );
 		delete patch;
 		return NULL;
 	}
-	
+
 	// these were written out in the wrong order, IMHO
 	if( !src.ExpectTokenString( "(" ) )
 	{
@@ -154,8 +154,8 @@ idMapPatch* idMapPatch::Parse( idLexer& src, const idVec3& origin, bool patchDef
 		delete patch;
 		return NULL;
 	}
-	
-	
+
+
 	for( j = 0; j < patch->GetWidth(); j++ )
 	{
 		if( !src.ExpectTokenString( "(" ) )
@@ -167,14 +167,14 @@ idMapPatch* idMapPatch::Parse( idLexer& src, const idVec3& origin, bool patchDef
 		for( i = 0; i < patch->GetHeight(); i++ )
 		{
 			float v[5];
-			
+
 			if( !src.Parse1DMatrix( 5, v ) )
 			{
 				src.Error( "idMapPatch::Parse: bad vertex column data" );
 				delete patch;
 				return NULL;
 			}
-			
+
 			vert = &( ( *patch )[i * patch->GetWidth() + j] );
 			vert->xyz[0] = v[0] - origin[0];
 			vert->xyz[1] = v[1] - origin[1];
@@ -188,14 +188,14 @@ idMapPatch* idMapPatch::Parse( idLexer& src, const idVec3& origin, bool patchDef
 			return NULL;
 		}
 	}
-	
+
 	if( !src.ExpectTokenString( ")" ) )
 	{
 		src.Error( "idMapPatch::Parse: unable to parse patch control points, no closure" );
 		delete patch;
 		return NULL;
 	}
-	
+
 	// read any key/value pairs
 	while( src.ReadToken( &token ) )
 	{
@@ -211,7 +211,7 @@ idMapPatch* idMapPatch::Parse( idLexer& src, const idVec3& origin, bool patchDef
 			patch->epairs.Set( key, token );
 		}
 	}
-	
+
 	return patch;
 }
 
@@ -224,7 +224,7 @@ bool idMapPatch::Write( idFile* fp, int primitiveNum, const idVec3& origin ) con
 {
 	int i, j;
 	const idDrawVert* v;
-	
+
 	if( GetExplicitlySubdivided() )
 	{
 		fp->WriteFloatString( "// primitive %d\n{\n patchDef3\n {\n", primitiveNum );
@@ -235,7 +235,7 @@ bool idMapPatch::Write( idFile* fp, int primitiveNum, const idVec3& origin ) con
 		fp->WriteFloatString( "// primitive %d\n{\n patchDef2\n {\n", primitiveNum );
 		fp->WriteFloatString( "  \"%s\"\n  ( %d %d 0 0 0 )\n", GetMaterial(), GetWidth(), GetHeight() );
 	}
-	
+
 	fp->WriteFloatString( "  (\n" );
 	idVec2 st;
 	for( i = 0; i < GetWidth(); i++ )
@@ -251,7 +251,7 @@ bool idMapPatch::Write( idFile* fp, int primitiveNum, const idVec3& origin ) con
 		fp->WriteFloatString( " )\n" );
 	}
 	fp->WriteFloatString( "  )\n }\n}\n" );
-	
+
 	return true;
 }
 
@@ -264,7 +264,7 @@ void idMapPatch::GetGeometryCRC( unsigned int& crc ) const
 {
 	CRC32_UpdateChecksum( crc, &horzSubdivisions, sizeof( horzSubdivisions ) );
 	CRC32_UpdateChecksum( crc, &vertSubdivisions, sizeof( vertSubdivisions ) );
-	
+
 	for( int i = 0; i < GetWidth(); i++ )
 	{
 		for( int j = 0; j < GetHeight(); j++ )
@@ -273,7 +273,7 @@ void idMapPatch::GetGeometryCRC( unsigned int& crc ) const
 			CRC32_UpdateChecksum( crc, &vec, sizeof( vec ) );
 		}
 	}
-	
+
 	CRC32_UpdateChecksum( crc, GetMaterial(), strlen( GetMaterial() ) );
 }
 
@@ -290,12 +290,12 @@ idMapBrush* idMapBrush::Parse( idLexer& src, const idVec3& origin, bool newForma
 	idList<idMapBrushSide*> sides;
 	idMapBrushSide*	side;
 	idDict epairs;
-	
+
 	if( !src.ExpectTokenString( "{" ) )
 	{
 		return NULL;
 	}
-	
+
 	do
 	{
 		if( !src.ReadToken( &token ) )
@@ -308,7 +308,7 @@ idMapBrush* idMapBrush::Parse( idLexer& src, const idVec3& origin, bool newForma
 		{
 			break;
 		}
-		
+
 		// here we may have to jump over brush epairs ( only used in editor )
 		do
 		{
@@ -324,18 +324,18 @@ idMapBrush* idMapBrush::Parse( idLexer& src, const idVec3& origin, bool newForma
 				sides.DeleteContents( true );
 				return NULL;
 			}
-			
+
 			idStr key = token;
-			
+
 			if( !src.ReadTokenOnLine( &token ) || token.type != TT_STRING )
 			{
 				src.Error( "idMapBrush::Parse: expected epair value string not found" );
 				sides.DeleteContents( true );
 				return NULL;
 			}
-			
+
 			epairs.Set( key, token );
-			
+
 			// try to read the next key
 			if( !src.ReadToken( &token ) )
 			{
@@ -345,12 +345,12 @@ idMapBrush* idMapBrush::Parse( idLexer& src, const idVec3& origin, bool newForma
 			}
 		}
 		while( 1 );
-		
+
 		src.UnreadToken( &token );
-		
+
 		side = new( TAG_IDLIB ) idMapBrushSide();
 		sides.Append( side );
-		
+
 		if( newFormat )
 		{
 			if( !src.Parse1DMatrix( 4, side->plane.ToFloatPtr() ) )
@@ -371,14 +371,14 @@ idMapBrush* idMapBrush::Parse( idLexer& src, const idVec3& origin, bool newForma
 				sides.DeleteContents( true );
 				return NULL;
 			}
-			
+
 			planepts[0] -= origin;
 			planepts[1] -= origin;
 			planepts[2] -= origin;
-			
+
 			side->plane.FromPoints( planepts[0], planepts[1], planepts[2] );
 		}
-		
+
 		// read the texture matrix
 		// this is odd, because the texmat is 2D relative to default planar texture axis
 		if( !src.Parse2DMatrix( 2, 3, side->texMat[0].ToFloatPtr() ) )
@@ -388,7 +388,7 @@ idMapBrush* idMapBrush::Parse( idLexer& src, const idVec3& origin, bool newForma
 			return NULL;
 		}
 		side->origin = origin;
-		
+
 		// read the material
 		if( !src.ReadTokenOnLine( &token ) )
 		{
@@ -396,7 +396,7 @@ idMapBrush* idMapBrush::Parse( idLexer& src, const idVec3& origin, bool newForma
 			sides.DeleteContents( true );
 			return NULL;
 		}
-		
+
 		// we had an implicit 'textures/' in the old format...
 		if( version < 2.0f )
 		{
@@ -406,7 +406,7 @@ idMapBrush* idMapBrush::Parse( idLexer& src, const idVec3& origin, bool newForma
 		{
 			side->material = token;
 		}
-		
+
 		// Q2 allowed override of default flags and values, but we don't any more
 		if( src.ReadTokenOnLine( &token ) )
 		{
@@ -419,21 +419,21 @@ idMapBrush* idMapBrush::Parse( idLexer& src, const idVec3& origin, bool newForma
 		}
 	}
 	while( 1 );
-	
+
 	if( !src.ExpectTokenString( "}" ) )
 	{
 		sides.DeleteContents( true );
 		return NULL;
 	}
-	
+
 	idMapBrush* brush = new( TAG_IDLIB ) idMapBrush();
 	for( i = 0; i < sides.Num(); i++ )
 	{
 		brush->AddSide( sides[i] );
 	}
-	
+
 	brush->epairs = epairs;
-	
+
 	return brush;
 }
 
@@ -451,17 +451,17 @@ idMapBrush* idMapBrush::ParseQ3( idLexer& src, const idVec3& origin )
 	idList<idMapBrushSide*> sides;
 	idMapBrushSide*	side;
 	idDict epairs;
-	
+
 	do
 	{
 		if( src.CheckTokenString( "}" ) )
 		{
 			break;
 		}
-		
+
 		side = new( TAG_IDLIB ) idMapBrushSide();
 		sides.Append( side );
-		
+
 		// read the three point plane definition
 		if( !src.Parse1DMatrix( 3, planepts[0].ToFloatPtr() ) ||
 				!src.Parse1DMatrix( 3, planepts[1].ToFloatPtr() ) ||
@@ -471,13 +471,13 @@ idMapBrush* idMapBrush::ParseQ3( idLexer& src, const idVec3& origin )
 			sides.DeleteContents( true );
 			return NULL;
 		}
-		
+
 		planepts[0] -= origin;
 		planepts[1] -= origin;
 		planepts[2] -= origin;
-		
+
 		side->plane.FromPoints( planepts[0], planepts[1], planepts[2] );
-		
+
 		// read the material
 		if( !src.ReadTokenOnLine( &token ) )
 		{
@@ -485,10 +485,10 @@ idMapBrush* idMapBrush::ParseQ3( idLexer& src, const idVec3& origin )
 			sides.DeleteContents( true );
 			return NULL;
 		}
-		
+
 		// we have an implicit 'textures/' in the old format
 		side->material = "textures/" + token;
-		
+
 		// read the texture shift, rotate and scale
 		shift[0] = src.ParseInt();
 		shift[1] = src.ParseInt();
@@ -498,7 +498,7 @@ idMapBrush* idMapBrush::ParseQ3( idLexer& src, const idVec3& origin )
 		side->texMat[0] = idVec3( 0.03125f, 0.0f, 0.0f );
 		side->texMat[1] = idVec3( 0.0f, 0.03125f, 0.0f );
 		side->origin = origin;
-		
+
 		// Q2 allowed override of default flags and values, but we don't any more
 		if( src.ReadTokenOnLine( &token ) )
 		{
@@ -511,15 +511,15 @@ idMapBrush* idMapBrush::ParseQ3( idLexer& src, const idVec3& origin )
 		}
 	}
 	while( 1 );
-	
+
 	idMapBrush* brush = new( TAG_IDLIB ) idMapBrush();
 	for( i = 0; i < sides.Num(); i++ )
 	{
 		brush->AddSide( sides[i] );
 	}
-	
+
 	brush->epairs = epairs;
-	
+
 	return brush;
 }
 
@@ -532,15 +532,15 @@ bool idMapBrush::Write( idFile* fp, int primitiveNum, const idVec3& origin ) con
 {
 	int i;
 	idMapBrushSide* side;
-	
+
 	fp->WriteFloatString( "// primitive %d\n{\n brushDef3\n {\n", primitiveNum );
-	
+
 	// write brush epairs
 	for( i = 0; i < epairs.GetNumKeyVals(); i++ )
 	{
 		fp->WriteFloatString( "  \"%s\" \"%s\"\n", epairs.GetKeyVal( i )->GetKey().c_str(), epairs.GetKeyVal( i )->GetValue().c_str() );
 	}
-	
+
 	// write brush sides
 	for( i = 0; i < GetNumSides(); i++ )
 	{
@@ -551,9 +551,9 @@ bool idMapBrush::Write( idFile* fp, int primitiveNum, const idVec3& origin ) con
 							  side->texMat[1][0], side->texMat[1][1], side->texMat[1][2],
 							  side->material.c_str() );
 	}
-	
+
 	fp->WriteFloatString( " }\n}\n" );
-	
+
 	return true;
 }
 
@@ -586,25 +586,25 @@ idMapEntity* idMapEntity::Parse( idLexer& src, bool worldSpawn, float version )
 	bool worldent;
 	idVec3 origin;
 	double v1, v2, v3;
-	
+
 	if( !src.ReadToken( &token ) )
 	{
 		return NULL;
 	}
-	
+
 	if( token != "{" )
 	{
 		src.Error( "idMapEntity::Parse: { not found, found %s", token.c_str() );
 		return NULL;
 	}
-	
+
 	mapEnt = new( TAG_IDLIB ) idMapEntity();
-	
+
 	if( worldSpawn )
 	{
 		mapEnt->primitives.Resize( 1024, 256 );
 	}
-	
+
 	origin.Zero();
 	worldent = false;
 	do
@@ -618,7 +618,7 @@ idMapEntity* idMapEntity::Parse( idLexer& src, bool worldSpawn, float version )
 		{
 			break;
 		}
-		
+
 		if( token == "{" )
 		{
 			// parse a brush or patch
@@ -627,12 +627,12 @@ idMapEntity* idMapEntity::Parse( idLexer& src, bool worldSpawn, float version )
 				src.Error( "idMapEntity::Parse: unexpected EOF" );
 				return NULL;
 			}
-			
+
 			if( worldent )
 			{
 				origin.Zero();
 			}
-			
+
 			// if is it a brush: brush, brushDef, brushDef2, brushDef3
 			if( token.Icmpn( "brush", 5 ) == 0 )
 			{
@@ -668,19 +668,19 @@ idMapEntity* idMapEntity::Parse( idLexer& src, bool worldSpawn, float version )
 		else
 		{
 			idStr key, value;
-			
+
 			// parse a key / value pair
 			key = token;
 			src.ReadTokenOnLine( &token );
 			value = token;
-			
+
 			// strip trailing spaces that sometimes get accidentally
 			// added in the editor
 			value.StripTrailingWhitespace();
 			key.StripTrailingWhitespace();
-			
+
 			mapEnt->epairs.Set( key, value );
-			
+
 			if( !idStr::Icmp( key, "origin" ) )
 			{
 				// scanf into doubles, then assign, so it is idVec size independent
@@ -697,7 +697,7 @@ idMapEntity* idMapEntity::Parse( idLexer& src, bool worldSpawn, float version )
 		}
 	}
 	while( 1 );
-	
+
 	return mapEnt;
 }
 
@@ -711,22 +711,22 @@ bool idMapEntity::Write( idFile* fp, int entityNum ) const
 	int i;
 	idMapPrimitive* mapPrim;
 	idVec3 origin;
-	
+
 	fp->WriteFloatString( "// entity %d\n{\n", entityNum );
-	
+
 	// write entity epairs
 	for( i = 0; i < epairs.GetNumKeyVals(); i++ )
 	{
 		fp->WriteFloatString( "\"%s\" \"%s\"\n", epairs.GetKeyVal( i )->GetKey().c_str(), epairs.GetKeyVal( i )->GetValue().c_str() );
 	}
-	
+
 	epairs.GetVector( "origin", "0 0 0", origin );
-	
+
 	// write pritimives
 	for( i = 0; i < GetNumPrimitives(); i++ )
 	{
 		mapPrim = GetPrimitive( i );
-		
+
 		switch( mapPrim->GetType() )
 		{
 			case idMapPrimitive::TYPE_BRUSH:
@@ -737,9 +737,9 @@ bool idMapEntity::Write( idFile* fp, int entityNum ) const
 				break;
 		}
 	}
-	
+
 	fp->WriteFloatString( "}\n" );
-	
+
 	return true;
 }
 
@@ -763,7 +763,7 @@ void idMapEntity::GetGeometryCRC( unsigned int& crc ) const
 	for( int i = 0; i < GetNumPrimitives(); i++ )
 	{
 		idMapPrimitive*	mapPrim = GetPrimitive( i );
-		
+
 		switch( mapPrim->GetType() )
 		{
 			case idMapPrimitive::TYPE_BRUSH:
@@ -789,19 +789,19 @@ bool idMapFile::Parse( const char* filename, bool ignoreRegion, bool osPath )
 	idStr fullName;
 	idMapEntity* mapEnt;
 	int i, j, k;
-	
+
 	name = filename;
 	name.StripFileExtension();
 	fullName = name;
 	hasPrimitiveData = false;
-	
+
 	if( !ignoreRegion )
 	{
 		// try loading a .reg file first
 		fullName.SetFileExtension( "reg" );
 		src.LoadFile( fullName, osPath );
 	}
-	
+
 	if( !src.IsLoaded() )
 	{
 		// now try a .map file
@@ -813,17 +813,17 @@ bool idMapFile::Parse( const char* filename, bool ignoreRegion, bool osPath )
 			return false;
 		}
 	}
-	
+
 	version = OLD_MAP_VERSION;
 	fileTime = src.GetFileTime();
 	entities.DeleteContents( true );
-	
+
 	if( src.CheckTokenString( "Version" ) )
 	{
 		src.ReadTokenOnLine( &token );
 		version = token.GetFloatValue();
 	}
-	
+
 	while( 1 )
 	{
 		mapEnt = idMapEntity::Parse( src, ( entities.Num() == 0 ), version );
@@ -833,13 +833,13 @@ bool idMapFile::Parse( const char* filename, bool ignoreRegion, bool osPath )
 		}
 		entities.Append( mapEnt );
 	}
-	
+
 	SetGeometryCRC();
-	
+
 	// if the map has a worldspawn
 	if( entities.Num() )
 	{
-	
+
 		// "removeEntities" "classname" can be set in the worldspawn to remove all entities with the given classname
 		const idKeyValue* removeEntities = entities[0]->epairs.MatchPrefix( "removeEntities", NULL );
 		while( removeEntities )
@@ -847,7 +847,7 @@ bool idMapFile::Parse( const char* filename, bool ignoreRegion, bool osPath )
 			RemoveEntities( removeEntities->GetValue() );
 			removeEntities = entities[0]->epairs.MatchPrefix( "removeEntities", removeEntities );
 		}
-		
+
 		// "overrideMaterial" "material" can be set in the worldspawn to reset all materials
 		idStr material;
 		if( entities[0]->epairs.GetString( "overrideMaterial", "", material ) )
@@ -878,7 +878,7 @@ bool idMapFile::Parse( const char* filename, bool ignoreRegion, bool osPath )
 				}
 			}
 		}
-		
+
 		// force all entities to have a name key/value pair
 		if( entities[0]->epairs.GetBool( "forceEntityNames" ) )
 		{
@@ -891,7 +891,7 @@ bool idMapFile::Parse( const char* filename, bool ignoreRegion, bool osPath )
 				}
 			}
 		}
-		
+
 		// move the primitives of any func_group entities to the worldspawn
 		if( entities[0]->epairs.GetBool( "moveFuncGroups" ) )
 		{
@@ -906,7 +906,7 @@ bool idMapFile::Parse( const char* filename, bool ignoreRegion, bool osPath )
 			}
 		}
 	}
-	
+
 	hasPrimitiveData = true;
 	return true;
 }
@@ -921,12 +921,12 @@ bool idMapFile::Write( const char* fileName, const char* ext, bool fromBasePath 
 	int i;
 	idStr qpath;
 	idFile* fp;
-	
+
 	qpath = fileName;
 	qpath.SetFileExtension( ext );
-	
+
 	idLib::common->Printf( "writing %s...\n", qpath.c_str() );
-	
+
 	if( fromBasePath )
 	{
 		fp = idLib::fileSystem->OpenFileWrite( qpath, "fs_basepath" );
@@ -935,22 +935,22 @@ bool idMapFile::Write( const char* fileName, const char* ext, bool fromBasePath 
 	{
 		fp = idLib::fileSystem->OpenExplicitFileWrite( qpath );
 	}
-	
+
 	if( !fp )
 	{
 		idLib::common->Warning( "Couldn't open %s\n", qpath.c_str() );
 		return false;
 	}
-	
+
 	fp->WriteFloatString( "Version %f\n", ( float ) CURRENT_MAP_VERSION );
-	
+
 	for( i = 0; i < entities.Num(); i++ )
 	{
 		entities[i]->Write( fp, i );
 	}
-	
+
 	idLib::fileSystem->CloseFile( fp );
-	
+
 	return true;
 }
 
@@ -962,12 +962,12 @@ idMapFile::SetGeometryCRC
 void idMapFile::SetGeometryCRC()
 {
 	CRC32_InitChecksum( geometryCRC );
-	
+
 	for( int i = 0; i < entities.Num(); i++ )
 	{
 		entities[i]->GetGeometryCRC( geometryCRC );
 	}
-	
+
 	CRC32_FinishChecksum( geometryCRC );
 }
 

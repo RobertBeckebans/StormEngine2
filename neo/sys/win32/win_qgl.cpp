@@ -756,7 +756,7 @@ glEnumName_t	glEnumNames[] =
 {
 	DEF( GL_FALSE )
 	DEF( GL_TRUE )
-	
+
 	{ GL_BYTE, "GL_BYTE" },
 	{ GL_UNSIGNED_BYTE, "GL_UNSIGNED_BYTE" },
 	{ GL_SHORT, "GL_SHORT" },
@@ -765,7 +765,7 @@ glEnumName_t	glEnumNames[] =
 	{ GL_UNSIGNED_INT, "GL_UNSIGNED_INT" },
 	{ GL_FLOAT, "GL_FLOAT" },
 	{ GL_DOUBLE, "GL_DOUBLE" },
-	
+
 	{ GL_TEXTURE_CUBE_MAP_EXT, "GL_TEXTURE_CUBE_MAP_EXT" },
 	{ GL_TEXTURE_3D, "GL_TEXTURE_3D" },
 	{ GL_TEXTURE_2D, "GL_TEXTURE_2D" },
@@ -783,7 +783,7 @@ glEnumName_t	glEnumNames[] =
 	{ GL_TEXTURE_GEN_Q, "GL_TEXTURE_GEN_Q" },
 	{ GL_STENCIL_TEST, "GL_STENCIL_TEST" },
 	{ GL_POLYGON_OFFSET_FILL, "GL_POLYGON_OFFSET_FILL" },
-	
+
 	{ GL_TRIANGLES,	"GL_TRIANGLES" },
 	{ GL_TRIANGLE_STRIP, "GL_TRIANGLE_STRIP" },
 	{ GL_TRIANGLE_FAN, "GL_TRIANGLE_FAN" },
@@ -794,7 +794,7 @@ glEnumName_t	glEnumNames[] =
 	{ GL_LINES, "GL_LINES" },
 	{ GL_LINE_STRIP, "GL_LINE_STRIP" },
 	{ GL_LINE_LOOP, "GL_LINE_LOOP" },
-	
+
 	{ GL_ALWAYS, "GL_ALWAYS" },
 	{ GL_NEVER, "GL_NEVER" },
 	{ GL_LEQUAL, "GL_LEQUAL" },
@@ -803,7 +803,7 @@ glEnumName_t	glEnumNames[] =
 	{ GL_GREATER, "GL_GREATER" },
 	{ GL_GEQUAL, "GL_GEQUAL" },
 	{ GL_NOTEQUAL, "GL_NOTEQUAL" },
-	
+
 	{ GL_ONE, "GL_ONE" },
 	{ GL_ZERO, "GL_ZERO" },
 	{ GL_SRC_ALPHA, "GL_SRC_ALPHA" },
@@ -811,11 +811,11 @@ glEnumName_t	glEnumNames[] =
 	{ GL_DST_COLOR, "GL_DST_COLOR" },
 	{ GL_ONE_MINUS_DST_COLOR, "GL_ONE_MINUS_DST_COLOR" },
 	{ GL_DST_ALPHA, "GL_DST_ALPHA" },
-	
+
 	{ GL_MODELVIEW, "GL_MODELVIEW" },
 	{ GL_PROJECTION, "GL_PROJECTION" },
 	{ GL_TEXTURE, "GL_TEXTURE" },
-	
+
 	/* DrawBufferMode */
 	DEF( GL_NONE )
 	DEF( GL_FRONT_LEFT )
@@ -831,7 +831,7 @@ glEnumName_t	glEnumNames[] =
 	DEF( GL_AUX1 )
 	DEF( GL_AUX2 )
 	DEF( GL_AUX3 )
-	
+
 	/* GetTarget */
 	DEF( GL_CURRENT_COLOR )
 	DEF( GL_CURRENT_INDEX )
@@ -1042,12 +1042,12 @@ glEnumName_t	glEnumNames[] =
 	DEF( GL_FEEDBACK_BUFFER_TYPE )
 	DEF( GL_SELECTION_BUFFER_POINTER )
 	DEF( GL_SELECTION_BUFFER_SIZE )
-	
+
 	/* PixelCopyType */
 	DEF( GL_COLOR )
 	DEF( GL_DEPTH )
 	DEF( GL_STENCIL )
-	
+
 	/* PixelFormat */
 	DEF( GL_COLOR_INDEX )
 	DEF( GL_STENCIL_INDEX )
@@ -1060,7 +1060,7 @@ glEnumName_t	glEnumNames[] =
 	DEF( GL_RGBA )
 	DEF( GL_LUMINANCE )
 	DEF( GL_LUMINANCE_ALPHA )
-	
+
 	/* PixelMap */
 	/*      GL_PIXEL_MAP_I_TO_I */
 	/*      GL_PIXEL_MAP_S_TO_S */
@@ -1072,7 +1072,7 @@ glEnumName_t	glEnumNames[] =
 	/*      GL_PIXEL_MAP_G_TO_G */
 	/*      GL_PIXEL_MAP_B_TO_B */
 	/*      GL_PIXEL_MAP_A_TO_A */
-	
+
 	/* PixelStore */
 	/*      GL_UNPACK_SWAP_BYTES */
 	/*      GL_UNPACK_LSB_FIRST */
@@ -1086,7 +1086,7 @@ glEnumName_t	glEnumNames[] =
 	/*      GL_PACK_SKIP_ROWS */
 	/*      GL_PACK_SKIP_PIXELS */
 	/*      GL_PACK_ALIGNMENT */
-	
+
 	/* PixelTransfer */
 	/*      GL_MAP_COLOR */
 	/*      GL_MAP_STENCIL */
@@ -1102,7 +1102,7 @@ glEnumName_t	glEnumNames[] =
 	/*      GL_ALPHA_BIAS */
 	/*      GL_DEPTH_SCALE */
 	/*      GL_DEPTH_BIAS */
-	
+
 	/* PixelType */
 	DEF( GL_BITMAP )
 	/*      GL_BYTE */
@@ -1112,21 +1112,21 @@ glEnumName_t	glEnumNames[] =
 	/*      GL_INT */
 	/*      GL_UNSIGNED_INT */
 	/*      GL_FLOAT */
-	
+
 	/* PolygonMode */
 	DEF( GL_POINT )
 	DEF( GL_LINE )
 	DEF( GL_FILL )
-	
+
 	/* RenderingMode */
 	DEF( GL_RENDER )
 	DEF( GL_FEEDBACK )
 	DEF( GL_SELECT )
-	
+
 	/* ShadingModel */
 	DEF( GL_FLAT )
 	DEF( GL_SMOOTH )
-	
+
 	/* StencilOp */
 	/*      GL_ZERO */
 	DEF( GL_KEEP )
@@ -1134,52 +1134,52 @@ glEnumName_t	glEnumNames[] =
 	DEF( GL_INCR )
 	DEF( GL_DECR )
 	/*      GL_INVERT */
-	
+
 	/* StringName */
 	DEF( GL_VENDOR )
 	DEF( GL_RENDERER )
 	DEF( GL_VERSION )
 	DEF( GL_EXTENSIONS )
-	
+
 	/* TextureCoordName */
 	DEF( GL_S )
 	DEF( GL_T )
 	DEF( GL_R )
 	DEF( GL_Q )
-	
+
 	/* TexCoordPointerType */
 	/*      GL_SHORT */
 	/*      GL_INT */
 	/*      GL_FLOAT */
 	/*      GL_DOUBLE */
-	
+
 	/* TextureEnvMode */
 	DEF( GL_MODULATE )
 	DEF( GL_DECAL )
 	/*      GL_BLEND */
 	/*      GL_REPLACE */
-	
+
 	/* TextureEnvParameter */
 	DEF( GL_TEXTURE_ENV_MODE )
 	DEF( GL_TEXTURE_ENV_COLOR )
-	
+
 	/* TextureEnvTarget */
 	DEF( GL_TEXTURE_ENV )
-	
+
 	/* TextureGenMode */
 	DEF( GL_EYE_LINEAR )
 	DEF( GL_OBJECT_LINEAR )
 	DEF( GL_SPHERE_MAP )
-	
+
 	/* TextureGenParameter */
 	DEF( GL_TEXTURE_GEN_MODE )
 	DEF( GL_OBJECT_PLANE )
 	DEF( GL_EYE_PLANE )
-	
+
 	/* TextureMagFilter */
 	DEF( GL_NEAREST )
 	DEF( GL_LINEAR )
-	
+
 	/* TextureMinFilter */
 	/*      GL_NEAREST */
 	/*      GL_LINEAR */
@@ -1187,7 +1187,7 @@ glEnumName_t	glEnumNames[] =
 	DEF( GL_LINEAR_MIPMAP_NEAREST )
 	DEF( GL_NEAREST_MIPMAP_LINEAR )
 	DEF( GL_LINEAR_MIPMAP_LINEAR )
-	
+
 	/* TextureParameterName */
 	DEF( GL_TEXTURE_MAG_FILTER )
 	DEF( GL_TEXTURE_MIN_FILTER )
@@ -1195,35 +1195,35 @@ glEnumName_t	glEnumNames[] =
 	DEF( GL_TEXTURE_WRAP_T )
 	/*      GL_TEXTURE_BORDER_COLOR */
 	/*      GL_TEXTURE_PRIORITY */
-	
+
 	/* TextureTarget */
 	/*      GL_TEXTURE_1D */
 	/*      GL_TEXTURE_2D */
 	/*      GL_PROXY_TEXTURE_1D */
 	/*      GL_PROXY_TEXTURE_2D */
-	
+
 	/* TextureWrapMode */
 	DEF( GL_CLAMP )
 	DEF( GL_REPEAT )
-	
+
 	/* VertexPointerType */
 	/*      GL_SHORT */
 	/*      GL_INT */
 	/*      GL_FLOAT */
 	/*      GL_DOUBLE */
-	
+
 	/* ClientAttribMask */
 	DEF( GL_CLIENT_PIXEL_STORE_BIT )
 	DEF( GL_CLIENT_VERTEX_ARRAY_BIT )
 	DEF( GL_CLIENT_ALL_ATTRIB_BITS )
-	
+
 	/* polygon_offset */
 	DEF( GL_POLYGON_OFFSET_FACTOR )
 	DEF( GL_POLYGON_OFFSET_UNITS )
 	DEF( GL_POLYGON_OFFSET_POINT )
 	DEF( GL_POLYGON_OFFSET_LINE )
 	DEF( GL_POLYGON_OFFSET_FILL )
-	
+
 	{
 		0, NULL
 	}
@@ -1238,15 +1238,15 @@ glEnumName_t	glEnumNames[] =
 void QGL_Shutdown( void )
 {
 	common->Printf( "...shutting down QGL\n" );
-	
+
 	if( win32.hinstOpenGL )
 	{
 		common->Printf( "...unloading OpenGL DLL\n" );
 		FreeLibrary( win32.hinstOpenGL );
 	}
-	
+
 	win32.hinstOpenGL = NULL;
-	
+
 	qglAccum                     = NULL;
 	qglAlphaFunc                 = NULL;
 	qglAreTexturesResident       = NULL;
@@ -1585,7 +1585,7 @@ void QGL_Shutdown( void )
 	qglVertex4sv                 = NULL;
 	qglVertexPointer             = NULL;
 	qglViewport                  = NULL;
-	
+
 	qwglCopyContext              = NULL;
 	qwglCreateContext            = NULL;
 	qwglCreateLayerContext       = NULL;
@@ -1602,7 +1602,7 @@ void QGL_Shutdown( void )
 	qwglSwapLayerBuffers         = NULL;
 	qwglUseFontBitmaps           = NULL;
 	qwglUseFontOutlines          = NULL;
-	
+
 	qwglChoosePixelFormat        = NULL;
 	qwglDescribePixelFormat      = NULL;
 	qwglGetPixelFormat           = NULL;
@@ -1628,18 +1628,18 @@ void QGL_Shutdown( void )
 bool QGL_Init( const char* dllname )
 {
 	assert( win32.hinstOpenGL == 0 );
-	
+
 	common->Printf( "...initializing QGL\n" );
-	
+
 	common->Printf( "...calling LoadLibrary( '%s' ): ", dllname );
-	
+
 	if( ( win32.hinstOpenGL = LoadLibrary( dllname ) ) == 0 )
 	{
 		common->Printf( "failed\n" );
 		return false;
 	}
 	common->Printf( "succeeded\n" );
-	
+
 	qglAccum                     = dllAccum = glAccum;
 	qglAlphaFunc                 = dllAlphaFunc = glAlphaFunc;
 	qglAreTexturesResident       = dllAreTexturesResident = glAreTexturesResident;
@@ -1978,7 +1978,7 @@ bool QGL_Init( const char* dllname )
 	qglVertex4sv                 = 	dllVertex4sv                 = glVertex4sv;
 	qglVertexPointer             = 	dllVertexPointer             = glVertexPointer;
 	qglViewport                  = 	dllViewport                  = glViewport;
-	
+
 	qwglCopyContext              = wglCopyContext;
 	qwglCreateContext            = wglCreateContext;
 	qwglCreateLayerContext       = wglCreateLayerContext;
@@ -1995,13 +1995,13 @@ bool QGL_Init( const char* dllname )
 	qwglSwapLayerBuffers         = wglSwapLayerBuffers;
 	qwglUseFontBitmaps           = wglUseFontBitmapsA;
 	qwglUseFontOutlines          = wglUseFontOutlinesA;
-	
+
 	qwglChoosePixelFormat        = ChoosePixelFormat;
 	qwglDescribePixelFormat      = DescribePixelFormat;
 	qwglGetPixelFormat           = GetPixelFormat;
 	qwglSetPixelFormat           = SetPixelFormat;
 	qwglSwapBuffers              = SwapBuffers;
-	
+
 	return true;
 }
 

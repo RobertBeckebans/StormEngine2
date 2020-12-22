@@ -36,7 +36,7 @@ class idRenderWindow : public idWindow
 public:
 	idRenderWindow( idUserInterfaceLocal* gui );
 	virtual ~idRenderWindow();
-	
+
 	virtual void PostParse();
 	virtual void Draw( int time, float x, float y );
 	virtual size_t Allocated()
@@ -59,7 +59,7 @@ private:
 	renderEntity_t worldEntity;
 	renderLight_t rLight;
 	const idMD5Anim* modelAnim;
-	
+
 	qhandle_t	worldModelDef;
 	qhandle_t	lightDef;
 	qhandle_t   modelDef;

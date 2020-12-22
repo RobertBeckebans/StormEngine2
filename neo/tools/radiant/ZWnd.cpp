@@ -36,11 +36,11 @@ If you have questions concerning this license or the applicable additional terms
 
 // foresthale 2014-05-29: let's not use the MFC DEBUG_NEW when we have our own...
 #ifdef ID_DEBUG_NEW_MFC
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+	#ifdef _DEBUG
+		#define new DEBUG_NEW
+		#undef THIS_FILE
+		static char THIS_FILE[] = __FILE__;
+	#endif
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
@@ -88,13 +88,15 @@ END_MESSAGE_MAP()
 int CZWnd::OnCreate( LPCREATESTRUCT lpCreateStruct )
 {
 	if( CWnd::OnCreate( lpCreateStruct ) == -1 )
+	{
 		return -1;
-		
+	}
+
 	m_dcZ = ::GetDC( GetSafeHwnd() );
 	QEW_SetupPixelFormat( m_dcZ, false );
-	
+
 	m_pZClip = new CZClip();
-	
+
 	return 0;
 }
 
@@ -105,7 +107,7 @@ void CZWnd::OnDestroy()
 		delete m_pZClip;
 		m_pZClip = NULL;
 	}
-	
+
 	CWnd::OnDestroy();
 }
 
@@ -154,10 +156,10 @@ void CZWnd::OnPaint()
 	else
 	{
 		QE_CheckOpenGLForErrors();
-		
+
 		// foresthale 2014-05-19: set up familiar state for editors before we draw anything
 		tr.Editor_SetupState();
-		
+
 		Z_Draw();
 		//qwglSwapBuffers(m_dcZ);
 		qwglSwapBuffers( dc.m_hDC );
@@ -190,9 +192,13 @@ void CZWnd::OnSize( UINT nType, int cx, int cy )
 	z.width = rctZ.right;
 	z.height = rctZ.bottom;
 	if( z.width < 10 )
+	{
 		z.width = 10;
+	}
 	if( z.height < 10 )
+	{
 		z.height = 10;
+	}
 	Invalidate();
 }
 
@@ -224,7 +230,9 @@ void CZWnd::OnLButtonUp( UINT nFlags, CPoint point )
 	GetClientRect( rctZ );
 	Z_MouseUp( point.x, rctZ.bottom - 1 - point.y, nFlags );
 	if( !( nFlags & ( MK_LBUTTON | MK_RBUTTON | MK_MBUTTON ) ) )
+	{
 		ReleaseCapture();
+	}
 }
 
 void CZWnd::OnMButtonUp( UINT nFlags, CPoint point )
@@ -233,7 +241,9 @@ void CZWnd::OnMButtonUp( UINT nFlags, CPoint point )
 	GetClientRect( rctZ );
 	Z_MouseUp( point.x, rctZ.bottom - 1 - point.y, nFlags );
 	if( !( nFlags & ( MK_LBUTTON | MK_RBUTTON | MK_MBUTTON ) ) )
+	{
 		ReleaseCapture();
+	}
 }
 
 void CZWnd::OnRButtonUp( UINT nFlags, CPoint point )
@@ -242,7 +252,9 @@ void CZWnd::OnRButtonUp( UINT nFlags, CPoint point )
 	GetClientRect( rctZ );
 	Z_MouseUp( point.x, rctZ.bottom - 1 - point.y, nFlags );
 	if( !( nFlags & ( MK_LBUTTON | MK_RBUTTON | MK_MBUTTON ) ) )
+	{
 		ReleaseCapture();
+	}
 }
 
 
@@ -259,14 +271,18 @@ BOOL CZWnd::PreCreateWindow( CREATESTRUCT& cs )
 		wc.hCursor       = LoadCursor( NULL, IDC_ARROW );
 		wc.lpfnWndProc = ::DefWindowProc;
 		if( AfxRegisterClass( &wc ) == FALSE )
+		{
 			Error( "CZWnd RegisterClass: failed" );
+		}
 	}
-	
+
 	cs.lpszClass = Z_WINDOW_CLASS;
 	cs.lpszName = "Z";
 	if( cs.style != QE3_CHILDSTYLE )
+	{
 		cs.style = QE3_SPLITTER_STYLE;
-		
+	}
+
 	return CWnd::PreCreateWindow( cs );
 }
 

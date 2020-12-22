@@ -128,12 +128,12 @@ void R_CreateEntityRefsDmap( idDmapRenderEntityLocal* def )
 	int			i;
 	idVec3		transformed[8];
 	idVec3		v;
-	
+
 	if( !def->parms.hModel )
 	{
 		def->parms.hModel = dmapRenderModelManager->DefaultModel();
 	}
-	
+
 	// if the entity hasn't been fully specified due to expensive animation calcs
 	// for md5 and particles, use the provided conservative bounds.
 	if( def->parms.callback )
@@ -144,13 +144,13 @@ void R_CreateEntityRefsDmap( idDmapRenderEntityLocal* def )
 	{
 		def->referenceBounds = def->parms.hModel->Bounds( &def->parms );
 	}
-	
+
 	// some models, like empty particles, may not need to be added at all
 	if( def->referenceBounds.IsCleared() )
 	{
 		return;
 	}
-	
+
 	if( r_showUpdates.GetBool() &&
 			( def->referenceBounds[1][0] - def->referenceBounds[0][0] > 1024 ||
 			  def->referenceBounds[1][1] - def->referenceBounds[0][1] > 1024 ) )
@@ -158,20 +158,20 @@ void R_CreateEntityRefsDmap( idDmapRenderEntityLocal* def )
 		common->Printf( "big entityRef: %f,%f\n", def->referenceBounds[1][0] - def->referenceBounds[0][0],
 						def->referenceBounds[1][1] - def->referenceBounds[0][1] );
 	}
-	
+
 	for( i = 0; i < 8; i++ )
 	{
 		v[0] = def->referenceBounds[i & 1][0];
 		v[1] = def->referenceBounds[( i >> 1 ) & 1][1];
 		v[2] = def->referenceBounds[( i >> 2 ) & 1][2];
-		
+
 		R_LocalPointToGlobal( def->modelMatrix, v, transformed[i] );
 	}
-	
+
 	// bump the view count so we can tell if an
 	// area already has a reference
 	dmap_tr.viewCount++;
-	
+
 	// push these points down the BSP tree into areas
 	def->world->PushVolumeIntoTree( def, NULL, 8, transformed );
 }
@@ -205,7 +205,7 @@ void R_SetLightProject( idPlane lightProject[4], const idVec3 origin, const idVe
 	idVec3		right, up;
 	idVec3		startGlobal;
 	idVec4		targetGlobal;
-	
+
 	right = rightVector;
 	rLen = right.Normalize();
 	up = upVector;
@@ -213,28 +213,28 @@ void R_SetLightProject( idPlane lightProject[4], const idVec3 origin, const idVe
 	normal = up.Cross( right );
 	//normal = right.Cross( up );
 	normal.Normalize();
-	
+
 	dist = target * normal; //  - ( origin * normal );
 	if( dist < 0 )
 	{
 		dist = -dist;
 		normal = -normal;
 	}
-	
+
 	scale = ( 0.5f * dist ) / rLen;
 	right *= scale;
 	scale = -( 0.5f * dist ) / uLen;
 	up *= scale;
-	
+
 	lightProject[2] = normal;
 	lightProject[2][3] = -( origin * lightProject[2].Normal() );
-	
+
 	lightProject[0] = right;
 	lightProject[0][3] = -( origin * lightProject[0].Normal() );
-	
+
 	lightProject[1] = up;
 	lightProject[1][3] = -( origin * lightProject[1].Normal() );
-	
+
 	// now offset to center
 	targetGlobal.ToVec3() = target + origin;
 	targetGlobal[3] = 1;
@@ -242,7 +242,7 @@ void R_SetLightProject( idPlane lightProject[4], const idVec3 origin, const idVe
 	lightProject[0].ToVec4() += ofs * lightProject[2].ToVec4();
 	ofs = 0.5f - ( targetGlobal * lightProject[1].ToVec4() ) / ( targetGlobal * lightProject[2].ToVec4() );
 	lightProject[1].ToVec4() += ofs * lightProject[2].ToVec4();
-	
+
 	// set the falloff vector
 	normal = stop - start;
 	dist = normal.Normalize();
@@ -266,24 +266,24 @@ face out of the light
 void R_SetLightFrustum( const idPlane lightProject[4], idPlane frustum[6] )
 {
 	int		i;
-	
+
 	// we want the planes of s=0, s=q, t=0, and t=q
 	frustum[0] = lightProject[0];
 	frustum[1] = lightProject[1];
 	frustum[2] = lightProject[2] - lightProject[0];
 	frustum[3] = lightProject[2] - lightProject[1];
-	
+
 	// we want the planes of s=0 and s=1 for front and rear clipping planes
 	frustum[4] = lightProject[3];
-	
+
 	frustum[5] = lightProject[3];
 	frustum[5][3] -= 1.0f;
 	frustum[5] = -frustum[5];
-	
+
 	for( i = 0; i < 6; i++ )
 	{
 		float	l;
-		
+
 		frustum[i] = -frustum[i];
 		l = frustum[i].Normalize();
 		frustum[i][3] /= l;
@@ -298,7 +298,7 @@ R_FreeLightDefFrustum
 void R_FreeLightDefFrustum( idDmapRenderLightLocal* ldef )
 {
 	int i;
-	
+
 	// free the frustum tris
 	if( ldef->frustumTris )
 	{
@@ -326,7 +326,7 @@ Fills everything in based on light->parms
 void R_DeriveLightDataDmap( idDmapRenderLightLocal* light )
 {
 	int i;
-	
+
 	// decide which light shader we are going to use
 	if( light->parms.shader )
 	{
@@ -343,14 +343,14 @@ void R_DeriveLightDataDmap( idDmapRenderLightLocal* light )
 			light->lightShader = declManager->FindMaterial( "lights/defaultProjectedLight" );
 		}
 	}
-	
+
 	// get the falloff image
 	light->falloffImage = light->lightShader->LightFalloffImage();
 	if( !light->falloffImage )
 	{
 		// use the falloff from the default shader of the correct type
 		const idMaterial*	defaultShader;
-		
+
 		if( light->parms.pointLight )
 		{
 			defaultShader = declManager->FindMaterial( "lights/defaultPointLight" );
@@ -363,12 +363,12 @@ void R_DeriveLightDataDmap( idDmapRenderLightLocal* light )
 			light->falloffImage = defaultShader->LightFalloffImage();
 		}
 	}
-	
+
 	// set the projection
 	if( !light->parms.pointLight )
 	{
 		// projected light
-		
+
 		R_SetLightProject( light->lightProject, vec3_origin /* light->parms.origin */, light->parms.target,
 						   light->parms.right, light->parms.up, light->parms.start, light->parms.end );
 	}
@@ -384,13 +384,13 @@ void R_DeriveLightDataDmap( idDmapRenderLightLocal* light )
 		light->lightProject[2][3] = 1.0f;
 		light->lightProject[3][3] = 0.5f;
 	}
-	
+
 	// set the frustum planes
 	R_SetLightFrustum( light->lightProject, light->frustum );
-	
+
 	// rotate the light planes and projections by the axis
 	R_AxisToModelMatrix( light->parms.axis, light->parms.origin, light->modelMatrix );
-	
+
 	for( i = 0; i < 6; i++ )
 	{
 		idPlane		temp;
@@ -403,13 +403,13 @@ void R_DeriveLightDataDmap( idDmapRenderLightLocal* light )
 		temp = light->lightProject[i];
 		R_LocalPlaneToGlobal( light->modelMatrix, temp, light->lightProject[i] );
 	}
-	
+
 	// adjust global light origin for off center projections and parallel projections
 	// we are just faking parallel by making it a very far off center for now
 	if( light->parms.parallel )
 	{
 		idVec3	dir;
-		
+
 		dir = light->parms.lightCenter;
 		if( !dir.Normalize() )
 		{
@@ -422,11 +422,11 @@ void R_DeriveLightDataDmap( idDmapRenderLightLocal* light )
 	{
 		light->globalLightOrigin = light->parms.origin + light->parms.axis * light->parms.lightCenter;
 	}
-	
+
 	R_FreeLightDefFrustum( light );
-	
+
 	light->frustumTris = R_PolytopeSurfaceDmap( 6, light->frustum, light->frustumWindings );
-	
+
 	// a projected light will have one shadowFrustum, a point light will have
 	// six unless the light center is outside the box
 	R_MakeShadowFrustums( light );
@@ -444,9 +444,9 @@ void R_CreateLightRefsDmap( idDmapRenderLightLocal* light )
 	idVec3	points[MAX_LIGHT_VERTS];
 	int		i;
 	srfDmapTriangles_t*	tri;
-	
+
 	tri = light->frustumTris;
-	
+
 	// because a light frustum is made of only six intersecting planes,
 	// we should never be able to get a stupid number of points...
 	if( tri->numVerts > MAX_LIGHT_VERTS )
@@ -457,14 +457,14 @@ void R_CreateLightRefsDmap( idDmapRenderLightLocal* light )
 	{
 		points[i] = tri->verts[i].xyz;
 	}
-	
+
 	if( r_showUpdates.GetBool() && ( tri->bounds[1][0] - tri->bounds[0][0] > 1024 ||
 									 tri->bounds[1][1] - tri->bounds[0][1] > 1024 ) )
 	{
 		common->Printf( "big lightRef: %f,%f\n", tri->bounds[1][0] - tri->bounds[0][0]
 						, tri->bounds[1][1] - tri->bounds[0][1] );
 	}
-	
+
 	// determine the areaNum for the light origin, which may let us
 	// cull the light if it is behind a closed door
 	// it is debatable if we want to use the entity origin or the center offset origin,
@@ -474,11 +474,11 @@ void R_CreateLightRefsDmap( idDmapRenderLightLocal* light )
 	{
 		light->areaNum = light->world->PointInArea( light->parms.origin );
 	}
-	
+
 	// bump the view count so we can tell if an
 	// area already has a reference
 	dmap_tr.viewCount++;
-	
+
 	// if we have a prelight model that includes all the shadows for the major world occluders,
 	// we can limit the area references to those visible through the portals from the light center.
 	// We can't do this in the normal case, because shadows are cast from back facing triangles, which
@@ -504,13 +504,13 @@ Called by the editor and dmap to operate on light volumes
 void R_RenderLightFrustum( const renderLight_t& renderLight, idPlane lightFrustum[6] )
 {
 	idDmapRenderLightLocal	fakeLight;
-	
+
 	fakeLight.parms = renderLight;
-	
+
 	R_DeriveLightDataDmap( &fakeLight );
-	
+
 	R_FreeStaticTriSurfDmap( fakeLight.frustumTris );
-	
+
 	for( int i = 0; i < 6; i++ )
 	{
 		lightFrustum[i] = fakeLight.frustum[i];
@@ -527,13 +527,13 @@ WindingCompletelyInsideLight
 bool WindingCompletelyInsideLight( const idWinding* w, const idDmapRenderLightLocal* ldef )
 {
 	int		i, j;
-	
+
 	for( i = 0; i < w->GetNumPoints(); i++ )
 	{
 		for( j = 0; j < 6; j++ )
 		{
 			float	d;
-			
+
 			d = ( *w )[i].ToVec3() * ldef->frustum[j].Normal() + ldef->frustum[j][3];
 			if( d > 0 )
 			{
@@ -556,32 +556,32 @@ void R_CreateLightDefFogPortalsDmap( idDmapRenderLightLocal* ldef )
 {
 	dmapAreaReference_t*		lref;
 	dmapPortalArea_t*		area;
-	
+
 	ldef->foggedPortals = NULL;
-	
+
 	if( !ldef->lightShader->IsFogLight() )
 	{
 		return;
 	}
-	
+
 	// some fog lights will explicitly disallow portal fogging
 	if( ldef->lightShader->TestMaterialFlag( MF_NOPORTALFOG ) )
 	{
 		return;
 	}
-	
+
 	for( lref = ldef->references; lref; lref = lref->ownerNext )
 	{
 		// check all the models in this area
 		area = lref->area;
-		
+
 		dmapPortal_t*	prt;
 		dmapDoublePortal_t*	dp;
-		
+
 		for( prt = area->portals; prt; prt = prt->next )
 		{
 			dp = prt->doublePortal;
-			
+
 			// we only handle a single fog volume covering a portal
 			// this will never cause incorrect drawing, but it may
 			// fail to cull a portal
@@ -589,7 +589,7 @@ void R_CreateLightDefFogPortalsDmap( idDmapRenderLightLocal* ldef )
 			{
 				continue;
 			}
-			
+
 			if( WindingCompletelyInsideLight( prt->w, ldef ) )
 			{
 				dp->fogLight = ldef;
@@ -610,33 +610,33 @@ Frees all references and lit surfaces from the light
 void R_FreeLightDefDerivedData( idDmapRenderLightLocal* ldef )
 {
 	dmapAreaReference_t*	lref, *nextRef;
-	
+
 	// rmove any portal fog references
 	for( dmapDoublePortal_t* dp = ldef->foggedPortals; dp; dp = dp->nextFoggedPortal )
 	{
 		dp->fogLight = NULL;
 	}
-	
+
 	// free all the interactions
 	while( ldef->firstInteraction != NULL )
 	{
 		ldef->firstInteraction->UnlinkAndFree();
 	}
-	
+
 	// free all the references to the light
 	for( lref = ldef->references; lref; lref = nextRef )
 	{
 		nextRef = lref->ownerNext;
-		
+
 		// unlink from the area
 		lref->areaNext->areaPrev = lref->areaPrev;
 		lref->areaPrev->areaNext = lref->areaNext;
-		
+
 		// put it back on the free list for reuse
 		ldef->world->areaReferenceAllocator.Free( lref );
 	}
 	ldef->references = NULL;
-	
+
 	R_FreeLightDefFrustum( ldef );
 }
 
@@ -652,7 +652,7 @@ void R_FreeEntityDefDerivedDataDmap( idDmapRenderEntityLocal* def, bool keepDeca
 {
 	int i;
 	dmapAreaReference_t*	ref, *next;
-	
+
 	// demo playback needs to free the joints, while normal play
 	// leaves them in the control of the game
 	if( common->ReadDemo() )
@@ -676,40 +676,40 @@ void R_FreeEntityDefDerivedDataDmap( idDmapRenderEntityLocal* def, bool keepDeca
 			}
 		}
 	}
-	
+
 	// free all the interactions
 	while( def->firstInteraction != NULL )
 	{
 		def->firstInteraction->UnlinkAndFree();
 	}
-	
+
 	// clear the dynamic model if present
 	if( def->dynamicModel )
 	{
 		def->dynamicModel = NULL;
 	}
-	
+
 	if( !keepDecals )
 	{
 		R_FreeEntityDefDecalsDmap( def );
 		R_FreeEntityDefOverlayDmap( def );
 	}
-	
+
 	if( !keepCachedDynamicModel )
 	{
 		delete def->cachedDynamicModel;
 		def->cachedDynamicModel = NULL;
 	}
-	
+
 	// free the entityRefs from the areas
 	for( ref = def->entityRefs; ref; ref = next )
 	{
 		next = ref->ownerNext;
-		
+
 		// unlink from the area
 		ref->areaNext->areaPrev = ref->areaPrev;
 		ref->areaPrev->areaNext = ref->areaNext;
-		
+
 		// put it back on the free list for reuse
 		def->world->areaReferenceAllocator.Free( ref );
 	}
@@ -742,7 +742,7 @@ void R_ClearEntityDefDynamicModelDmap( idDmapRenderEntityLocal* def )
 	{
 		inter->FreeSurfaces();
 	}
-	
+
 	// clear the dynamic model if present
 	if( def->dynamicModel )
 	{
@@ -761,33 +761,33 @@ Frees all references and lit surfaces from the light
 void R_FreeLightDefDerivedDataDmap( idDmapRenderLightLocal* ldef )
 {
 	dmapAreaReference_t*	lref, *nextRef;
-	
+
 	// rmove any portal fog references
 	for( dmapDoublePortal_t* dp = ldef->foggedPortals; dp; dp = dp->nextFoggedPortal )
 	{
 		dp->fogLight = NULL;
 	}
-	
+
 	// free all the interactions
 	while( ldef->firstInteraction != NULL )
 	{
 		ldef->firstInteraction->UnlinkAndFree();
 	}
-	
+
 	// free all the references to the light
 	for( lref = ldef->references; lref; lref = nextRef )
 	{
 		nextRef = lref->ownerNext;
-		
+
 		// unlink from the area
 		lref->areaNext->areaPrev = lref->areaPrev;
 		lref->areaPrev->areaNext = lref->areaNext;
-		
+
 		// put it back on the free list for reuse
 		ldef->world->areaReferenceAllocator.Free( lref );
 	}
 	ldef->references = NULL;
-	
+
 	R_FreeLightDefFrustum( ldef );
 }
 
@@ -825,11 +825,11 @@ void R_FreeDerivedDataDmap( void )
 	idDmapRenderWorldLocal* rw;
 	idDmapRenderEntityLocal* def;
 	idDmapRenderLightLocal* light;
-	
+
 	for( j = 0; j < dmap_tr.worlds.Num(); j++ )
 	{
 		rw = dmap_tr.worlds[j];
-		
+
 		for( i = 0; i < rw->entityDefs.Num(); i++ )
 		{
 			def = rw->entityDefs[i];
@@ -839,7 +839,7 @@ void R_FreeDerivedDataDmap( void )
 			}
 			R_FreeEntityDefDerivedDataDmap( def, false, false );
 		}
-		
+
 		for( i = 0; i < rw->lightDefs.Num(); i++ )
 		{
 			light = rw->lightDefs[i];
@@ -866,15 +866,15 @@ void R_ReCreateWorldReferencesDmap( void )
 	idDmapRenderWorldLocal* rw;
 	idDmapRenderEntityLocal* def;
 	idDmapRenderLightLocal* light;
-	
+
 	// let the interaction generation code know this shouldn't be optimized for
 	// a particular view
 	dmap_tr.viewDef = NULL;
-	
+
 	for( j = 0; j < dmap_tr.worlds.Num(); j++ )
 	{
 		rw = dmap_tr.worlds[j];
-		
+
 		for( i = 0; i < rw->entityDefs.Num(); i++ )
 		{
 			def = rw->entityDefs[i];
@@ -893,7 +893,7 @@ void R_ReCreateWorldReferencesDmap( void )
 				R_CreateEntityRefsDmap( def );
 			}
 		}
-		
+
 		for( i = 0; i < rw->lightDefs.Num(); i++ )
 		{
 			light = rw->lightDefs[i];
@@ -902,7 +902,7 @@ void R_ReCreateWorldReferencesDmap( void )
 				continue;
 			}
 			renderLight_t parms = light->parms;
-			
+
 			light->world->FreeLightDef( i );
 			rw->UpdateLightDef( i, &parms );
 		}
@@ -953,17 +953,17 @@ void RB_ClearQuads( int time )
 	int			num;
 	float		qcolor;
 	drawQuad_t*	poly;
-	
+
 	rb_drawQuadTime++;	// = time;
-	
+
 	if( !time )
 	{
 		rb_numdrawQuads = 0;
 		return;
 	}
-	
+
 	num = 0;
-	
+
 	poly = rb_drawQuads;
 	for( i = 0; i < rb_numdrawQuads; i++, poly++ )
 	{
@@ -997,12 +997,12 @@ RB_AddQuad
 void RB_AddQuad( const idVec4& color, const idWinding& winding, float lifeTime, float fadeTime )
 {
 	drawQuad_t* poly;
-	
+
 	if( fadeTime > lifeTime )
 	{
 		fadeTime = lifeTime;
 	}
-	
+
 	if( rb_numdrawQuads < MAX_QUADS )
 	{
 		poly = &rb_drawQuads[rb_numdrawQuads++];

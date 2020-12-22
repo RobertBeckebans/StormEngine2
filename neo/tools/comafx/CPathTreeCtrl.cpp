@@ -74,12 +74,12 @@ HTREEITEM CPathTreeCtrl::FindItem( const idStr& pathName )
 	int lastSlash;
 	idStr path, tmpPath, itemName;
 	HTREEITEM item, parentItem;
-	
+
 	parentItem = NULL;
 	item = GetRootItem();
-	
+
 	lastSlash = pathName.Last( '/' );
-	
+
 	while( item && lastSlash > path.Length() )
 	{
 		itemName = GetItemText( item );
@@ -95,7 +95,7 @@ HTREEITEM CPathTreeCtrl::FindItem( const idStr& pathName )
 			item = GetNextSiblingItem( item );
 		}
 	}
-	
+
 	for( item = GetChildItem( parentItem ); item; item = GetNextSiblingItem( item ) )
 	{
 		itemName = GetItemText( item );
@@ -104,7 +104,7 @@ HTREEITEM CPathTreeCtrl::FindItem( const idStr& pathName )
 			return item;
 		}
 	}
-	
+
 	return NULL;
 }
 
@@ -121,12 +121,12 @@ HTREEITEM CPathTreeCtrl::InsertPathIntoTree( const idStr& pathName, const int id
 	int lastSlash;
 	idStr path, tmpPath, itemName;
 	HTREEITEM item, parentItem;
-	
+
 	parentItem = NULL;
 	item = GetRootItem();
-	
+
 	lastSlash = pathName.Last( '/' );
-	
+
 	while( item && lastSlash > path.Length() )
 	{
 		itemName = GetItemText( item );
@@ -142,7 +142,7 @@ HTREEITEM CPathTreeCtrl::InsertPathIntoTree( const idStr& pathName, const int id
 			item = GetNextSiblingItem( item );
 		}
 	}
-	
+
 	while( lastSlash > path.Length() )
 	{
 		pathName.Mid( path.Length(), pathName.Length(), tmpPath );
@@ -150,11 +150,11 @@ HTREEITEM CPathTreeCtrl::InsertPathIntoTree( const idStr& pathName, const int id
 		parentItem = InsertItem( itemName, parentItem );
 		path += itemName + "/";
 	}
-	
+
 	pathName.Mid( path.Length(), pathName.Length(), itemName );
 	item = InsertItem( itemName, parentItem, TVI_SORT );
 	SetItemData( item, id );
-	
+
 	return item;
 }
 
@@ -171,9 +171,9 @@ HTREEITEM CPathTreeCtrl::AddPathToTree( const idStr& pathName, const int id, idP
 	int lastSlash;
 	idStr itemName, tmpPath;
 	HTREEITEM item;
-	
+
 	lastSlash = pathName.Last( '/' );
-	
+
 	while( stack.Num() > 1 )
 	{
 		if( pathName.Icmpn( stack.TopName(), stack.TopNameLength() ) == 0 )
@@ -182,7 +182,7 @@ HTREEITEM CPathTreeCtrl::AddPathToTree( const idStr& pathName, const int id, idP
 		}
 		stack.Pop();
 	}
-	
+
 	while( lastSlash > stack.TopNameLength() )
 	{
 		pathName.Mid( stack.TopNameLength(), pathName.Length(), tmpPath );
@@ -190,11 +190,11 @@ HTREEITEM CPathTreeCtrl::AddPathToTree( const idStr& pathName, const int id, idP
 		item = InsertItem( itemName, stack.TopItem() );
 		stack.Push( item, itemName );
 	}
-	
+
 	pathName.Mid( stack.TopNameLength(), pathName.Length(), itemName );
 	item = InsertItem( itemName, stack.TopItem() );
 	SetItemData( item, id );
-	
+
 	return item;
 }
 
@@ -213,34 +213,34 @@ int CPathTreeCtrl::SearchTree( treeItemCompare_t compare, void* data, CPathTreeC
 	HTREEITEM item, child;
 	idStr name;
 	int id, numItems;
-	
+
 	numItems = 0;
 	result.DeleteAllItems();
 	stack.PushRoot( NULL );
-	
+
 	item = GetRootItem();
 	searchStack.PushRoot( item );
 	id = 0;
-	
+
 	while( searchStack.Num() > 0 )
 	{
-	
+
 		for( child = GetChildItem( item ); child; child = GetChildItem( child ) )
 		{
 			searchStack.Push( item, GetItemText( item ) );
 			item = child;
 		}
-		
+
 		name = searchStack.TopName();
 		name += GetItemText( item );
 		id = GetItemData( item );
-		
+
 		if( compare( data, item, name ) )
 		{
 			result.AddPathToTree( name, id, stack );
 			numItems++;
 		}
-		
+
 		for( item = GetNextSiblingItem( item ); item == NULL; )
 		{
 			item = GetNextSiblingItem( searchStack.TopItem() );
@@ -251,7 +251,7 @@ int CPathTreeCtrl::SearchTree( treeItemCompare_t compare, void* data, CPathTreeC
 			}
 		}
 	}
-	
+
 	return numItems;
 }
 
@@ -271,7 +271,7 @@ CPathTreeCtrl::OnToolHitTest
 INT_PTR CPathTreeCtrl::OnToolHitTest( CPoint point, TOOLINFO* pTI ) const
 {
 	RECT rect;
-	
+
 	UINT nFlags;
 	HTREEITEM hitem = HitTest( point, &nFlags );
 	if( nFlags & TVHT_ONITEM )
@@ -296,11 +296,11 @@ BOOL CPathTreeCtrl::OnToolTipText( UINT id, NMHDR* pNMHDR, LRESULT* pResult )
 	// need to handle both ANSI and UNICODE versions of the message
 	TOOLTIPTEXTA* pTTTA = ( TOOLTIPTEXTA* )pNMHDR;
 	TOOLTIPTEXTW* pTTTW = ( TOOLTIPTEXTW* )pNMHDR;
-	
+
 	UINT nID = pNMHDR->idFrom;
-	
+
 	*pResult = 0;
-	
+
 	// Do not process the message from built in tooltip
 	if( nID == ( UINT )m_hWnd &&
 			( ( pNMHDR->code == TTN_NEEDTEXTA && pTTTA->uFlags & TTF_IDISHWND ) ||
@@ -308,9 +308,9 @@ BOOL CPathTreeCtrl::OnToolTipText( UINT id, NMHDR* pNMHDR, LRESULT* pResult )
 	{
 		return FALSE;
 	}
-	
+
 	CString toolTip = "?";
-	
+
 	// Get the mouse position
 	const MSG* pMessage;
 	CPoint pt;
@@ -318,11 +318,11 @@ BOOL CPathTreeCtrl::OnToolTipText( UINT id, NMHDR* pNMHDR, LRESULT* pResult )
 	ASSERT( pMessage );
 	pt = pMessage->pt;
 	ScreenToClient( &pt );
-	
+
 	// get the tree item
 	UINT nFlags;
 	HTREEITEM hitem = HitTest( pt, &nFlags );
-	
+
 	if( nFlags & TVHT_ONITEM )
 	{
 		// relay message to parent
@@ -333,6 +333,6 @@ BOOL CPathTreeCtrl::OnToolTipText( UINT id, NMHDR* pNMHDR, LRESULT* pResult )
 			return FALSE;
 		}
 	}
-	
+
 	return TRUE;    // message was handled
 }

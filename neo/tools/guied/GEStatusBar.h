@@ -35,19 +35,19 @@ class rvGEStatusBar
 public:
 
 	rvGEStatusBar( );
-	
+
 	bool	Create( HWND parent, UINT id, bool visible = true );
 	void	Resize( int width, int height );
-	
+
 	HWND	GetWindow( void );
-	
+
 	void	SetZoom( int zoom );
 	void	SetTriangles( int tris );
 	void	SetSimple( bool simple );
-	
+
 	void	Show( bool state );
 	void	Update( void );
-	
+
 protected:
 
 	HWND	mWnd;

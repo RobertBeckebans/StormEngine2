@@ -75,7 +75,7 @@ void idRenderWindow::BuildAnimation( int time )
 	{
 		return;
 	}
-	
+
 	if( animName.Length() && animClass.Length() )
 	{
 		worldEntity.numJoints = worldEntity.hModel->NumJoints();
@@ -88,7 +88,7 @@ void idRenderWindow::BuildAnimation( int time )
 		}
 	}
 	updateAnimation = false;
-	
+
 }
 
 void idRenderWindow::PreRender()
@@ -160,20 +160,20 @@ void idRenderWindow::Draw( int time, float x, float y )
 {
 	PreRender();
 	Render( time );
-	
+
 	memset( &refdef, 0, sizeof( refdef ) );
 	refdef.vieworg = viewOffset.ToVec3();;
 	//refdef.vieworg.Set(-128, 0, 0);
-	
+
 	refdef.viewaxis.Identity();
 	refdef.shaderParms[0] = 1;
 	refdef.shaderParms[1] = 1;
 	refdef.shaderParms[2] = 1;
 	refdef.shaderParms[3] = 1;
-	
+
 	refdef.fov_x = 90;
 	refdef.fov_y = 2 * atan( ( float )drawRect.h / drawRect.w ) * idMath::M_RAD2DEG;
-	
+
 	refdef.time[0] = time;
 	refdef.time[1] = time;
 	world->RenderScene( &refdef );
@@ -221,7 +221,7 @@ idWinVar* idRenderWindow::GetWinVarByName( const char* _name, bool fixup, drawWi
 	{
 		return &needsRender;
 	}
-	
+
 //
 //
 	return idWindow::GetWinVarByName( _name, fixup, owner );

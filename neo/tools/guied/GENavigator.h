@@ -38,27 +38,27 @@ class rvGENavigator
 public:
 
 	rvGENavigator( );
-	
+
 	bool	Create( HWND parent, bool visible );
 	void	Show( bool visibile );
-	
+
 	void	Refresh( void );
-	
+
 	void	SetWorkspace( rvGEWorkspace* workspace );
-	
+
 	void	Update( void );
 	void	UpdateSelections( void );
-	
+
 	HWND	GetWindow( void );
-	
+
 protected:
 
 	void	AddWindow( idWindow* window );
-	
+
 	static LRESULT CALLBACK WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
 	static LRESULT CALLBACK ListWndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
 	static LRESULT FAR PASCAL GetMsgProc( int nCode, WPARAM wParam, LPARAM lParam );
-	
+
 	HWND			mWnd;
 	HWND			mTree;
 	HICON			mVisibleIcon;

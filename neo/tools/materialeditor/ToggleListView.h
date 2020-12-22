@@ -51,41 +51,41 @@ public:
 		TOGGLE_STATE_ON,
 		TOGGLE_STATE_OFF
 	};
-	
+
 public:
 	void				SetToggleIcons( LPCSTR disabled = NULL, LPCSTR on = NULL, LPCSTR off = NULL );
 	void				SetToggleState( int index, int toggleState, bool notify = false );
 	int					GetToggleState( int index );
-	
+
 	//Windows messages
 	afx_msg int			OnCreate( LPCREATESTRUCT lpCreateStruct );
 	afx_msg void 		OnSize( UINT nType, int cx, int cy );
 	afx_msg void 		MeasureItem( LPMEASUREITEMSTRUCT lpMeasureItemStruct );
 	afx_msg void 		OnNMClick( NMHDR* pNMHDR, LRESULT* pResult );
-	
+
 	DECLARE_MESSAGE_MAP()
-	
-	
+
+
 protected:
 	ToggleListView();
 	virtual ~ToggleListView();
-	
+
 	DECLARE_DYNCREATE( ToggleListView )
-	
+
 	//Overrides
 	virtual BOOL		PreCreateWindow( CREATESTRUCT& cs );
 	virtual void		DrawItem( LPDRAWITEMSTRUCT lpDrawItemStruct );
-	
+
 	//Virtual Event Methods for sub-classes
 	virtual void		OnStateChanged( int index, int toggleState ) {};
-	
+
 	void				Draw3dRect( HDC hDC, RECT* rect, HBRUSH topLeft, HBRUSH bottomRight );
-	
+
 protected:
 	HICON				onIcon;
 	HICON				offIcon;
 	HICON				disabledIcon;
-	
+
 };
 
 

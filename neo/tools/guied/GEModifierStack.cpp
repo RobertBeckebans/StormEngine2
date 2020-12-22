@@ -46,12 +46,12 @@ rvGEModifierStack::~rvGEModifierStack( )
 void rvGEModifierStack::Reset( void )
 {
 	int i;
-	
+
 	for( i = 0; i < mModifiers.Num( ); i ++ )
 	{
 		delete mModifiers[i];
 	}
-	
+
 	mModifiers.Clear( );
 }
 
@@ -63,17 +63,17 @@ bool rvGEModifierStack::Append( rvGEModifier* modifier )
 		delete modifier;
 		return false;
 	}
-	
+
 	while( mCurrentModifier < mModifiers.Num( ) - 1 )
 	{
 		delete mModifiers[mModifiers.Num() - 1];
 		mModifiers.RemoveIndex( mModifiers.Num() - 1 );
 	}
-	
+
 	if( !mMergeBlock && mModifiers.Num( ) )
 	{
 		rvGEModifier* top = mModifiers[mModifiers.Num() - 1];
-		
+
 		// See if the two modifiers can merge
 		if( top->GetWindow() == modifier->GetWindow() &&
 				!idStr::Icmp( top->GetName( ), modifier->GetName( ) ) &&
@@ -83,28 +83,28 @@ bool rvGEModifierStack::Append( rvGEModifier* modifier )
 			if( top->Merge( modifier ) )
 			{
 				top->Apply( );
-				
+
 				gApp.GetProperties().Update( );
 				gApp.GetTransformer().Update( );
 				gApp.GetItemProperties().Update( );
-				
+
 				delete modifier;
 				return true;
 			}
 		}
 	}
-	
+
 	mModifiers.Append( modifier );
 	mCurrentModifier = mModifiers.Num( ) - 1;
-	
+
 	modifier->Apply( );
-	
+
 	mMergeBlock = false;
-	
+
 	gApp.GetProperties().Update( );
 	gApp.GetTransformer().Update( );
 	gApp.GetItemProperties().Update( );
-	
+
 	return true;
 }
 
@@ -114,14 +114,14 @@ bool rvGEModifierStack::Undo( void )
 	{
 		return false;
 	}
-	
+
 	mModifiers[mCurrentModifier]->Undo( );
 	mCurrentModifier--;
-	
+
 	gApp.GetProperties().Update( );
 	gApp.GetItemProperties().Update( );
 	gApp.GetTransformer().Update( );
-	
+
 	return true;
 }
 
@@ -132,10 +132,10 @@ bool rvGEModifierStack::Redo( void )
 		mCurrentModifier++;
 		mModifiers[mCurrentModifier]->Apply( );
 	}
-	
+
 	gApp.GetProperties().Update( );
 	gApp.GetItemProperties().Update( );
 	gApp.GetTransformer().Update( );
-	
+
 	return true;
 }

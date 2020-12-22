@@ -81,7 +81,7 @@ public:
 	virtual int				VPrintf( const char* fmt, va_list arg );
 	// Write a string with high precision floating point numbers to the file.
 	virtual int				WriteFloatString( VERIFY_FORMAT_STRING const char* fmt, ... );
-	
+
 	// Endian portable alternatives to Read(...)
 	virtual int				ReadInt( int& value );
 	virtual int				ReadUnsignedInt( unsigned int& value );
@@ -100,7 +100,7 @@ public:
 	virtual int				ReadMat3( idMat3& mat );
 	virtual int				ReadWinding( idWinding& winding );
 	virtual int				ReadPlane( idPlane& plane );
-	
+
 	// Endian portable alternatives to Write(...)
 	virtual int				WriteInt( const int value );
 	virtual int				WriteUnsignedInt( const unsigned int value );
@@ -119,28 +119,28 @@ public:
 	virtual int				WriteMat3( const idMat3& mat );
 	virtual int				WriteWinding( const idWinding& winding );
 	virtual int				WritePlane( const idPlane& plane );
-	
+
 	template<class type> ID_INLINE size_t ReadBig( type& c )
 	{
 		size_t r = Read( &c, sizeof( c ) );
 		idSwap::Big( c );
 		return r;
 	}
-	
+
 	template<class type> ID_INLINE size_t ReadBigArray( type* c, int count )
 	{
 		size_t r = Read( c, sizeof( c[0] ) * count );
 		idSwap::BigArray( c, count );
 		return r;
 	}
-	
+
 	template<class type> ID_INLINE size_t WriteBig( const type& c )
 	{
 		type b = c;
 		idSwap::Big( b );
 		return Write( &b, sizeof( b ) );
 	}
-	
+
 	template<class type> ID_INLINE size_t WriteBigArray( const type* c, int count )
 	{
 		size_t r = 0;
@@ -160,14 +160,14 @@ idFile_Memory
 class idFile_Memory : public idFile
 {
 	friend class			idFileSystemLocal;
-	
+
 public:
 	idFile_Memory();	// file for writing without name
 	idFile_Memory( const char* name );	// file for writing
 	idFile_Memory( const char* name, char* data, int length );	// file for writing
 	idFile_Memory( const char* name, const char* data, int length );	// file for reading
 	virtual					~idFile_Memory();
-	
+
 	virtual const char* 	GetName() const
 	{
 		return name.c_str();
@@ -185,7 +185,7 @@ public:
 	virtual void			ForceFlush();
 	virtual void			Flush();
 	virtual int				Seek( long offset, fsOrigin_t origin );
-	
+
 	// Set the given length and don't allow the file to grow.
 	void					SetMaxLength( size_t len );
 	// changes memory file to read only
@@ -213,13 +213,13 @@ public:
 		granularity = g;
 	}
 	void					PreAllocate( size_t len );
-	
+
 	// Doesn't change how much is allocated, but allows you to set the size of the file to smaller than it should be.
 	// Useful for stripping off a checksum at the end of the file
 	void					TruncateData( size_t len );
-	
+
 	void					TakeDataOwnership();
-	
+
 	size_t					GetMaxLength()
 	{
 		return maxSize;
@@ -228,7 +228,7 @@ public:
 	{
 		return allocated;
 	}
-	
+
 protected:
 	idStr					name;			// name of the file
 private:
@@ -245,12 +245,12 @@ private:
 class idFile_BitMsg : public idFile
 {
 	friend class			idFileSystemLocal;
-	
+
 public:
 	idFile_BitMsg( idBitMsg& msg );
 	idFile_BitMsg( const idBitMsg& msg );
 	virtual					~idFile_BitMsg();
-	
+
 	virtual const char* 	GetName() const
 	{
 		return name.c_str();
@@ -267,7 +267,7 @@ public:
 	virtual void			ForceFlush();
 	virtual void			Flush();
 	virtual int				Seek( long offset, fsOrigin_t origin );
-	
+
 private:
 	idStr					name;			// name of the file
 	int						mode;			// open mode
@@ -278,11 +278,11 @@ private:
 class idFile_Permanent : public idFile
 {
 	friend class			idFileSystemLocal;
-	
+
 public:
 	idFile_Permanent();
 	virtual					~idFile_Permanent();
-	
+
 	virtual const char* 	GetName() const
 	{
 		return name.c_str();
@@ -299,13 +299,13 @@ public:
 	virtual void			ForceFlush();
 	virtual void			Flush();
 	virtual int				Seek( long offset, fsOrigin_t origin );
-	
+
 	// returns file pointer
 	idFileHandle			GetFilePtr()
 	{
 		return o;
 	}
-	
+
 private:
 	idStr					name;			// relative path of the file - relative path
 	idStr					fullPath;		// full file path - OS path
@@ -321,14 +321,14 @@ class idFile_Cached : public idFile_Permanent
 public:
 	idFile_Cached();
 	virtual					~idFile_Cached();
-	
+
 	void					CacheData( uint64 offset, uint64 length );
-	
+
 	virtual int				Read( void* buffer, int len );
-	
+
 	virtual int				Tell() const;
 	virtual int				Seek( long offset, fsOrigin_t origin );
-	
+
 private:
 	uint64				internalFilePos;
 	uint64				bufferedStartOffset;
@@ -340,11 +340,11 @@ private:
 class idFile_InZip : public idFile
 {
 	friend class			idFileSystemLocal;
-	
+
 public:
 	idFile_InZip();
 	virtual					~idFile_InZip();
-	
+
 	virtual const char* 	GetName() const
 	{
 		return name.c_str();
@@ -361,7 +361,7 @@ public:
 	virtual void			ForceFlush();
 	virtual void			Flush();
 	virtual int				Seek( long offset, fsOrigin_t origin );
-	
+
 private:
 	idStr					name;			// name of the file in the pak
 	idStr					fullPath;		// full file path including pak file name
@@ -376,11 +376,11 @@ private:
 class idFile_InnerResource : public idFile
 {
 	friend class			idFileSystemLocal;
-	
+
 public:
 	idFile_InnerResource( const char* _name, idFile* rezFile, int _offset, int _len );
 	virtual					~idFile_InnerResource();
-	
+
 	virtual const char* 	GetName() const
 	{
 		return name.c_str();
@@ -410,7 +410,7 @@ public:
 		resourceBuffer = buf;
 		internalFilePos = 0;
 	}
-	
+
 private:
 	idStr				name;				// name of the file in the pak
 	int					offset;				// offset in the resource file
@@ -435,22 +435,22 @@ public:
 	idFileLocal( idFile* _file )	: file( _file )
 	{
 	}
-	
+
 	// Destructor that will destroy (close) the file when this wrapper class goes out of scope.
 	~idFileLocal();
-	
+
 	// Cast to a file pointer.
 	operator idFile* () const
 	{
 		return file;
 	}
-	
+
 	// Member access operator for treating the wrapper as if it were the file, itself.
 	idFile* operator -> () const
 	{
 		return file;
 	}
-	
+
 protected:
 	idFile* file;	// The managed file pointer.
 };

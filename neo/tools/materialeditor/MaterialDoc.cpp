@@ -63,33 +63,35 @@ void MaterialDoc::SetRenderMaterial( idMaterial* material, bool parseMaterial, b
 {
 
 	renderMaterial = material;
-	
-	
+
+
 	if( !parseMaterial ||  !renderMaterial )
+	{
 		return;
-		
+	}
+
 	if( parseRenderMatierial )
 	{
 		char* declText = ( char* ) _alloca( material->GetTextLength() + 1 );
 		material->GetText( declText );
-		
+
 		renderMaterial->GetText( declText );
 		ParseMaterialText( declText );
-		
+
 	}
-	
+
 	ClearEditMaterial();
-	
+
 	name = material->GetName();
-	
+
 	idLexer		src;
-	
+
 	char* declText = ( char* ) _alloca( material->GetTextLength() + 1 );
 	material->GetText( declText );
-	
+
 	renderMaterial->GetText( declText );
 	src.LoadMemory( declText, strlen( declText ), "Material" );
-	
+
 	ParseMaterial( &src );
 }
 
@@ -115,7 +117,9 @@ int	MaterialDoc::FindStage( int stageType, const char* name )
 		int type = GetAttributeInt( i, "stagetype" );
 		idStr localname = GetAttribute( i, "name" );
 		if( stageType == type && !localname.Icmp( name ) )
+		{
 			return i;
+		}
 	}
 	return -1;
 }
@@ -128,7 +132,7 @@ MEStage_t MaterialDoc::GetStage( int stage )
 {
 	assert( stage >= 0 && stage < GetStageCount() );
 	return *editMaterial.stages[stage];
-	
+
 }
 
 /**
@@ -141,7 +145,7 @@ void MaterialDoc::EnableStage( int stage, bool enabled )
 
 	assert( stage >= 0 && stage < GetStageCount() );
 	editMaterial.stages[stage]->enabled = enabled;
-	
+
 	OnMaterialChanged();
 }
 
@@ -262,7 +266,7 @@ void MaterialDoc::SetAttribute( int stage, const char* attribName, const char* v
 	idStr orig  = GetAttribute( stage, attribName );
 	if( orig.Icmp( value ) )
 	{
-	
+
 		idDict* dict;
 		if( stage == -1 )
 		{
@@ -273,16 +277,16 @@ void MaterialDoc::SetAttribute( int stage, const char* attribName, const char* v
 			assert( stage >= 0 && stage < GetStageCount() );
 			dict = &editMaterial.stages[stage]->stageData;
 		}
-		
+
 		if( addUndo )
 		{
 			//Create a new Modifier for this change so we can undo and redo later
 			AttributeMaterialModifierString* mod = new AttributeMaterialModifierString( manager, name, stage, attribName, value, orig );
 			manager->AddMaterialUndoModifier( mod );
 		}
-		
+
 		dict->Set( attribName, value );
-		
+
 		manager->AttributeChanged( this, stage, attribName );
 		OnMaterialChanged();
 	}
@@ -301,7 +305,7 @@ void MaterialDoc::SetAttributeInt( int stage, const char* attribName, int value,
 	int orig  = GetAttributeInt( stage, attribName );
 	if( orig != value )
 	{
-	
+
 		idDict* dict;
 		if( stage == -1 )
 		{
@@ -312,9 +316,9 @@ void MaterialDoc::SetAttributeInt( int stage, const char* attribName, int value,
 			assert( stage >= 0 && stage < GetStageCount() );
 			dict = &editMaterial.stages[stage]->stageData;
 		}
-		
+
 		dict->SetInt( attribName, value );
-		
+
 		manager->AttributeChanged( this, stage, attribName );
 		OnMaterialChanged();
 	}
@@ -333,7 +337,7 @@ void MaterialDoc::SetAttributeFloat( int stage, const char* attribName, float va
 	float orig  = GetAttributeFloat( stage, attribName );
 	if( orig != value )
 	{
-	
+
 		idDict* dict;
 		if( stage == -1 )
 		{
@@ -344,9 +348,9 @@ void MaterialDoc::SetAttributeFloat( int stage, const char* attribName, float va
 			assert( stage >= 0 && stage < GetStageCount() );
 			dict = &editMaterial.stages[stage]->stageData;
 		}
-		
+
 		dict->SetFloat( attribName, value );
-		
+
 		manager->AttributeChanged( this, stage, attribName );
 		OnMaterialChanged();
 	}
@@ -365,7 +369,7 @@ void MaterialDoc::SetAttributeBool( int stage, const char* attribName, bool valu
 	bool orig  = GetAttributeBool( stage, attribName );
 	if( orig != value )
 	{
-	
+
 		idDict* dict;
 		if( stage == -1 )
 		{
@@ -376,16 +380,16 @@ void MaterialDoc::SetAttributeBool( int stage, const char* attribName, bool valu
 			assert( stage >= 0 && stage < GetStageCount() );
 			dict = &editMaterial.stages[stage]->stageData;
 		}
-		
+
 		if( addUndo )
 		{
 			//Create a new Modifier for this change so we can undo and redo later
 			AttributeMaterialModifierBool* mod = new AttributeMaterialModifierBool( manager, name, stage, attribName, value, orig );
 			manager->AddMaterialUndoModifier( mod );
 		}
-		
+
 		dict->SetBool( attribName, value );
-		
+
 		manager->AttributeChanged( this, stage, attribName );
 		OnMaterialChanged();
 	}
@@ -399,20 +403,20 @@ void MaterialDoc::SetAttributeBool( int stage, const char* attribName, bool valu
 void MaterialDoc::SetMaterialName( const char* materialName, bool addUndo )
 {
 	idStr oldName = name;
-	
+
 	declManager->RenameDecl( DECL_MATERIAL, oldName, materialName );
 	name = renderMaterial->GetName();
-	
+
 	if( addUndo )
 	{
 		RenameMaterialModifier* mod = new RenameMaterialModifier( manager, name, oldName );
 		manager->AddMaterialUndoModifier( mod );
 	}
-	
+
 	manager->MaterialNameChanged( oldName, this );
-	
+
 	OnMaterialChanged();
-	
+
 	//Need to do an instant apply for material name changes
 	ApplyMaterialChanges();
 }
@@ -466,16 +470,16 @@ void MaterialDoc::ApplySourceModify( idStr& text )
 
 	if( sourceModify )
 	{
-	
+
 		//Changes in the source need to clear any undo redo buffer because we have no idea what has changed
 		manager->ClearUndo();
 		manager->ClearRedo();
-		
+
 		ClearEditMaterial();
-		
+
 		idLexer		src;
 		src.LoadMemory( text, text.Length(), "Material" );
-		
+
 		src.SetFlags(
 			LEXFL_NOSTRINGCONCAT |			// multiple strings seperated by whitespaces are not concatenated
 			LEXFL_NOSTRINGESCAPECHARS |		// no escape characters inside strings
@@ -484,17 +488,17 @@ void MaterialDoc::ApplySourceModify( idStr& text )
 			LEXFL_ALLOWBACKSLASHSTRINGCONCAT |	// allow multiple strings seperated by '\' to be concatenated
 			LEXFL_NOFATALERRORS				// just set a flag instead of fatal erroring
 		);
-		
+
 		idToken token;
 		if( !src.ReadToken( &token ) )
 		{
 			src.Warning( "Missing decl name" );
 			return;
 		}
-		
+
 		ParseMaterial( &src );
 		sourceModify = false;
-		
+
 		//Check to see if the name has changed
 		if( token.Icmp( name ) )
 		{
@@ -521,20 +525,20 @@ const char*	MaterialDoc::GetEditSourceText()
 void MaterialDoc::AddStage( int stageType, const char* stageName, bool addUndo )
 {
 	MEStage_t* newStage = new MEStage_t();
-	
+
 	int index = editMaterial.stages.Append( newStage );
 	newStage->stageData.Set( "name", stageName );
 	newStage->stageData.SetInt( "stagetype", stageType );
 	newStage->enabled = true;
-	
+
 	if( addUndo )
 	{
 		StageInsertModifier* mod = new StageInsertModifier( manager, name, index, stageType, stageName );
 		manager->AddMaterialUndoModifier( mod );
 	}
-	
+
 	manager->StageAdded( this, index );
-	
+
 	OnMaterialChanged();
 }
 
@@ -548,20 +552,20 @@ void MaterialDoc::AddStage( int stageType, const char* stageName, bool addUndo )
 void MaterialDoc::InsertStage( int stage, int stageType, const char* stageName, bool addUndo )
 {
 	MEStage_t* newStage = new MEStage_t();
-	
+
 	editMaterial.stages.Insert( newStage, stage );
 	newStage->stageData.Set( "name", stageName );
 	newStage->stageData.SetInt( "stagetype", stageType );
 	newStage->enabled = true;
-	
+
 	if( addUndo )
 	{
 		StageInsertModifier* mod = new StageInsertModifier( manager, name, stage, stageType, stageName );
 		manager->AddMaterialUndoModifier( mod );
 	}
-	
+
 	manager->StageAdded( this, stage );
-	
+
 	OnMaterialChanged();
 }
 
@@ -573,20 +577,20 @@ void MaterialDoc::InsertStage( int stage, int stageType, const char* stageName, 
 void MaterialDoc::RemoveStage( int stage, bool addUndo )
 {
 	assert( stage >= 0 && stage < GetStageCount() );
-	
+
 	if( addUndo )
 	{
 		//Add modifier to undo this operation
 		StageDeleteModifier* mod = new StageDeleteModifier( manager, name, stage, editMaterial.stages[stage]->stageData );
 		manager->AddMaterialUndoModifier( mod );
 	}
-	
+
 	//delete the stage and remove it from the list
 	delete editMaterial.stages[stage];
 	editMaterial.stages.RemoveIndex( stage );
-	
+
 	manager->StageDeleted( this, stage );
-	
+
 	OnMaterialChanged();
 }
 
@@ -613,29 +617,33 @@ void MaterialDoc::MoveStage( int from, int to, bool addUndo )
 {
 	assert( from >= 0 && from < GetStageCount() );
 	assert( to >= 0 && to < GetStageCount() );
-	
+
 	int origFrom = from;
 	int origTo = to;
-	
+
 	if( from < to )
+	{
 		to++;
-		
+	}
+
 	MEStage_t* pMove = editMaterial.stages[from];
 	editMaterial.stages.Insert( pMove, to );
-	
+
 	if( from > to )
+	{
 		from++;
-		
+	}
+
 	editMaterial.stages.RemoveIndex( from );
-	
+
 	manager->StageMoved( this, origFrom, origTo );
-	
+
 	if( addUndo )
 	{
 		StageMoveModifier* mod = new StageMoveModifier( manager, name, origFrom, origTo );
 		manager->AddMaterialUndoModifier( mod );
 	}
-	
+
 	OnMaterialChanged();
 }
 
@@ -648,24 +656,24 @@ void MaterialDoc::ApplyMaterialChanges( bool force )
 
 	if( force || applyWaiting )
 	{
-	
+
 		if( sourceModify && sourceModifyOwner )
 		{
 			idStr text = sourceModifyOwner->GetSourceText();
 			ApplySourceModify( text );
 		}
-		
+
 		ReplaceSourceText();
-		
+
 		char* declText = ( char* ) _alloca( renderMaterial->GetTextLength() + 1 );
 		renderMaterial->GetText( declText );
-		
+
 		renderMaterial->GetText( declText );
-		
+
 		ParseMaterialText( declText );
-		
+
 		applyWaiting = false;
-		
+
 		assert( manager );
 		manager->MaterialApplied( this );
 	}
@@ -678,7 +686,7 @@ void MaterialDoc::Save()
 {
 
 	EnableAllStages( true );
-	
+
 	//Apply the material so that the renderMaterial has the source text
 	if( !deleted )
 	{
@@ -689,12 +697,12 @@ void MaterialDoc::Save()
 		//Replace the text with nothing
 		renderMaterial->SetText( " " );
 	}
-	
+
 	if( renderMaterial->Save() )
 	{
-	
+
 		modified = false;
-		
+
 		//Notify the world
 		assert( manager );
 		manager->MaterialSaved( this );
@@ -711,7 +719,7 @@ void MaterialDoc::Save()
 void MaterialDoc::Delete()
 {
 	deleted = true;
-	
+
 	OnMaterialChanged();
 }
 
@@ -723,7 +731,7 @@ void MaterialDoc::OnMaterialChanged()
 
 	modified = true;
 	applyWaiting = true;
-	
+
 	assert( manager );
 	manager->MaterialChanged( this );
 }
@@ -745,10 +753,10 @@ void MaterialDoc::ParseMaterialText( const char* source )
 		LEXFL_ALLOWBACKSLASHSTRINGCONCAT |	// allow multiple strings seperated by '\' to be concatenated
 		LEXFL_NOFATALERRORS				// just set a flag instead of fatal erroring
 		);
-	
+
 	//Skip the name becuase the material parsing code expects it
 	src.SkipUntilString("{");*/
-	
+
 	//Now let the material parse the text
 	renderMaterial->Parse( source, strlen( source ), false );
 }
@@ -762,10 +770,10 @@ void MaterialDoc::ParseMaterial( idLexer* src )
 {
 
 	idToken		token;
-	
+
 	//Parse past the name
 	src->SkipUntilString( "{" );
-	
+
 	while( 1 )
 	{
 		if( !src->ExpectAnyToken( &token ) )
@@ -773,17 +781,17 @@ void MaterialDoc::ParseMaterial( idLexer* src )
 			//Todo: Add some error checking here
 			return;
 		}
-		
+
 		if( token == "}" )
 		{
 			break;
 		}
-		
+
 		if( ParseMaterialDef( &token, src, MaterialDefManager::MATERIAL_DEF_MATERIAL, &editMaterial.materialData ) )
 		{
 			continue;
 		}
-		
+
 		if( !token.Icmp( "diffusemap" ) )
 		{
 			//Added as a special stage
@@ -820,34 +828,34 @@ void MaterialDoc::ParseStage( idLexer* src )
 
 	MEStage_t* newStage = new MEStage_t();
 	int index = editMaterial.stages.Append( newStage );
-	
+
 	newStage->stageData.SetInt( "stagetype", STAGE_TYPE_NORMAL );
 	newStage->enabled = true;
-	
+
 	idToken		token;
-	
+
 	while( 1 )
 	{
-	
+
 		if( !src->ExpectAnyToken( &token ) )
 		{
 			//Todo: Add some error checking here
 			return;
 		}
-		
+
 		if( token == "}" )
 		{
 			break;
 		}
-		
+
 		if( ParseMaterialDef( &token, src, MaterialDefManager::MATERIAL_DEF_STAGE, &newStage->stageData ) )
 		{
 			continue;
 		}
-		
+
 		if( !token.Icmp( "name" ) )
 		{
-		
+
 			idStr str;
 			src->ReadRestOfLine( str );
 			str.StripTrailing( '\"' );
@@ -856,12 +864,14 @@ void MaterialDoc::ParseStage( idLexer* src )
 			continue;
 		}
 	}
-	
+
 	idStr name;
 	newStage->stageData.GetString( "name", "", name );
 	if( name.Length() <= 0 )
+	{
 		newStage->stageData.Set( "name", va( "Stage %d", index + 1 ) );
-		
+	}
+
 }
 
 /**
@@ -891,12 +901,12 @@ bool MaterialDoc::ParseMaterialDef( idToken* token, idLexer* src, int type, idDi
 {
 
 	MaterialDefList* defs = MaterialDefManager::GetMaterialDefs( type );
-	
+
 	for( int i = 0; i < defs->Num(); i++ )
 	{
 		if( !token->Icmp( ( *defs )[i]->dictName ) )
 		{
-		
+
 			switch( ( *defs )[i]->type )
 			{
 				case MaterialDef::MATERIAL_DEF_TYPE_STRING:
@@ -959,16 +969,16 @@ const char*	MaterialDoc::GenerateSourceText()
 {
 
 	idFile_Memory f;
-	
+
 	f.WriteFloatString( "\n\n/*\n"
 						"\tGenerated by the Material Editor.\n"
 						"\tType 'materialeditor' at the console to launch the material editor.\n"
 						"*/\n" );
-						
+
 	f.WriteFloatString( "%s\n", name.c_str() );
 	f.WriteFloatString( "{\n" );
 	WriteMaterialDef( -1, &f, MaterialDefManager::MATERIAL_DEF_MATERIAL, 1 );
-	
+
 	for( int i = 0; i < editMaterial.stages.Num(); i++ )
 	{
 		if( editMaterial.stages[i]->enabled )
@@ -976,11 +986,11 @@ const char*	MaterialDoc::GenerateSourceText()
 			WriteStage( i, &f );
 		}
 	}
-	
+
 	f.WriteFloatString( "}\n" );
-	
+
 	return f.GetDataPtr();
-	
+
 }
 
 /**
@@ -1008,7 +1018,7 @@ void MaterialDoc::WriteStage( int stage, idFile_Memory* file )
 		WriteSpecialMapStage( stage, file );
 		return;
 	}
-	
+
 	file->WriteFloatString( "\t{\n" );
 	idStr name = GetAttribute( stage, "name" );
 	if( name.Length() > 0 )
@@ -1017,7 +1027,7 @@ void MaterialDoc::WriteStage( int stage, idFile_Memory* file )
 	}
 	WriteMaterialDef( stage, file, MaterialDefManager::MATERIAL_DEF_STAGE, 2 );
 	file->WriteFloatString( "\t}\n" );
-	
+
 }
 
 /**
@@ -1029,7 +1039,7 @@ void MaterialDoc::WriteSpecialMapStage( int stage, idFile_Memory* file )
 {
 	idStr stageName = GetAttribute( stage, "name" );
 	idStr map = GetAttribute( stage, "map" );
-	
+
 	file->WriteFloatString( "\t%s\t%s\n", stageName.c_str(), map.c_str() );
 }
 
@@ -1048,7 +1058,7 @@ void MaterialDoc::WriteMaterialDef( int stage, idFile_Memory* file, int type, in
 	{
 		prefix += "\t";
 	}
-	
+
 	MaterialDefList* defs = MaterialDefManager::GetMaterialDefs( type );
 	for( int i = 0; i < defs->Num(); i++ )
 	{
@@ -1060,16 +1070,22 @@ void MaterialDoc::WriteMaterialDef( int stage, idFile_Memory* file, int type, in
 				if( attrib.Length() > 0 )
 				{
 					if( ( *defs )[i]->quotes )
+					{
 						file->WriteFloatString( "%s%s\t\"%s\"\n", prefix.c_str(), ( *defs )[i]->dictName.c_str(), attrib.c_str() );
+					}
 					else
+					{
 						file->WriteFloatString( "%s%s\t%s\n", prefix.c_str(), ( *defs )[i]->dictName.c_str(), attrib.c_str() );
+					}
 				}
 			}
 			break;
 			case MaterialDef::MATERIAL_DEF_TYPE_BOOL:
 			{
 				if( GetAttributeBool( stage, ( *defs )[i]->dictName ) )
+				{
 					file->WriteFloatString( "%s%s\t\n", prefix.c_str(), ( *defs )[i]->dictName.c_str() );
+				}
 			}
 			break;
 			case MaterialDef::MATERIAL_DEF_TYPE_FLOAT:

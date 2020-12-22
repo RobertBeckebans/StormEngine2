@@ -51,22 +51,22 @@ bool rvGEKeyValueModifier::Apply( void )
 	{
 		mWrapper->DeleteStateKey( mKey );
 	}
-	
+
 	return true;
 }
 
 bool rvGEKeyValueModifier::Undo( void )
 {
 	mWrapper->SetStateKey( mKey, mValue );
-	
+
 	return true;
 }
 
 bool rvGEKeyValueModifier::Merge( rvGEModifier* mergebase )
 {
 	rvGEKeyValueModifier* merge = ( rvGEKeyValueModifier* ) mergebase;
-	
+
 	mValue = merge->mValue;
-	
+
 	return true;
 }

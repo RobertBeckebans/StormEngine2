@@ -33,7 +33,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "ConsoleView.h"
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
+	#define new DEBUG_NEW
 #endif
 
 #define EDIT_HEIGHT 25
@@ -70,15 +70,17 @@ void ConsoleView::AddText( const char* msg )
 {
 
 	if( !editConsole.GetSafeHwnd() )
+	{
 		return;
-		
+	}
+
 	idStr work;
 	CString work2;
-	
+
 	work = msg;
 	work.RemoveColors();
 	work = TranslateString( work.c_str() );
-	
+
 	editConsole.GetWindowText( work2 );
 	int len = work2.GetLength();
 	if( len + work.Length() > ( int )editConsole.GetLimitText() )
@@ -89,7 +91,7 @@ void ConsoleView::AddText( const char* msg )
 	}
 	editConsole.SetSel( len, len );
 	editConsole.ReplaceSel( work );
-	
+
 	//Hack: scrolls down a bit
 	editConsole.LineScroll( 100 );
 }
@@ -123,15 +125,15 @@ void ConsoleView::ExecuteCommand( const idStr& cmd )
 	{
 		editInput.GetWindowText( str );
 	}
-	
+
 	if( str != "" )
 	{
 		editInput.SetWindowText( "" );
 		common->Printf( "%s\n", str.GetBuffer( 0 ) );
-		
+
 		//avoid adding multiple identical commands in a row
 		int index = consoleHistory.Num();
-		
+
 		if( index == 0 || str.GetBuffer( 0 ) != consoleHistory[index - 1] )
 		{
 			//keep the history to 16 commands, removing the oldest command
@@ -145,11 +147,11 @@ void ConsoleView::ExecuteCommand( const idStr& cmd )
 		{
 			currentHistoryPosition = consoleHistory.Num() - 1;
 		}
-		
+
 		currentCommand.Clear();
-		
+
 		bool propogateCommand = true;
-		
+
 		//process some of our own special commands
 		if( str.CompareNoCase( "clear" ) == 0 )
 		{
@@ -176,13 +178,13 @@ BOOL ConsoleView::PreTranslateMessage( MSG* pMsg )
 
 	if( pMsg->hwnd == editInput.GetSafeHwnd() )
 	{
-	
+
 		if( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_RETURN )
 		{
 			this->ExecuteCommand();
 			return TRUE;
 		}
-		
+
 		if( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_UP )
 		{
 			//save off the current in-progress command so we can get back to it
@@ -193,23 +195,23 @@ BOOL ConsoleView::PreTranslateMessage( MSG* pMsg )
 				currentCommand = str.GetBuffer( 0 );
 				saveCurrentCommand = false;
 			}
-			
+
 			if( consoleHistory.Num() > 0 )
 			{
 				editInput.SetWindowText( consoleHistory[currentHistoryPosition] );
-				
+
 				int selLocation = consoleHistory[currentHistoryPosition].Length();
 				editInput.SetSel( selLocation , selLocation + 1 );
 			}
-			
+
 			if( currentHistoryPosition > 0 )
 			{
 				--currentHistoryPosition;
 			}
-			
+
 			return TRUE;
 		}
-		
+
 		if( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_DOWN )
 		{
 			int selLocation = 0;
@@ -226,9 +228,9 @@ BOOL ConsoleView::PreTranslateMessage( MSG* pMsg )
 				currentCommand.Clear();
 				saveCurrentCommand = true;
 			}
-			
+
 			editInput.SetSel( selLocation , selLocation + 1 );
-			
+
 			return TRUE;
 		}
 		if( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_TAB )
@@ -244,23 +246,23 @@ BOOL ConsoleView::PreTranslateMessage( MSG* pMsg )
 		{
 			editConsole.LineScroll( 10 );
 		}
-		
+
 		if( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_PRIOR )
 		{
 			editConsole.LineScroll( -10 );
 		}
-		
+
 		if( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_HOME )
 		{
 			editConsole.LineScroll( -editConsole.GetLineCount() );
 		}
-		
+
 		if( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_END )
 		{
 			editConsole.LineScroll( editConsole.GetLineCount() );
 		}
 	}
-	
+
 	return CFormView::PreTranslateMessage( pMsg );
 }
 
@@ -270,7 +272,7 @@ BOOL ConsoleView::PreTranslateMessage( MSG* pMsg )
 void ConsoleView::DoDataExchange( CDataExchange* pDX )
 {
 	CFormView::DoDataExchange( pDX );
-	
+
 	DDX_Control( pDX, IDC_CONSOLE_OUTPUT, editConsole );
 	DDX_Control( pDX, IDC_CONSOLE_EDIT, editInput );
 }
@@ -282,15 +284,19 @@ void ConsoleView::OnInitialUpdate()
 {
 
 	CFormView::OnInitialUpdate();
-	
+
 	CRect rect;
 	GetWindowRect( rect );
-	
+
 	if( editConsole.m_hWnd )
+	{
 		editConsole.MoveWindow( 0, 0, rect.Width(), rect.Height() - EDIT_HEIGHT );
-		
+	}
+
 	if( editInput.m_hWnd )
+	{
 		editInput.MoveWindow( 0, rect.Height() - EDIT_HEIGHT, rect.Width(), EDIT_HEIGHT );
+	}
 }
 
 /**
@@ -299,13 +305,17 @@ void ConsoleView::OnInitialUpdate()
 void ConsoleView::OnSize( UINT nType, int cx, int cy )
 {
 	CFormView::OnSize( nType, cx, cy );
-	
+
 	//Move the edit windows around
 	if( editConsole.GetSafeHwnd() )
+	{
 		editConsole.MoveWindow( 0, 0, cx, cy - EDIT_HEIGHT );
-		
+	}
+
 	if( editInput.GetSafeHwnd() )
+	{
 		editInput.MoveWindow( 0, cy - EDIT_HEIGHT, cx, EDIT_HEIGHT );
+	}
 }
 
 /**
@@ -316,7 +326,7 @@ const char* ConsoleView::TranslateString( const char* buf )
 	static char buf2[32768];
 	int			i, l;
 	char*		out;
-	
+
 	l = strlen( buf );
 	out = buf2;
 	for( i = 0; i < l; i++ )
@@ -331,8 +341,8 @@ const char* ConsoleView::TranslateString( const char* buf )
 			*out++ = buf[i];
 		}
 	}
-	
+
 	*out++ = 0;
-	
+
 	return buf2;
 }

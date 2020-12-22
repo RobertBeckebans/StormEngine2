@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 #define AFX_WAVEOPEN_H__0FB9DA11_EB02_11D2_A50A_0020AFEB881A__INCLUDED_
 
 #if _MSC_VER > 1000
-#pragma once
+	#pragma once
 #endif // _MSC_VER > 1000
 // WaveOpen.h : header file
 //
@@ -42,7 +42,7 @@ If you have questions concerning this license or the applicable additional terms
 class CWaveOpen : public CFileDialog
 {
 	DECLARE_DYNAMIC( CWaveOpen )
-	
+
 public:
 	CWaveOpen( BOOL bOpenFileDialog, // TRUE for FileOpen, FALSE for FileSaveAs
 			   LPCTSTR lpszDefExt = NULL,
@@ -50,7 +50,7 @@ public:
 			   DWORD dwFlags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
 			   LPCTSTR lpszFilter = NULL,
 			   CWnd* pParentWnd = NULL );
-			   
+
 	virtual void OnFileNameChange( );
 protected:
 	//{{AFX_MSG(CWaveOpen)

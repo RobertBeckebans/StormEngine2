@@ -88,18 +88,18 @@ void idMenuWidget_Shell_SaveInfo::Update()
 	{
 		return;
 	}
-	
+
 	idSWFScriptObject& root = GetSWFObject()->GetRootObject();
 	if( !BindSprite( root ) || GetSprite() == NULL )
 	{
 		return;
 	}
-	
+
 	const saveGameDetailsList_t& saveGameInfo = session->GetSaveGameManager().GetEnumeratedSavegames();
-	
+
 	saveGameDetailsList_t sortedSaves = saveGameInfo;
 	sortedSaves.Sort( idSort_SavesByDate() );
-	
+
 	for( int slot = 0; slot < sortedSaves.Num(); ++slot )
 	{
 		const idSaveGameDetails& details = sortedSaves[slot];
@@ -109,15 +109,15 @@ void idMenuWidget_Shell_SaveInfo::Update()
 			slot--;
 		}
 	}
-	
+
 	idStr info;
 	if( loadIndex >= 0 && sortedSaves.Num() != 0 && loadIndex < sortedSaves.Num() )
 	{
 		const idSaveGameDetails& details = sortedSaves[ loadIndex ];
-		
+
 		info.Append( Sys_TimeStampToStr( details.date ) );
 		info.Append( "\n" );
-		
+
 		// PS3 only strings that use the dict just set
 		const char* expansionStr = "";
 		switch( details.GetExpansion() )
@@ -135,7 +135,7 @@ void idMenuWidget_Shell_SaveInfo::Update()
 				expansionStr = idLocalization::GetString( "#str_savegame_title" );
 				break;
 		}
-		
+
 		const char* difficultyStr = "";
 		switch( details.GetDifficulty() )
 		{
@@ -152,12 +152,12 @@ void idMenuWidget_Shell_SaveInfo::Update()
 				difficultyStr = idLocalization::GetString( "#str_swf_difficulty_impossible" ); // impossible
 				break;
 		}
-		
+
 		idStr summary;
 		summary.Format( idLocalization::GetString( "#str_swf_save_info_format" ), difficultyStr, Sys_SecToStr( details.GetPlaytime() ), expansionStr );
-		
+
 		info.Append( summary );
-		
+
 		if( details.damaged )
 		{
 			info.Append( "\n" );
@@ -169,21 +169,25 @@ void idMenuWidget_Shell_SaveInfo::Update()
 			info.Append( va( "^1%s^0", idLocalization::GetString( "#str_swf_wrong_version" ) ) );
 		}
 	}
-	
+
 	idSWFTextInstance* infoSprite = GetSprite()->GetScriptObject()->GetNestedText( "txtDesc" );
 	if( infoSprite != NULL )
 	{
 		infoSprite->SetText( info );
 	}
-	
+
 	idSWFSpriteInstance* img = GetSprite()->GetScriptObject()->GetNestedSprite( "img" );
 	if( img != NULL )
 	{
 		// TODO_SPARTY: until we have a thumbnail hide the image
 		if( forSaveScreen )
+		{
 			img->SetVisible( false );
+		}
 		else
+		{
 			img->SetVisible( true );
+		}
 		if(	saveGameThumbnails[loadIndex] != NULL )
 		{
 			// Use Detected Thumbnail
@@ -219,7 +223,7 @@ void idMenuWidget_Shell_SaveInfo::UpdateSavePreviews()
 	{
 		saveGameThumbnails[i] = NULL;
 	}
-	
+
 	/*
 	 *	Generate each auto-save preview at this time.
 	 */
@@ -245,7 +249,9 @@ void idMenuWidget_Shell_SaveInfo::UpdateSavePreviews()
 		{
 			const idSaveGameDetails& details = sortedSaves[ i ];
 			if( saveGameThumbnails[i] != NULL )
+			{
 				continue;
+			}
 			/* Check for pre-generated Thumbnail */
 			thumbNailFile = "maps/";
 			thumbNailFile.Append( details.GetMapFileName() );
@@ -267,21 +273,21 @@ void idMenuWidget_Shell_SaveInfo::ObserveEvent( const idMenuWidget& widget, cons
 	{
 		return;
 	}
-	
+
 	const idMenuWidget* const listWidget = button->GetParent();
-	
+
 	if( listWidget == NULL )
 	{
 		return;
 	}
-	
+
 	switch( event.type )
 	{
 		case WIDGET_EVENT_FOCUS_ON:
 		{
 			const idMenuWidget_DynamicList* const list = dynamic_cast< const idMenuWidget_DynamicList* const >( listWidget );
 			loadIndex = list->GetViewIndex();
-			
+
 			const saveGameDetailsList_t& detailList = session->GetSaveGameManager().GetEnumeratedSavegames();
 			bool hasAutoSave = false;
 			for( int i = 0; i < detailList.Num(); ++i )
@@ -291,27 +297,27 @@ void idMenuWidget_Shell_SaveInfo::ObserveEvent( const idMenuWidget& widget, cons
 					hasAutoSave = true;
 				}
 			}
-			
-			
+
+
 			if( forSaveScreen && ( ( detailList.Num() < MAX_SAVEGAMES - 1 ) || ( ( detailList.Num() == MAX_SAVEGAMES - 1 ) && hasAutoSave ) ) )
 			{
 				loadIndex -= 1;
 			}
-			
+
 			Update();
-			
+
 			idMenuScreen_Shell_Load* loadScreen = dynamic_cast< idMenuScreen_Shell_Load* >( GetParent() );
 			if( loadScreen )
 			{
 				loadScreen->UpdateSaveEnumerations();
 			}
-			
+
 			idMenuScreen_Shell_Save* saveScreen = dynamic_cast< idMenuScreen_Shell_Save* >( GetParent() );
 			if( saveScreen )
 			{
 				saveScreen->UpdateSaveEnumerations();
 			}
-			
+
 			break;
 		}
 	}

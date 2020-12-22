@@ -38,11 +38,11 @@ If you have questions concerning this license or the applicable additional terms
 
 // foresthale 2014-05-29: let's not use the MFC DEBUG_NEW when we have our own...
 #ifdef ID_DEBUG_NEW_MFC
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+	#ifdef _DEBUG
+		#define new DEBUG_NEW
+		#undef THIS_FILE
+		static char THIS_FILE[] = __FILE__;
+	#endif
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
@@ -84,14 +84,14 @@ BOOL CPropertyList::PreCreateWindow( CREATESTRUCT& cs )
 	{
 		return FALSE;
 	}
-	
+
 	cs.style &= ~( LBS_OWNERDRAWVARIABLE | LBS_SORT );
 	cs.style |= LBS_OWNERDRAWFIXED;
-	
+
 	m_bTracking = FALSE;
 	m_nDivider = 0;
 	m_bDivIsSet = FALSE;
-	
+
 	return TRUE;
 }
 
@@ -132,7 +132,7 @@ void CPropertyList::DrawItem( LPDRAWITEMSTRUCT lpDIS )
 	CRect rect2 = rectFull;
 	rect2.right = rect.left - 1;
 	UINT nIndex = lpDIS->itemID;
-	
+
 	if( nIndex != ( UINT ) - 1 )
 	{
 		//get the CPropertyItem for the current row
@@ -148,18 +148,18 @@ void CPropertyList::DrawItem( LPDRAWITEMSTRUCT lpDIS )
 		}
 		dc.DrawEdge( rect2, EDGE_SUNKEN, BF_BOTTOMRIGHT );
 		dc.DrawEdge( rect, EDGE_SUNKEN, BF_BOTTOM );
-		
+
 		if( lpDIS->itemState == ODS_SELECTED )
 		{
 			dc.DrawFocusRect( rect2 );
 		}
-		
+
 		//write the property name in the first rectangle
 		dc.SetBkMode( TRANSPARENT );
 		dc.DrawText( pItem->m_propName, CRect( rect2.left + 3, rect2.top + 3,
 											   rect2.right - 3, rect2.bottom + 3 ),
 					 DT_LEFT | DT_SINGLELINE );
-					 
+
 		//write the initial property value in the second rectangle
 		dc.DrawText( pItem->m_curValue, CRect( rect.left + 3, rect.top + 3, rect.right + 3, rect.bottom + 3 ), DT_LEFT | ( pItem->m_nItemType == PIT_VAR ) ? DT_WORDBREAK : DT_SINGLELINE );
 	}
@@ -195,16 +195,16 @@ int CPropertyList::OnCreate( LPCREATESTRUCT lpCreateStruct )
 	{
 		return -1;
 	}
-	
+
 	m_bDivIsSet = FALSE;
 	m_nDivider = 0;
 	m_bTracking = FALSE;
-	
+
 	m_hCursorSize = AfxGetApp()->LoadStandardCursor( IDC_SIZEWE );
 	m_hCursorArrow = AfxGetApp()->LoadStandardCursor( IDC_ARROW );
-	
+
 	m_SSerif8Font.CreatePointFont( 80, _T( "MS Sans Serif" ) );
-	
+
 	return 0;
 }
 
@@ -214,23 +214,23 @@ void CPropertyList::OnSelchange()
 	CString lBoxSelText;
 	static int recurse = 0;
 	//m_curSel = GetCurSel();
-	
-	
+
+
 	GetItemRect( m_curSel, rect );
 	rect.left = m_nDivider;
-	
+
 	CPropertyItem* pItem = ( CPropertyItem* ) GetItemDataPtr( m_curSel );
-	
+
 	if( updateInspectors )
 	{
 		g_Inspectors->entityDlg.SetKeyVal( pItem->m_propName, pItem->m_curValue );
 	}
-	
+
 	if( m_btnCtrl )
 	{
 		m_btnCtrl.ShowWindow( SW_HIDE );
 	}
-	
+
 	if( pItem->m_nItemType == PIT_COMBO )
 	{
 		//display the combo box.  If the combo box has already been
@@ -246,11 +246,11 @@ void CPropertyList::OnSelchange()
 			m_cmbBox.Create( CBS_DROPDOWNLIST | WS_VSCROLL | WS_VISIBLE | WS_CHILD | WS_BORDER, rect, this, IDC_PROPCMBBOX );
 			m_cmbBox.SetFont( &m_SSerif8Font );
 		}
-		
+
 		//add the choices for this particular property
 		CString cmbItems = pItem->m_cmbItems;
 		lBoxSelText = pItem->m_curValue;
-		
+
 		m_cmbBox.ResetContent();
 		m_cmbBox.AddString( "" );
 		int i, i2;
@@ -260,10 +260,10 @@ void CPropertyList::OnSelchange()
 			m_cmbBox.AddString( cmbItems.Mid( i, i2 - i ) );
 			i = i2 + 1;
 		}
-		
+
 		m_cmbBox.ShowWindow( SW_SHOW );
 		//m_cmbBox.SetFocus();
-		
+
 		//jump to the property's current value in the combo box
 		int j = m_cmbBox.FindStringExact( 0, lBoxSelText );
 		if( j != CB_ERR )
@@ -291,9 +291,9 @@ void CPropertyList::OnSelchange()
 			m_editBox.Create( ES_LEFT | ES_AUTOHSCROLL | WS_VISIBLE | WS_CHILD | WS_BORDER, rect, this, IDC_PROPEDITBOX );
 			m_editBox.SetFont( &m_SSerif8Font );
 		}
-		
+
 		lBoxSelText = pItem->m_curValue;
-		
+
 		m_editBox.ShowWindow( SW_SHOW );
 		m_editBox.SetFocus();
 		//set the text in the edit box to the property's current value
@@ -313,13 +313,13 @@ void CPropertyList::DisplayButton( CRect region )
 	//displays a button if the property is a file/color/font chooser
 	m_nLastBox = 2;
 	m_prevSel = m_curSel;
-	
+
 	if( region.Width() > 25 )
 	{
 		region.left = region.right - 25;
 	}
 	region.bottom -= 3;
-	
+
 	if( m_btnCtrl )
 	{
 		m_btnCtrl.MoveWindow( region );
@@ -329,7 +329,7 @@ void CPropertyList::DisplayButton( CRect region )
 		m_btnCtrl.Create( "...", BS_PUSHBUTTON | WS_VISIBLE | WS_CHILD, region, this, IDC_PROPBTNCTRL );
 		m_btnCtrl.SetFont( &m_SSerif8Font );
 	}
-	
+
 	m_btnCtrl.ShowWindow( SW_SHOW );
 	m_btnCtrl.SetFocus();
 }
@@ -390,7 +390,7 @@ void CPropertyList::OnChangeEditBox()
 {
 	CString newStr;
 	m_editBox.GetWindowText( newStr );
-	
+
 	CPropertyItem* pItem = ( CPropertyItem* ) GetItemDataPtr( m_curSel );
 	pItem->m_curValue = newStr;
 }
@@ -398,20 +398,20 @@ void CPropertyList::OnChangeEditBox()
 void CPropertyList::OnButton()
 {
 	CPropertyItem* pItem = ( CPropertyItem* ) GetItemDataPtr( m_curSel );
-	
+
 	//display the appropriate common dialog depending on what type
 	//of chooser is associated with the property
 	if( pItem->m_nItemType == PIT_COLOR )
 	{
 		idVec3 color;
 		sscanf( pItem->m_curValue, "%f %f %f", &color.x, &color.y, &color.z );
-		
+
 		COLORREF cr = ( int )( color.x * 255 ) + ( ( ( int )( color.y * 255 ) ) << 8 ) + ( ( ( int )( color.z * 255 ) ) << 16 );
-		
+
 		CDialogColorPicker dlg( cr );
-		
+
 		dlg.UpdateParent = UpdateRadiantColor;
-		
+
 		if( dlg.DoModal() == IDOK )
 		{
 			color.x = ( dlg.GetColor() & 255 ) / 255.0;
@@ -430,16 +430,16 @@ void CPropertyList::OnButton()
 	{
 		CString SelectedFile;
 		CString Filter( "Gif Files (*.gif)|*.gif||" );
-		
+
 		CFileDialog FileDlg( TRUE, NULL, NULL, NULL,	Filter );
-		
+
 		CString currPath = pItem->m_curValue;
 		FileDlg.m_ofn.lpstrTitle = "Select file";
 		if( currPath.GetLength() > 0 )
 		{
 			FileDlg.m_ofn.lpstrInitialDir = currPath.Left( currPath.GetLength() - currPath.ReverseFind( '\\' ) );
 		}
-		
+
 		if( IDOK == FileDlg.DoModal() )
 		{
 			SelectedFile = FileDlg.GetPathName();
@@ -510,21 +510,21 @@ void CPropertyList::OnLButtonUp( UINT nFlags, CPoint point )
 		//if columns were being resized then this indicates
 		//that mouse is up so resizing is done.  Need to redraw
 		//columns to reflect their new widths.
-		
+
 		m_bTracking = FALSE;
 		//if mouse was captured then release it
 		if( GetCapture() == this )
 		{
 			::ReleaseCapture();
 		}
-		
+
 		::ClipCursor( NULL );
-		
+
 		CClientDC dc( this );
 		InvertLine( &dc, CPoint( point.x, m_nDivTop ), CPoint( point.x, m_nDivBtm ) );
 		//set the divider position to the new value
 		m_nDivider = point.x;
-		
+
 		//redraw
 		Invalidate();
 	}
@@ -549,7 +549,7 @@ void CPropertyList::OnLButtonDown( UINT nFlags, CPoint point )
 		windowRect.right -= 10;
 		//do not let mouse leave the list box boundary
 		::ClipCursor( windowRect );
-		
+
 		if( m_cmbBox )
 		{
 			m_cmbBox.ShowWindow( SW_HIDE );
@@ -558,18 +558,18 @@ void CPropertyList::OnLButtonDown( UINT nFlags, CPoint point )
 		{
 			m_editBox.ShowWindow( SW_HIDE );
 		}
-		
+
 		CRect clientRect;
 		GetClientRect( clientRect );
-		
+
 		m_bTracking = TRUE;
 		m_nDivTop = clientRect.top;
 		m_nDivBtm = clientRect.bottom;
 		m_nOldDivX = point.x;
-		
+
 		CClientDC dc( this );
 		InvertLine( &dc, CPoint( m_nOldDivX, m_nDivTop ), CPoint( m_nOldDivX, m_nDivBtm ) );
-		
+
 		//capture the mouse
 		SetCapture();
 	}
@@ -618,10 +618,10 @@ void CPropertyList::PreSubclassWindow()
 	m_nDivider = 0;
 	m_bTracking = FALSE;
 	m_curSel = 1;
-	
+
 	m_hCursorSize = AfxGetApp()->LoadStandardCursor( IDC_SIZEWE );
 	m_hCursorArrow = AfxGetApp()->LoadStandardCursor( IDC_ARROW );
-	
+
 	m_SSerif8Font.CreatePointFont( 80, _T( "MS Sans Serif" ) );
 }
 
@@ -641,7 +641,7 @@ void CPropertyList::OnVScroll( UINT nSBCode, UINT nPos, CScrollBar* pScrollBar )
 		m_btnCtrl.ShowWindow( SW_HIDE );
 	}
 	Invalidate();
-	
+
 	CListBox::OnVScroll( nSBCode, nPos, pScrollBar );
 }
 

@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 #define AFX_DLGEVENT_H__B12EEBE1_FB71_407B_9075_50F63B168567__INCLUDED_
 
 #if _MSC_VER > 1000
-#pragma once
+	#pragma once
 #endif // _MSC_VER > 1000
 // DlgEvent.h : header file
 //
@@ -45,22 +45,22 @@ class CDlgEvent : public CDialog
 // Construction
 public:
 	CDlgEvent( CWnd* pParent = NULL ); // standard constructor
-	
+
 // Dialog Data
 	//{{AFX_DATA(CDlgEvent)
 	enum { IDD = IDD_DLG_CAMERAEVENT };
 	CString	m_strParm;
 	int m_event;
 	//}}AFX_DATA
-	
-	
+
+
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CDlgEvent)
 protected:
 	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	//}}AFX_VIRTUAL
-	
+
 // Implementation
 protected:
 

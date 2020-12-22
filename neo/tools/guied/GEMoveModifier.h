@@ -35,15 +35,15 @@ class rvGEMoveModifier : public rvGEModifier
 public:
 
 	rvGEMoveModifier( const char* name, idWindow* window, float x, float y );
-	
+
 	virtual bool		CanMerge( rvGEModifier* merge );
 	virtual bool		Merge( rvGEModifier* merge );
-	
+
 	virtual bool		Apply( void );
 	virtual bool		Undo( void );
-	
+
 	virtual bool		IsValid( void );
-	
+
 protected:
 
 	idRectangle		mNewRect;

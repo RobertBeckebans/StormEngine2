@@ -37,13 +37,13 @@ If you have questions concerning this license or the applicable additional terms
 class idRoutingCache
 {
 	friend class idAASLocal;
-	
+
 public:
 	idRoutingCache( int size );
 	~idRoutingCache();
-	
+
 	int							Size() const;
-	
+
 private:
 	int							type;					// portal or area cache
 	int							size;					// size of cache
@@ -63,7 +63,7 @@ private:
 class idRoutingUpdate
 {
 	friend class idAASLocal;
-	
+
 private:
 	int							cluster;				// cluster number of this update
 	int							areaNum;				// area number of this update
@@ -80,7 +80,7 @@ class idRoutingObstacle
 {
 	friend class idAASLocal;
 	idRoutingObstacle() { }
-	
+
 private:
 	idBounds					bounds;					// obstacle bounds
 	idList<int, TAG_AAS>					areas;					// areas the bounds are in
@@ -123,11 +123,11 @@ public:
 	virtual void				ShowWalkPath( const idVec3& origin, int goalAreaNum, const idVec3& goalOrigin ) const;
 	virtual void				ShowFlyPath( const idVec3& origin, int goalAreaNum, const idVec3& goalOrigin ) const;
 	virtual bool				FindNearestGoal( aasGoal_t& goal, int areaNum, const idVec3 origin, const idVec3& target, int travelFlags, aasObstacle_t* obstacles, int numObstacles, idAASCallback& callback ) const;
-	
+
 private:
 	idAASFile* 					file;
 	idStr						name;
-	
+
 private:	// routing data
 	idRoutingCache***			areaCacheIndex;			// for each area in each cluster the travel times to all other areas in the cluster
 	int							areaCacheIndexSize;		// number of area cache entries
@@ -142,7 +142,7 @@ private:	// routing data
 	mutable idRoutingCache* 	cacheListEnd;			// end of list with cache sorted from oldest to newest
 	mutable int					totalCacheMemory;		// total cache memory used
 	idList<idRoutingObstacle*, TAG_AAS>	obstacleList;			// list with obstacles
-	
+
 private:	// routing
 	bool						SetupRouting();
 	void						ShutdownRouting();
@@ -169,13 +169,13 @@ private:	// routing
 	bool						SetAreaState_r( int nodeNum, const idBounds& bounds, const int areaContents, bool disabled );
 	void						GetBoundsAreas_r( int nodeNum, const idBounds& bounds, idList<int>& areas ) const;
 	void						SetObstacleState( const idRoutingObstacle* obstacle, bool enable );
-	
+
 private:	// pathing
 	bool						EdgeSplitPoint( idVec3& split, int edgeNum, const idPlane& plane ) const;
 	bool						FloorEdgeSplitPoint( idVec3& split, int areaNum, const idPlane& splitPlane, const idPlane& frontPlane, bool closest ) const;
 	idVec3						SubSampleWalkPath( int areaNum, const idVec3& origin, const idVec3& start, const idVec3& end, int travelFlags, int& endAreaNum ) const;
 	idVec3						SubSampleFlyPath( int areaNum, const idVec3& origin, const idVec3& start, const idVec3& end, int travelFlags, int& endAreaNum ) const;
-	
+
 private:	// debug
 	const idBounds& 			DefaultSearchBounds() const;
 	void						DrawCone( const idVec3& origin, const idVec3& dir, float radius, const idVec4& color ) const;

@@ -41,17 +41,17 @@ class lobbyAddress_t
 {
 public:
 	lobbyAddress_t();
-	
+
 	void InitFromNetadr( const netadr_t& netadr );
-	
+
 	void InitFromIPandPort( const char* ip, int port );
-	
+
 	const char* ToString() const;
 	bool UsingRelay() const;
 	bool Compare( const lobbyAddress_t& addr, bool ignoreSessionCheck = false ) const;
 	void WriteToMsg( idBitMsg& msg ) const;
 	void ReadFromMsg( idBitMsg& msg );
-	
+
 	// IP address
 	netadr_t	netAddr;
 };
@@ -68,7 +68,7 @@ public:
 		msg.ReadNetadr( &netAddr );
 	}
 	lobbyConnectInfo_t() : netAddr() { }
-	
+
 	netadr_t				netAddr;
 };
 
@@ -76,18 +76,18 @@ class idNetSessionPort
 {
 public:
 	idNetSessionPort();
-	
+
 	bool InitPort( int portNumber, bool useBackend );
 	bool ReadRawPacket( lobbyAddress_t& from, void* data, int& size, int maxSize );
 	void SendRawPacket( const lobbyAddress_t& to, const void* data, int size );
-	
+
 	bool IsOpen();
 	void Close();
-	
+
 private:
 	float	forcePacketDropCurr;	// Used with net_forceDrop and net_forceDropCorrelation
 	float	forcePacketDropPrev;
-	
+
 	idUDP	UDP;
 };
 
@@ -96,7 +96,7 @@ struct lobbyUser_t
 	static const int INVALID_PING = 9999;
 	// gamertags can be up to 16 4-byte characters + \0
 	static const int MAX_GAMERTAG	= 64 + 1;
-	
+
 	lobbyUser_t()
 	{
 		isBot				= false;
@@ -107,43 +107,43 @@ struct lobbyUser_t
 		teamNumber			= 0;
 		arbitrationAcked	= false;
 		partyToken			= 0;
-		
+
 		selectedSkin		= 0;
 		weaponAutoSwitch	= true;
 		weaponAutoReload	= true;
-		
+
 		migrationGameData	= -1;
 	}
-	
+
 	// Common variables
 	bool				isBot;				// true if lobbyUser is a bot.
 	int					peerIndex;			// peer number on host
 	lobbyUserID_t		lobbyUserID;		// Locally generated to be unique, and internally keeps the local user handle
 	char				gamertag[MAX_GAMERTAG];
 	int					pingMs;				// round trip time in milliseconds
-	
+
 	bool				disconnecting;		// true if we've sent a msg to disconnect this user from the session
 	int					level;
 	int					teamNumber;
 	uint32				partyToken;			// set by the server when people join as a party
-	
+
 	int					selectedSkin;
 	bool				weaponAutoSwitch;
 	bool				weaponAutoReload;
-	
+
 	bool				arbitrationAcked;	// if the user is verified for arbitration
-	
+
 	lobbyAddress_t		address;
-	
+
 	int					migrationGameData;	// index into the local migration gamedata array that is associated with this user. -1=no migration game data available
-	
+
 	// Platform variables
-	
+
 	bool IsDisconnected() const
 	{
 		return lobbyUserID.IsValid() ? false : true;
 	}
-	
+
 	void WriteToMsg( idBitMsg& msg )
 	{
 		address.WriteToMsg( msg );
@@ -154,7 +154,7 @@ struct lobbyUser_t
 		msg.WriteString( gamertag, MAX_GAMERTAG, false );
 		WriteClientMutableData( msg );
 	}
-	
+
 	void ReadFromMsg( idBitMsg& msg )
 	{
 		address.ReadFromMsg( msg );
@@ -165,9 +165,9 @@ struct lobbyUser_t
 		msg.ReadString( gamertag, MAX_GAMERTAG );
 		ReadClientMutableData( msg );
 	}
-	
+
 	bool UpdateClientMutableData( const idLocalUser* localUser );
-	
+
 	void WriteClientMutableData( idBitMsg& msg )
 	{
 		msg.WriteBits( selectedSkin, 4 );
@@ -176,7 +176,7 @@ struct lobbyUser_t
 		msg.WriteBool( weaponAutoReload );
 		release_assert( msg.GetWriteBit() == 0 );
 	}
-	
+
 	void ReadClientMutableData( idBitMsg& msg )
 	{
 		selectedSkin = msg.ReadBits( 4 );
@@ -208,7 +208,7 @@ public:
 		STATE_FAILED			= 8,		// Failure occurred
 		NUM_STATES
 	};
-	
+
 	static const char* GetStateString( lobbyBackendState_t state_ )
 	{
 		static const char* stateToString[NUM_STATES] =
@@ -223,10 +223,10 @@ public:
 			"STATE_SHUTDOWN",
 			"STATE_FAILED"
 		};
-		
+
 		return stateToString[ state_ ];
 	}
-	
+
 	enum lobbyBackendType_t
 	{
 		TYPE_PARTY		= 0,
@@ -234,10 +234,10 @@ public:
 		TYPE_GAME_STATE	= 2,
 		TYPE_INVALID	= 0xff,
 	};
-	
+
 	idLobbyBackend() : type( TYPE_INVALID ), isLocal( false ), isHost( false ) {}
 	idLobbyBackend( lobbyBackendType_t lobbyType ) : type( lobbyType ), isLocal( false ), isHost( false ) {}
-	
+
 	virtual void			StartHosting( const idMatchParameters& p, float skillLevel, lobbyBackendType_t type ) = 0;
 	virtual void			StartFinding( const idMatchParameters& p, int numPartyUsers, float skillLevel ) = 0;
 	virtual void			JoinFromConnectInfo( const lobbyConnectInfo_t& connectInfo ) = 0;
@@ -260,7 +260,7 @@ public:
 	virtual void			UpdateMatchParms( const idMatchParameters& p ) = 0;
 	virtual void			UpdateLobbySkill( float lobbySkill ) = 0;
 	virtual void			SetInGame( bool value ) {}
-	
+
 	virtual lobbyBackendState_t	GetState() = 0;
 	virtual bool			IsLocal() const
 	{
@@ -270,7 +270,7 @@ public:
 	{
 		return !isLocal;
 	}
-	
+
 	virtual bool			StartArbitration()
 	{
 		return false;
@@ -281,10 +281,10 @@ public:
 	{
 		return false;
 	}
-	
+
 	virtual void			RegisterUser( lobbyUser_t* user, bool isLocal ) {}
 	virtual void			UnregisterUser( lobbyUser_t* user, bool isLocal ) {}
-	
+
 	virtual void			StartSession() {}
 	virtual void			EndSession() {}
 	virtual bool			IsSessionStarted()
@@ -292,11 +292,11 @@ public:
 		return false;
 	}
 	virtual void			FlushStats() {}
-	
+
 	virtual void			BecomeHost( int numInvites ) {}						// Become the host of this lobby
 	virtual	void			RegisterAddress( lobbyAddress_t& address ) {}	// Called after becoming a new host, to register old addresses to send invites to
 	virtual void			FinishBecomeHost() {}
-	
+
 	void					SetLobbyType( lobbyBackendType_t lobbyType )
 	{
 		type = lobbyType;
@@ -309,7 +309,7 @@ public:
 	{
 		return ( GetLobbyType() == TYPE_PARTY ) ? "Party" : "Game";
 	}
-	
+
 	bool					IsRanked()
 	{
 		return MatchTypeIsRanked( parms.matchFlags );
@@ -318,7 +318,7 @@ public:
 	{
 		return MatchTypeIsPrivate( parms.matchFlags );
 	}
-	
+
 protected:
 	lobbyBackendType_t		type;
 	idMatchParameters		parms;
@@ -331,7 +331,7 @@ class idLobbyToSessionCB
 public:
 	virtual class idLobbyBackend* 				GetLobbyBackend( idLobbyBackend::lobbyBackendType_t type ) const = 0;
 	virtual bool								CanJoinLocalHost() const = 0;
-	
+
 	// Ugh, hate having to ifdef these, but we're doing some fairly platform specific callbacks
 };
 

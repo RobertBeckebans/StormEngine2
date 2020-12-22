@@ -46,7 +46,7 @@ class idWaveFile
 public:
 	ID_INLINE 	idWaveFile();
 	ID_INLINE 	~idWaveFile();
-	
+
 	bool		Open( const char* filename );
 	void		Close();
 	uint32		SeekToChunk( uint32 id );
@@ -55,7 +55,7 @@ public:
 		return file->Read( buffer, len );
 	}
 	uint32		GetChunkOffset( uint32 id );
-	
+
 	ID_TIME_T	Timestamp()
 	{
 		return file->Timestamp();
@@ -64,7 +64,7 @@ public:
 	{
 		return ( file == NULL ? "" : file->GetName() );
 	}
-	
+
 	// This maps to the channel mask in waveFmtExtensible_t
 	enum
 	{
@@ -96,7 +96,7 @@ public:
 		CHANNEL_MASK_SIDE_RIGHT			= BIT( CHANNEL_INDEX_SIDE_RIGHT ),
 		CHANNEL_MASK_ALL				= BIT( CHANNEL_INDEX_MAX ) - 1,
 	};
-	
+
 	// This matches waveFmt_t::formatTag
 	// These are the only wave formats that we understand
 	enum
@@ -107,7 +107,7 @@ public:
 		FORMAT_XMA2			= 0x0166,
 		FORMAT_EXTENSIBLE	= 0xFFFF,
 	};
-	
+
 #pragma pack( push, 1 )
 	struct waveFmt_t
 	{
@@ -173,16 +173,16 @@ public:
 			} xma2;
 		} extra;
 	};
-	
+
 #pragma pack( pop )
-	
+
 	struct dataChunk_t
 	{
 		static const uint32 id = 'data';
 		uint32 size;
 		void* data;
 	};
-	
+
 	struct formatChunk_t
 	{
 		static const uint32 id = 'fmt ';
@@ -195,7 +195,7 @@ public:
 		uint16 bitsPerSample;
 		uint16 numExtraFormatByte;
 	};
-	
+
 	struct samplerChunk_t
 	{
 		static const uint32 id = 'smpl';
@@ -209,7 +209,7 @@ public:
 		uint32 numSampleLoops;		// number of samples in wave file
 		uint32 extraSamplerData;	// ignored, should always be 0
 	};
-	
+
 	struct sampleData_t
 	{
 		uint32 identifier;		// ignored
@@ -219,29 +219,29 @@ public:
 		uint32 fraction;		// ignored
 		uint32 playCount;		// ignored
 	};
-	
+
 	const char* ReadWaveFormat( waveFmt_t& waveFmt );
 	static bool  ReadWaveFormatDirect( waveFmt_t& format, idFile* file );
 	static bool  WriteWaveFormatDirect( waveFmt_t& format, idFile* file );
 	static bool  WriteSampleDataDirect( idList< sampleData_t >& sampleData, idFile* file );
 	static bool  WriteDataDirect( char* _data, uint32 size, idFile* file );
 	static bool  WriteHeaderDirect( uint32 fileSize, idFile* file );
-	
+
 	bool		 ReadLoopData( int& start, int& end );
-	
+
 private:
 	idFile* 					file;
-	
+
 	struct chunk_t
 	{
 		uint32 id;
 		uint32 size;
 		uint32 offset;
 	};
-	
+
 	idStaticList< chunk_t, 32 >	chunks;
-	
-	
+
+
 };
 
 /*

@@ -69,7 +69,7 @@ Unload the script from memory
 void rvDebuggerScript::Unload( void )
 {
 	delete[] mContents;
-	
+
 	if( mInterface )
 	{
 		delete mInterface;
@@ -78,7 +78,7 @@ void rvDebuggerScript::Unload( void )
 	{
 		//delete mProgram;
 	}
-	
+
 	mContents  = NULL;
 	mProgram   = NULL;
 	mInterface = NULL;
@@ -97,28 +97,28 @@ bool rvDebuggerScript::Load( const char* filename )
 {
 	void* buffer;
 	int	  size;
-	
+
 	// Unload the script before reloading it
 	Unload( );
-	
+
 	// Cache the filename used to load the script
 	mFilename = filename;
-	
+
 	// Read in the file
 	size = fileSystem->ReadFile( filename, &buffer, &mModifiedTime );
 	if( buffer == NULL )
 	{
 		return false;
 	}
-	
+
 	// Copy the buffer over
 	mContents = new char [ size + 1 ];
 	memcpy( mContents, buffer, size );
 	mContents[size] = 0;
-	
+
 	// Cleanup
 	fileSystem->FreeFile( buffer );
-	
+
 	// Now compile the script so we can tell what a valid line is, etc..  If its
 	// a gui file then we need to parse it using the userinterface system rather
 	// than the normal script compiler.
@@ -133,16 +133,16 @@ bool rvDebuggerScript::Load( const char* filename )
 		////BSM Nerve: Loads a game specific main script file
 		//idStr gamedir = cvarSystem->GetCVarString( "fs_game" );
 		//if(gamedir.Length() > 0) {
-		
+
 		//	idStr scriptFile = va("script/%s_main.script", gamedir.c_str());
 		//	if(fileSystem->ReadFile(scriptFile.c_str(), NULL) > 0) {
 		//		mProgram->CompileFile(scriptFile.c_str());
 		//	}
-		
+
 		//}
-		
+
 		int f;
-		
+
 		// Make sure the file isnt already compiled before trying to compile it again
 		for( f = mProgram->NumFilenames() - 1; f >= 0; f -- )
 		{
@@ -154,29 +154,29 @@ bool rvDebuggerScript::Load( const char* filename )
 				break;
 			}
 		}
-		
+
 		if( f < 0 )
 		{
 			mProgram->CompileText( filename, mContents, false );
 		}
-		
+
 		//mProgram->FinishCompilation ( );
 	}
 	catch( idException& ex )
 	{
 		idLib::Error( "DebuggerScript Exception: %s", ex.GetError() );
-		
+
 		// Failed to parse the script so fail to load the file
 		delete mProgram;
 		mProgram = NULL;
 		delete[] mContents;
 		mContents = NULL;
-		
+
 		// TODO: Should cache the error for the dialog box
-		
+
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -202,9 +202,9 @@ Determines whether or not the given line number within the script is a valid lin
 bool rvDebuggerScript::IsLineCode( int linenumber )
 {
 	int i;
-	
+
 	assert( mProgram );
-	
+
 	// Run through all the statements in the program and see if any match the
 	// linenumber that we are checking.
 	for( i	= 0; i < mProgram->NumStatements( ); i ++ )
@@ -214,7 +214,7 @@ bool rvDebuggerScript::IsLineCode( int linenumber )
 			return true;
 		}
 	}
-	
+
 	return false;
 }
 
@@ -230,22 +230,22 @@ bool rvDebuggerScript::IsFileModified( bool updateTime )
 {
 	ID_TIME_T	t;
 	bool	result = false;
-	
+
 	// Grab the filetime and shut the file down
 	fileSystem->ReadFile( mFilename, NULL, &t );
-	
+
 	// Has the file been modified?
 	if( t > mModifiedTime )
 	{
 		result = true;
 	}
-	
+
 	// If updateTime is true then we will update the modified time
 	// stored in the script with the files current modified time
 	if( updateTime )
 	{
 		mModifiedTime = t;
 	}
-	
+
 	return result;
 }

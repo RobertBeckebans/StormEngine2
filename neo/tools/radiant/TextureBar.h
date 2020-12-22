@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 #define AFX_TEXTUREBAR_H__86220273_B656_11D1_B59F_00AA00A410FC__INCLUDED_
 
 #if _MSC_VER >= 1000
-#pragma once
+	#pragma once
 #endif // _MSC_VER >= 1000
 // TextureBar.h : header file
 //
@@ -46,7 +46,7 @@ public:
 	void GetSurfaceAttributes();
 	void SetSurfaceAttributes();
 	CTextureBar();
-	
+
 // Dialog Data
 	//{{AFX_DATA(CTextureBar)
 	enum { IDD = IDD_TEXTUREBAR };
@@ -62,15 +62,15 @@ public:
 	int	m_nVScale;
 	int		m_nRotateAmt;
 	//}}AFX_DATA
-	
-	
+
+
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CTextureBar)
 protected:
 	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	//}}AFX_VIRTUAL
-	
+
 // Implementation
 protected:
 	// Generated message map functions

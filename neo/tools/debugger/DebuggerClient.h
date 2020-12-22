@@ -51,7 +51,7 @@ public:
 };
 
 #ifndef DEBUGGERBREAKPOINT_H_
-#include "DebuggerBreakpoint.h"
+	#include "DebuggerBreakpoint.h"
 #endif
 
 typedef idList<rvDebuggerCallstack>		rvDebuggerCallstackList;
@@ -64,29 +64,29 @@ public:
 
 	rvDebuggerClient( );
 	~rvDebuggerClient( );
-	
+
 	bool						Initialize( void );
 	void						Shutdown( void );
 	bool						ProcessMessages( void );
 	bool						WaitFor( EDebuggerMessage msg, int time );
-	
+
 	bool						IsConnected( void );
 	bool						IsStopped( void );
-	
+
 	int							GetActiveBreakpointID( void );
 	const char*					GetBreakFilename( void );
 	int							GetBreakLineNumber( void );
 	rvDebuggerCallstackList&	GetCallstack( void );
 	rvDebuggerThreadList&		GetThreads( void );
 	const char*					GetVariableValue( const char* name, int stackDepth );
-	
+
 	void						InspectVariable( const char* name, int callstackDepth );
-	
+
 	void						Break( void );
 	void						Resume( void );
 	void						StepInto( void );
 	void						StepOver( void );
-	
+
 	// Breakpoints
 	int							AddBreakpoint( const char* filename, int lineNumber, bool onceOnly = false );
 	bool						RemoveBreakpoint( int bpID );
@@ -94,39 +94,39 @@ public:
 	int							GetBreakpointCount( void );
 	rvDebuggerBreakpoint&		GetBreakpoint( int index );
 	rvDebuggerBreakpoint*		FindBreakpoint( const char* filename, int linenumber );
-	
+
 protected:
 
 	void						SendMessage( EDebuggerMessage dbmsg );
 	void						SendBreakpoints( void );
 	void						SendAddBreakpoint( rvDebuggerBreakpoint& bp, bool onceOnly = false );
 	void						SendRemoveBreakpoint( rvDebuggerBreakpoint& bp );
-	
+
 	bool						mConnected;
 	netadr_t					mServerAdr;
 	idUDP						mPort;
-	
+
 	bool						mBreak;
 	int							mBreakID;
 	int							mBreakLineNumber;
 	idStr						mBreakFilename;
-	
+
 	idDict						mVariables;
-	
+
 	rvDebuggerCallstackList		mCallstack;
 	rvDebuggerThreadList		mThreads;
 	rvDebuggerBreakpointList	mBreakpoints;
-	
+
 	EDebuggerMessage			mWaitFor;
-	
+
 	int							mNextConnectTime;
 private:
 
 	void		ClearCallstack( void );
 	void		ClearThreads( void );
-	
+
 	void		UpdateWatches( void );
-	
+
 	// Network message handlers
 	void		HandleBreak( msg_t& msg );
 	void		HandleInspectCallstack( msg_t& msg );

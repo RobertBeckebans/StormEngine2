@@ -41,19 +41,19 @@ idDmapMapPatch* idDmapMapPatch::Parse( idLexer& src, const idVec3& origin, bool 
 	idDmapDrawVert* vert;
 	idToken		token;
 	int			i, j;
-	
+
 	if( !src.ExpectTokenString( "{" ) )
 	{
 		return NULL;
 	}
-	
+
 	// read the material (we had an implicit 'textures/' in the old format...)
 	if( !src.ReadToken( &token ) )
 	{
 		src.Error( "idDmapMapPatch::Parse: unexpected EOF" );
 		return NULL;
 	}
-	
+
 	// Parse it
 	if( patchDef3 )
 	{
@@ -71,9 +71,9 @@ idDmapMapPatch* idDmapMapPatch::Parse( idLexer& src, const idVec3& origin, bool 
 			return NULL;
 		}
 	}
-	
+
 	idDmapMapPatch* patch = new( TAG_IDLIB )idDmapMapPatch( info[0], info[1] );
-	
+
 	patch->SetSize( info[0], info[1] );
 	if( version < 2.0f )
 	{
@@ -83,21 +83,21 @@ idDmapMapPatch* idDmapMapPatch::Parse( idLexer& src, const idVec3& origin, bool 
 	{
 		patch->SetMaterial( token );
 	}
-	
+
 	if( patchDef3 )
 	{
 		patch->SetHorzSubdivisions( info[2] );
 		patch->SetVertSubdivisions( info[3] );
 		patch->SetExplicitlySubdivided( true );
 	}
-	
+
 	if( patch->GetWidth() < 0 || patch->GetHeight() < 0 )
 	{
 		src.Error( "idDmapMapPatch::Parse: bad size" );
 		delete patch;
 		return NULL;
 	}
-	
+
 	// these were written out in the wrong order, IMHO
 	if( !src.ExpectTokenString( "(" ) )
 	{
@@ -105,8 +105,8 @@ idDmapMapPatch* idDmapMapPatch::Parse( idLexer& src, const idVec3& origin, bool 
 		delete patch;
 		return NULL;
 	}
-	
-	
+
+
 	for( j = 0; j < patch->GetWidth(); j++ )
 	{
 		if( !src.ExpectTokenString( "(" ) )
@@ -118,14 +118,14 @@ idDmapMapPatch* idDmapMapPatch::Parse( idLexer& src, const idVec3& origin, bool 
 		for( i = 0; i < patch->GetHeight(); i++ )
 		{
 			float v[5];
-			
+
 			if( !src.Parse1DMatrix( 5, v ) )
 			{
 				src.Error( "idDmapMapPatch::Parse: bad vertex column data" );
 				delete patch;
 				return NULL;
 			}
-			
+
 			vert = &( ( *patch )[i * patch->GetWidth() + j] );
 			vert->xyz[0] = v[0] - origin[0];
 			vert->xyz[1] = v[1] - origin[1];
@@ -140,14 +140,14 @@ idDmapMapPatch* idDmapMapPatch::Parse( idLexer& src, const idVec3& origin, bool 
 			return NULL;
 		}
 	}
-	
+
 	if( !src.ExpectTokenString( ")" ) )
 	{
 		src.Error( "idDmapMapPatch::Parse: unable to parse patch control points, no closure" );
 		delete patch;
 		return NULL;
 	}
-	
+
 	// read any key/value pairs
 	while( src.ReadToken( &token ) )
 	{
@@ -163,7 +163,7 @@ idDmapMapPatch* idDmapMapPatch::Parse( idLexer& src, const idVec3& origin, bool 
 			patch->epairs.Set( key, token );
 		}
 	}
-	
+
 	return patch;
 }
 
@@ -176,7 +176,7 @@ void idDmapMapPatch::GetGeometryCRC( unsigned int& crc ) const
 {
 	CRC32_UpdateChecksum( crc, &horzSubdivisions, sizeof( horzSubdivisions ) );
 	CRC32_UpdateChecksum( crc, &vertSubdivisions, sizeof( vertSubdivisions ) );
-	
+
 	for( int i = 0; i < GetWidth(); i++ )
 	{
 		for( int j = 0; j < GetHeight(); j++ )
@@ -185,7 +185,7 @@ void idDmapMapPatch::GetGeometryCRC( unsigned int& crc ) const
 			CRC32_UpdateChecksum( crc, &vec, sizeof( vec ) );
 		}
 	}
-	
+
 	CRC32_UpdateChecksum( crc, GetMaterial(), strlen( GetMaterial() ) );
 }
 
@@ -203,25 +203,25 @@ idDmapMapEntity* idDmapMapEntity::Parse( idLexer& src, bool worldSpawn, float ve
 	bool worldent;
 	idVec3 origin;
 	double v1, v2, v3;
-	
+
 	if( !src.ReadToken( &token ) )
 	{
 		return NULL;
 	}
-	
+
 	if( token != "{" )
 	{
 		src.Error( "idDmapMapEntity::Parse: { not found, found %s", token.c_str() );
 		return NULL;
 	}
-	
+
 	mapEnt = new idDmapMapEntity();
-	
+
 	if( worldSpawn )
 	{
 		mapEnt->primitives.Resize( 1024, 256 );
 	}
-	
+
 	origin.Zero();
 	worldent = false;
 	do
@@ -235,7 +235,7 @@ idDmapMapEntity* idDmapMapEntity::Parse( idLexer& src, bool worldSpawn, float ve
 		{
 			break;
 		}
-		
+
 		if( token == "{" )
 		{
 			// parse a brush or patch
@@ -244,12 +244,12 @@ idDmapMapEntity* idDmapMapEntity::Parse( idLexer& src, bool worldSpawn, float ve
 				src.Error( "idDmapMapEntity::Parse: unexpected EOF" );
 				return NULL;
 			}
-			
+
 			if( worldent )
 			{
 				origin.Zero();
 			}
-			
+
 			// if is it a brush: brush, brushDef, brushDef2, brushDef3
 			if( token.Icmpn( "brush", 5 ) == 0 )
 			{
@@ -285,19 +285,19 @@ idDmapMapEntity* idDmapMapEntity::Parse( idLexer& src, bool worldSpawn, float ve
 		else
 		{
 			idStr key, value;
-			
+
 			// parse a key / value pair
 			key = token;
 			src.ReadTokenOnLine( &token );
 			value = token;
-			
+
 			// strip trailing spaces that sometimes get accidentally
 			// added in the editor
 			value.StripTrailingWhitespace();
 			key.StripTrailingWhitespace();
-			
+
 			mapEnt->epairs.Set( key, value );
-			
+
 			if( !idStr::Icmp( key, "origin" ) )
 			{
 				// scanf into doubles, then assign, so it is idVec size independent
@@ -314,7 +314,7 @@ idDmapMapEntity* idDmapMapEntity::Parse( idLexer& src, bool worldSpawn, float ve
 		}
 	}
 	while( 1 );
-	
+
 	return mapEnt;
 }
 
@@ -363,19 +363,19 @@ bool idDmapMapFile::Parse( const char* filename, bool ignoreRegion, bool osPath 
 	idStr fullName;
 	idDmapMapEntity* mapEnt;
 	int i, j, k;
-	
+
 	name = filename;
 	name.StripFileExtension();
 	fullName = name;
 	hasPrimitiveData = false;
-	
+
 	if( !ignoreRegion )
 	{
 		// try loading a .reg file first
 		fullName.SetFileExtension( "reg" );
 		src.LoadFile( fullName, osPath );
 	}
-	
+
 	if( !src.IsLoaded() )
 	{
 		// now try a .map file
@@ -387,17 +387,17 @@ bool idDmapMapFile::Parse( const char* filename, bool ignoreRegion, bool osPath 
 			return false;
 		}
 	}
-	
+
 	version = OLD_MAP_VERSION;
 	fileTime = src.GetFileTime();
 	entities.DeleteContents( true );
-	
+
 	if( src.CheckTokenString( "Version" ) )
 	{
 		src.ReadTokenOnLine( &token );
 		version = token.GetFloatValue();
 	}
-	
+
 	while( 1 )
 	{
 		mapEnt = idDmapMapEntity::Parse( src, ( entities.Num() == 0 ), version );
@@ -407,13 +407,13 @@ bool idDmapMapFile::Parse( const char* filename, bool ignoreRegion, bool osPath 
 		}
 		entities.Append( mapEnt );
 	}
-	
+
 	SetGeometryCRC();
-	
+
 	// if the map has a worldspawn
 	if( entities.Num() )
 	{
-	
+
 		// "removeEntities" "classname" can be set in the worldspawn to remove all entities with the given classname
 		const idKeyValue* removeEntities = entities[0]->epairs.MatchPrefix( "removeEntities", NULL );
 		while( removeEntities )
@@ -421,7 +421,7 @@ bool idDmapMapFile::Parse( const char* filename, bool ignoreRegion, bool osPath 
 			RemoveEntities( removeEntities->GetValue() );
 			removeEntities = entities[0]->epairs.MatchPrefix( "removeEntities", removeEntities );
 		}
-		
+
 		// "overrideMaterial" "material" can be set in the worldspawn to reset all materials
 		idStr material;
 		if( entities[0]->epairs.GetString( "overrideMaterial", "", material ) )
@@ -452,7 +452,7 @@ bool idDmapMapFile::Parse( const char* filename, bool ignoreRegion, bool osPath 
 				}
 			}
 		}
-		
+
 		// force all entities to have a name key/value pair
 		if( entities[0]->epairs.GetBool( "forceEntityNames" ) )
 		{
@@ -465,7 +465,7 @@ bool idDmapMapFile::Parse( const char* filename, bool ignoreRegion, bool osPath 
 				}
 			}
 		}
-		
+
 		// move the primitives of any func_group entities to the worldspawn
 		if( entities[0]->epairs.GetBool( "moveFuncGroups" ) )
 		{
@@ -480,7 +480,7 @@ bool idDmapMapFile::Parse( const char* filename, bool ignoreRegion, bool osPath 
 			}
 		}
 	}
-	
+
 	hasPrimitiveData = true;
 	return true;
 }
@@ -493,12 +493,12 @@ idDmapMapFile::SetGeometryCRC
 void idDmapMapFile::SetGeometryCRC()
 {
 	CRC32_InitChecksum( geometryCRC );
-	
+
 	for( int i = 0; i < entities.Num(); i++ )
 	{
 		entities[i]->GetGeometryCRC( geometryCRC );
 	}
-	
+
 	CRC32_FinishChecksum( geometryCRC );
 }
 

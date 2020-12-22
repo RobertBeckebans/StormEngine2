@@ -102,7 +102,7 @@ BOOL CEntityDlg::OnInitDialog()
 	listKeyVal.SetDivider( 100 );
 	listVars.SetDivider( 100 );
 	staticFrame.SetWindowText( "0" );
-	
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -110,7 +110,7 @@ BOOL CEntityDlg::OnInitDialog()
 INT_PTR CEntityDlg::OnToolHitTest( CPoint point, TOOLINFO* pTI ) const
 {
 	// TODO: Add your specialized code here and/or call the base class
-	
+
 	return CDialog::OnToolHitTest( point, pTI );
 }
 
@@ -122,7 +122,7 @@ void CEntityDlg::AddClassNames()
 	{
 		comboClass.AddString( pec->name );
 	}
-	
+
 }
 
 BEGIN_MESSAGE_MAP( CEntityDlg, CDialog )
@@ -202,37 +202,37 @@ void CEntityDlg::OnSize( UINT nType, int cx, int cy )
 	btnParticle.SetWindowPos( NULL, rect.right - 8 - ( crect.Width() * 2 ), top + 16 + crect.Height() * 2, crect.Width(), crect.Height(), SWP_SHOWWINDOW );
 	btnSkin.SetWindowPos( NULL, rect.right - 8 - ( crect.Width() * 2 ), top + 12 + crect.Height(), crect.Width(), crect.Height(), SWP_SHOWWINDOW );
 	btnCurve.SetWindowPos( NULL, rect.right - 8 - ( crect.Width() * 2 ), top + 8, crect.Width(), crect.Height(), SWP_SHOWWINDOW );
-	
+
 	//*************************************
 	//animation controls
 	//*************************************
 	int rightAnimAreaBorder = rect.right - 75 - crect.Width();  /*models, etc button width*/
-	
+
 	btnStopAnim.GetWindowRect( crect );
 	btnStopAnim.SetWindowPos( NULL, rightAnimAreaBorder - crect.Width(),
 							  top + 8  , crect.Width(), crect.Height(), SWP_SHOWWINDOW );
-							  
+
 	left = rightAnimAreaBorder - crect.Width() - 4;
 	btnPlayAnim.GetWindowRect( crect );
 	btnPlayAnim.SetWindowPos( NULL, left - crect.Width() , top + 8 , crect.Width(), crect.Height(), SWP_SHOWWINDOW );
-	
+
 	left -= crect.Width() + 4;
 	cbAnimations.GetWindowRect( crect );
 	cbAnimations.SetWindowPos( NULL, left - crect.Width(), top + 8  , crect.Width(), crect.Height(), SWP_SHOWWINDOW );
-	
+
 	staticFrame.GetWindowRect( crect );
 	staticFrame.SetWindowPos( NULL, rightAnimAreaBorder - crect.Width(),
 							  top + 34  , crect.Width(), crect.Height(), SWP_SHOWWINDOW );
-							  
+
 	left = rightAnimAreaBorder - crect.Width() - 4;
-	
+
 	slFrameSlider.GetWindowRect( crect );
 	slFrameSlider.SetWindowPos( NULL, left - crect.Width(),
 								top + 32  , crect.Width(), crect.Height(), SWP_SHOWWINDOW );
-								
+
 	//*************************************
 	//*************************************
-	
+
 	btn135.GetWindowRect( crect );
 	bh = crect.Width();
 	btn135.SetWindowPos( NULL, 4, top, bh, bh, SWP_SHOWWINDOW );
@@ -280,7 +280,7 @@ void CEntityDlg::OnCbnSelchangeComboClass()
 			listVars.ResetContent();
 			CPropertyItem* pi = new CPropertyItem( "Usage:", ent->desc.c_str(), PIT_VAR, "" );
 			listVars.AddPropItem( pi );
-			
+
 			int c = ent->vars.Num();
 			for( int i = 0; i < c; i++ )
 			{
@@ -299,7 +299,7 @@ const char* CEntityDlg::TranslateString( const char* buf )
 	static char buf2[32768];
 	int			i, l;
 	char*		out;
-	
+
 	l = strlen( buf );
 	out = buf2;
 	for( i = 0; i < l; i++ )
@@ -314,11 +314,11 @@ const char* CEntityDlg::TranslateString( const char* buf )
 			*out++ = buf[i];
 		}
 	}
-	
+
 	*out++ = 0;
-	
+
 	return buf2;
-	
+
 }
 
 void CEntityDlg::UpdateFromListBox()
@@ -415,18 +415,18 @@ void CEntityDlg::SetKeyValPairs( bool updateAnims )
 			}
 			listKeyVal.AddPropItem( pi );
 		}
-		
+
 		if( updateAnims )
 		{
 			int i, num;
-			
+
 			cbAnimations.ResetContent();
 			num = gameEdit->ANIM_GetNumAnimsFromEntityDef( &editEntity->eclass->defArgs );
 			for( i = 0; i < num; i++ )
 			{
 				cbAnimations.AddString( gameEdit->ANIM_GetAnimNameFromEntityDef( &editEntity->eclass->defArgs, i ) );
 			}
-			
+
 			const idKeyValue* kv = editEntity->epairs.FindKey( "anim" );
 			if( kv )
 			{
@@ -464,15 +464,15 @@ void CEntityDlg::OnLbnSelchangeListkeyval()
 		for( i = 0; str[i] != '\t' && str[i] != '\0'; i++ )
 		{
 		}
-		
+
 		idStr key = str.Left( i );
 		while( str[i] == '\t' && str[i] != '\0' )
 		{
 			i++;
 		}
-		
+
 		idStr val = str.Right( str.GetLength() - i );
-		
+
 		editKey.SetWindowText( key );
 		editVal.SetWindowText( val );
 	}
@@ -508,12 +508,12 @@ int TabCount = sizeof( TabOrder ) / sizeof( int );
 void CEntityDlg::DelProp()
 {
 	CString key;
-	
+
 	if( editEntity == NULL )
 	{
 		return;
 	}
-	
+
 	editKey.GetWindowText( key );
 	if( multipleEntities )
 	{
@@ -528,7 +528,7 @@ void CEntityDlg::DelProp()
 		DeleteKey( editEntity, key );
 		Entity_UpdateCurveData( editEntity );
 	}
-	
+
 	// refresh the prop listbox
 	SetKeyValPairs();
 	Sys_UpdateWindows( W_ENTITY | W_XY | W_CAMERA );
@@ -546,7 +546,7 @@ BOOL CEntityDlg::PreTranslateMessage( MSG* pMsg )
 			return TRUE;
 		}
 	}
-	
+
 	if( pMsg->hwnd == editKey.GetSafeHwnd() )
 	{
 		if( pMsg->message == WM_LBUTTONDOWN )
@@ -555,7 +555,7 @@ BOOL CEntityDlg::PreTranslateMessage( MSG* pMsg )
 			return TRUE;
 		}
 	}
-	
+
 	if( GetFocus() == &editVal || GetFocus() == &editKey )
 	{
 		if( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_RETURN )
@@ -563,9 +563,9 @@ BOOL CEntityDlg::PreTranslateMessage( MSG* pMsg )
 			AddProp();
 			return TRUE;
 		}
-		
+
 	}
-	
+
 	if( GetFocus() == listKeyVal.GetEditBox() )
 	{
 		if( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_RETURN )
@@ -578,7 +578,7 @@ BOOL CEntityDlg::PreTranslateMessage( MSG* pMsg )
 			return TRUE;
 		}
 	}
-	
+
 	if( GetFocus() == &listKeyVal )
 	{
 		if( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_DELETE && editEntity )
@@ -587,7 +587,7 @@ BOOL CEntityDlg::PreTranslateMessage( MSG* pMsg )
 			return TRUE;
 		}
 	}
-	
+
 	if( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_ESCAPE )
 	{
 		if( pMsg->wParam == VK_ESCAPE )
@@ -597,13 +597,13 @@ BOOL CEntityDlg::PreTranslateMessage( MSG* pMsg )
 		}
 		return TRUE;
 	}
-	
+
 	if( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_RETURN )
 	{
 		// keeps ENTER from closing the dialog
 		return TRUE;
 	}
-	
+
 	if( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_TAB )
 	{
 		if( GetFocus() )
@@ -632,7 +632,7 @@ BOOL CEntityDlg::PreTranslateMessage( MSG* pMsg )
 			}
 		}
 	}
-	
+
 	if( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_RIGHT && pMsg->hwnd == slFrameSlider.GetSafeHwnd() )
 	{
 		int pos = slFrameSlider.GetPos() + 1;
@@ -641,21 +641,21 @@ BOOL CEntityDlg::PreTranslateMessage( MSG* pMsg )
 		UpdateFromAnimationFrame();
 		return TRUE;
 	}
-	
+
 	if( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_LEFT && pMsg->hwnd == slFrameSlider.GetSafeHwnd() )
 	{
 		int pos = slFrameSlider.GetPos() - 1;
-		
+
 		if( pos < 1 )
 		{
 			pos = slFrameSlider.GetRangeMax();
 		}
-		
+
 		slFrameSlider.SetPos( pos );
 		UpdateFromAnimationFrame();
 		return TRUE;
 	}
-	
+
 	return CDialog::PreTranslateMessage( pMsg );
 }
 
@@ -672,15 +672,15 @@ void CEntityDlg::AddProp()
 	{
 		return;
 	}
-	
+
 	CString Key, Value;
 	editKey.GetWindowText( Key );
 	editVal.GetWindowText( Value );
-	
+
 	bool isName = ( stricmp( Key, "name" ) == 0 );
 	bool isModel = static_cast<bool>( ( stricmp( Key, "model" ) == 0 && Value.GetLength() > 0 ) );
 	bool isOrigin = ( idStr::Icmp( Key, "origin" ) == 0 );
-	
+
 	if( multipleEntities )
 	{
 		brush_t* b;
@@ -712,12 +712,12 @@ void CEntityDlg::AddProp()
 				SetKeyValue( editEntity, Key, Value );
 			}
 		}
-		
+
 		if( isModel && !( editEntity->eclass->nShowFlags & ECLASS_WORLDSPAWN ) )
 		{
 			idBounds	bo;
 			idVec3	mins, maxs;
-			
+
 			selected_brushes.next->modelHandle = renderModelManager->FindModel( Value );
 			if( dynamic_cast<idRenderModelPrt*>( selected_brushes.next->modelHandle ) || dynamic_cast<idRenderModelLiquid*>( selected_brushes.next->modelHandle ) )
 			{
@@ -728,7 +728,7 @@ void CEntityDlg::AddProp()
 			{
 				bo = selected_brushes.next->modelHandle->Bounds( NULL );
 			}
-			
+
 			VectorCopy( bo[0], mins );
 			VectorCopy( bo[1], maxs );
 			VectorAdd( mins, editEntity->origin, mins );
@@ -737,11 +737,11 @@ void CEntityDlg::AddProp()
 			Brush_Build( selected_brushes.next , false, false , false, true );
 		}
 	}
-	
+
 	// refresh the prop listbox
 	SetKeyValPairs();
 	Sys_UpdateWindows( W_ALL );
-	
+
 }
 
 const char* CEntityDlg::AngleKey()
@@ -750,12 +750,12 @@ const char* CEntityDlg::AngleKey()
 	{
 		return "";
 	}
-	
+
 	if( editEntity->eclass->nShowFlags & ECLASS_MOVER )
 	{
 		return "movedir";
 	}
-	
+
 	return "angle";
 }
 
@@ -1029,7 +1029,7 @@ void CEntityDlg::OnBnClickedButtonSkin()
 		editVal.SetWindowText( dlg->mediaName );
 		AddProp();
 	}
-	
+
 }
 
 void CEntityDlg::OnBnClickedButtonCurve()
@@ -1077,14 +1077,14 @@ void CEntityDlg::CreateEntity()
 {
 	entity_t*	petNew;
 	bool		forceFixed = false;
-	
+
 	// check to make sure we have a brush
 	CXYWnd*	pWnd = g_pParentWnd->ActiveXY();
 	if( pWnd )
 	{
 		CRect	rctZ;
 		pWnd->GetClientRect( rctZ );
-		
+
 		brush_t* pBrush;
 		if( selected_brushes.next == &selected_brushes )
 		{
@@ -1100,25 +1100,25 @@ void CEntityDlg::CreateEntity()
 			return;
 		}
 	}
-	
+
 	int index = comboClass.GetCurSel();
 	if( index == LB_ERR )
 	{
 		MessageBox( "You must have a selected class to create an entity", "info", 0 );
 		return;
 	}
-	
+
 	CString str;
 	comboClass.GetLBText( index, str );
-	
+
 	if( !stricmp( str, "worldspawn" ) )
 	{
 		MessageBox( "Can't create an entity with worldspawn.", "info", 0 );
 		return;
 	}
-	
+
 	eclass_t* pecNew = Eclass_ForName( str, false );
-	
+
 	// create it
 	if( ( GetAsyncKeyState( VK_CONTROL ) & 0x8000 ) )
 	{
@@ -1148,13 +1148,13 @@ void CEntityDlg::CreateEntity()
 	{
 		petNew = Entity_Create( pecNew, forceFixed );
 	}
-	
+
 	if( petNew == NULL )
 	{
 		MessageBox( "Failed to create entity.", "info", 0 );
 		return;
 	}
-	
+
 	if( selected_brushes.next == &selected_brushes )
 	{
 		editEntity = world_entity;
@@ -1163,7 +1163,7 @@ void CEntityDlg::CreateEntity()
 	{
 		editEntity = selected_brushes.next->owner;
 	}
-	
+
 	SetKeyValPairs();
 	Select_Deselect();
 	Select_Brush( editEntity->brushes.onext );
@@ -1238,9 +1238,9 @@ void CEntityDlg::OnNMReleasedcaptureSlider1( NMHDR* pNMHDR, LRESULT* pResult )
 	{
 		return;
 	}
-	
+
 	UpdateFromAnimationFrame();
-	
+
 	*pResult = 0;
 }
 
@@ -1253,10 +1253,10 @@ void CEntityDlg::UpdateFromAnimationFrame( bool updateKeyValueDisplay )
 	{
 		SetKeyValPairs();
 	}
-	
+
 	g_pParentWnd->GetCamera()->BuildEntityRenderState( editEntity , true );
 	Sys_UpdateWindows( W_ALL );
-	
+
 }
 
 void CEntityDlg::OnCbnAnimationChange()
@@ -1265,12 +1265,12 @@ void CEntityDlg::OnCbnAnimationChange()
 	{
 		return;
 	}
-	
+
 	int sel = cbAnimations.GetCurSel();
 	CString animName;
 	currentAnimation = NULL;
 	int currFrame = 0;
-	
+
 	if( sel != -1 )
 	{
 		cbAnimations.GetLBText( sel , animName );
@@ -1278,21 +1278,21 @@ void CEntityDlg::OnCbnAnimationChange()
 		{
 			//preserve the existing frame number
 			currFrame = editEntity->epairs.GetInt( "frame" , "1" );
-			
+
 			editEntity->epairs.Set( "anim" , animName.GetBuffer( 0 ) );
 			SetKeyValPairs( false/*don't update anims combo box :)*/ );
-			
+
 			//update the slider
 			currentAnimation = gameEdit->ANIM_GetAnimFromEntityDef( editEntity->eclass->name , animName.GetBuffer( 0 ) );
 			currentAnimationFrame = 0;
-			
+
 			if( currentAnimation )
 			{
 				slFrameSlider.SetRange( 1 , gameEdit->ANIM_GetNumFrames( currentAnimation ), TRUE );
 				slFrameSlider.SetPos( currFrame );
 				currentAnimationFrame = currFrame;
 			}
-			
+
 			Sys_UpdateWindows( W_ALL );
 		}
 	}
@@ -1319,14 +1319,14 @@ void CEntityDlg::OnTimer( UINT_PTR nIDEvent )
 		OnBnClickedStopAnimation();
 		return;
 	}
-	
+
 	if( currentAnimation )
 	{
 		currentAnimationFrame = ( ( currentAnimationFrame++ ) % gameEdit->ANIM_GetNumFrames( currentAnimation ) );
 		editEntity->epairs.SetInt( "frame" , currentAnimationFrame );
 		slFrameSlider.SetPos( currentAnimationFrame );
 		UpdateFromAnimationFrame( false/*don't update key/value display*/ );
-		
+
 		Sys_UpdateWindows( W_CAMERA | W_XY );
 	}
 }
@@ -1337,7 +1337,7 @@ void CEntityDlg::AddCurvePoints()
 	{
 		return;
 	}
-	
+
 	// add one point 64 units from the direction of the two points int he curve
 	int c = editEntity->curve->GetNumValues();
 	idVec3 start;
@@ -1360,17 +1360,17 @@ void CEntityDlg::AddCurvePoints()
 	{
 		start = editEntity->origin;
 	}
-	
+
 	editEntity->curve->AddValue( editEntity->curve->GetNumValues() * 100, start );
-	
+
 	if( g_qeglobals.d_select_mode == sel_editpoint )
 	{
 		g_qeglobals.d_select_mode = sel_brush;
 		EditCurvePoints();
 	}
-	
+
 	Sys_UpdateWindows( W_CAMERA | W_XY );
-	
+
 }
 
 void CEntityDlg::EditCurvePoints()
@@ -1380,15 +1380,15 @@ void CEntityDlg::EditCurvePoints()
 	{
 		return;
 	}
-	
+
 	if( g_qeglobals.d_select_mode == sel_editpoint )
 	{
 		g_qeglobals.d_select_mode = sel_brush;
 		return;
 	}
-	
+
 	g_qeglobals.d_select_mode = sel_editpoint;
-	
+
 	g_qeglobals.d_numpoints = 0;
 	g_qeglobals.d_num_move_points = 0;
 	int c = editEntity->curve->GetNumValues();
@@ -1400,7 +1400,7 @@ void CEntityDlg::EditCurvePoints()
 		}
 	}
 	Sys_UpdateWindows( W_XY | W_CAMERA );
-	
+
 }
 
 void CEntityDlg::InsertCurvePoint()
@@ -1409,17 +1409,17 @@ void CEntityDlg::InsertCurvePoint()
 	{
 		return;
 	}
-	
+
 	if( g_qeglobals.d_select_mode != sel_editpoint )
 	{
 		return;
 	}
-	
+
 	if( g_qeglobals.d_num_move_points == 0 )
 	{
 		return;
 	}
-	
+
 	for( int i = 0; i < editEntity->curve->GetNumValues(); i++ )
 	{
 		if( PointInMoveList( editEntity->curve->GetValueAddress( i ) ) >= 0 )
@@ -1432,12 +1432,12 @@ void CEntityDlg::InsertCurvePoint()
 			else
 			{
 				idCurve<idVec3>* newCurve = Entity_MakeCurve( editEntity );
-				
+
 				if( newCurve == NULL )
 				{
 					return;
 				}
-				
+
 				for( int j = 0; j < editEntity->curve->GetNumValues(); j++ )
 				{
 					if( j == i )
@@ -1481,9 +1481,9 @@ void CEntityDlg::InsertCurvePoint()
 		}
 	}
 	UpdateEntityCurve();
-	
+
 	Sys_UpdateWindows( W_XY | W_CAMERA );
-	
+
 }
 
 void CEntityDlg::DeleteCurvePoint()
@@ -1493,18 +1493,18 @@ void CEntityDlg::DeleteCurvePoint()
 	{
 		return;
 	}
-	
+
 	if( g_qeglobals.d_select_mode != sel_editpoint )
 	{
 		return;
 	}
-	
-	
+
+
 	if( g_qeglobals.d_num_move_points == 0 )
 	{
 		return;
 	}
-	
+
 	for( int i = 0; i < editEntity->curve->GetNumValues(); i++ )
 	{
 		if( PointInMoveList( editEntity->curve->GetValueAddress( i ) ) >= 0 )
@@ -1515,9 +1515,9 @@ void CEntityDlg::DeleteCurvePoint()
 		}
 	}
 	UpdateEntityCurve();
-	
+
 	Sys_UpdateWindows( W_XY | W_CAMERA );
-	
+
 }
 
 
@@ -1528,9 +1528,9 @@ void CEntityDlg::UpdateEntityCurve()
 	{
 		return;
 	}
-	
+
 	Entity_UpdateCurveData( editEntity );
-	
+
 	if( g_qeglobals.d_select_mode == sel_editpoint )
 	{
 		g_qeglobals.d_numpoints = 0;
@@ -1543,7 +1543,7 @@ void CEntityDlg::UpdateEntityCurve()
 			}
 		}
 	}
-	
+
 	Sys_UpdateWindows( W_ENTITY );
 }
 
@@ -1553,7 +1553,7 @@ void CEntityDlg::SelectCurvePointByRay( const idVec3& org, const idVec3& dir, in
 	int		i, besti;
 	float	d, bestd;
 	idVec3	temp;
-	
+
 	if( editEntity == NULL )
 	{
 		return;
@@ -1563,7 +1563,7 @@ void CEntityDlg::SelectCurvePointByRay( const idVec3& org, const idVec3& dir, in
 	besti = -1;
 	bestd = 8 / scale / 2;
 	//bestd = 8;
-	
+
 	for( i = 0; i < g_qeglobals.d_numpoints; i++ )
 	{
 		temp = g_qeglobals.d_points[i] - org;
@@ -1577,12 +1577,12 @@ void CEntityDlg::SelectCurvePointByRay( const idVec3& org, const idVec3& dir, in
 			besti = i;
 		}
 	}
-	
+
 	if( besti == -1 )
 	{
 		return;
 	}
-	
+
 	g_qeglobals.d_num_move_points = 0;
 	assert( besti < editEntity->curve->GetNumValues() );
 	g_qeglobals.d_move_points[ g_qeglobals.d_num_move_points++ ] = editEntity->curve->GetValueAddress( besti );

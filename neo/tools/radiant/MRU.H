@@ -34,9 +34,9 @@ If you have questions concerning this license or the applicable additional terms
 #define NBMRUMENU       9       // Default number of MRU stored
 #define IDMRU           8000    // Default First ID of MRU
 #ifdef  OFS_MAXPATHNAME
-#define MAXSIZEMRUITEM  OFS_MAXPATHNAME
+	#define MAXSIZEMRUITEM  OFS_MAXPATHNAME
 #else
-#define MAXSIZEMRUITEM  128     // Default max size of an entry
+	#define MAXSIZEMRUITEM  128     // Default max size of an entry
 #endif
 
 typedef struct

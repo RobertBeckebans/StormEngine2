@@ -43,16 +43,16 @@ public:
 	{
 		Free();
 	}
-	
+
 	idSWFBitStream& operator=( idSWFBitStream& other );
-	
+
 	void			Load( const byte* data, uint32 len, bool copy );
 	void			Free();
 	const byte* 	Ptr()
 	{
 		return startp;
 	}
-	
+
 	uint32			Length() const
 	{
 		return ( uint32 )( endp - startp );
@@ -69,18 +69,18 @@ public:
 	{
 		readp = startp;
 	}
-	
+
 	void			ResetBits();
-	
+
 	int				ReadS( unsigned int numBits );
 	unsigned int	ReadU( unsigned int numBits );
 	bool			ReadBool();
-	
+
 	const byte* 	ReadData( int size );
-	
+
 	template< typename T >
 	void			ReadLittle( T& val );
-	
+
 	uint8			ReadU8();
 	uint16			ReadU16();
 	uint32			ReadU32();
@@ -92,7 +92,7 @@ public:
 	float			ReadFloat();
 	double			ReadDouble();
 	const char* 	ReadString();
-	
+
 	void			ReadRect( swfRect_t& rect );
 	void			ReadMatrix( swfMatrix_t& matrix );
 	void			ReadColorXFormRGBA( swfColorXform_t& cxf );
@@ -100,17 +100,17 @@ public:
 	void			ReadColorRGBA( swfColorRGBA_t& color );
 	void			ReadGradient( swfGradient_t& grad, bool rgba );
 	void			ReadMorphGradient( swfGradient_t& grad );
-	
+
 private:
 	bool			free;
-	
+
 	const byte* 	startp;
 	const byte* 	endp;
 	const byte* 	readp;
-	
+
 	uint64			currentBit;
 	uint64			currentByte;
-	
+
 	int				ReadInternalS( uint64& regCurrentBit, uint64& regCurrentByte, unsigned int numBits );
 	unsigned int	ReadInternalU( uint64& regCurrentBit, uint64& regCurrentByte, unsigned int numBits );
 };

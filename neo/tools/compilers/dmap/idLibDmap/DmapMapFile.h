@@ -71,7 +71,7 @@ public:
 		explicitSubdivisions = b;
 	}
 	void					GetGeometryCRC( unsigned int& crc ) const;
-	
+
 protected:
 	idStr					material;
 	int						horzSubdivisions;
@@ -105,10 +105,10 @@ ID_INLINE idDmapMapPatch::idDmapMapPatch( int maxPatchWidth, int maxPatchHeight 
 class idDmapMapEntity
 {
 	friend class			idDmapMapFile;
-	
+
 public:
 	idDict					epairs;
-	
+
 public:
 	idDmapMapEntity( void )
 	{
@@ -134,7 +134,7 @@ public:
 	}
 	void					GetGeometryCRC( unsigned int& crc ) const;
 	void					RemovePrimitiveData();
-	
+
 protected:
 	idList<idMapPrimitive*>	primitives;
 };
@@ -147,7 +147,7 @@ public:
 	{
 		entities.DeleteContents( true );
 	}
-	
+
 	// filename does not require an extension
 	// normally this will use a .reg file instead of a .map file if it exists,
 	// which is what the game and dmap want, but the editor will want to always
@@ -182,7 +182,7 @@ public:
 	}
 	// returns true if the file on disk changed
 	bool					NeedsReload();
-	
+
 	int						AddEntity( idDmapMapEntity* mapentity );
 	idDmapMapEntity* 		FindEntity( const char* name );
 	idDmapMapEntity* 		FindEntityByClassName( const char* name );
@@ -194,7 +194,7 @@ public:
 	{
 		return hasPrimitiveData;
 	}
-	
+
 protected:
 	float					version;
 	ID_TIME_T					fileTime;
@@ -202,7 +202,7 @@ protected:
 	idList<idDmapMapEntity*>	entities;
 	idStr					name;
 	bool					hasPrimitiveData;
-	
+
 private:
 	void					SetGeometryCRC( void );
 };

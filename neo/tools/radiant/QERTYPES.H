@@ -54,7 +54,7 @@ public:
 		}
 		name = NULL;
 	}
-	
+
 	void SetName( const char* p )
 	{
 		if( name && name[0] )
@@ -70,7 +70,7 @@ public:
 			name = "";
 		}
 	}
-	
+
 	texdef_t& operator =( const texdef_t& rhs )
 	{
 		if( &rhs != this )
@@ -121,7 +121,7 @@ public:
 		brushprimit_texdef.coords[0][0] = 1.0;
 		brushprimit_texdef.coords[1][1] = 1.0;
 	}
-	
+
 	~texturewin_t()
 	{
 	}
@@ -147,7 +147,7 @@ typedef struct qtexture_s
 	int		flags;
 	int		value;
 	int		texture_number;	// gl bind number
-	
+
 	// name of the .shader file
 	char  shadername[1024]; // old shader stuff
 	bool bFromShader;   // created from a shader
@@ -155,16 +155,16 @@ typedef struct qtexture_s
 	int   nShaderFlags;     // qer_ shader flags
 	idVec3	color;			    // for flat shade mode
 	bool	inuse;		    // true = is present on the level
-	
+
 	// cast this one to an IPluginQTexture if you are using it
 	// NOTE: casting can be done with a GETPLUGINQTEXTURE defined in isurfaceplugin.h
 	// TODO: if the __ISURFACEPLUGIN_H_ header is used, use a union { void *pData; IPluginQTexture *pPluginQTexture } kind of thing ?
 	void*					pData;
-	
+
 	//++timo FIXME: this is the actual filename of the texture
 	// this will be removed after shader code cleanup
 	char filename[64];
-	
+
 } qtexture_t;
 
 //++timo texdef and brushprimit_texdef are static
@@ -176,19 +176,19 @@ typedef struct face_s
 	idVec3					planepts[3];
 	idVec3					orgplanepts[3];	// used for arbitrary rotation
 	texdef_t				texdef;
-	
+
 	idPlane					plane;
 	idPlane					originalPlane;
 	bool					dirty;
-	
+
 	idWinding*				face_winding;
-	
+
 	idVec3					d_color;
 	const idMaterial*		d_texture;
-	
+
 	// Timo new brush primit texdef
 	brushprimit_texdef_t	brushprimit_texdef;
-	
+
 	// cast this one to an IPluginTexdef if you are using it
 	// NOTE: casting can be done with a GETPLUGINTEXDEF defined in isurfaceplugin.h
 	// TODO: if the __ISURFACEPLUGIN_H_ header is used, use a union { void *pData; IPluginTexdef *pPluginTexdef } kind of thing ?
@@ -260,7 +260,7 @@ typedef struct
 	int			nListID;
 	int			nListIDCam;
 	int			nListSelected;
-	
+
 	idDict* 	epairs;
 	// cast this one to an IPluginTexdef if you are using it
 	// NOTE: casting can be done with a GETPLUGINTEXDEF defined in isurfaceplugin.h
@@ -302,7 +302,7 @@ typedef struct brush_s
 	brush_t*    list;				//keep a handy link to the list its in
 	struct entity_s*	owner;
 	idVec3 mins, maxs;
-	
+
 	idVec3	lightCenter;			// for moving the shading center of point lights
 	idVec3	lightRight;
 	idVec3	lightTarget;
@@ -315,12 +315,12 @@ typedef struct brush_s
 	bool	pointLight;
 	bool	startEnd;
 	int		lightTexture;
-	
+
 	bool	trackLightOrigin;	// this brush is a special case light brush
 	bool	entityModel;
-	
+
 	face_t*  brush_faces;
-	
+
 	bool bModelFailed;
 	//
 	// curve brush extensions
@@ -328,14 +328,14 @@ typedef struct brush_s
 	bool	hiddenBrush;
 	bool	forceWireFrame;
 	bool	forceVisibile;
-	
+
 	patchMesh_t* pPatch;
 	struct entity_s* pUndoOwner;
-	
+
 	int undoId;						//undo ID
 	int redoId;						//redo ID
 	int ownerId;					//entityId of the owner entity for undo
-	
+
 	// TTimo: HTREEITEM is MFC, some plugins really don't like it
 #ifdef QERTYPES_USE_MFC
 	int numberId;         // brush number
@@ -344,12 +344,12 @@ typedef struct brush_s
 	int numberId;
 	DWORD itemOwner;
 #endif
-	
+
 	idRenderModel*	modelHandle;
-	
+
 	// brush primitive only
 	idDict	epairs;
-	
+
 } brush_t;
 
 
@@ -412,17 +412,17 @@ typedef struct eclass_s
 	texdef_t texdef;
 	idStr	comments;
 	idStr	desc;
-	
+
 	idRenderModel* modelHandle;
 	idRenderModel* entityModel;
-	
+
 	int   nFrame;
 	unsigned int nShowFlags;
 	idStr	defMaterial;
 	idDict	args;
 	idDict	defArgs;
 	idList<evar_t> vars;
-	
+
 	HMODULE	hPlug;
 } eclass_t;
 

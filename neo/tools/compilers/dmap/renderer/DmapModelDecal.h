@@ -64,39 +64,39 @@ class idDmapRenderModelDecal
 public:
 	idDmapRenderModelDecal( void );
 	~idDmapRenderModelDecal( void );
-	
+
 	static idDmapRenderModelDecal* 	Alloc( void );
 	static void					Free( idDmapRenderModelDecal* decal );
-	
+
 	// Creates decal projection info.
 	static bool					CreateProjectionInfo( decalProjectionInfo_t& info, const idFixedWinding& winding, const idVec3& projectionOrigin, const bool parallel, const float fadeDepth, const idMaterial* material, const int startTime );
-	
+
 	// Transform the projection info from global space to local.
 	static void					GlobalProjectionInfoToLocal( decalProjectionInfo_t& localInfo, const decalProjectionInfo_t& info, const idVec3& origin, const idMat3& axis );
-	
+
 	// Creates a deal on the given model.
 	void						CreateDecal( const idDmapRenderModel* model, const decalProjectionInfo_t& localInfo );
-	
+
 	// Remove decals that are completely faded away.
 	static idDmapRenderModelDecal* 	RemoveFadedDecals( idDmapRenderModelDecal* decals, int time );
-	
+
 	// Updates the vertex colors, removing any faded indexes,
 	// then copy the verts to temporary vertex cache and adds a drawSurf.
 	void						AddDecalDrawSurf( struct dmapViewEntity_s* space );
-	
+
 	// Returns the next decal in the chain.
 	idDmapRenderModelDecal* 		Next( void ) const
 	{
 		return nextDecal;
 	}
-	
+
 	void						ReadFromDemoFile( class idDemoFile* f );
 	void						WriteToDemoFile( class idDemoFile* f ) const;
-	
+
 private:
 	static const int			MAX_DECAL_VERTS = 40;
 	static const int			MAX_DECAL_INDEXES = 60;
-	
+
 	const idMaterial* 			material;
 	srfDmapTriangles_t			tri;
 	idDmapDrawVert				verts[MAX_DECAL_VERTS];
@@ -104,11 +104,11 @@ private:
 	uint						indexes[MAX_DECAL_INDEXES];
 	int							indexStartTime[MAX_DECAL_INDEXES];
 	idDmapRenderModelDecal* 	nextDecal;
-	
+
 	// Adds the winding triangles to the appropriate decal in the
 	// chain, creating a new one if necessary.
 	void						AddWinding( const idWinding& w, const idMaterial* decalMaterial, const idPlane fadePlanes[2], float fadeDepth, int startTime );
-	
+
 	// Adds depth faded triangles for the winding to the appropriate
 	// decal in the chain, creating a new one if necessary.
 	// The part of the winding at the front side of both fade planes is not faded.

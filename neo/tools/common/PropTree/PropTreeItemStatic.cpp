@@ -51,11 +51,11 @@ CPropTreeItemStatic::~CPropTreeItemStatic()
 void CPropTreeItemStatic::DrawAttribute( CDC* pDC, const RECT& rc )
 {
 	ASSERT( m_pProp != NULL );
-	
+
 	pDC->SelectObject( m_pProp->GetNormalFont() );
 	pDC->SetTextColor( RGB( 0, 0, 0 ) );
 	pDC->SetBkMode( TRANSPARENT );
-	
+
 	CRect r = rc;
 	pDC->DrawText( m_sAttribute, r, DT_SINGLELINE | DT_VCENTER );
 }
@@ -74,6 +74,6 @@ void CPropTreeItemStatic::SetItemValue( LPARAM lParam )
 		TRACE0( "CPropTreeItemStatic::SetItemValue() - Invalid lParam value\n" );
 		return;
 	}
-	
+
 	m_sAttribute = ( LPCTSTR )lParam;
 }

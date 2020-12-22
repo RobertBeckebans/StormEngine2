@@ -53,30 +53,30 @@ void idMenuWidget_MenuBar::Update()
 	{
 		return;
 	}
-	
+
 	idSWFScriptObject& root = GetSWFObject()->GetRootObject();
-	
+
 	if( !BindSprite( root ) )
 	{
 		return;
 	}
-	
+
 	totalWidth = 0.0f;
 	buttonPos = 0.0f;
-	
+
 	for( int index = 0; index < GetNumVisibleOptions(); ++index )
 	{
-	
+
 		if( index >= children.Num() )
 		{
 			break;
 		}
-		
+
 		if( index != 0 )
 		{
 			totalWidth += rightSpacer;
 		}
-		
+
 		idMenuWidget& child = GetChildByIndex( index );
 		child.SetSpritePath( GetSpritePath(), va( "btn%d", index ) );
 		if( child.BindSprite( root ) )
@@ -85,11 +85,11 @@ void idMenuWidget_MenuBar::Update()
 			child.Update();
 		}
 	}
-	
+
 	// 640 is half the size of our flash files width
 	float xPos = 640.0f - ( totalWidth / 2.0f );
 	GetSprite()->SetXPos( xPos );
-	
+
 	idSWFSpriteInstance* backing = GetSprite()->GetScriptObject()->GetNestedSprite( "backing" );
 	if( backing != NULL )
 	{
@@ -103,7 +103,7 @@ void idMenuWidget_MenuBar::Update()
 			backing->SetXPos( totalWidth / 2.0f );
 		}
 	}
-	
+
 }
 
 /*
@@ -142,13 +142,13 @@ bool idMenuWidget_MenuBar::PrepareListElement( idMenuWidget& widget, const int n
 	{
 		return false;
 	}
-	
+
 	idMenuWidget_MenuButton* const button = dynamic_cast< idMenuWidget_MenuButton* >( &widget );
 	if( button == NULL || button->GetSprite() == NULL )
 	{
 		return false;
 	}
-	
+
 	if( navIndex >= headings.Num() )
 	{
 		button->SetLabel( "" ); // hides horizantal PC menu bar
@@ -166,6 +166,6 @@ bool idMenuWidget_MenuBar::PrepareListElement( idMenuWidget& widget, const int n
 			buttonPos += rightSpacer + ti->GetTextLength();
 		}
 	}
-	
+
 	return true;
 }

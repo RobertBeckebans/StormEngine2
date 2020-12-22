@@ -184,7 +184,7 @@ public:
 	static void		RemoveAllGlobalDefines();
 	// set the base folder to load files from
 	static void		SetBaseFolder( const char* path );
-	
+
 private:
 	int				loaded;						// set when a source file is loaded from file or memory
 	idStr			filename;					// file name of the script
@@ -199,9 +199,9 @@ private:
 	indent_t* 		indentstack;				// stack with indents
 	int				skip;						// > 0 if skipping conditional code
 	const char*		marker_p;
-	
+
 	static define_t* globaldefines;				// list with global defines added to every source loaded
-	
+
 private:
 	void			PushIndent( int type, int skip );
 	void			PopIndent( int* type, int* skip );

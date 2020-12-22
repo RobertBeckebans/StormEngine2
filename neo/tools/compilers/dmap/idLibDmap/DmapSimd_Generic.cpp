@@ -44,11 +44,11 @@ If you have questions concerning this license or the applicable additional terms
 #define UNROLL8DMAP(Y) { int _IX, _NM = count&0xfffffff8; for (_IX=0;_IX<_NM;_IX+=8){Y(_IX+0);Y(_IX+1);Y(_IX+2);Y(_IX+3);Y(_IX+4);Y(_IX+5);Y(_IX+6);Y(_IX+7);} _NM = count&0xfffffffe; for(;_IX<_NM;_IX+=2){Y(_IX); Y(_IX+1);} if (_IX < count) {Y(_IX);} }
 
 #ifdef _DEBUG
-#define NODEFAULT	default: assert( 0 )
+	#define NODEFAULT	default: assert( 0 )
 #elif _MSC_VER
-#define NODEFAULT	default: __assume( 0 )
+	#define NODEFAULT	default: __assume( 0 )
 #else
-#define NODEFAULT
+	#define NODEFAULT
 #endif
 
 
@@ -413,15 +413,15 @@ void VPCALL idDmapSIMD_Generic::Dot( float& dot, const float* src1, const float*
 			dot = sum;
 		}
 	}
-	
+
 #else
-	
+
 	dot = 0.0f;
 	for( i = 0; i < count; i++ )
 	{
 		dot += src1[i] * src2[i];
 	}
-	
+
 #endif
 }
 
@@ -780,10 +780,10 @@ void VPCALL idDmapSIMD_Generic::MatX_MultiplyVecX( idVecX& dst, const idMatX& ma
 	int i, j, numRows;
 	const float* mPtr, *vPtr;
 	float* dstPtr;
-	
+
 	assert( vec.GetSize() >= mat.GetNumColumns() );
 	assert( dst.GetSize() >= mat.GetNumRows() );
-	
+
 	mPtr = mat.ToFloatPtr();
 	vPtr = vec.ToFloatPtr();
 	dstPtr = dst.ToFloatPtr();
@@ -861,10 +861,10 @@ void VPCALL idDmapSIMD_Generic::MatX_MultiplyAddVecX( idVecX& dst, const idMatX&
 	int i, j, numRows;
 	const float* mPtr, *vPtr;
 	float* dstPtr;
-	
+
 	assert( vec.GetSize() >= mat.GetNumColumns() );
 	assert( dst.GetSize() >= mat.GetNumRows() );
-	
+
 	mPtr = mat.ToFloatPtr();
 	vPtr = vec.ToFloatPtr();
 	dstPtr = dst.ToFloatPtr();
@@ -942,10 +942,10 @@ void VPCALL idDmapSIMD_Generic::MatX_MultiplySubVecX( idVecX& dst, const idMatX&
 	int i, j, numRows;
 	const float* mPtr, *vPtr;
 	float* dstPtr;
-	
+
 	assert( vec.GetSize() >= mat.GetNumColumns() );
 	assert( dst.GetSize() >= mat.GetNumRows() );
-	
+
 	mPtr = mat.ToFloatPtr();
 	vPtr = vec.ToFloatPtr();
 	dstPtr = dst.ToFloatPtr();
@@ -1023,10 +1023,10 @@ void VPCALL idDmapSIMD_Generic::MatX_TransposeMultiplyVecX( idVecX& dst, const i
 	int i, j, numColumns;
 	const float* mPtr, *vPtr;
 	float* dstPtr;
-	
+
 	assert( vec.GetSize() >= mat.GetNumRows() );
 	assert( dst.GetSize() >= mat.GetNumColumns() );
-	
+
 	mPtr = mat.ToFloatPtr();
 	vPtr = vec.ToFloatPtr();
 	dstPtr = dst.ToFloatPtr();
@@ -1105,10 +1105,10 @@ void VPCALL idDmapSIMD_Generic::MatX_TransposeMultiplyAddVecX( idVecX& dst, cons
 	int i, j, numColumns;
 	const float* mPtr, *vPtr;
 	float* dstPtr;
-	
+
 	assert( vec.GetSize() >= mat.GetNumRows() );
 	assert( dst.GetSize() >= mat.GetNumColumns() );
-	
+
 	mPtr = mat.ToFloatPtr();
 	vPtr = vec.ToFloatPtr();
 	dstPtr = dst.ToFloatPtr();
@@ -1187,10 +1187,10 @@ void VPCALL idDmapSIMD_Generic::MatX_TransposeMultiplySubVecX( idVecX& dst, cons
 	int i, numColumns;
 	const float* mPtr, *vPtr;
 	float* dstPtr;
-	
+
 	assert( vec.GetSize() >= mat.GetNumRows() );
 	assert( dst.GetSize() >= mat.GetNumColumns() );
-	
+
 	mPtr = mat.ToFloatPtr();
 	vPtr = vec.ToFloatPtr();
 	dstPtr = dst.ToFloatPtr();
@@ -1279,15 +1279,15 @@ void VPCALL idDmapSIMD_Generic::MatX_MultiplyMatX( idMatX& dst, const idMatX& m1
 	float* dstPtr;
 	const float* m1Ptr, *m2Ptr;
 	double sum;
-	
+
 	assert( m1.GetNumColumns() == m2.GetNumRows() );
-	
+
 	dstPtr = dst.ToFloatPtr();
 	m1Ptr = m1.ToFloatPtr();
 	m2Ptr = m2.ToFloatPtr();
 	k = m1.GetNumRows();
 	l = m2.GetNumColumns();
-	
+
 	switch( m1.GetNumColumns() )
 	{
 		case 1:
@@ -1696,15 +1696,15 @@ void VPCALL idDmapSIMD_Generic::MatX_TransposeMultiplyMatX( idMatX& dst, const i
 	float* dstPtr;
 	const float* m1Ptr, *m2Ptr;
 	double sum;
-	
+
 	assert( m1.GetNumRows() == m2.GetNumRows() );
-	
+
 	m1Ptr = m1.ToFloatPtr();
 	m2Ptr = m2.ToFloatPtr();
 	dstPtr = dst.ToFloatPtr();
 	k = m1.GetNumColumns();
 	l = m2.GetNumColumns();
-	
+
 	switch( m1.GetNumRows() )
 	{
 		case 1:
@@ -1978,15 +1978,15 @@ void VPCALL idDmapSIMD_Generic::MatX_LowerTriangularSolve( const idMatX& L, floa
 
 	int nc;
 	const float* lptr;
-	
+
 	if( skip >= n )
 	{
 		return;
 	}
-	
+
 	lptr = L.ToFloatPtr();
 	nc = L.GetNumColumns();
-	
+
 	// unrolled cases for n < 8
 	if( n < 8 )
 	{
@@ -2059,7 +2059,7 @@ void VPCALL idDmapSIMD_Generic::MatX_LowerTriangularSolve( const idMatX& L, floa
 		}
 		return;
 	}
-	
+
 	// process first 4 rows
 	switch( skip )
 	{
@@ -2073,12 +2073,12 @@ void VPCALL idDmapSIMD_Generic::MatX_LowerTriangularSolve( const idMatX& L, floa
 			x[3] = b[3] - lptr[3 * nc + 0] * x[0] - lptr[3 * nc + 1] * x[1] - lptr[3 * nc + 2] * x[2];
 			skip = 4;
 	}
-	
+
 	lptr = L[skip];
-	
+
 	int i, j;
 	register double s0, s1, s2, s3;
-	
+
 	for( i = skip; i < n; i++ )
 	{
 		s0 = lptr[0] * x[0];
@@ -2125,13 +2125,13 @@ void VPCALL idDmapSIMD_Generic::MatX_LowerTriangularSolve( const idMatX& L, floa
 		x[i] = -sum;
 		lptr += nc;
 	}
-	
+
 #else
-	
+
 	int i, j;
 	const float* lptr;
 	double sum;
-	
+
 	for( i = skip; i < n; i++ )
 	{
 		sum = b[i];
@@ -2142,7 +2142,7 @@ void VPCALL idDmapSIMD_Generic::MatX_LowerTriangularSolve( const idMatX& L, floa
 		}
 		x[i] = sum;
 	}
-	
+
 #endif
 }
 
@@ -2161,10 +2161,10 @@ void VPCALL idDmapSIMD_Generic::MatX_LowerTriangularSolveTranspose( const idMatX
 
 	int nc;
 	const float* lptr;
-	
+
 	lptr = L.ToFloatPtr();
 	nc = L.GetNumColumns();
-	
+
 	// unrolled cases for n < 8
 	if( n < 8 )
 	{
@@ -2217,14 +2217,14 @@ void VPCALL idDmapSIMD_Generic::MatX_LowerTriangularSolveTranspose( const idMatX
 		}
 		return;
 	}
-	
+
 	int i, j;
 	register double s0, s1, s2, s3;
 	float* xptr;
-	
+
 	lptr = L.ToFloatPtr() + n * nc + n - 4;
 	xptr = x + n;
-	
+
 	// process 4 rows at a time
 	for( i = n; i >= 4; i -= 4 )
 	{
@@ -2279,13 +2279,13 @@ void VPCALL idDmapSIMD_Generic::MatX_LowerTriangularSolveTranspose( const idMatX
 		}
 		x[i] = s0;
 	}
-	
+
 #else
-	
+
 	int i, j, nc;
 	const float* ptr;
 	double sum;
-	
+
 	nc = L.GetNumColumns();
 	for( i = n - 1; i >= 0; i-- )
 	{
@@ -2297,7 +2297,7 @@ void VPCALL idDmapSIMD_Generic::MatX_LowerTriangularSolveTranspose( const idMatX
 		}
 		x[i] = sum;
 	}
-	
+
 #endif
 }
 
@@ -2316,96 +2316,96 @@ bool VPCALL idDmapSIMD_Generic::MatX_LDLTFactor( idMatX& mat, idVecX& invDiag, c
 	int i, j, k, nc;
 	float* v, *diag, *mptr;
 	double s0, s1, s2, s3, sum, d;
-	
+
 	v = ( float* )_alloca16( n * sizeof( float ) );
 	diag = ( float* )_alloca16( n * sizeof( float ) );
-	
+
 	nc = mat.GetNumColumns();
-	
+
 	if( n <= 0 )
 	{
 		return true;
 	}
-	
+
 	mptr = mat[0];
-	
+
 	sum = mptr[0];
-	
+
 	if( sum == 0.0f )
 	{
 		return false;
 	}
-	
+
 	diag[0] = sum;
 	invDiag[0] = d = 1.0f / sum;
-	
+
 	if( n <= 1 )
 	{
 		return true;
 	}
-	
+
 	mptr = mat[0];
 	for( j = 1; j < n; j++ )
 	{
 		mptr[j * nc + 0] = ( mptr[j * nc + 0] ) * d;
 	}
-	
+
 	mptr = mat[1];
-	
+
 	v[0] = diag[0] * mptr[0];
 	s0 = v[0] * mptr[0];
 	sum = mptr[1] - s0;
-	
+
 	if( sum == 0.0f )
 	{
 		return false;
 	}
-	
+
 	mat[1][1] = sum;
 	diag[1] = sum;
 	invDiag[1] = d = 1.0f / sum;
-	
+
 	if( n <= 2 )
 	{
 		return true;
 	}
-	
+
 	mptr = mat[0];
 	for( j = 2; j < n; j++ )
 	{
 		mptr[j * nc + 1] = ( mptr[j * nc + 1] - v[0] * mptr[j * nc + 0] ) * d;
 	}
-	
+
 	mptr = mat[2];
-	
+
 	v[0] = diag[0] * mptr[0];
 	s0 = v[0] * mptr[0];
 	v[1] = diag[1] * mptr[1];
 	s1 = v[1] * mptr[1];
 	sum = mptr[2] - s0 - s1;
-	
+
 	if( sum == 0.0f )
 	{
 		return false;
 	}
-	
+
 	mat[2][2] = sum;
 	diag[2] = sum;
 	invDiag[2] = d = 1.0f / sum;
-	
+
 	if( n <= 3 )
 	{
 		return true;
 	}
-	
+
 	mptr = mat[0];
 	for( j = 3; j < n; j++ )
 	{
 		mptr[j * nc + 2] = ( mptr[j * nc + 2] - v[0] * mptr[j * nc + 0] - v[1] * mptr[j * nc + 1] ) * d;
 	}
-	
+
 	mptr = mat[3];
-	
+
 	v[0] = diag[0] * mptr[0];
 	s0 = v[0] * mptr[0];
 	v[1] = diag[1] * mptr[1];
@@ -2413,32 +2413,32 @@ bool VPCALL idDmapSIMD_Generic::MatX_LDLTFactor( idMatX& mat, idVecX& invDiag, c
 	v[2] = diag[2] * mptr[2];
 	s2 = v[2] * mptr[2];
 	sum = mptr[3] - s0 - s1 - s2;
-	
+
 	if( sum == 0.0f )
 	{
 		return false;
 	}
-	
+
 	mat[3][3] = sum;
 	diag[3] = sum;
 	invDiag[3] = d = 1.0f / sum;
-	
+
 	if( n <= 4 )
 	{
 		return true;
 	}
-	
+
 	mptr = mat[0];
 	for( j = 4; j < n; j++ )
 	{
 		mptr[j * nc + 3] = ( mptr[j * nc + 3] - v[0] * mptr[j * nc + 0] - v[1] * mptr[j * nc + 1] - v[2] * mptr[j * nc + 2] ) * d;
 	}
-	
+
 	for( i = 4; i < n; i++ )
 	{
-	
+
 		mptr = mat[i];
-		
+
 		v[0] = diag[0] * mptr[0];
 		s0 = v[0] * mptr[0];
 		v[1] = diag[1] * mptr[1];
@@ -2478,21 +2478,21 @@ bool VPCALL idDmapSIMD_Generic::MatX_LDLTFactor( idMatX& mat, idVecX& invDiag, c
 		sum += s1;
 		sum += s0;
 		sum = mptr[i] - sum;
-		
+
 		if( sum == 0.0f )
 		{
 			return false;
 		}
-		
+
 		mat[i][i] = sum;
 		diag[i] = sum;
 		invDiag[i] = d = 1.0f / sum;
-		
+
 		if( i + 1 >= n )
 		{
 			return true;
 		}
-		
+
 		mptr = mat[i + 1];
 		for( j = i + 1; j < n; j++ )
 		{
@@ -2539,21 +2539,21 @@ bool VPCALL idDmapSIMD_Generic::MatX_LDLTFactor( idMatX& mat, idVecX& invDiag, c
 			mptr += nc;
 		}
 	}
-	
+
 	return true;
-	
+
 #else
-	
+
 	int i, j, k, nc;
 	float* v, *ptr, *diagPtr;
 	double d, sum;
-	
+
 	v = ( float* )_alloca16( n * sizeof( float ) );
 	nc = mat.GetNumColumns();
-	
+
 	for( i = 0; i < n; i++ )
 	{
-	
+
 		ptr = mat[i];
 		diagPtr = mat[0];
 		sum = ptr[i];
@@ -2564,20 +2564,20 @@ bool VPCALL idDmapSIMD_Generic::MatX_LDLTFactor( idMatX& mat, idVecX& invDiag, c
 			sum -= v[j] * d;
 			diagPtr += nc + 1;
 		}
-	
+
 		if( sum == 0.0f )
 		{
 			return false;
 		}
-	
+
 		diagPtr[0] = sum;
 		invDiag[i] = d = 1.0f / sum;
-	
+
 		if( i + 1 >= n )
 		{
 			continue;
 		}
-	
+
 		ptr = mat[i + 1];
 		for( j = i + 1; j < n; j++ )
 		{
@@ -2590,9 +2590,9 @@ bool VPCALL idDmapSIMD_Generic::MatX_LDLTFactor( idMatX& mat, idVecX& invDiag, c
 			ptr += nc;
 		}
 	}
-	
+
 	return true;
-	
+
 #endif
 }
 
@@ -2604,7 +2604,7 @@ idDmapSIMD_Generic::BlendJoints
 void VPCALL idDmapSIMD_Generic::BlendJoints( idJointQuat* joints, const idJointQuat* blendJoints, const float lerp, const int* index, const int numJoints )
 {
 	int i;
-	
+
 	for( i = 0; i < numJoints; i++ )
 	{
 		int j = index[i];
@@ -2621,7 +2621,7 @@ idDmapSIMD_Generic::ConvertJointQuatsToJointMats
 void VPCALL idDmapSIMD_Generic::ConvertJointQuatsToJointMats( idJointMat* jointMats, const idJointQuat* jointQuats, const int numJoints )
 {
 	int i;
-	
+
 	for( i = 0; i < numJoints; i++ )
 	{
 		jointMats[i].SetRotation( jointQuats[i].q.ToMat3() );
@@ -2637,7 +2637,7 @@ idDmapSIMD_Generic::ConvertJointMatsToJointQuats
 void VPCALL idDmapSIMD_Generic::ConvertJointMatsToJointQuats( idJointQuat* jointQuats, const idJointMat* jointMats, const int numJoints )
 {
 	int i;
-	
+
 	for( i = 0; i < numJoints; i++ )
 	{
 		jointQuats[i] = jointMats[i].ToJointQuat();
@@ -2652,7 +2652,7 @@ idDmapSIMD_Generic::TransformJoints
 void VPCALL idDmapSIMD_Generic::TransformJoints( idJointMat* jointMats, const int* parents, const int firstJoint, const int lastJoint )
 {
 	int i;
-	
+
 	for( i = firstJoint; i <= lastJoint; i++ )
 	{
 		assert( parents[i] < i );
@@ -2668,7 +2668,7 @@ idDmapSIMD_Generic::UntransformJoints
 void VPCALL idDmapSIMD_Generic::UntransformJoints( idJointMat* jointMats, const int* parents, const int firstJoint, const int lastJoint )
 {
 	int i;
-	
+
 	for( i = lastJoint; i >= firstJoint; i-- )
 	{
 		assert( parents[i] < i );
@@ -2685,11 +2685,11 @@ void VPCALL idDmapSIMD_Generic::TransformVerts( idDmapDrawVert* verts, const int
 {
 	int i, j;
 	const byte* jointsPtr = ( byte* )joints;
-	
+
 	for( j = i = 0; i < numVerts; i++ )
 	{
 		idVec3 v;
-		
+
 		v = ( *( idJointMat* )( jointsPtr + index[j * 2 + 0] ) ) * weights[j];
 		while( index[j * 2 + 1] == 0 )
 		{
@@ -2697,7 +2697,7 @@ void VPCALL idDmapSIMD_Generic::TransformVerts( idDmapDrawVert* verts, const int
 			v += ( *( idJointMat* )( jointsPtr + index[j * 2 + 0] ) ) * weights[j];
 		}
 		j++;
-		
+
 		verts[i].xyz = v;
 	}
 }
@@ -2711,20 +2711,20 @@ void VPCALL idDmapSIMD_Generic::TracePointCull( byte* cullBits, byte& totalOr, c
 {
 	int i;
 	byte tOr;
-	
+
 	tOr = 0;
-	
+
 	for( i = 0; i < numVerts; i++ )
 	{
 		byte bits;
 		float d0, d1, d2, d3, t;
 		const idVec3& v = verts[i].xyz;
-		
+
 		d0 = planes[0].Distance( v );
 		d1 = planes[1].Distance( v );
 		d2 = planes[2].Distance( v );
 		d3 = planes[3].Distance( v );
-		
+
 		t = d0 + radius;
 		bits = FLOATSIGNBITSET( t ) << 0;
 		t = d1 + radius;
@@ -2733,7 +2733,7 @@ void VPCALL idDmapSIMD_Generic::TracePointCull( byte* cullBits, byte& totalOr, c
 		bits |= FLOATSIGNBITSET( t ) << 2;
 		t = d3 + radius;
 		bits |= FLOATSIGNBITSET( t ) << 3;
-		
+
 		t = d0 - radius;
 		bits |= FLOATSIGNBITSET( t ) << 4;
 		t = d1 - radius;
@@ -2742,13 +2742,13 @@ void VPCALL idDmapSIMD_Generic::TracePointCull( byte* cullBits, byte& totalOr, c
 		bits |= FLOATSIGNBITSET( t ) << 6;
 		t = d3 - radius;
 		bits |= FLOATSIGNBITSET( t ) << 7;
-		
+
 		bits ^= 0x0F;		// flip lower four bits
-		
+
 		tOr |= bits;
 		cullBits[i] = bits;
 	}
-	
+
 	totalOr = tOr;
 }
 
@@ -2760,27 +2760,27 @@ idDmapSIMD_Generic::DecalPointCull
 void VPCALL idDmapSIMD_Generic::DecalPointCull( byte* cullBits, const idPlane* planes, const idDmapDrawVert* verts, const int numVerts )
 {
 	int i;
-	
+
 	for( i = 0; i < numVerts; i++ )
 	{
 		byte bits;
 		float d0, d1, d2, d3, d4, d5;
 		const idVec3& v = verts[i].xyz;
-		
+
 		d0 = planes[0].Distance( v );
 		d1 = planes[1].Distance( v );
 		d2 = planes[2].Distance( v );
 		d3 = planes[3].Distance( v );
 		d4 = planes[4].Distance( v );
 		d5 = planes[5].Distance( v );
-		
+
 		bits = FLOATSIGNBITSET( d0 ) << 0;
 		bits |= FLOATSIGNBITSET( d1 ) << 1;
 		bits |= FLOATSIGNBITSET( d2 ) << 2;
 		bits |= FLOATSIGNBITSET( d3 ) << 3;
 		bits |= FLOATSIGNBITSET( d4 ) << 4;
 		bits |= FLOATSIGNBITSET( d5 ) << 5;
-		
+
 		cullBits[i] = bits ^ 0x3F;		// flip lower 6 bits
 	}
 }
@@ -2793,23 +2793,23 @@ idDmapSIMD_Generic::OverlayPointCull
 void VPCALL idDmapSIMD_Generic::OverlayPointCull( byte* cullBits, idVec2* texCoords, const idPlane* planes, const idDmapDrawVert* verts, const int numVerts )
 {
 	int i;
-	
+
 	for( i = 0; i < numVerts; i++ )
 	{
 		byte bits;
 		float d0, d1;
 		const idVec3& v = verts[i].xyz;
-		
+
 		texCoords[i][0] = d0 = planes[0].Distance( v );
 		texCoords[i][1] = d1 = planes[1].Distance( v );
-		
+
 		bits = FLOATSIGNBITSET( d0 ) << 0;
 		d0 = 1.0f - d0;
 		bits |= FLOATSIGNBITSET( d1 ) << 1;
 		d1 = 1.0f - d1;
 		bits |= FLOATSIGNBITSET( d0 ) << 2;
 		bits |= FLOATSIGNBITSET( d1 ) << 3;
-		
+
 		cullBits[i] = bits;
 	}
 }
@@ -2824,35 +2824,35 @@ Derives a plane equation for each triangle.
 void VPCALL idDmapSIMD_Generic::DeriveTriPlanes( idPlane* planes, const idDmapDrawVert* verts, const int numVerts, const int* indexes, const int numIndexes )
 {
 	int i;
-	
+
 	for( i = 0; i < numIndexes; i += 3 )
 	{
 		const idDmapDrawVert* a, *b, *c;
 		float d0[3], d1[3], f;
 		idVec3 n;
-		
+
 		a = verts + indexes[i + 0];
 		b = verts + indexes[i + 1];
 		c = verts + indexes[i + 2];
-		
+
 		d0[0] = b->xyz[0] - a->xyz[0];
 		d0[1] = b->xyz[1] - a->xyz[1];
 		d0[2] = b->xyz[2] - a->xyz[2];
-		
+
 		d1[0] = c->xyz[0] - a->xyz[0];
 		d1[1] = c->xyz[1] - a->xyz[1];
 		d1[2] = c->xyz[2] - a->xyz[2];
-		
+
 		n[0] = d1[1] * d0[2] - d1[2] * d0[1];
 		n[1] = d1[2] * d0[0] - d1[0] * d0[2];
 		n[2] = d1[0] * d0[1] - d1[1] * d0[0];
-		
+
 		f = idMath::RSqrt( n.x * n.x + n.y * n.y + n.z * n.z );
-		
+
 		n.x *= f;
 		n.y *= f;
 		n.z *= f;
-		
+
 		planes->SetNormal( n );
 		planes->FitThroughPoint( a->xyz );
 		planes++;
@@ -2872,10 +2872,10 @@ In the process the triangle planes are calculated as well.
 void VPCALL idDmapSIMD_Generic::DeriveTangents( idPlane* planes, idDmapDrawVert* verts, const int numVerts, const int* indexes, const int numIndexes )
 {
 	int i;
-	
+
 	bool* used = ( bool* )_alloca16( numVerts * sizeof( used[0] ) );
 	memset( used, 0, numVerts * sizeof( used[0] ) );
-	
+
 	idPlane* planesPtr = planes;
 	for( i = 0; i < numIndexes; i += 3 )
 	{
@@ -2883,70 +2883,70 @@ void VPCALL idDmapSIMD_Generic::DeriveTangents( idPlane* planes, idDmapDrawVert*
 		unsigned int signBit;
 		float d0[5], d1[5], f, area;
 		idVec3 n, t0, t1;
-		
+
 		int v0 = indexes[i + 0];
 		int v1 = indexes[i + 1];
 		int v2 = indexes[i + 2];
-		
+
 		a = verts + v0;
 		b = verts + v1;
 		c = verts + v2;
-		
+
 		d0[0] = b->xyz[0] - a->xyz[0];
 		d0[1] = b->xyz[1] - a->xyz[1];
 		d0[2] = b->xyz[2] - a->xyz[2];
 		d0[3] = b->st[0] - a->st[0];
 		d0[4] = b->st[1] - a->st[1];
-		
+
 		d1[0] = c->xyz[0] - a->xyz[0];
 		d1[1] = c->xyz[1] - a->xyz[1];
 		d1[2] = c->xyz[2] - a->xyz[2];
 		d1[3] = c->st[0] - a->st[0];
 		d1[4] = c->st[1] - a->st[1];
-		
+
 		// normal
 		n[0] = d1[1] * d0[2] - d1[2] * d0[1];
 		n[1] = d1[2] * d0[0] - d1[0] * d0[2];
 		n[2] = d1[0] * d0[1] - d1[1] * d0[0];
-		
+
 		f = idMath::RSqrt( n.x * n.x + n.y * n.y + n.z * n.z );
-		
+
 		n.x *= f;
 		n.y *= f;
 		n.z *= f;
-		
+
 		planesPtr->SetNormal( n );
 		planesPtr->FitThroughPoint( a->xyz );
 		planesPtr++;
-		
+
 		// area sign bit
 		area = d0[3] * d1[4] - d0[4] * d1[3];
 		signBit = ( *( unsigned int* )&area ) & ( 1 << 31 );
-		
+
 		// first tangent
 		t0[0] = d0[0] * d1[4] - d0[4] * d1[0];
 		t0[1] = d0[1] * d1[4] - d0[4] * d1[1];
 		t0[2] = d0[2] * d1[4] - d0[4] * d1[2];
-		
+
 		f = idMath::RSqrt( t0.x * t0.x + t0.y * t0.y + t0.z * t0.z );
 		*( unsigned int* )&f ^= signBit;
-		
+
 		t0.x *= f;
 		t0.y *= f;
 		t0.z *= f;
-		
+
 		// second tangent
 		t1[0] = d0[3] * d1[0] - d0[0] * d1[3];
 		t1[1] = d0[3] * d1[1] - d0[1] * d1[3];
 		t1[2] = d0[3] * d1[2] - d0[2] * d1[3];
-		
+
 		f = idMath::RSqrt( t1.x * t1.x + t1.y * t1.y + t1.z * t1.z );
 		*( unsigned int* )&f ^= signBit;
-		
+
 		t1.x *= f;
 		t1.y *= f;
 		t1.z *= f;
-		
+
 		if( used[v0] )
 		{
 			a->normal += n;
@@ -2960,7 +2960,7 @@ void VPCALL idDmapSIMD_Generic::DeriveTangents( idPlane* planes, idDmapDrawVert*
 			a->tangents[1] = t1;
 			used[v0] = true;
 		}
-		
+
 		if( used[v1] )
 		{
 			b->normal += n;
@@ -2974,7 +2974,7 @@ void VPCALL idDmapSIMD_Generic::DeriveTangents( idPlane* planes, idDmapDrawVert*
 			b->tangents[1] = t1;
 			used[v1] = true;
 		}
-		
+
 		if( used[v2] )
 		{
 			c->normal += n;
@@ -3004,7 +3004,7 @@ For each vertex the normal and tangent vectors are derived from a single dominan
 void VPCALL idDmapSIMD_Generic::DeriveUnsmoothedTangents( idDmapDrawVert* verts, const dmapDominantTri_s* dominantTris, const int numVerts )
 {
 	int i;
-	
+
 	for( i = 0; i < numVerts; i++ )
 	{
 		idDmapDrawVert* a, *b, *c;
@@ -3017,13 +3017,13 @@ void VPCALL idDmapSIMD_Generic::DeriveUnsmoothedTangents( idDmapDrawVert* verts,
 		float n0, n1, n2;
 		float t0, t1, t2;
 		float t3, t4, t5;
-		
+
 		const dmapDominantTri_s& dt = dominantTris[i];
-		
+
 		a = verts + i;
 		b = verts + dt.v2;
 		c = verts + dt.v3;
-		
+
 		d0 = b->xyz[0] - a->xyz[0];
 		d1 = b->xyz[1] - a->xyz[1];
 		d2 = b->xyz[2] - a->xyz[2];
@@ -3031,7 +3031,7 @@ void VPCALL idDmapSIMD_Generic::DeriveUnsmoothedTangents( idDmapDrawVert* verts,
 		d3 = b->st[0] - a->st[0];
 #endif
 		d4 = b->st[1] - a->st[1];
-		
+
 		d5 = c->xyz[0] - a->xyz[0];
 		d6 = c->xyz[1] - a->xyz[1];
 		d7 = c->xyz[2] - a->xyz[2];
@@ -3039,19 +3039,19 @@ void VPCALL idDmapSIMD_Generic::DeriveUnsmoothedTangents( idDmapDrawVert* verts,
 		d8 = c->st[0] - a->st[0];
 #endif
 		d9 = c->st[1] - a->st[1];
-		
+
 		s0 = dt.normalizationScale[0];
 		s1 = dt.normalizationScale[1];
 		s2 = dt.normalizationScale[2];
-		
+
 		n0 = s2 * ( d6 * d2 - d7 * d1 );
 		n1 = s2 * ( d7 * d0 - d5 * d2 );
 		n2 = s2 * ( d5 * d1 - d6 * d0 );
-		
+
 		t0 = s0 * ( d0 * d9 - d4 * d5 );
 		t1 = s0 * ( d1 * d9 - d4 * d6 );
 		t2 = s0 * ( d2 * d9 - d4 * d7 );
-		
+
 #ifndef DERIVE_UNSMOOTHED_BITANGENT
 		t3 = s1 * ( d3 * d5 - d0 * d8 );
 		t4 = s1 * ( d3 * d6 - d1 * d8 );
@@ -3061,15 +3061,15 @@ void VPCALL idDmapSIMD_Generic::DeriveUnsmoothedTangents( idDmapDrawVert* verts,
 		t4 = s1 * ( n0 * t2 - n2 * t0 );
 		t5 = s1 * ( n1 * t0 - n0 * t1 );
 #endif
-		
+
 		a->normal[0] = n0;
 		a->normal[1] = n1;
 		a->normal[2] = n2;
-		
+
 		a->tangents[0][0] = t0;
 		a->tangents[0][1] = t1;
 		a->tangents[0][2] = t2;
-		
+
 		a->tangents[1][0] = t3;
 		a->tangents[1][1] = t4;
 		a->tangents[1][2] = t5;
@@ -3091,16 +3091,16 @@ void VPCALL idDmapSIMD_Generic::NormalizeTangents( idDmapDrawVert* verts, const 
 	{
 		idVec3& v = verts[i].normal;
 		float f;
-		
+
 		f = idMath::RSqrt( v.x * v.x + v.y * v.y + v.z * v.z );
 		v.x *= f;
 		v.y *= f;
 		v.z *= f;
-		
+
 		for( int j = 0; j < 2; j++ )
 		{
 			idVec3& t = verts[i].tangents[j];
-			
+
 			t -= ( t * v ) * v;
 			f = idMath::RSqrt( t.x * t.x + t.y * t.y + t.z * t.z );
 			t.x *= f;
@@ -3118,7 +3118,7 @@ idDmapSIMD_Generic::CreateShadowCache
 int VPCALL idDmapSIMD_Generic::CreateShadowCache( idVec4* vertexCache, int* vertRemap, const idVec3& lightOrigin, const idDmapDrawVert* verts, const int numVerts )
 {
 	int outVerts = 0;
-	
+
 	for( int i = 0; i < numVerts; i++ )
 	{
 		if( vertRemap[i] )
@@ -3130,7 +3130,7 @@ int VPCALL idDmapSIMD_Generic::CreateShadowCache( idVec4* vertexCache, int* vert
 		vertexCache[outVerts + 0][1] = v[1];
 		vertexCache[outVerts + 0][2] = v[2];
 		vertexCache[outVerts + 0][3] = 1.0f;
-		
+
 		// R_SetupProjection() builds the projection matrix with a slight crunch
 		// for depth, which keeps this w=0 division from rasterizing right at the
 		// wrap around point and causing depth fighting with the rear caps
@@ -3304,9 +3304,9 @@ void VPCALL idDmapSIMD_Generic::MixSoundTwoSpeakerMono( float* mixBuffer, const 
 	float sR = lastV[1];
 	float incL = ( currentV[0] - lastV[0] ) / MIXBUFFER_SAMPLES;
 	float incR = ( currentV[1] - lastV[1] ) / MIXBUFFER_SAMPLES;
-	
+
 	assert( numSamples == MIXBUFFER_SAMPLES );
-	
+
 	for( int j = 0; j < MIXBUFFER_SAMPLES; j++ )
 	{
 		mixBuffer[j * 2 + 0] += samples[j] * sL;
@@ -3327,9 +3327,9 @@ void VPCALL idDmapSIMD_Generic::MixSoundTwoSpeakerStereo( float* mixBuffer, cons
 	float sR = lastV[1];
 	float incL = ( currentV[0] - lastV[0] ) / MIXBUFFER_SAMPLES;
 	float incR = ( currentV[1] - lastV[1] ) / MIXBUFFER_SAMPLES;
-	
+
 	assert( numSamples == MIXBUFFER_SAMPLES );
-	
+
 	for( int j = 0; j < MIXBUFFER_SAMPLES; j++ )
 	{
 		mixBuffer[j * 2 + 0] += samples[j * 2 + 0] * sL;
@@ -3352,16 +3352,16 @@ void VPCALL idDmapSIMD_Generic::MixSoundSixSpeakerMono( float* mixBuffer, const 
 	float sL3 = lastV[3];
 	float sL4 = lastV[4];
 	float sL5 = lastV[5];
-	
+
 	float incL0 = ( currentV[0] - lastV[0] ) / MIXBUFFER_SAMPLES;
 	float incL1 = ( currentV[1] - lastV[1] ) / MIXBUFFER_SAMPLES;
 	float incL2 = ( currentV[2] - lastV[2] ) / MIXBUFFER_SAMPLES;
 	float incL3 = ( currentV[3] - lastV[3] ) / MIXBUFFER_SAMPLES;
 	float incL4 = ( currentV[4] - lastV[4] ) / MIXBUFFER_SAMPLES;
 	float incL5 = ( currentV[5] - lastV[5] ) / MIXBUFFER_SAMPLES;
-	
+
 	assert( numSamples == MIXBUFFER_SAMPLES );
-	
+
 	for( int i = 0; i < MIXBUFFER_SAMPLES; i++ )
 	{
 		mixBuffer[i * 6 + 0] += samples[i] * sL0;
@@ -3392,16 +3392,16 @@ void VPCALL idDmapSIMD_Generic::MixSoundSixSpeakerStereo( float* mixBuffer, cons
 	float sL3 = lastV[3];
 	float sL4 = lastV[4];
 	float sL5 = lastV[5];
-	
+
 	float incL0 = ( currentV[0] - lastV[0] ) / MIXBUFFER_SAMPLES;
 	float incL1 = ( currentV[1] - lastV[1] ) / MIXBUFFER_SAMPLES;
 	float incL2 = ( currentV[2] - lastV[2] ) / MIXBUFFER_SAMPLES;
 	float incL3 = ( currentV[3] - lastV[3] ) / MIXBUFFER_SAMPLES;
 	float incL4 = ( currentV[4] - lastV[4] ) / MIXBUFFER_SAMPLES;
 	float incL5 = ( currentV[5] - lastV[5] ) / MIXBUFFER_SAMPLES;
-	
+
 	assert( numSamples == MIXBUFFER_SAMPLES );
-	
+
 	for( int i = 0; i < MIXBUFFER_SAMPLES; i++ )
 	{
 		mixBuffer[i * 6 + 0] += samples[i * 2 + 0] * sL0;

@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 #define AFX_PROPERTYLIST_H__74205380_1B56_11D4_BC48_00105AA2186F__INCLUDED_
 
 #if _MSC_VER > 1000
-#pragma once
+	#pragma once
 #endif // _MSC_VER > 1000
 // PropertyList.h : header file
 //
@@ -64,7 +64,7 @@ public:
 	int m_nItemType;
 	CString m_cmbItems;
 	int data;
-	
+
 public:
 	CPropertyItem( CString propName, CString curValue,
 				   int nItemType, CString cmbItems )
@@ -89,7 +89,7 @@ class CPropertyList : public CListBox
 // Construction
 public:
 	CPropertyList();
-	
+
 // Attributes
 public:
 
@@ -112,7 +112,7 @@ public:
 	}
 	afx_msg void OnKillfocusEditBox();
 	afx_msg void OnChangeEditBox();
-	
+
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CPropertyList)
@@ -124,11 +124,11 @@ protected:
 	virtual BOOL PreCreateWindow( CREATESTRUCT& cs );
 	virtual void PreSubclassWindow();
 	//}}AFX_VIRTUAL
-	
+
 // Implementation
 public:
 	virtual ~CPropertyList();
-	
+
 	// Generated message map functions
 protected:
 	//{{AFX_MSG(CPropertyList)
@@ -138,22 +138,22 @@ protected:
 	afx_msg void OnLButtonDown( UINT nFlags, CPoint point );
 	afx_msg void OnMouseMove( UINT nFlags, CPoint point );
 	afx_msg void OnVScroll( UINT nSBCode, UINT nPos, CScrollBar* pScrollBar );
-	
+
 	//}}AFX_MSG
 	afx_msg void OnKillfocusCmbBox();
 	afx_msg void OnSelchangeCmbBox();
 	afx_msg void OnButton();
-	
+
 	DECLARE_MESSAGE_MAP()
-	
+
 	void InvertLine( CDC* pDC, CPoint ptFrom, CPoint ptTo );
 	void DisplayButton( CRect region );
-	
+
 	CComboBox m_cmbBox;
 	CEdit m_editBox;
 	CButton m_btnCtrl;
 	CFont m_SSerif8Font;
-	
+
 	int m_curSel, m_prevSel;
 	int m_nDivider;
 	int m_nDivTop;

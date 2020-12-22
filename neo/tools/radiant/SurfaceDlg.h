@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 #define AFX_SURFACEDLG_H__D84E0C22_9EEA_11D1_B570_00AA00A410FC__INCLUDED_
 
 #if _MSC_VER >= 1000
-#pragma once
+	#pragma once
 #endif // _MSC_VER >= 1000
 // SurfaceDlg.h : header file
 //
@@ -43,12 +43,12 @@ class CSurfaceDlg : public CDialog
 {
 	bool m_bPatchMode;
 	CWnd* focusControl;
-	
+
 	// Construction
 public:
 	CSurfaceDlg( CWnd* pParent = NULL ); // standard constructor
 	void SetTexMods();
-	
+
 // Dialog Data
 	//{{AFX_DATA(CSurfaceDlg)
 	enum { IDD = IDD_SURFACE };
@@ -77,8 +77,8 @@ public:
 	float	m_fWidth;
 	BOOL	m_absolute;
 	//}}AFX_DATA
-	
-	
+
+
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CSurfaceDlg)
@@ -88,7 +88,7 @@ protected:
 	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	virtual BOOL PreCreateWindow( CREATESTRUCT& cs );
 	//}}AFX_VIRTUAL
-	
+
 // Implementation
 protected:
 

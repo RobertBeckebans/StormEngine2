@@ -52,32 +52,32 @@ srfDmapTriangles_t* R_CreateVertexProgramTurboShadowVolume( const idDmapRenderEn
 	silEdge_t*	sil;
 	const uint* indexes;
 	const byte* facing;
-	
+
 	R_CalcInteractionFacingDmap( ent, tri, light, cullInfo );
 	if( r_useShadowProjectedCull.GetBool() )
 	{
 		R_CalcInteractionCullBitsDmap( ent, tri, light, cullInfo );
 	}
-	
+
 	int numFaces = tri->numIndexes / 3;
 	int	numShadowingFaces = 0;
 	facing = cullInfo.facing;
-	
+
 	// if all the triangles are inside the light frustum
 	if( cullInfo.cullBits == LIGHT_CULL_ALL_FRONT || !r_useShadowProjectedCull.GetBool() )
 	{
-	
+
 		// count the number of shadowing faces
 		for( i = 0; i < numFaces; i++ )
 		{
 			numShadowingFaces += facing[i];
 		}
 		numShadowingFaces = numFaces - numShadowingFaces;
-		
+
 	}
 	else
 	{
-	
+
 		// make all triangles that are outside the light frustum "facing", so they won't cast shadows
 		indexes = tri->indexes;
 		byte* modifyFacing = cullInfo.facing;
@@ -100,18 +100,18 @@ srfDmapTriangles_t* R_CreateVertexProgramTurboShadowVolume( const idDmapRenderEn
 			}
 		}
 	}
-	
+
 	if( !numShadowingFaces )
 	{
 		// no faces are inside the light frustum and still facing the right way
 		return NULL;
 	}
-	
+
 	// shadowVerts will be NULL on these surfaces, so the shadowVerts will be taken from the ambient surface
 	newTri = R_AllocStaticTriSurfDmap();
-	
+
 	newTri->numVerts = tri->numVerts * 2;
-	
+
 	// alloc the max possible size
 #ifdef USE_TRI_DATA_ALLOCATOR
 	R_AllocStaticTriSurfIndexesDmap( newTri, ( numShadowingFaces + tri->numSilEdges ) * 6 );
@@ -121,42 +121,42 @@ srfDmapTriangles_t* R_CreateVertexProgramTurboShadowVolume( const idDmapRenderEn
 	uint* tempIndexes = ( uint* )_alloca16( tri->numSilEdges * 6 * sizeof( tempIndexes[0] ) );
 	uint* shadowIndexes = tempIndexes;
 #endif
-	
+
 	// create new triangles along sil planes
 	for( sil = tri->silEdges, i = tri->numSilEdges; i > 0; i--, sil++ )
 	{
-	
+
 		int f1 = facing[sil->p1];
 		int f2 = facing[sil->p2];
-		
+
 		if( !( f1 ^ f2 ) )
 		{
 			continue;
 		}
-		
+
 		int v1 = sil->v1 << 1;
 		int v2 = sil->v2 << 1;
-		
+
 		// set the two triangle winding orders based on facing
 		// without using a poorly-predictable branch
-		
+
 		shadowIndexes[0] = v1;
 		shadowIndexes[1] = v2 ^ f1;
 		shadowIndexes[2] = v2 ^ f2;
 		shadowIndexes[3] = v1 ^ f2;
 		shadowIndexes[4] = v1 ^ f1;
 		shadowIndexes[5] = v2 ^ 1;
-		
+
 		shadowIndexes += 6;
 	}
-	
+
 	int	numShadowIndexes = shadowIndexes - tempIndexes;
-	
+
 	// we aren't bothering to separate front and back caps on these
 	newTri->numIndexes = newTri->numShadowIndexesNoFrontCaps = numShadowIndexes + numShadowingFaces * 6;
 	newTri->numShadowIndexesNoCaps = numShadowIndexes;
 	newTri->shadowCapPlaneBits = SHADOW_CAP_INFINITE;
-	
+
 #ifdef USE_TRI_DATA_ALLOCATOR
 	// decrease the size of the memory block to only store the used indexes
 	R_ResizeStaticTriSurfIndexesDmap( newTri, newTri->numIndexes );
@@ -166,10 +166,10 @@ srfDmapTriangles_t* R_CreateVertexProgramTurboShadowVolume( const idDmapRenderEn
 	// copy the indexes we created for the sil planes
 	dmapSIMDProcessor->Memcpy( newTri->indexes, tempIndexes, numShadowIndexes * sizeof( tempIndexes[0] ) );
 #endif
-	
+
 	// these have no effect, because they extend to infinity
 	newTri->bounds.Clear();
-	
+
 	// put some faces on the model and some on the distant projection
 	indexes = tri->indexes;
 	shadowIndexes = newTri->indexes + numShadowIndexes;
@@ -179,7 +179,7 @@ srfDmapTriangles_t* R_CreateVertexProgramTurboShadowVolume( const idDmapRenderEn
 		{
 			continue;
 		}
-		
+
 		int i0 = indexes[i + 0] << 1;
 		shadowIndexes[2] = i0;
 		shadowIndexes[3] = i0 ^ 1;
@@ -189,10 +189,10 @@ srfDmapTriangles_t* R_CreateVertexProgramTurboShadowVolume( const idDmapRenderEn
 		int i2 = indexes[i + 2] << 1;
 		shadowIndexes[0] = i2;
 		shadowIndexes[5] = i2 ^ 1;
-		
+
 		shadowIndexes += 6;
 	}
-	
+
 	return newTri;
 }
 
@@ -211,32 +211,32 @@ srfDmapTriangles_t* R_CreateTurboShadowVolume( const idDmapRenderEntityLocal* en
 	silEdge_t*	sil;
 	const uint* indexes;
 	const byte* facing;
-	
+
 	R_CalcInteractionFacingDmap( ent, tri, light, cullInfo );
 	if( r_useShadowProjectedCull.GetBool() )
 	{
 		R_CalcInteractionCullBitsDmap( ent, tri, light, cullInfo );
 	}
-	
+
 	int numFaces = tri->numIndexes / 3;
 	int	numShadowingFaces = 0;
 	facing = cullInfo.facing;
-	
+
 	// if all the triangles are inside the light frustum
 	if( cullInfo.cullBits == LIGHT_CULL_ALL_FRONT || !r_useShadowProjectedCull.GetBool() )
 	{
-	
+
 		// count the number of shadowing faces
 		for( i = 0; i < numFaces; i++ )
 		{
 			numShadowingFaces += facing[i];
 		}
 		numShadowingFaces = numFaces - numShadowingFaces;
-		
+
 	}
 	else
 	{
-	
+
 		// make all triangles that are outside the light frustum "facing", so they won't cast shadows
 		indexes = tri->indexes;
 		byte* modifyFacing = cullInfo.facing;
@@ -259,28 +259,28 @@ srfDmapTriangles_t* R_CreateTurboShadowVolume( const idDmapRenderEntityLocal* en
 			}
 		}
 	}
-	
+
 	if( !numShadowingFaces )
 	{
 		// no faces are inside the light frustum and still facing the right way
 		return NULL;
 	}
-	
+
 	newTri = R_AllocStaticTriSurfDmap();
-	
+
 #ifdef USE_TRI_DATA_ALLOCATOR
 	R_AllocStaticTriSurfShadowVertsDmap( newTri, tri->numVerts * 2 );
 	shadowCache_t* shadowVerts = newTri->shadowVertexes;
 #else
 	shadowCache_t* shadowVerts = ( shadowCache_t* )_alloca16( tri->numVerts * 2 * sizeof( shadowVerts[0] ) );
 #endif
-	
+
 	R_GlobalPointToLocal( ent->modelMatrix, light->globalLightOrigin, localLightOrigin );
-	
+
 	int*	vertRemap = ( int* )_alloca16( tri->numVerts * sizeof( vertRemap[0] ) );
-	
+
 	dmapSIMDProcessor->Memset( vertRemap, -1, tri->numVerts * sizeof( vertRemap[0] ) );
-	
+
 	for( i = 0, j = 0; i < tri->numIndexes; i += 3, j++ )
 	{
 		if( facing[j] )
@@ -293,19 +293,19 @@ srfDmapTriangles_t* R_CreateTurboShadowVolume( const idDmapRenderEntityLocal* en
 		vertRemap[tri->silIndexes[i + 1]] = 0;
 		vertRemap[tri->silIndexes[i + 2]] = 0;
 	}
-	
+
 	newTri->numVerts = dmapSIMDProcessor->CreateShadowCache( &shadowVerts->xyz, vertRemap, localLightOrigin, tri->verts, tri->numVerts );
-	
+
 	c_turboUsedVerts += newTri->numVerts;
 	c_turboUnusedVerts += tri->numVerts * 2 - newTri->numVerts;
-	
+
 #ifdef USE_TRI_DATA_ALLOCATOR
 	R_ResizeStaticTriSurfShadowVertsDmap( newTri, newTri->numVerts );
 #else
 	R_AllocStaticTriSurfShadowVertsDmap( newTri, newTri->numVerts );
 	dmapSIMDProcessor->Memcpy( newTri->shadowVertexes, shadowVerts, newTri->numVerts * sizeof( shadowVerts[0] ) );
 #endif
-	
+
 	// alloc the max possible size
 #ifdef USE_TRI_DATA_ALLOCATOR
 	R_AllocStaticTriSurfIndexesDmap( newTri, ( numShadowingFaces + tri->numSilEdges ) * 6 );
@@ -315,42 +315,42 @@ srfDmapTriangles_t* R_CreateTurboShadowVolume( const idDmapRenderEntityLocal* en
 	uint* tempIndexes = ( uint* )_alloca16( tri->numSilEdges * 6 * sizeof( tempIndexes[0] ) );
 	uint* shadowIndexes = tempIndexes;
 #endif
-	
+
 	// create new triangles along sil planes
 	for( sil = tri->silEdges, i = tri->numSilEdges; i > 0; i--, sil++ )
 	{
-	
+
 		int f1 = facing[sil->p1];
 		int f2 = facing[sil->p2];
-		
+
 		if( !( f1 ^ f2 ) )
 		{
 			continue;
 		}
-		
+
 		int v1 = vertRemap[sil->v1];
 		int v2 = vertRemap[sil->v2];
-		
+
 		// set the two triangle winding orders based on facing
 		// without using a poorly-predictable branch
-		
+
 		shadowIndexes[0] = v1;
 		shadowIndexes[1] = v2 ^ f1;
 		shadowIndexes[2] = v2 ^ f2;
 		shadowIndexes[3] = v1 ^ f2;
 		shadowIndexes[4] = v1 ^ f1;
 		shadowIndexes[5] = v2 ^ 1;
-		
+
 		shadowIndexes += 6;
 	}
-	
+
 	int numShadowIndexes = shadowIndexes - tempIndexes;
-	
+
 	// we aren't bothering to separate front and back caps on these
 	newTri->numIndexes = newTri->numShadowIndexesNoFrontCaps = numShadowIndexes + numShadowingFaces * 6;
 	newTri->numShadowIndexesNoCaps = numShadowIndexes;
 	newTri->shadowCapPlaneBits = SHADOW_CAP_INFINITE;
-	
+
 #ifdef USE_TRI_DATA_ALLOCATOR
 	// decrease the size of the memory block to only store the used indexes
 	R_ResizeStaticTriSurfIndexesDmap( newTri, newTri->numIndexes );
@@ -360,10 +360,10 @@ srfDmapTriangles_t* R_CreateTurboShadowVolume( const idDmapRenderEntityLocal* en
 	// copy the indexes we created for the sil planes
 	dmapSIMDProcessor->Memcpy( newTri->indexes, tempIndexes, numShadowIndexes * sizeof( tempIndexes[0] ) );
 #endif
-	
+
 	// these have no effect, because they extend to infinity
 	newTri->bounds.Clear();
-	
+
 	// put some faces on the model and some on the distant projection
 	indexes = tri->silIndexes;
 	shadowIndexes = newTri->indexes + numShadowIndexes;
@@ -373,7 +373,7 @@ srfDmapTriangles_t* R_CreateTurboShadowVolume( const idDmapRenderEntityLocal* en
 		{
 			continue;
 		}
-		
+
 		int i0 = vertRemap[indexes[i + 0]];
 		shadowIndexes[2] = i0;
 		shadowIndexes[3] = i0 ^ 1;
@@ -383,9 +383,9 @@ srfDmapTriangles_t* R_CreateTurboShadowVolume( const idDmapRenderEntityLocal* en
 		int i2 = vertRemap[indexes[i + 2]];
 		shadowIndexes[0] = i2;
 		shadowIndexes[5] = i2 ^ 1;
-		
+
 		shadowIndexes += 6;
 	}
-	
+
 	return newTri;
 }

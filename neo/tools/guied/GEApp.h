@@ -37,35 +37,35 @@ If you have questions concerning this license or the applicable additional terms
 #include "../../ui/UserInterfaceLocal.h"
 
 #ifndef GEOPTIONS_H_
-#include "GEOptions.h"
+	#include "GEOptions.h"
 #endif // GEOPTIONS_H_
 
 #ifndef GEWINDOWWRAPPER_H_
-#include "GEWindowWrapper.h"
+	#include "GEWindowWrapper.h"
 #endif // GEWINDOWWRAPPER_H_
 
 #ifndef GEWORKSPACE_H_
-#include "GEWorkspace.h"
+	#include "GEWorkspace.h"
 #endif // GEWORKSPACE_H_
 
 #ifndef GENAVIGATOR_H_
-#include "GENavigator.h"
+	#include "GENavigator.h"
 #endif // GENAVIGATOR_H_
 
 #ifndef GEPROPERTIES_H_
-#include "GEProperties.h"
+	#include "GEProperties.h"
 #endif // GEPROPERTIES_H_
 
 #ifndef GETRANSFORMER_H_
-#include "GETransformer.h"
+	#include "GETransformer.h"
 #endif // GETRANSFORMER_H_
 
 #ifndef GESTATUSBAR_H_
-#include "GEStatusBar.h"
+	#include "GEStatusBar.h"
 #endif // GESTATUSBAR_H_
 
 #ifndef GEITEMPROPS_H_
-#include "GEItemPropsDlg.h"
+	#include "GEItemPropsDlg.h"
 #endif
 
 // Utility functions
@@ -81,13 +81,13 @@ public:
 
 	rvGEApp( );
 	~rvGEApp( );
-	
+
 	bool				Initialize( void );
 	void				RunFrame( void );
 //	bool				Uninitialize			( void );
 
 	bool				TranslateAccelerator( LPMSG msg );
-	
+
 	rvGEWorkspace*		GetActiveWorkspace( HWND* retwnd = NULL );
 	rvGENavigator&		GetNavigator( void );
 	rvGEProperties&		GetProperties( void );
@@ -106,30 +106,30 @@ public:
 	bool				OpenFile( const char* filename );
 	bool				SaveFile( const char* filename );
 	bool				NewFile( void );
-	
+
 	bool				IsActive( void );
-	
+
 	void				CloseViewer( void );
-	
+
 	int					ToolWindowActivate( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam );
-	
+
 	int					MessageBox( const char* text, int flags );
-	
+
 	bool				ApplyProperties( idDict* dict, bool keyShortcut = false );
-	
+
 	// helper bool to not exit if user chooses to not do so during quit dialogs
 	static bool				mDontExit;
-	
+
 protected:
 
 	int						HandleCommand( WPARAM wParam, LPARAM lParam );
 	int						HandleInitMenu( WPARAM wParam, LPARAM lParam );
-	
+
 	void					HandleCommandSave( rvGEWorkspace* workspace, const char* filename );
-	
+
 	bool					InitRecentFiles( void );
 	void					UpdateRecentFiles( void );
-	
+
 	HWND					mMDIFrame;
 	HWND					mMDIClient;
 	HINSTANCE				mInstance;
@@ -141,20 +141,20 @@ protected:
 	rvGEProperties			mProperties;
 	rvGEItemProps			mItemProperties;
 	HWND					mScripts;
-	
+
 	HMENU					mRecentFileMenu;
 	int						mRecentFileInsertPos;
-	
+
 	rvGEViewer*				mViewer;
-	
+
 	idList<rvGEWorkspace*>	mWorkspaces;
 	idList<HWND>			mToolWindows;
-	
+
 private:
 
 	static LRESULT CALLBACK	FrameWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 	static LRESULT CALLBACK	MDIChildProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
-	
+
 };
 
 ID_INLINE bool rvGEApp::IsActive( void )

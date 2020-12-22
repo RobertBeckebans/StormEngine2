@@ -39,11 +39,11 @@ static int		s_num_points, s_check_point;
 void Pointfile_Delete( void )
 {
 	char	name[1024];
-	
+
 	strcpy( name, currentmap );
 	StripExtension( name );
 	strcat( name, ".lin" );
-	
+
 	remove( name );
 }
 
@@ -51,7 +51,7 @@ void Pointfile_Delete( void )
 void Pointfile_Next( void )
 {
 	idVec3	dir;
-	
+
 	if( s_check_point >= s_num_points - 2 )
 	{
 		Sys_Status( "End of pointfile", 0 );
@@ -64,7 +64,7 @@ void Pointfile_Next( void )
 	dir.Normalize();
 	g_pParentWnd->GetCamera()->Camera().angles[1] = atan2( dir[1], dir[0] ) * 180 / 3.14159;
 	g_pParentWnd->GetCamera()->Camera().angles[0] = asin( dir[2] ) * 180 / 3.14159;
-	
+
 	Sys_UpdateWindows( W_ALL );
 }
 
@@ -72,7 +72,7 @@ void Pointfile_Next( void )
 void Pointfile_Prev( void )
 {
 	idVec3	dir;
-	
+
 	if( s_check_point == 0 )
 	{
 		Sys_Status( "Start of pointfile", 0 );
@@ -85,7 +85,7 @@ void Pointfile_Prev( void )
 	dir.Normalize();
 	g_pParentWnd->GetCamera()->Camera().angles[1] = atan2( dir[1], dir[0] ) * 180 / 3.14159;
 	g_pParentWnd->GetCamera()->Camera().angles[0] = asin( dir[2] ) * 180 / 3.14159;
-	
+
 	Sys_UpdateWindows( W_ALL );
 }
 
@@ -94,20 +94,24 @@ void WINAPI Pointfile_Check( void )
 	char	name[1024];
 	FILE*	f;
 	idVec3	v;
-	
+
 	strcpy( name, currentmap );
 	StripExtension( name );
 	strcat( name, ".lin" );
-	
+
 	f = fopen( name, "r" );
 	if( !f )
+	{
 		return;
-		
+	}
+
 	common->Printf( "Reading pointfile %s\n", name );
-	
+
 	if( !g_qeglobals.d_pointfile_display_list )
+	{
 		g_qeglobals.d_pointfile_display_list = qglGenLists( 1 );
-		
+	}
+
 	s_num_points = 0;
 	qglNewList( g_qeglobals.d_pointfile_display_list,  GL_COMPILE );
 	qglColor3f( 1, 0, 0 );
@@ -118,7 +122,9 @@ void WINAPI Pointfile_Check( void )
 	do
 	{
 		if( fscanf( f, "%f %f %f\n", &v[0], &v[1], &v[2] ) != 3 )
+		{
 			break;
+		}
 		if( s_num_points < MAX_POINTFILE )
 		{
 			VectorCopy( v, s_pointvecs[s_num_points] );
@@ -130,7 +136,7 @@ void WINAPI Pointfile_Check( void )
 	qglEnd();
 	qglLineWidth( 0.5 );
 	qglEndList();
-	
+
 	s_check_point = 0;
 	fclose( f );
 	//Pointfile_Next ();
@@ -139,7 +145,7 @@ void WINAPI Pointfile_Check( void )
 void Pointfile_Draw( void )
 {
 	int i;
-	
+
 	qglColor3f( 1.0F, 0.0F, 0.0F );
 	qglDisable( GL_TEXTURE_2D );
 	qglDisable( GL_TEXTURE_1D );
@@ -156,8 +162,10 @@ void Pointfile_Draw( void )
 void Pointfile_Clear( void )
 {
 	if( !g_qeglobals.d_pointfile_display_list )
+	{
 		return;
-		
+	}
+
 	qglDeleteLists( g_qeglobals.d_pointfile_display_list, 1 );
 	g_qeglobals.d_pointfile_display_list = 0;
 	Sys_UpdateWindows( W_ALL );

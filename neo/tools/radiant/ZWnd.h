@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 #define AFX_ZWND_H__44B4BA02_781B_11D1_B53C_00AA00A410FC__INCLUDED_
 
 #if _MSC_VER >= 1000
-#pragma once
+	#pragma once
 #endif // _MSC_VER >= 1000
 // ZWnd.h : header file
 //
@@ -47,7 +47,7 @@ class CZWnd : public CWnd
 // Construction
 public:
 	CZWnd();
-	
+
 // Attributes
 public:
 
@@ -60,13 +60,13 @@ public:
 protected:
 	virtual BOOL PreCreateWindow( CREATESTRUCT& cs );
 	//}}AFX_VIRTUAL
-	
+
 // Implementation
 public:
 	virtual ~CZWnd();
-	
+
 	CZClip* m_pZClip;
-	
+
 	// Generated message map functions
 protected:
 	HDC m_dcZ;

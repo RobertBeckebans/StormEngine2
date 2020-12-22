@@ -39,19 +39,19 @@ class DialogEntityDefEditor : public CDialog
 {
 
 	DECLARE_DYNAMIC( DialogEntityDefEditor )
-	
+
 public:
 	DialogEntityDefEditor( CWnd* pParent = NULL );   // standard constructor
 	virtual				~DialogEntityDefEditor();
-	
+
 	void				LoadDecl( idDeclEntityDef* decl );
-	
+
 	//{{AFX_VIRTUAL(DialogEntityDefEditor)
 	virtual BOOL		OnInitDialog();
 	virtual void		DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
 	virtual BOOL		PreTranslateMessage( MSG* pMsg );
 	//}}AFX_VIRTUAL
-	
+
 protected:
 	//{{AFX_MSG(DialogEntityDefEditor)
 	afx_msg BOOL		OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult );
@@ -65,19 +65,19 @@ protected:
 	afx_msg void		OnEditChange();
 	afx_msg void		OnInheritChange();
 	afx_msg void		OnEnInputEdit( NMHDR* pNMHDR, LRESULT* pResult );
-	
+
 	afx_msg void		OnKeyValChange();
-	
+
 	afx_msg void		OnBnClickedAdd();
 	afx_msg void		OnBnClickedDelete();
-	
+
 	afx_msg void		OnBnClickedTest();
 	afx_msg void		OnBnClickedOk();
 	afx_msg void		OnBnClickedCancel();
 	//}}AFX_MSG
-	
+
 	DECLARE_MESSAGE_MAP()
-	
+
 private:
 
 	//{{AFX_DATA(DialogEntityDefEditor)
@@ -86,27 +86,27 @@ private:
 	CEdit				declNameEdit;
 	CComboBox			inheritCombo;
 	CComboBox			spawnclassCombo;
-	
+
 	CPropertyList		keyValsList;
-	
+
 	CStatic				keyLabel;
 	CEdit				keyEdit;
 	CButton				addButton;
 	CButton				delButton;
 	CStatic				line;
-	
+
 	CButton				testButton;
 	CButton				okButton;
 	CButton				cancelButton;
 	//}}AFX_DATA
-	
+
 	static toolTip_t	toolTips[];
-	
+
 	HACCEL				m_hAccel;
 	CRect				initialRect;
 	idDeclEntityDef* 	decl;
 	int					firstLine;
-	
+
 private:
 	void				PopulateLists( idStr& declText );
 	void				SetInherit( idStr& inherit );

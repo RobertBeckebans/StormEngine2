@@ -145,18 +145,18 @@ void DialogAFConstraintBallAndSocket::InitJointLists( void )
 	m_comboLimitJoint2.ResetContent();
 	m_comboLimitAxisJoint1.ResetContent();
 	m_comboLimitAxisJoint2.ResetContent();
-	
+
 	if( !file )
 	{
 		return;
 	}
-	
+
 	const idRenderModel* model = gameEdit->ANIM_GetModelFromName( file->model );
 	if( !model )
 	{
 		return;
 	}
-	
+
 	int numJoints = model->NumJoints();
 	for( int i = 0; i < numJoints; i++ )
 	{
@@ -200,9 +200,9 @@ void DialogAFConstraintBallAndSocket::LoadConstraint( idDeclAF_Constraint* c )
 {
 	int i, s1, s2;
 	idAngles angles;
-	
+
 	constraint = c;
-	
+
 	// anchor
 	SetSafeComboBoxSelection( &m_comboAnchorJoint, constraint->anchor.joint1.c_str(), -1 );
 	m_anchor_x = constraint->anchor.ToVec3().x;
@@ -217,7 +217,7 @@ void DialogAFConstraintBallAndSocket::LoadConstraint( idDeclAF_Constraint* c )
 		i = IDC_RADIO_ANCHOR_COORDINATES;
 	}
 	CheckRadioButton( IDC_RADIO_ANCHOR_JOINT, IDC_RADIO_ANCHOR_COORDINATES, i );
-	
+
 	// limit
 	if( constraint->limit == idDeclAF_Constraint::LIMIT_CONE )
 	{
@@ -232,7 +232,7 @@ void DialogAFConstraintBallAndSocket::LoadConstraint( idDeclAF_Constraint* c )
 		i = IDC_RADIO_BAS_LIMIT_NONE;
 	}
 	CheckRadioButton( IDC_RADIO_BAS_LIMIT_NONE, IDC_RADIO_BAS_LIMIT_PYRAMID, i );
-	
+
 	m_coneAngle = constraint->limitAngles[0];
 	m_pyramidAngle1 = constraint->limitAngles[0];
 	m_pyramidAngle2 = constraint->limitAngles[1];
@@ -240,7 +240,7 @@ void DialogAFConstraintBallAndSocket::LoadConstraint( idDeclAF_Constraint* c )
 	angles = constraint->limitAxis.ToVec3().ToAngles();
 	m_limitPitch = angles.pitch;
 	m_limitYaw = angles.yaw;
-	
+
 	if( constraint->limitAxis.type == idAFVector::VEC_BONEDIR )
 	{
 		i = IDC_RADIO_BAS_LIMIT_BONE;
@@ -252,7 +252,7 @@ void DialogAFConstraintBallAndSocket::LoadConstraint( idDeclAF_Constraint* c )
 	CheckRadioButton( IDC_RADIO_BAS_LIMIT_BONE, IDC_RADIO_BAS_LIMIT_ANGLES, i );
 	s1 = SetSafeComboBoxSelection( &m_comboLimitJoint1, constraint->limitAxis.joint1.c_str(), -1 );
 	s2 = SetSafeComboBoxSelection( &m_comboLimitJoint2, constraint->limitAxis.joint2.c_str(), s1 );
-	
+
 	// limit axis
 	s1 = SetSafeComboBoxSelection( &m_comboLimitAxisJoint1, constraint->shaft[0].joint1.c_str(), -1 );
 	s2 = SetSafeComboBoxSelection( &m_comboLimitAxisJoint2, constraint->shaft[0].joint2.c_str(), s1 );
@@ -269,7 +269,7 @@ void DialogAFConstraintBallAndSocket::LoadConstraint( idDeclAF_Constraint* c )
 		constraint->shaft[0].type = idAFVector::VEC_COORDS;
 	}
 	CheckRadioButton( IDC_RADIO_BAS_LIMIT_AXIS_BONE, IDC_RADIO_BAS_LIMIT_AXIS_ANGLES, i );
-	
+
 	// update displayed values
 	UpdateData( FALSE );
 }
@@ -284,20 +284,20 @@ void DialogAFConstraintBallAndSocket::SaveConstraint( void )
 	int s1, s2;
 	CString str;
 	idAngles angles;
-	
+
 	if( !file || !constraint )
 	{
 		return;
 	}
 	UpdateData( TRUE );
-	
+
 	// anchor
 	GetSafeComboBoxSelection( &m_comboAnchorJoint, str, -1 );
 	constraint->anchor.joint1 = str;
 	constraint->anchor.ToVec3().x = m_anchor_x;
 	constraint->anchor.ToVec3().y = m_anchor_y;
 	constraint->anchor.ToVec3().z = m_anchor_z;
-	
+
 	// limit
 	if( constraint->limit == idDeclAF_Constraint::LIMIT_CONE )
 	{
@@ -317,7 +317,7 @@ void DialogAFConstraintBallAndSocket::SaveConstraint( void )
 	constraint->limitAxis.joint1 = str;
 	s2 = GetSafeComboBoxSelection( &m_comboLimitJoint2, str, s1 );
 	constraint->limitAxis.joint2 = str;
-	
+
 	// limit axis
 	if( constraint->shaft[0].type == idAFVector::VEC_BONEDIR )
 	{
@@ -330,7 +330,7 @@ void DialogAFConstraintBallAndSocket::SaveConstraint( void )
 	{
 		constraint->shaft[0].ToVec3() = idAngles( m_limitAxisPitch, m_limitAxisYaw, 0.0f ).ToForward();
 	}
-	
+
 	AFDialogSetFileModified();
 }
 

@@ -47,10 +47,10 @@ class idDmapRenderModelStatic : public idDmapRenderModel
 public:
 	// the inherited public interface
 	static idDmapRenderModel* 		Alloc();
-	
+
 	idDmapRenderModelStatic();
 	virtual						~idDmapRenderModelStatic();
-	
+
 	virtual void				InitFromFile( const char* fileName );
 	virtual void				PartialInitFromFile( const char* fileName );
 	virtual void				PurgeModel();
@@ -90,33 +90,33 @@ public:
 	virtual void				ReadFromDemoFile( class idDemoFile* f );
 	virtual void				WriteToDemoFile( class idDemoFile* f );
 	virtual float				DepthHack() const;
-	
+
 	void						MakeDefaultModel();
-	
+
 	bool						LoadASE( const char* fileName );
 	bool						LoadLWO( const char* fileName );
 	bool						LoadFLT( const char* fileName );
 	bool						LoadMA( const char* filename );
-	
+
 	bool						ConvertASEToModelSurfaces( const struct aseModel_s* ase );
 	bool						ConvertLWOToModelSurfaces( const struct st_lwObject* lwo );
 	bool						ConvertMAToModelSurfaces( const struct maModel_s* ma );
-	
+
 	struct aseModel_s* 			ConvertLWOToASE( const struct st_lwObject* obj, const char* fileName );
-	
+
 	bool						DeleteSurfaceWithId( int id );
 	void						DeleteSurfacesWithNegativeId( void );
 	bool						FindSurfaceWithId( int id, int& surfaceNum );
-	
+
 public:
 	idList<dmapModelSurface_t>		surfaces;
 	idBounds					bounds;
 	int							overlaysAdded;
-	
+
 protected:
 	int							lastModifiedFrame;
 	int							lastArchivedFrame;
-	
+
 	idStr						name;
 	srfDmapTriangles_t* 			shadowHull;
 	bool						isStaticWorldModel;
@@ -126,7 +126,7 @@ protected:
 	bool						reloadable;				// if not, reloadModels won't check timestamp
 	bool						levelLoadReferenced;	// for determining if it needs to be freed
 	ID_TIME_T						timeStamp;
-	
+
 	static idCVar				r_mergeModelSurfaces;	// combine model surfaces with the same material
 	static idCVar				r_slopVertex;			// merge xyz coordinates this far apart
 	static idCVar				r_slopTexCoord;			// merge texture coordinates this far apart
@@ -144,11 +144,11 @@ MD5 animated model
 class idDmapMD5Mesh
 {
 	friend class				idDmapRenderModelMD5;
-	
+
 public:
 	idDmapMD5Mesh();
 	~idDmapMD5Mesh();
-	
+
 	void						ParseMesh( idLexer& parser, int numJoints, const idJointMat* joints );
 	void						UpdateSurface( const struct dmapRenderEntity_s* ent, const idJointMat* joints, dmapModelSurface_t* surf );
 	idBounds					CalcBounds( const idJointMat* joints );
@@ -156,7 +156,7 @@ public:
 	int							NumVerts( void ) const;
 	int							NumTris( void ) const;
 	int							NumWeights( void ) const;
-	
+
 private:
 	idList<idVec2>				texCoords;			// texture coordinates
 	int							numWeights;			// number of weights
@@ -166,7 +166,7 @@ private:
 	int							numTris;			// number of triangles
 	struct dmapDeformInfo_s* 		deformInfo;			// used to create srfDmapTriangles_t from base frames and new vertexes
 	int							surfaceNum;			// number of the static surface created for this mesh
-	
+
 	void						TransformVerts( idDmapDrawVert* verts, const idJointMat* joints );
 	void						TransformScaledVerts( idDmapDrawVert* verts, const idJointMat* joints, float scale );
 };
@@ -190,12 +190,12 @@ public:
 	virtual const char* 		GetJointName( jointHandle_t handle ) const;
 	virtual const idJointQuat* 	GetDefaultPose( void ) const;
 	virtual int					NearestJoint( int surfaceNum, int a, int b, int c ) const;
-	
+
 private:
 	idList<idMD5Joint>			joints;
 	idList<idJointQuat>			defaultPose;
 	idList<idDmapMD5Mesh>			meshes;
-	
+
 	void						CalculateBounds( const idJointMat* joints );
 	void						GetFrameBounds( const dmapRenderEntity_t* ent, idBounds& bounds ) const;
 	void						DrawJoints( const dmapRenderEntity_t* ent, const struct dmapViewDef_s* view ) const;
@@ -220,13 +220,13 @@ public:
 	virtual dynamicModel_t		IsDynamicModel() const;
 	virtual idDmapRenderModel* 		InstantiateDynamicModel( const struct dmapRenderEntity_s* ent, const struct dmapViewDef_s* view, idDmapRenderModel* cachedModel );
 	virtual idBounds			Bounds( const struct dmapRenderEntity_s* ent ) const;
-	
+
 private:
 	int							index;			// model = tr.models[model->index]
 	int							dataSize;		// just for listing purposes
 	struct md3Header_s* 		md3;			// only if type == MOD_MESH
 	int							numLods;
-	
+
 	void						LerpMeshVertexes( srfDmapTriangles_t* tri, const struct md3Surface_s* surf, const float backlerp, const int frame, const int oldframe ) const;
 };
 
@@ -242,20 +242,20 @@ class idDmapRenderModelLiquid : public idDmapRenderModelStatic
 {
 public:
 	idDmapRenderModelLiquid();
-	
+
 	virtual void				InitFromFile( const char* fileName );
 	virtual dynamicModel_t		IsDynamicModel() const;
 	virtual idDmapRenderModel* 		InstantiateDynamicModel( const struct dmapRenderEntity_s* ent, const struct dmapViewDef_s* view, idDmapRenderModel* cachedModel );
 	virtual idBounds			Bounds( const struct dmapRenderEntity_s* ent ) const;
-	
+
 	virtual void				Reset();
 	void						IntersectBounds( const idBounds& bounds, float displacement );
-	
+
 private:
 	dmapModelSurface_t				GenerateSurface( float lerp );
 	void						WaterDrop( int x, int y, float* page );
 	void						Update( void );
-	
+
 	int							verts_x;
 	int							verts_y;
 	float						scale_x;
@@ -264,26 +264,26 @@ private:
 	int							liquid_type;
 	int							update_tics;
 	int							seed;
-	
+
 	idRandom					random;
-	
+
 	const idMaterial* 			shader;
 	struct dmapDeformInfo_s*			deformInfo;		// used to create srfDmapTriangles_t from base frames
 	// and new vertexes
-	
+
 	float						density;
 	float						drop_height;
 	int							drop_radius;
 	float						drop_delay;
-	
+
 	idList<float>				pages;
 	float* 						page1;
 	float* 						page2;
-	
+
 	idList<idDmapDrawVert>			verts;
-	
+
 	int							nextDropTime;
-	
+
 };
 
 /*
@@ -298,7 +298,7 @@ class idDmapRenderModelPrt : public idDmapRenderModelStatic
 {
 public:
 	idDmapRenderModelPrt();
-	
+
 	virtual void				InitFromFile( const char* fileName );
 	virtual void				TouchData();
 	virtual dynamicModel_t		IsDynamicModel() const;
@@ -306,7 +306,7 @@ public:
 	virtual idBounds			Bounds( const struct dmapRenderEntity_s* ent ) const;
 	virtual float				DepthHack() const;
 	virtual int					Memory() const;
-	
+
 private:
 	const idDeclParticle* 		particleSystem;
 };

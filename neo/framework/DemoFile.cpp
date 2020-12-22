@@ -93,17 +93,17 @@ bool idDemoFile::OpenForReading( const char* fileName )
 	char magicBuffer[magicLen];
 	int compression;
 	int fileLength;
-	
+
 	Close();
-	
+
 	f = fileSystem->OpenFileRead( fileName );
 	if( !f )
 	{
 		return false;
 	}
-	
+
 	fileLength = f->Length();
-	
+
 	if( com_preloadDemos.GetBool() )
 	{
 		fileImage = ( byte* )Mem_Alloc( fileLength, TAG_CRAP );
@@ -111,14 +111,14 @@ bool idDemoFile::OpenForReading( const char* fileName )
 		fileSystem->CloseFile( f );
 		f = new( TAG_SYSTEM ) idFile_Memory( va( "preloaded(%s)", fileName ), ( const char* )fileImage, fileLength );
 	}
-	
+
 	if( com_logDemos.GetBool() )
 	{
 		fLog = fileSystem->OpenFileWrite( "demoread.log" );
 	}
-	
+
 	writing = false;
-	
+
 	f->Read( magicBuffer, magicLen );
 	if( memcmp( magicBuffer, DEMO_MAGIC, magicLen ) == 0 )
 	{
@@ -131,10 +131,10 @@ bool idDemoFile::OpenForReading( const char* fileName )
 		compression = 0;
 		f->Rewind();
 	}
-	
+
 	compressor = AllocCompressor( compression );
 	compressor->Init( f, false, 8 );
-	
+
 	return true;
 }
 
@@ -173,27 +173,27 @@ idDemoFile::OpenForWriting
 bool idDemoFile::OpenForWriting( const char* fileName )
 {
 	Close();
-	
+
 	f = fileSystem->OpenFileWrite( fileName );
 	if( f == NULL )
 	{
 		return false;
 	}
-	
+
 	if( com_logDemos.GetBool() )
 	{
 		fLog = fileSystem->OpenFileWrite( "demowrite.log" );
 	}
-	
+
 	writing = true;
-	
+
 	f->Write( DEMO_MAGIC, sizeof( DEMO_MAGIC ) );
 	f->WriteInt( com_compressDemos.GetInteger() );
 	f->Flush();
-	
+
 	compressor = AllocCompressor( com_compressDemos.GetInteger() );
 	compressor->Init( f, true, 8 );
-	
+
 	return true;
 }
 
@@ -208,7 +208,7 @@ void idDemoFile::Close()
 	{
 		compressor->FinishCompress();
 	}
-	
+
 	if( f )
 	{
 		fileSystem->CloseFile( f );
@@ -229,7 +229,7 @@ void idDemoFile::Close()
 		delete compressor;
 		compressor = NULL;
 	}
-	
+
 	demoStrings.DeleteContents( true );
 }
 
@@ -241,35 +241,35 @@ idDemoFile::ReadHashString
 const char* idDemoFile::ReadHashString()
 {
 	int		index;
-	
+
 	if( log && fLog )
 	{
 		const char* text = va( "%s > Reading hash string\n", logStr.c_str() );
 		fLog->Write( text, strlen( text ) );
 	}
-	
+
 	ReadInt( index );
-	
+
 	if( index == -1 )
 	{
 		// read a new string for the table
 		idStr*	str = new( TAG_SYSTEM ) idStr;
-		
+
 		idStr data;
 		ReadString( data );
 		*str = data;
-		
+
 		demoStrings.Append( str );
-		
+
 		return *str;
 	}
-	
+
 	if( index < -1 || index >= demoStrings.Num() )
 	{
 		Close();
 		common->Error( "demo hash index out of range" );
 	}
-	
+
 	return demoStrings[index]->c_str();
 }
 
@@ -294,7 +294,7 @@ void idDemoFile::WriteHashString( const char* str )
 			return;
 		}
 	}
-	
+
 	// add it to our table and the demo table
 	idStr*	copy = new( TAG_SYSTEM ) idStr( str );
 //common->Printf( "hash:%i = %s\n", demoStrings.Num(), str );
@@ -313,7 +313,7 @@ void idDemoFile::ReadDict( idDict& dict )
 {
 	int i, c;
 	idStr key, val;
-	
+
 	dict.Clear();
 	ReadInt( c );
 	for( i = 0; i < c; i++ )
@@ -332,7 +332,7 @@ idDemoFile::WriteDict
 void idDemoFile::WriteDict( const idDict& dict )
 {
 	int i, c;
-	
+
 	c = dict.GetNumKeyVals();
 	WriteInt( c );
 	for( i = 0; i < c; i++ )

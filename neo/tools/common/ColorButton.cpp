@@ -58,14 +58,14 @@ void ColorButton_SetColor( HWND hWnd, const char* color )
 	float green;
 	float blue;
 	float alpha;
-	
+
 	if( NULL == hWnd )
 	{
 		return;
 	}
-	
+
 	sscanf( color, "%f,%f,%f,%f", &red, &green, &blue, &alpha );
-	
+
 	ColorButton_SetColor( hWnd, RGB( red * 255.0f, green * 255.0f, blue * 255.0f ) );
 }
 
@@ -75,14 +75,14 @@ void AlphaButton_SetColor( HWND hWnd, const char* color )
 	float green;
 	float blue;
 	float alpha;
-	
+
 	if( NULL == hWnd )
 	{
 		return;
 	}
-	
+
 	sscanf( color, "%f,%f,%f,%f", &red, &green, &blue, &alpha );
-	
+
 	ColorButton_SetColor( hWnd, RGB( alpha * 255.0f, alpha * 255.0f, alpha * 255.0f ) );
 }
 
@@ -108,26 +108,26 @@ Draws the arrow on the color button
 static void ColorButton_DrawArrow( HDC hDC, RECT* pRect, COLORREF color )
 {
 	POINT ptsArrow[3];
-	
+
 	ptsArrow[0].x = pRect->left;
 	ptsArrow[0].y = pRect->top;
 	ptsArrow[1].x = pRect->right;
 	ptsArrow[1].y = pRect->top;
 	ptsArrow[2].x = ( pRect->left + pRect->right ) / 2;
 	ptsArrow[2].y = pRect->bottom;
-	
+
 	HBRUSH arrowBrush = CreateSolidBrush( color );
 	HPEN   arrowPen   = CreatePen( PS_SOLID, 1, color );
-	
+
 	HGDIOBJ oldBrush = SelectObject( hDC, arrowBrush );
 	HGDIOBJ oldPen   = SelectObject( hDC, arrowPen );
-	
+
 	SetPolyFillMode( hDC, WINDING );
 	Polygon( hDC, ptsArrow, 3 );
-	
+
 	SelectObject( hDC, oldBrush );
 	SelectObject( hDC, oldPen );
-	
+
 	DeleteObject( arrowBrush );
 	DeleteObject( arrowPen );
 }
@@ -142,33 +142,33 @@ Draws the actual color button as as reponse to a WM_DRAWITEM message
 void ColorButton_DrawItem( HWND hWnd, LPDRAWITEMSTRUCT dis )
 {
 	assert( dis );
-	
+
 	HDC		hDC		 = dis->hDC;
 	UINT    state    = dis->itemState;
 	RECT	rDraw    = dis->rcItem;
 	RECT	rArrow;
-	
+
 	// Draw outter edge
 	UINT uFrameState = DFCS_BUTTONPUSH | DFCS_ADJUSTRECT;
-	
+
 	if( state & ODS_SELECTED )
 	{
 		uFrameState |= DFCS_PUSHED;
 	}
-	
+
 	if( state & ODS_DISABLED )
 	{
 		uFrameState |= DFCS_INACTIVE;
 	}
-	
+
 	DrawFrameControl( hDC, &rDraw, DFC_BUTTON, uFrameState );
-	
+
 	// Draw Focus
 	if( state & ODS_SELECTED )
 	{
 		OffsetRect( &rDraw, 1, 1 );
 	}
-	
+
 	if( state & ODS_FOCUS )
 	{
 		RECT rFocus = {rDraw.left,
@@ -176,27 +176,27 @@ void ColorButton_DrawItem( HWND hWnd, LPDRAWITEMSTRUCT dis )
 					   rDraw.right - 1,
 					   rDraw.bottom
 					  };
-					  
+
 		DrawFocusRect( hDC, &rFocus );
 	}
-	
+
 	InflateRect( &rDraw, -GetSystemMetrics( SM_CXEDGE ), -GetSystemMetrics( SM_CYEDGE ) );
-	
+
 	// Draw the arrow
 	rArrow.left		= rDraw.right - ARROW_SIZE_CX - GetSystemMetrics( SM_CXEDGE ) / 2;
 	rArrow.right	= rArrow.left + ARROW_SIZE_CX;
 	rArrow.top		= ( rDraw.bottom + rDraw.top ) / 2 - ARROW_SIZE_CY / 2;
 	rArrow.bottom	= ( rDraw.bottom + rDraw.top ) / 2 + ARROW_SIZE_CY / 2;
-	
+
 	ColorButton_DrawArrow( hDC, &rArrow, ( state & ODS_DISABLED ) ? ::GetSysColor( COLOR_GRAYTEXT ) : RGB( 0, 0, 0 ) );
-	
+
 	rDraw.right = rArrow.left - GetSystemMetrics( SM_CXEDGE ) / 2;
-	
+
 	// Draw separator
 	DrawEdge( hDC, &rDraw, EDGE_ETCHED, BF_RIGHT );
-	
+
 	rDraw.right -= ( GetSystemMetrics( SM_CXEDGE ) * 2 ) + 1 ;
-	
+
 	// Draw Color
 	if( ( state & ODS_DISABLED ) == 0 )
 	{

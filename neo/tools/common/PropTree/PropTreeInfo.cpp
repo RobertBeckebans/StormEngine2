@@ -38,11 +38,11 @@ If you have questions concerning this license or the applicable additional terms
 
 // foresthale 2014-05-29: let's not use the MFC DEBUG_NEW when we have our own...
 #ifdef ID_DEBUG_NEW_MFC
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+	#ifdef _DEBUG
+		#define new DEBUG_NEW
+		#undef THIS_FILE
+		static char THIS_FILE[] = __FILE__;
+	#endif
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
@@ -76,50 +76,62 @@ void CPropTreeInfo::OnPaint()
 {
 	CPaintDC dc( this );
 	CRect rc;
-	
+
 	GetClientRect( rc );
-	
+
 	dc.SelectObject( GetSysColorBrush( COLOR_BTNFACE ) );
 	dc.PatBlt( rc.left, rc.top, rc.Width(), rc.Height(), PATCOPY );
-	
+
 	dc.DrawEdge( &rc, BDR_SUNKENOUTER, BF_RECT );
 	rc.DeflateRect( 4, 4 );
-	
+
 	ASSERT( m_pProp != NULL );
-	
+
 	CPropTreeItem* pItem = m_pProp->GetFocusedItem();
-	
+
 	if( !m_pProp->IsWindowEnabled() )
+	{
 		dc.SetTextColor( GetSysColor( COLOR_GRAYTEXT ) );
+	}
 	else
+	{
 		dc.SetTextColor( GetSysColor( COLOR_BTNTEXT ) );
-		
+	}
+
 	dc.SetBkMode( TRANSPARENT );
 	dc.SelectObject( m_pProp->GetBoldFont() );
-	
+
 	CString txt;
-	
+
 	if( !pItem )
+	{
 		txt.LoadString( IDS_NOITEMSEL );
+	}
 	else
+	{
 		txt = pItem->GetLabelText();
-		
+	}
+
 	CRect ir;
 	ir = rc;
-	
+
 	// draw label
 	dc.DrawText( txt, &ir, DT_SINGLELINE | DT_CALCRECT );
 	dc.DrawText( txt, &ir, DT_SINGLELINE );
-	
+
 	ir.top = ir.bottom;
 	ir.bottom = rc.bottom;
 	ir.right = rc.right;
-	
+
 	if( pItem )
+	{
 		txt = pItem->GetInfoText();
+	}
 	else
+	{
 		txt.LoadString( IDS_SELFORINFO );
-		
+	}
+
 	dc.SelectObject( m_pProp->GetNormalFont() );
 	dc.DrawText( txt, &ir, DT_WORDBREAK );
 }

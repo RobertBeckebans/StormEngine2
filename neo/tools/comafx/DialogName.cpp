@@ -58,9 +58,9 @@ void DialogName::DoDataExchange( CDataExchange* pDX )
 BOOL DialogName::OnInitDialog()
 {
 	CDialog::OnInitDialog();
-	
+
 	SetWindowText( m_strCaption );
-	
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }

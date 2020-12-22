@@ -56,24 +56,24 @@ idMenuScreen_Shell_Pause::Initialize
 void idMenuScreen_Shell_Pause::Initialize( idMenuHandler* data )
 {
 	idMenuScreen::Initialize( data );
-	
+
 	if( data != NULL )
 	{
 		menuGUI = data->GetGUI();
 	}
-	
+
 	SetSpritePath( "menuPause" );
-	
+
 	options = new( TAG_SWF ) idMenuWidget_DynamicList();
 	options->SetNumVisibleOptions( NUM_PAUSE_OPTIONS );
 	options->SetSpritePath( GetSpritePath(), "info", "options" );
 	options->SetWrappingAllowed( true );
 	AddChild( options );
-	
+
 	idMenuWidget_Help* const helpWidget = new( TAG_SWF ) idMenuWidget_Help();
 	helpWidget->SetSpritePath( GetSpritePath(), "info", "helpTooltip" );
 	AddChild( helpWidget );
-	
+
 	while( options->GetChildren().Num() < NUM_PAUSE_OPTIONS )
 	{
 		idMenuWidget_Button* const buttonWidget = new( TAG_SWF ) idMenuWidget_Button();
@@ -82,7 +82,7 @@ void idMenuScreen_Shell_Pause::Initialize( idMenuHandler* data )
 		options->AddChild( buttonWidget );
 	}
 	options->Initialize( data );
-	
+
 	options->AddEventAction( WIDGET_EVENT_SCROLL_DOWN ).Set( new( TAG_SWF ) idWidgetActionHandler( options, WIDGET_ACTION_EVENT_SCROLL_DOWN_START_REPEATER, WIDGET_EVENT_SCROLL_DOWN ) );
 	options->AddEventAction( WIDGET_EVENT_SCROLL_UP ).Set( new( TAG_SWF ) idWidgetActionHandler( options, WIDGET_ACTION_EVENT_SCROLL_UP_START_REPEATER, WIDGET_EVENT_SCROLL_UP ) );
 	options->AddEventAction( WIDGET_EVENT_SCROLL_DOWN_RELEASE ).Set( new( TAG_SWF ) idWidgetActionHandler( options, WIDGET_ACTION_EVENT_STOP_REPEATER, WIDGET_EVENT_SCROLL_DOWN_RELEASE ) );
@@ -114,7 +114,7 @@ void idMenuScreen_Shell_Pause::Update()
 				buttonInfo->label = "#str_SWF_SELECT";
 			}
 			buttonInfo->action.Set( WIDGET_ACTION_PRESS_FOCUSED );
-			
+
 			bool isDead = false;
 			idPlayer* player = gameLocal.GetLocalPlayer();
 			if( player != NULL )
@@ -124,7 +124,7 @@ void idMenuScreen_Shell_Pause::Update()
 					isDead = true;
 				}
 			}
-			
+
 			if( !isDead )
 			{
 				buttonInfo = cmdBar->GetButton( idMenuWidget_CommandBar::BUTTON_JOY2 );
@@ -136,7 +136,7 @@ void idMenuScreen_Shell_Pause::Update()
 			}
 		}
 	}
-	
+
 	idMenuScreen::Update();
 }
 
@@ -150,7 +150,7 @@ void idMenuScreen_Shell_Pause::ShowScreen( const mainMenuTransition_t transition
 
 	idList< idList< idStr, TAG_IDLIB_LIST_MENU >, TAG_IDLIB_LIST_MENU > menuOptions;
 	idList< idStr > option;
-	
+
 	bool isDead = false;
 	idPlayer* player = gameLocal.GetLocalPlayer();
 	if( player != NULL )
@@ -160,7 +160,7 @@ void idMenuScreen_Shell_Pause::ShowScreen( const mainMenuTransition_t transition
 			isDead = true;
 		}
 	}
-	
+
 	if( g_demoMode.GetBool() )
 	{
 		isMpPause = false;
@@ -174,7 +174,7 @@ void idMenuScreen_Shell_Pause::ShowScreen( const mainMenuTransition_t transition
 			option.Clear();
 			option.Append( "#str_swf_exit_game" );	// exit game
 			menuOptions.Append( option );
-			
+
 			int index = 0;
 			options->GetChildByIndex( index ).ClearEventActions();
 			options->GetChildByIndex( index ).AddEventAction( WIDGET_EVENT_PRESS ).Set( WIDGET_ACTION_COMMAND, PAUSE_CMD_DEAD_RESTART );
@@ -198,7 +198,7 @@ void idMenuScreen_Shell_Pause::ShowScreen( const mainMenuTransition_t transition
 			option.Clear();
 			option.Append( "#str_swf_exit_game" );	// exit game
 			menuOptions.Append( option );
-			
+
 			int index = 0;
 			options->GetChildByIndex( index ).ClearEventActions();
 			options->GetChildByIndex( index ).AddEventAction( WIDGET_EVENT_PRESS ).Set( WIDGET_ACTION_COMMAND, PAUSE_CMD_RETURN );
@@ -229,7 +229,7 @@ void idMenuScreen_Shell_Pause::ShowScreen( const mainMenuTransition_t transition
 			option.Clear();
 			option.Append( "#str_swf_leave_game" );	// leave game
 			menuOptions.Append( option );
-			
+
 			int index = 0;
 			idMenuWidget_Button* buttonWidget = NULL;
 			options->GetChildByIndex( index ).ClearEventActions();
@@ -263,7 +263,7 @@ void idMenuScreen_Shell_Pause::ShowScreen( const mainMenuTransition_t transition
 			{
 				buttonWidget->SetDescription( "#str_swf_exit_game_desc" );
 			}
-			
+
 		}
 		else
 		{
@@ -278,7 +278,7 @@ void idMenuScreen_Shell_Pause::ShowScreen( const mainMenuTransition_t transition
 				option.Clear();
 				option.Append( "#str_swf_exit_game" );	// exit game
 				menuOptions.Append( option );
-				
+
 				int index = 0;
 				idMenuWidget_Button* buttonWidget = NULL;
 				options->GetChildByIndex( index ).ClearEventActions();
@@ -304,7 +304,7 @@ void idMenuScreen_Shell_Pause::ShowScreen( const mainMenuTransition_t transition
 				{
 					buttonWidget->SetDescription( "#str_swf_exit_game_desc" );
 				}
-				
+
 			}
 			else
 			{
@@ -322,7 +322,7 @@ void idMenuScreen_Shell_Pause::ShowScreen( const mainMenuTransition_t transition
 				option.Clear();
 				option.Append( "#str_swf_exit_game" );	// exit game
 				menuOptions.Append( option );
-				
+
 				int index = 0;
 				idMenuWidget_Button* buttonWidget = NULL;
 				options->GetChildByIndex( index ).ClearEventActions();
@@ -367,16 +367,16 @@ void idMenuScreen_Shell_Pause::ShowScreen( const mainMenuTransition_t transition
 			}
 		}
 	}
-	
+
 	options->SetListData( menuOptions );
 	idMenuScreen::ShowScreen( transitionType );
-	
+
 	if( options->GetFocusIndex() >= menuOptions.Num() )
 	{
 		options->SetViewIndex( 0 );
 		options->SetFocusIndex( 0 );
 	}
-	
+
 }
 
 /*
@@ -419,9 +419,9 @@ void idMenuScreen_Shell_Pause::HandleExitGameBtn()
 		gameDialogMessages_t msg;
 		bool accept;
 	};
-	
+
 	gameDialogMessages_t msg = GDM_SP_QUIT_SAVE;
-	
+
 	if( common->IsMultiplayer() )
 	{
 		if( ( session->GetGameLobbyBase().GetNumLobbyUsers() > 1 ) && MatchTypeHasStats( session->GetGameLobbyBase().GetMatchParms().matchFlags ) )
@@ -433,7 +433,7 @@ void idMenuScreen_Shell_Pause::HandleExitGameBtn()
 			msg = GDM_MULTI_VDM_QUIT;
 		}
 	}
-	
+
 	common->Dialog().AddDialog( msg, DIALOG_ACCEPT_CANCEL, new idSWFScriptFunction_QuitDialog( this, msg, true ), new idSWFScriptFunction_QuitDialog( this, msg, false ), false );
 }
 
@@ -467,7 +467,7 @@ void idMenuScreen_Shell_Pause::HandleRestartBtn()
 		gameDialogMessages_t msg;
 		bool accept;
 	};
-	
+
 	common->Dialog().AddDialog( GDM_SP_RESTART_SAVE, DIALOG_ACCEPT_CANCEL, new idSWFScriptFunction_RestartDialog( this, GDM_SP_RESTART_SAVE, true ), new idSWFScriptFunction_RestartDialog( this, GDM_SP_RESTART_SAVE, false ), false );
 }
 
@@ -483,15 +483,15 @@ bool idMenuScreen_Shell_Pause::HandleAction( idWidgetAction& action, const idWid
 	{
 		return true;
 	}
-	
+
 	if( menuData->ActiveScreen() != SHELL_AREA_ROOT )
 	{
 		return false;
 	}
-	
+
 	widgetAction_t actionType = action.GetType();
 	const idSWFParmList& parms = action.GetParms();
-	
+
 	switch( actionType )
 	{
 		case WIDGET_ACTION_COMMAND:
@@ -548,6 +548,6 @@ bool idMenuScreen_Shell_Pause::HandleAction( idWidgetAction& action, const idWid
 			return true;
 		}
 	}
-	
+
 	return idMenuWidget::HandleAction( action, event, widget, forceHandled );
 }

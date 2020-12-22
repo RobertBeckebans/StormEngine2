@@ -59,12 +59,14 @@ void LeakFile( tree_t* tree )
 	idStr	ospath;
 	node_t*	node;
 	int		count;
-	
+
 	if( !tree->outside_node.occupied )
+	{
 		return;
-		
+	}
+
 	common->Printf( "--- LeakFile ---\n" );
-	
+
 	//
 	// write the points to the file
 	//
@@ -75,7 +77,7 @@ void LeakFile( tree_t* tree )
 	{
 		common->Error( "Couldn't open %s\n", filename.c_str() );
 	}
-	
+
 	count = 0;
 	node = &tree->outside_node;
 	while( node->occupied > 1 )
@@ -84,7 +86,7 @@ void LeakFile( tree_t* tree )
 		uPortal_t*	p, *nextportal;
 		node_t*		nextnode;
 		int			s;
-		
+
 		// find the best portal exit
 		next = node->occupied;
 		for( p = node->portals ; p ; p = p->next[!s] )
@@ -105,10 +107,10 @@ void LeakFile( tree_t* tree )
 	}
 	// add the occupant center
 	node->occupant->mapEntity->epairs.GetVector( "origin", "", mid );
-	
+
 	fprintf( linefile, "%f %f %f\n", mid[0], mid[1], mid[2] );
 	common->Printf( "%5i point linefile\n", count + 1 );
-	
+
 	fclose( linefile );
 }
 

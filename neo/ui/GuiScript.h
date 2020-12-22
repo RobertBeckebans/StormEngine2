@@ -50,11 +50,11 @@ class idGuiScript
 {
 	friend class idGuiScriptList;
 	friend class idWindow;
-	
+
 public:
 	idGuiScript();
 	~idGuiScript();
-	
+
 	bool Parse( idTokenParser* src );
 	bool Parse( idParser* src );
 	void Execute( idWindow* win )
@@ -74,17 +74,17 @@ public:
 		}
 		return sz;
 	}
-	
+
 	void WriteToSaveGame( idFile* savefile );
 	void ReadFromSaveGame( idFile* savefile );
-	
+
 protected:
 	int conditionReg;
 	idGuiScriptList* ifList;
 	idGuiScriptList* elseList;
 	idList<idGSWinVar, TAG_OLD_UI> parms;
 	void ( *handler )( idWindow* window, idList<idGSWinVar, TAG_OLD_UI>* src );
-	
+
 };
 
 
@@ -117,7 +117,7 @@ public:
 	void FixupParms( idWindow* win );
 	void ReadFromDemoFile( class idDemoFile* f ) {};
 	void WriteToDemoFile( class idDemoFile* f ) {};
-	
+
 	void WriteToSaveGame( idFile* savefile );
 	void ReadFromSaveGame( idFile* savefile );
 };

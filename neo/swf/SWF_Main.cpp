@@ -50,17 +50,17 @@ idSWF::idSWF( const char* filename_, idSoundWorld* soundWorld_ )
 {
 
 	atlasMaterial = NULL;
-	
+
 	swfScale = 1.0f;
 	scaleToVirtual.Set( 1.0f, 1.0f );
-	
+
 	random.SetSeed( Sys_Milliseconds() );
-	
+
 	guiSolid = declManager->FindMaterial( "guiSolid" );
 	guiCursor_arrow = declManager->FindMaterial( "ui/assets/guicursor_arrow" );
 	guiCursor_hand = declManager->FindMaterial( "ui/assets/guicursor_hand" );
 	white = declManager->FindMaterial( "_white" );
-	
+
 	tooltipButtonImage.Append( keyButtonImages_t( "<JOY1>", "guis/assets/hud/controller/xb360/a", "guis/assets/hud/controller/ps3/cross", 37, 37, 0 ) );
 	tooltipButtonImage.Append( keyButtonImages_t( "<JOY2>", "guis/assets/hud/controller/xb360/b", "guis/assets/hud/controller/ps3/circle", 37, 37, 0 ) );
 	tooltipButtonImage.Append( keyButtonImages_t( "<JOY3>", "guis/assets/hud/controller/xb360/x", "guis/assets/hud/controller/ps3/square", 37, 37, 0 ) );
@@ -72,7 +72,7 @@ idSWF::idSWF( const char* filename_, idSoundWorld* soundWorld_ )
 	tooltipButtonImage.Append( keyButtonImages_t( "<MOUSE1>", "guis/assets/hud/controller/mouse1", "", 64, 52, 0 ) );
 	tooltipButtonImage.Append( keyButtonImages_t( "<MOUSE2>", "guis/assets/hud/controller/mouse2", "", 64, 52, 0 ) );
 	tooltipButtonImage.Append( keyButtonImages_t( "<MOUSE3>", "guis/assets/hud/controller/mouse3", "", 64, 52, 0 ) );
-	
+
 	for( int index = 0; index < tooltipButtonImage.Num(); index++ )
 	{
 		if( ( tooltipButtonImage[index].xbImage != NULL ) && ( tooltipButtonImage[index].xbImage[0] != '\0' ) )
@@ -84,21 +84,21 @@ idSWF::idSWF( const char* filename_, idSoundWorld* soundWorld_ )
 			declManager->FindMaterial( tooltipButtonImage[index].psImage );
 		}
 	}
-	
+
 	frameWidth = 0;
 	frameHeight = 0;
 	frameRate = 0;
 	lastRenderTime = 0;
-	
+
 	isActive = false;
 	inhibitControl = false;
 	useInhibtControl = true;
-	
+
 	crop = false;
 	blackbars = false;
 	paused = false;
 	hasHitObject = false;
-	
+
 	useMouse = true;
 	mouseEnabled = false;
 	renderBorder = 0;
@@ -106,7 +106,7 @@ idSWF::idSWF( const char* filename_, idSoundWorld* soundWorld_ )
 	hoverObject = NULL;
 	soundWorld = NULL;
 	forceNonPCPlatform = false;
-	
+
 	if( idStr::Cmpn( filename_, "swf/", 4 ) != 0 )
 	{
 		// if it doesn't already have swf/ in front of it, add it
@@ -120,16 +120,16 @@ idSWF::idSWF( const char* filename_, idSoundWorld* soundWorld_ )
 	filename.ToLower();
 	filename.BackSlashesToSlashes();
 	filename.SetFileExtension( ".swf" );
-	
+
 	timestamp = fileSystem->GetTimestamp( filename );
-	
+
 	mainsprite = new( TAG_SWF ) idSWFSprite( this );
 	mainspriteInstance = NULL;
-	
+
 	idStr binaryFileName = "generated/";
 	binaryFileName += filename;
 	binaryFileName.SetFileExtension( ".bswf" );
-	
+
 	if( swf_loadBinary.GetBool() )
 	{
 		ID_TIME_T sourceTime = fileSystem->GetTimestamp( filename );
@@ -148,20 +148,20 @@ idSWF::idSWF( const char* filename_, idSoundWorld* soundWorld_ )
 	idStr atlasFileName = binaryFileName;
 	atlasFileName.SetFileExtension( ".tga" );
 	atlasMaterial = declManager->FindMaterial( atlasFileName );
-	
+
 	globals = idSWFScriptObject::Alloc();
 	globals->Set( "_global", globals );
-	
+
 	globals->Set( "Object", &scriptFunction_Object );
-	
+
 	mainspriteInstance = spriteInstanceAllocator.Alloc();
 	mainspriteInstance->Init( mainsprite, NULL, 0 );
-	
+
 	shortcutKeys = idSWFScriptObject::Alloc();
 	scriptFunction_shortcutKeys_clear.Bind( this );
 	scriptFunction_shortcutKeys_clear.Call( shortcutKeys, idSWFParmList() );
 	globals->Set( "shortcutKeys", shortcutKeys );
-	
+
 	globals->Set( "deactivate", scriptFunction_deactivate.Bind( this ) );
 	globals->Set( "inhibitControl", scriptFunction_inhibitControl.Bind( this ) );
 	globals->Set( "useInhibit", scriptFunction_useInhibit.Bind( this ) );
@@ -176,7 +176,7 @@ idSWF::idSWF( const char* filename_, idSoundWorld* soundWorld_ )
 	globals->Set( "strReplace", scriptFunction_strReplace.Bind( this ) );
 	globals->Set( "getCVarInteger", scriptFunction_getCVarInteger.Bind( this ) );
 	globals->Set( "setCVarInteger", scriptFunction_setCVarInteger.Bind( this ) );
-	
+
 	globals->Set( "acos", scriptFunction_acos.Bind( this ) );
 	globals->Set( "cos", scriptFunction_cos.Bind( this ) );
 	globals->Set( "sin", scriptFunction_sin.Bind( this ) );
@@ -188,35 +188,35 @@ idSWF::idSWF( const char* filename_, idSoundWorld* soundWorld_ )
 	globals->Set( "floor", scriptFunction_floor.Bind( this ) );
 	globals->Set( "ceil", scriptFunction_ceil.Bind( this ) );
 	globals->Set( "toUpper", scriptFunction_toUpper.Bind( this ) );
-	
+
 	globals->SetNative( "platform", swfScriptVar_platform.Bind( &scriptFunction_getPlatform ) );
 	globals->SetNative( "blackbars", swfScriptVar_blackbars.Bind( this ) );
 	globals->SetNative( "cropToHeight", swfScriptVar_crop.Bind( this ) );
 	globals->SetNative( "cropToFit", swfScriptVar_crop.Bind( this ) );
 	globals->SetNative( "crop", swfScriptVar_crop.Bind( this ) );
-	
+
 	// Do this to touch any external references (like sounds)
 	// But disable script warnings because many globals won't have been created yet
 	extern idCVar swf_debug;
 	int debug = swf_debug.GetInteger();
 	swf_debug.SetInteger( 0 );
-	
+
 	mainspriteInstance->Run();
 	mainspriteInstance->RunActions();
 	mainspriteInstance->RunTo( 0 );
-	
+
 	swf_debug.SetInteger( debug );
-	
+
 	if( mouseX == -1 )
 	{
 		mouseX = ( frameWidth / 2 );
 	}
-	
+
 	if( mouseY == -1 )
 	{
 		mouseY = ( frameHeight / 2 );
 	}
-	
+
 	soundWorld = soundWorld_;
 }
 
@@ -229,7 +229,7 @@ idSWF::~idSWF()
 {
 	spriteInstanceAllocator.Free( mainspriteInstance );
 	delete mainsprite;
-	
+
 	for( int i = 0 ; i < dictionary.Num() ; i++ )
 	{
 		if( dictionary[i].sprite )
@@ -258,11 +258,11 @@ idSWF::~idSWF()
 			dictionary[i].edittext = NULL;
 		}
 	}
-	
+
 	globals->Clear();
 	tooltipButtonImage.Clear();
 	globals->Release();
-	
+
 	shortcutKeys->Clear();
 	shortcutKeys->Release();
 }
@@ -279,7 +279,7 @@ void idSWF::Activate( bool b )
 	{
 		inhibitControl = false;
 		lastRenderTime = Sys_Milliseconds();
-		
+
 		mainspriteInstance->FreeDisplayList();
 		mainspriteInstance->Play();
 		mainspriteInstance->Run();
@@ -398,9 +398,9 @@ idSWFScriptVar idSWF::idSWFScriptFunction_playSound::Call( idSWFScriptObject* th
 	{
 		channel = parms[1].ToInteger();
 	}
-	
+
 	pThis->PlaySound( parms[0].ToString(), channel );
-	
+
 	return idSWFScriptVar();
 }
 
@@ -417,9 +417,9 @@ idSWFScriptVar idSWF::idSWFScriptFunction_stopSounds::Call( idSWFScriptObject* t
 	{
 		channel = parms[0].ToInteger();
 	}
-	
+
 	pThis->StopSound( channel );
-	
+
 	return idSWFScriptVar();
 }
 
@@ -457,12 +457,12 @@ idSWFScriptVar idSWF::idSWFScriptFunction_strReplace::Call( idSWFScriptObject* t
 	{
 		return "";
 	}
-	
+
 	idStr str = parms[0].ToString();
 	idStr repString = parms[1].ToString();
 	idStr val = parms[2].ToString();
 	str.Replace( repString, val );
-	
+
 	return str;
 }
 
@@ -478,7 +478,7 @@ idSWFScriptVar idSWF::idSWFScriptFunction_getLocalString::Call( idSWFScriptObjec
 	{
 		return idSWFScriptVar();
 	}
-	
+
 	idStr val = idLocalization::GetString( parms[0].ToString() );
 	return val;
 }
@@ -507,7 +507,7 @@ int	idSWF::GetPlatform()
 		forceNonPCPlatform = false;
 		return 0;
 	}
-	
+
 	return 2;
 }
 
@@ -610,7 +610,7 @@ idSWFScriptVar idSWF::idSWFScriptFunction_pow::Call( idSWFScriptObject* thisObje
 	{
 		return idSWFScriptVar();
 	}
-	
+
 	float value = parms[0].ToFloat();
 	float power = parms[1].ToFloat();
 	return ( idMath::Pow( value, power ) );
@@ -627,7 +627,7 @@ idSWFScriptVar idSWF::idSWFScriptFunction_sqrt::Call( idSWFScriptObject* thisObj
 	{
 		return idSWFScriptVar();
 	}
-	
+
 	float value = parms[0].ToFloat();
 	return ( idMath::Sqrt( value ) );
 }
@@ -643,7 +643,7 @@ idSWFScriptVar idSWF::idSWFScriptFunction_abs::Call( idSWFScriptObject* thisObje
 	{
 		return idSWFScriptVar();
 	}
-	
+
 	float value = idMath::Fabs( parms[0].ToFloat() );
 	return value;
 }
@@ -684,9 +684,9 @@ idSWFScriptVar idSWF::idSWFScriptFunction_floor::Call( idSWFScriptObject* thisOb
 		idLib::Warning( "Invalid parameters specified for floor" );
 		return idSWFScriptVar();
 	}
-	
+
 	float num = parms[0].ToFloat();
-	
+
 	return idSWFScriptVar( idMath::Floor( num ) );
 }
 
@@ -702,9 +702,9 @@ idSWFScriptVar idSWF::idSWFScriptFunction_ceil::Call( idSWFScriptObject* thisObj
 		idLib::Warning( "Invalid parameters specified for ceil" );
 		return idSWFScriptVar();
 	}
-	
+
 	float num = parms[0].ToFloat();
-	
+
 	return idSWFScriptVar( idMath::Ceil( num ) );
 }
 
@@ -720,7 +720,7 @@ idSWFScriptVar idSWF::idSWFScriptFunction_toUpper::Call( idSWFScriptObject* this
 		idLib::Warning( "Invalid parameters specified for toUpper" );
 		return idSWFScriptVar();
 	}
-	
+
 	idStr val = idLocalization::GetString( parms[0].ToString() );
 	val.ToUpper();
 	return val;
@@ -759,15 +759,15 @@ idSWFScriptVar idSWF::idSWFScriptFunction_shortcutKeys_clear::Call( idSWFScriptO
 	object->Set( "MWHEELDOWN", "MWHEEL_DOWN" );
 	object->Set( "MWHEELUP", "MWHEEL_UP" );
 	object->Set( "K_TAB", "TAB" );
-	
-	
+
+
 	// FIXME: I'm an RTARD and didn't realize the keys all have "ARROW" after them
 	object->Set( "LEFTARROW", "LEFT" );
 	object->Set( "RIGHTARROW", "RIGHT" );
 	object->Set( "UPARROW", "UP" );
 	object->Set( "DOWNARROW", "DOWN" );
-	
-	
+
+
 	return idSWFScriptVar();
 }
 

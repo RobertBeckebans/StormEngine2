@@ -108,7 +108,7 @@ attribInfo_t attribsPC[] =
 	{ "float4",		"tangent",		"TANGENT",		"in_Tangent",			PC_ATTRIB_INDEX_TANGENT,		AT_VS_IN,		VERTEX_MASK_TANGENT },
 	{ "float4",		"color",		"COLOR0",		"in_Color",				PC_ATTRIB_INDEX_COLOR,			AT_VS_IN,		VERTEX_MASK_COLOR },
 	{ "float4",		"color2",		"COLOR1",		"in_Color2",			PC_ATTRIB_INDEX_COLOR2,			AT_VS_IN,		VERTEX_MASK_COLOR2 },
-	
+
 	// pre-defined vertex program output
 	{ "float4",		"position",		"POSITION",		"gl_Position",			0,	AT_VS_OUT,		0 },
 	{ "float",		"clip0",		"CLP0",			"gl_ClipDistance[0]",	0,	AT_VS_OUT,		0 },
@@ -117,12 +117,12 @@ attribInfo_t attribsPC[] =
 	{ "float",		"clip3",		"CLP3",			"gl_ClipDistance[3]",	0,	AT_VS_OUT,		0 },
 	{ "float",		"clip4",		"CLP4",			"gl_ClipDistance[4]",	0,	AT_VS_OUT,		0 },
 	{ "float",		"clip5",		"CLP5",			"gl_ClipDistance[5]",	0,	AT_VS_OUT,		0 },
-	
+
 	// pre-defined fragment program input
 	{ "float4",		"position",		"WPOS",			"gl_FragCoord",			0,	AT_PS_IN,		0 },
 	{ "half4",		"hposition",	"WPOS",			"gl_FragCoord",			0,	AT_PS_IN,		0 },
 	{ "float",		"facing",		"FACE",			"gl_FrontFacing",		0,	AT_PS_IN,		0 },
-	
+
 	// fragment program output
 	{ "float4",		"color",		"COLOR",		"fo_Color",		0,	AT_PS_OUT,		0 }, // our own definition for gl_FragColor because that is deprecated in GLSL 130+
 	{ "half4",		"hcolor",		"COLOR",		"fo_Color",		0,	AT_PS_OUT,		0 },
@@ -131,13 +131,13 @@ attribInfo_t attribsPC[] =
 	{ "float4",		"color2",		"COLOR2",		"fo_Color",		2,	AT_PS_OUT,		0 },
 	{ "float4",		"color3",		"COLOR3",		"fo_Color",		3,	AT_PS_OUT,		0 },
 	{ "float",		"depth",		"DEPTH",		"gl_FragDepth",		4,	AT_PS_OUT,		0 },
-	
+
 	// vertex to fragment program pass through
 	// foresthale 2014-03-02: use vofi_ variable naming instead of the builtin gl_FrontColor, gl_FrontSecondaryColor, gl_Color, gl_SecondaryColor because those produce warnings on AMD and are not part of OpenGL 3.2 Core Profile contexts to begin with
 	{ "float4",		"color",		"COLOR",		"vofi_Color",			0,	AT_VS_OUT | AT_PS_IN,	0 },
 	{ "float4",		"color0",		"COLOR0",		"vofi_Color",			0,	AT_VS_OUT | AT_PS_IN,	0 },
 	{ "float4",		"color1",		"COLOR1",		"vofi_SecondaryColor",	0,	AT_VS_OUT | AT_PS_IN,	0 },
-	
+
 	{ "float4",		"texcoord0",	"TEXCOORD0_centroid",	"vofi_TexCoord0",	0,	AT_PS_IN,	0 },
 	{ "float4",		"texcoord1",	"TEXCOORD1_centroid",	"vofi_TexCoord1",	0,	AT_PS_IN,	0 },
 	{ "float4",		"texcoord2",	"TEXCOORD2_centroid",	"vofi_TexCoord2",	0,	AT_PS_IN,	0 },
@@ -154,7 +154,7 @@ attribInfo_t attribsPC[] =
 	{ "float4",		"texcoord13",	"TEXCOORD13_centroid",	"vofi_TexCoord13",	0,	AT_PS_IN,	0 },
 	{ "float4",		"texcoord14",	"TEXCOORD14_centroid",	"vofi_TexCoord14",	0,	AT_PS_IN,	0 },
 	{ "float4",		"texcoord15",	"TEXCOORD15_centroid",	"vofi_TexCoord15",	0,	AT_PS_IN,	0 },
-	
+
 	{ "float4",		"texcoord0",	"TEXCOORD0",	"vofi_TexCoord0",		0,	AT_VS_OUT | AT_PS_IN,	0 },
 	{ "float4",		"texcoord1",	"TEXCOORD1",	"vofi_TexCoord1",		0,	AT_VS_OUT | AT_PS_IN,	0 },
 	{ "float4",		"texcoord2",	"TEXCOORD2",	"vofi_TexCoord2",		0,	AT_VS_OUT | AT_PS_IN,	0 },
@@ -171,7 +171,7 @@ attribInfo_t attribsPC[] =
 	{ "float4",		"texcoord13",	"TEXCOORD13",	"vofi_TexCoord13",		0,	AT_VS_OUT | AT_PS_IN,	0 },
 	{ "float4",		"texcoord14",	"TEXCOORD14",	"vofi_TexCoord14",		0,	AT_VS_OUT | AT_PS_IN,	0 },
 	{ "float4",		"texcoord15",	"TEXCOORD15",	"vofi_TexCoord15",		0,	AT_VS_OUT | AT_PS_IN,	0 },
-	
+
 	{ "half4",		"htexcoord0",	"TEXCOORD0",	"vofi_TexCoord0",		0,	AT_PS_IN,		0 },
 	{ "half4",		"htexcoord1",	"TEXCOORD1",	"vofi_TexCoord1",		0,	AT_PS_IN,		0 },
 	{ "half4",		"htexcoord2",	"TEXCOORD2",	"vofi_TexCoord2",		0,	AT_PS_IN,		0 },
@@ -222,22 +222,22 @@ const char* prefixes[] =
 	"const",
 	"uniform",
 	"struct",
-	
+
 	"sampler",
-	
+
 	"sampler1D",
 	"sampler2D",
 	"sampler3D",
 	"samplerCUBE",
-	
+
 	"sampler1DShadow",		// GLSL
 	"sampler2DShadow",		// GLSL
 	"sampler2DArrayShadow", // GLSL
 	"sampler3DShadow",		// GLSL
 	"samplerCubeShadow",	// GLSL
-	
+
 	"sampler2DArray",		// GLSL"
-	
+
 	"sampler2DMS",			// GLSL
 };
 static const int numPrefixes = sizeof( prefixes ) / sizeof( prefixes[0] );
@@ -249,111 +249,111 @@ static const char* GLSLParmNames[RENDERPARM_TOTAL] =
 	"rpWindowCoord",
 	"rpDiffuseModifier",
 	"rpSpecularModifier",
-	
+
 	"rpLocalLightOrigin",
 	"rpLocalViewOrigin",
-	
+
 	"rpLightProjectionS",
 	"rpLightProjectionT",
 	"rpLightProjectionQ",
 	"rpLightFalloffS",
-	
+
 	"rpBumpMatrixS",
 	"rpBumpMatrixT",
-	
+
 	"rpDiffuseMatrixS",
 	"rpDiffuseMatrixT",
-	
+
 	"rpSpecularMatrixS",
 	"rpSpecularMatrixT",
-	
+
 	"rpVertexColorModulate",
 	"rpVertexColorAdd",
-	
+
 	"rpColor",
 	"rpViewOrigin",
 	"rpGlobalEyePos",
-	
+
 	"rpMVPmatrixX",
 	"rpMVPmatrixY",
 	"rpMVPmatrixZ",
 	"rpMVPmatrixW",
-	
+
 	"rpModelMatrixX",
 	"rpModelMatrixY",
 	"rpModelMatrixZ",
 	"rpModelMatrixW",
-	
+
 	"rpProjectionMatrixX",
 	"rpProjectionMatrixY",
 	"rpProjectionMatrixZ",
 	"rpProjectionMatrixW",
-	
+
 	"rpModelViewMatrixX",
 	"rpModelViewMatrixY",
 	"rpModelViewMatrixZ",
 	"rpModelViewMatrixW",
-	
+
 	"rpTextureMatrixS",
 	"rpTextureMatrixT",
-	
+
 	"rpTexGen0S",
 	"rpTexGen0T",
 	"rpTexGen0Q",
 	"rpTexGen0Enabled",
-	
+
 	"rpTexGen1S",
 	"rpTexGen1T",
 	"rpTexGen1Q",
 	"rpTexGen1Enabled",
-	
+
 	"rpWobbleSkyX",
 	"rpWobbleSkyY",
 	"rpWobbleSkyZ",
-	
+
 	"rpOverbright",
 	"rpEnableSkinning",
 	"rpAlphaTest",
-	
+
 	// RB begin
 	"rpAmbientColor",
-	
+
 	"rpGlobalLightOrigin",
 	"rpJitterTexScale",
 	"rpJitterTexOffset",
 	"rpCascadeDistances",
-	
+
 	"rpShadowMatrix0X",
 	"rpShadowMatrix0Y",
 	"rpShadowMatrix0Z",
 	"rpShadowMatrix0W",
-	
+
 	"rpShadowMatrix1X",
 	"rpShadowMatrix1Y",
 	"rpShadowMatrix1Z",
 	"rpShadowMatrix1W",
-	
+
 	"rpShadowMatrix2X",
 	"rpShadowMatrix2Y",
 	"rpShadowMatrix2Z",
 	"rpShadowMatrix2W",
-	
+
 	"rpShadowMatrix3X",
 	"rpShadowMatrix3Y",
 	"rpShadowMatrix3Z",
 	"rpShadowMatrix3W",
-	
+
 	"rpShadowMatrix4X",
 	"rpShadowMatrix4Y",
 	"rpShadowMatrix4Z",
 	"rpShadowMatrix4W",
-	
+
 	"rpShadowMatrix5X",
 	"rpShadowMatrix5Y",
 	"rpShadowMatrix5Z",
 	"rpShadowMatrix5W",
 	// RB end
-	
+
 	"rpGlossMatrixS",
 	"rpGlossMatrixT",
 	"rpCubemapColorSpace", // motorsep 05-18-2015
@@ -370,15 +370,15 @@ idStr StripDeadCode( const idStr& in, const char* name )
 	{
 		return in;
 	}
-	
+
 	//idLexer src( LEXFL_NOFATALERRORS );
 	idParser src( LEXFL_NOFATALERRORS );
-	
+
 	// Begin SS2 Fix
 	// Make Sure the parser knows to look for header files in the renderprogs source tree.
 	src.SetIncludePath( "renderprogs" );
 	// end SS2 Fix
-	
+
 	src.LoadMemory( in.c_str(), in.Length(), name );
 	src.AddDefine( "PC" );
 	// foresthale 2014-10-05: these aren't needed due to the way we're picking shaders
@@ -387,13 +387,15 @@ idStr StripDeadCode( const idStr& in, const char* name )
 	{
 		src.AddDefine( "USE_UNIFORM_ARRAYS" );
 		if( r_useGPUSkinning.GetBool() )
+		{
 			src.AddDefine( "USE_GPU_SKINNING" );
+		}
 	}
 #endif
 	idList< idCGBlock, TAG_RENDERPROG > blocks;
-	
+
 	blocks.SetNum( 100 );
-	
+
 	idToken token;
 	while( !src.EndOfFile() )
 	{
@@ -457,7 +459,7 @@ idStr StripDeadCode( const idStr& in, const char* name )
 			break;
 		}
 		block.name = token;
-		
+
 		if( src.PeekTokenString( "=" ) || src.PeekTokenString( ":" ) || src.PeekTokenString( "[" ) )
 		{
 			src.ReadToken( &token );
@@ -511,31 +513,31 @@ idStr StripDeadCode( const idStr& in, const char* name )
 			return in;
 		}
 	}
-	
+
 	idList<int, TAG_RENDERPROG> stack;
 	for( int i = 0; i < blocks.Num(); i++ )
 	{
 		blocks[i].used = ( ( blocks[i].name == "main" )
 						   || blocks[i].name.Right( 4 ) == "_ubo"
 						 );
-						 
+
 		if( blocks[i].name == "include" )
 		{
 			blocks[i].used = true;
 			blocks[i].name = ""; // clear out the include tag
 		}
-		
+
 		if( blocks[i].used )
 		{
 			stack.Append( i );
 		}
 	}
-	
+
 	while( stack.Num() > 0 )
 	{
 		int i = stack[stack.Num() - 1];
 		stack.SetNum( stack.Num() - 1 );
-		
+
 		idLexer src( LEXFL_NOFATALERRORS );
 		src.LoadMemory( blocks[i].postfix.c_str(), blocks[i].postfix.Length(), name );
 		while( src.ReadToken( &token ) )
@@ -553,9 +555,9 @@ idStr StripDeadCode( const idStr& in, const char* name )
 			}
 		}
 	}
-	
+
 	idStr out;
-	
+
 	for( int i = 0; i < blocks.Num(); i++ )
 	{
 		if( blocks[i].used )
@@ -568,7 +570,7 @@ idStr StripDeadCode( const idStr& in, const char* name )
 			out += '\n';
 		}
 	}
-	
+
 	return out;
 }
 
@@ -579,54 +581,54 @@ struct typeConversion_t
 } typeConversion[] =
 {
 	{ "void",				"void" },
-	
+
 	{ "fixed",				"float" },
-	
+
 	{ "float",				"float" },
 	{ "float2",				"vec2" },
 	{ "float3",				"vec3" },
 	{ "float4",				"vec4" },
-	
+
 	{ "half",				"float" },
 	{ "half2",				"vec2" },
 	{ "half3",				"vec3" },
 	{ "half4",				"vec4" },
-	
+
 	{ "int",				"int" },
 	{ "int2",				"ivec2" },
 	{ "int3",				"ivec3" },
 	{ "int4",				"ivec4" },
-	
+
 	{ "bool",				"bool" },
 	{ "bool2",				"bvec2" },
 	{ "bool3",				"bvec3" },
 	{ "bool4",				"bvec4" },
-	
+
 	{ "float2x2",			"mat2x2" },
 	{ "float2x3",			"mat2x3" },
 	{ "float2x4",			"mat2x4" },
-	
+
 	{ "float3x2",			"mat3x2" },
 	{ "float3x3",			"mat3x3" },
 	{ "float3x4",			"mat3x4" },
-	
+
 	{ "float4x2",			"mat4x2" },
 	{ "float4x3",			"mat4x3" },
 	{ "float4x4",			"mat4x4" },
-	
+
 	{ "sampler1D",			"sampler1D" },
 	{ "sampler2D",			"sampler2D" },
 	{ "sampler3D",			"sampler3D" },
 	{ "samplerCUBE",		"samplerCube" },
-	
+
 	{ "sampler1DShadow",	"sampler1DShadow" },
 	{ "sampler2DShadow",	"sampler2DShadow" },
 	{ "sampler3DShadow",	"sampler3DShadow" },
 	{ "samplerCubeShadow",	"samplerCubeShadow" },
 	{ "sampler2DArrayShadow",	"sampler2DArrayShadow" },
-	
+
 	{ "sampler2DMS",		"sampler2DMS" },
-	
+
 	{ NULL, NULL }
 };
 
@@ -694,7 +696,7 @@ struct builtinConversion_t
 	{ "rsqrt",		"inversesqrt" },
 	{ "ddx",		"dFdx" },
 	{ "ddy",		"dFdy" },
-	
+
 	{ NULL, NULL }
 };
 
@@ -714,27 +716,27 @@ ParseInOutStruct
 void ParseInOutStruct( idLexer& src, int attribType, idList< inOutVariable_t >& inOutVars )
 {
 	src.ExpectTokenString( "{" );
-	
+
 	while( !src.CheckTokenString( "}" ) )
 	{
 		inOutVariable_t var;
-		
+
 		idToken token;
 		src.ReadToken( &token );
 		var.type = token;
 		src.ReadToken( &token );
 		var.nameCg = token;
-		
+
 		if( !src.CheckTokenString( ":" ) )
 		{
 			src.SkipUntilString( ";" );
 			continue;
 		}
-		
+
 		src.ReadToken( &token );
 		var.nameGLSL = token;
 		src.ExpectTokenString( ";" );
-		
+
 		// convert the type
 		for( int i = 0; typeConversion[i].typeCG != NULL; i++ )
 		{
@@ -744,7 +746,7 @@ void ParseInOutStruct( idLexer& src, int attribType, idList< inOutVariable_t >& 
 				break;
 			}
 		}
-		
+
 		// convert the semantic to a GLSL name
 		for( int i = 0; attribsPC[i].semantic != NULL; i++ )
 		{
@@ -757,7 +759,7 @@ void ParseInOutStruct( idLexer& src, int attribType, idList< inOutVariable_t >& 
 				}
 			}
 		}
-		
+
 		// check if it was defined previously
 		var.declareInOut = true;
 		for( int i = 0; i < inOutVars.Num(); i++ )
@@ -768,14 +770,16 @@ void ParseInOutStruct( idLexer& src, int attribType, idList< inOutVariable_t >& 
 				break;
 			}
 		}
-		
+
 		// foresthale 2014-03-02: don't declare builtin variables, it just produces warnings on strict compilers (AMD)
 		if( idStr::Cmpn( var.nameGLSL, "gl_", 3 ) == 0 )
+		{
 			var.declareInOut = false;
-			
+		}
+
 		inOutVars.Append( var );
 	}
-	
+
 	src.ExpectTokenString( ";" );
 }
 
@@ -788,28 +792,28 @@ idStr ConvertCG2GLSL( const idStr& in, const char* name, bool isVertexProgram, i
 {
 	idStr program;
 	program.ReAllocate( in.Length() * 2, false );
-	
+
 	idList< inOutVariable_t, TAG_RENDERPROG > varsIn;
 	idList< inOutVariable_t, TAG_RENDERPROG > varsOut;
 	idList< idStr > uniformList;
-	
+
 	idLexer src( LEXFL_NOFATALERRORS );
 	src.LoadMemory( in.c_str(), in.Length(), name );
-	
+
 	bool inMain = false;
 	const char* uniformArrayName = isVertexProgram ? VERTEX_UNIFORM_ARRAY_NAME : FRAGMENT_UNIFORM_ARRAY_NAME;
 	char newline[128] = { "\n" };
-	
+
 	idToken token;
 	while( src.ReadToken( &token ) )
 	{
-	
+
 		// check for uniforms
 		while( token == "uniform" && src.CheckTokenString( "float4" ) )
 		{
 			src.ReadToken( &token );
 			uniformList.Append( token );
-			
+
 			// strip ': register()' from uniforms
 			if( src.CheckTokenString( ":" ) )
 			{
@@ -818,10 +822,10 @@ idStr ConvertCG2GLSL( const idStr& in, const char* name, bool isVertexProgram, i
 					src.SkipUntilString( ";" );
 				}
 			}
-			
+
 			src.ReadToken( & token );
 		}
-		
+
 		// convert the in/out structs
 		if( token == "struct" )
 		{
@@ -883,7 +887,7 @@ idStr ConvertCG2GLSL( const idStr& in, const char* name, bool isVertexProgram, i
 				continue;
 			}
 		}
-		
+
 		// strip 'static'
 		if( token == "static" )
 		{
@@ -891,7 +895,7 @@ idStr ConvertCG2GLSL( const idStr& in, const char* name, bool isVertexProgram, i
 			src.SkipWhiteSpace( true ); // remove white space between 'static' and the next token
 			continue;
 		}
-		
+
 		// strip ': register()' from uniforms
 		if( token == ":" )
 		{
@@ -902,7 +906,7 @@ idStr ConvertCG2GLSL( const idStr& in, const char* name, bool isVertexProgram, i
 				continue;
 			}
 		}
-		
+
 		// strip in/program parameters from main
 		if( token == "void" && src.CheckTokenString( "main" ) )
 		{
@@ -914,12 +918,12 @@ idStr ConvertCG2GLSL( const idStr& in, const char* name, bool isVertexProgram, i
 					break;
 				}
 			}
-			
+
 			program += "\nvoid main()";
 			inMain = true;
 			continue;
 		}
-		
+
 		// strip 'const' from local variables in main()
 		if( token == "const" && inMain )
 		{
@@ -927,13 +931,13 @@ idStr ConvertCG2GLSL( const idStr& in, const char* name, bool isVertexProgram, i
 			src.SkipWhiteSpace( true ); // remove white space between 'const' and the next token
 			continue;
 		}
-		
+
 		// maintain indentation
 		if( token == "{" )
 		{
 			program += ( token.linesCrossed > 0 ) ? newline : ( token.WhiteSpaceBeforeToken() > 0 ? " " : "" );
 			program += "{";
-			
+
 			int len = Min( idStr::Length( newline ) + 1, ( int )sizeof( newline ) - 1 );
 			newline[len - 1] = '\t';
 			newline[len - 0] = '\0';
@@ -943,12 +947,12 @@ idStr ConvertCG2GLSL( const idStr& in, const char* name, bool isVertexProgram, i
 		{
 			int len = Max( idStr::Length( newline ) - 1, 0 );
 			newline[len] = '\0';
-			
+
 			program += ( token.linesCrossed > 0 ) ? newline : ( token.WhiteSpaceBeforeToken() > 0 ? " " : "" );
 			program += "}";
 			continue;
 		}
-		
+
 		// check for a type conversion
 		bool foundType = false;
 		for( int i = 0; typeConversion[i].typeCG != NULL; i++ )
@@ -965,7 +969,7 @@ idStr ConvertCG2GLSL( const idStr& in, const char* name, bool isVertexProgram, i
 		{
 			continue;
 		}
-		
+
 		if( r_useUniformArrays.GetBool() )
 		{
 			// check for uniforms that need to be converted to the array
@@ -985,16 +989,16 @@ idStr ConvertCG2GLSL( const idStr& in, const char* name, bool isVertexProgram, i
 				continue;
 			}
 		}
-		
+
 		// check for input/output parameters
 		if( src.CheckTokenString( "." ) )
 		{
-		
+
 			if( token == "vertex" || token == "fragment" )
 			{
 				idToken member;
 				src.ReadToken( &member );
-				
+
 				bool foundInOut = false;
 				for( int i = 0; i < varsIn.Num(); i++ )
 				{
@@ -1016,12 +1020,12 @@ idStr ConvertCG2GLSL( const idStr& in, const char* name, bool isVertexProgram, i
 				}
 				continue;
 			}
-			
+
 			if( token == "result" )
 			{
 				idToken member;
 				src.ReadToken( &member );
-				
+
 				bool foundInOut = false;
 				for( int i = 0; i < varsOut.Num(); i++ )
 				{
@@ -1043,13 +1047,13 @@ idStr ConvertCG2GLSL( const idStr& in, const char* name, bool isVertexProgram, i
 				}
 				continue;
 			}
-			
+
 			program += ( token.linesCrossed > 0 ) ? newline : ( token.WhiteSpaceBeforeToken() > 0 ? " " : "" );
 			program += token;
 			program += ".";
 			continue;
 		}
-		
+
 		// check for a function conversion
 		bool foundFunction = false;
 		for( int i = 0; builtinConversion[i].nameCG != NULL; i++ )
@@ -1066,13 +1070,13 @@ idStr ConvertCG2GLSL( const idStr& in, const char* name, bool isVertexProgram, i
 		{
 			continue;
 		}
-		
+
 		program += ( token.linesCrossed > 0 ) ? newline : ( token.WhiteSpaceBeforeToken() > 0 ? " " : "" );
 		program += token;
 	}
-	
+
 	idStr out;
-	
+
 	if( isVertexProgram )
 	{
 		out.ReAllocate( idStr::Length( vertexInsert ) + in.Length() * 2, false );
@@ -1083,7 +1087,7 @@ idStr ConvertCG2GLSL( const idStr& in, const char* name, bool isVertexProgram, i
 		out.ReAllocate( idStr::Length( fragmentInsert ) + in.Length() * 2, false );
 		out += fragmentInsert;
 	}
-	
+
 	if( uniformList.Num() > 0 )
 	{
 		if( r_useUniformArrays.GetBool() )
@@ -1101,16 +1105,16 @@ idStr ConvertCG2GLSL( const idStr& in, const char* name, bool isVertexProgram, i
 			}
 		}
 	}
-	
+
 	out += program;
-	
+
 	for( int i = 0; i < uniformList.Num(); i++ )
 	{
 		uniforms += uniformList[i];
 		uniforms += "\n";
 	}
 	uniforms += "\n";
-	
+
 	return out;
 }
 
@@ -1126,7 +1130,7 @@ GLuint idRenderProgManager::LoadGLSLShader( GLenum target, const char* name, idL
 	idStr outFileHLSL;
 	idStr outFileGLSL;
 	idStr outFileUniforms;
-	
+
 	// RB: replaced backslashes
 	inFile.Format( "renderprogs/%s", name );
 	inFile.StripFileExtension();
@@ -1137,7 +1141,7 @@ GLuint idRenderProgManager::LoadGLSLShader( GLenum target, const char* name, idL
 	outFileUniforms.Format( "renderprogs/glsl/%s", name );
 	outFileUniforms.StripFileExtension();
 	// RB end
-	
+
 	if( target == GL_FRAGMENT_SHADER )
 	{
 		inFile += ".pixel";
@@ -1152,14 +1156,14 @@ GLuint idRenderProgManager::LoadGLSLShader( GLenum target, const char* name, idL
 		outFileGLSL += "_vertex.glsl";
 		outFileUniforms += "_vertex.uniforms";
 	}
-	
+
 	// first check whether we already have a valid GLSL file and compare it to the hlsl timestamp;
 	ID_TIME_T hlslTimeStamp;
 	int hlslFileLength = fileSystem->ReadFile( inFile.c_str(), NULL, &hlslTimeStamp );
-	
+
 	ID_TIME_T glslTimeStamp;
 	int glslFileLength = fileSystem->ReadFile( outFileGLSL.c_str(), NULL, &glslTimeStamp );
-	
+
 	// if the glsl file doesn't exist or we have a newer HLSL file we need to recreate the glsl file.
 	idStr programGLSL;
 	idStr programUniforms;
@@ -1171,7 +1175,7 @@ GLuint idRenderProgManager::LoadGLSLShader( GLenum target, const char* name, idL
 			// hlsl file doesn't even exist bail out
 			return false;
 		}
-		
+
 		void* hlslFileBuffer = NULL;
 		int len = fileSystem->ReadFile( inFile.c_str(), &hlslFileBuffer );
 		if( len <= 0 )
@@ -1181,7 +1185,7 @@ GLuint idRenderProgManager::LoadGLSLShader( GLenum target, const char* name, idL
 		idStr hlslCode( ( const char* ) hlslFileBuffer );
 		idStr programHLSL = StripDeadCode( hlslCode, inFile );
 		programGLSL = ConvertCG2GLSL( programHLSL, inFile, target == GL_VERTEX_SHADER, programUniforms );
-		
+
 		fileSystem->WriteFile( outFileHLSL, programHLSL.c_str(), programHLSL.Length(), "fs_basepath" );
 		fileSystem->WriteFile( outFileGLSL, programGLSL.c_str(), programGLSL.Length(), "fs_basepath" );
 		if( r_useUniformArrays.GetBool() )
@@ -1200,7 +1204,7 @@ GLuint idRenderProgManager::LoadGLSLShader( GLenum target, const char* name, idL
 		}
 		programGLSL = ( const char* ) fileBufferGLSL;
 		Mem_Free( fileBufferGLSL );
-		
+
 		if( r_useUniformArrays.GetBool() )
 		{
 			// read in the uniform file
@@ -1214,12 +1218,12 @@ GLuint idRenderProgManager::LoadGLSLShader( GLenum target, const char* name, idL
 			Mem_Free( fileBufferUniforms );
 		}
 	}
-	
+
 	// find the uniforms locations in either the vertex or fragment uniform array
 	if( r_useUniformArrays.GetBool() )
 	{
 		uniforms.Clear();
-		
+
 		idLexer src( programUniforms, programUniforms.Length(), "uniforms" );
 		idToken token;
 		while( src.ReadToken( &token ) )
@@ -1248,16 +1252,16 @@ GLuint idRenderProgManager::LoadGLSLShader( GLenum target, const char* name, idL
 			uniforms.Append( index );
 		}
 	}
-	
+
 	// create and compile the shader
 	const GLuint shader = qglCreateShader( target );
 	if( shader )
 	{
 		const char* source[1] = { programGLSL.c_str() };
-		
+
 		qglShaderSource( shader, 1, source, NULL );
 		qglCompileShader( shader );
-		
+
 		int infologLength = 0;
 		qglGetShaderiv( shader, GL_INFO_LOG_LENGTH, &infologLength );
 		if( infologLength > 1 )
@@ -1265,7 +1269,7 @@ GLuint idRenderProgManager::LoadGLSLShader( GLenum target, const char* name, idL
 			idTempArray<char> infoLog( infologLength );
 			int charsWritten = 0;
 			qglGetShaderInfoLog( shader, infologLength, &charsWritten, infoLog.Ptr() );
-			
+
 			// catch the strings the ATI and Intel drivers output on success
 			if( strstr( infoLog.Ptr(), "successfully compiled to run on hardware" ) != NULL ||
 					strstr( infoLog.Ptr(), "No errors." ) != NULL )
@@ -1275,7 +1279,7 @@ GLuint idRenderProgManager::LoadGLSLShader( GLenum target, const char* name, idL
 			else if( r_displayGLSLCompilerMessages.GetBool() ) // DG:  check for the CVar I added above
 			{
 				idLib::Printf( "While compiling %s program %s\n", ( target == GL_FRAGMENT_SHADER ) ? "fragment" : "vertex" , inFile.c_str() );
-				
+
 				const char separator = '\n';
 				idList<idStr> lines;
 				lines.Clear();
@@ -1286,18 +1290,18 @@ GLuint idRenderProgManager::LoadGLSLShader( GLenum target, const char* name, idL
 					lines.Append( lines[index].c_str() + ofs + 1 );
 					lines[index].CapLength( ofs );
 				}
-				
+
 				idLib::Printf( "-----------------\n" );
 				for( int i = 0; i < lines.Num(); i++ )
 				{
 					idLib::Printf( "%3d: %s\n", i + 1, lines[i].c_str() );
 				}
 				idLib::Printf( "-----------------\n" );
-				
+
 				idLib::Printf( "%s\n", infoLog.Ptr() );
 			}
 		}
-		
+
 		GLint compiled = GL_FALSE;
 		qglGetShaderiv( shader, GL_COMPILE_STATUS, &compiled );
 		if( compiled == GL_FALSE )
@@ -1306,7 +1310,7 @@ GLuint idRenderProgManager::LoadGLSLShader( GLenum target, const char* name, idL
 			return INVALID_PROGID;
 		}
 	}
-	
+
 	return shader;
 }
 /*
@@ -1325,7 +1329,7 @@ int	 idRenderProgManager::FindGLSLProgram( const char* name, int vIndex, int fIn
 			return i;
 		}
 	}
-	
+
 	glslProgram_t program;
 	program.name = name;
 	int index = glslPrograms.Append( program );
@@ -1371,11 +1375,11 @@ void idRenderProgManager::CommitUniforms()
 {
 	const int progID = GetGLSLCurrentProgram();
 	const glslProgram_t& prog = glslPrograms[progID];
-	
+
 	if( r_useUniformArrays.GetBool() )
 	{
 		ALIGNTYPE16 idVec4 localVectors[RENDERPARM_USER + MAX_GLSL_USER_PARMS];
-		
+
 		if( prog.vertexShaderIndex >= 0 )
 		{
 			const idList<int>& vertexUniforms = vertexShaders[prog.vertexShaderIndex].uniforms;
@@ -1388,7 +1392,7 @@ void idRenderProgManager::CommitUniforms()
 				qglUniform4fv( prog.vertexUniformArray, vertexUniforms.Num(), localVectors->ToFloatPtr() );
 			}
 		}
-		
+
 		if( prog.fragmentShaderIndex >= 0 )
 		{
 			const idList<int>& fragmentUniforms = fragmentShaders[prog.fragmentShaderIndex].uniforms;
@@ -1429,29 +1433,29 @@ idRenderProgManager::LoadGLSLProgram
 void idRenderProgManager::LoadGLSLProgram( const int programIndex, const int vertexShaderIndex, const int fragmentShaderIndex )
 {
 	glslProgram_t& prog = glslPrograms[programIndex];
-	
+
 	if( prog.progId != INVALID_PROGID )
 	{
 		return; // Already loaded
 	}
-	
+
 	GLuint vertexProgID = ( vertexShaderIndex != -1 ) ? vertexShaders[ vertexShaderIndex ].progId : INVALID_PROGID;
 	GLuint fragmentProgID = ( fragmentShaderIndex != -1 ) ? fragmentShaders[ fragmentShaderIndex ].progId : INVALID_PROGID;
-	
+
 	const GLuint program = qglCreateProgram();
 	if( program )
 	{
-	
+
 		if( vertexProgID != INVALID_PROGID )
 		{
 			qglAttachShader( program, vertexProgID );
 		}
-		
+
 		if( fragmentProgID != INVALID_PROGID )
 		{
 			qglAttachShader( program, fragmentProgID );
 		}
-		
+
 		// bind vertex attribute locations
 		for( int i = 0; attribsPC[i].glsl != NULL; i++ )
 		{
@@ -1460,9 +1464,9 @@ void idRenderProgManager::LoadGLSLProgram( const int programIndex, const int ver
 				qglBindAttribLocation( program, attribsPC[i].bind, attribsPC[i].glsl );
 			}
 		}
-		
+
 		qglLinkProgram( program );
-		
+
 		int infologLength = 0;
 		qglGetProgramiv( program, GL_INFO_LOG_LENGTH, &infologLength );
 		if( infologLength > 1 )
@@ -1470,7 +1474,7 @@ void idRenderProgManager::LoadGLSLProgram( const int programIndex, const int ver
 			char* infoLog = ( char* )malloc( infologLength );
 			int charsWritten = 0;
 			qglGetProgramInfoLog( program, infologLength, &charsWritten, infoLog );
-			
+
 			// catch the strings the ATI and Intel drivers output on success
 			if( strstr( infoLog, "Vertex shader(s) linked, fragment shader(s) linked." ) != NULL || strstr( infoLog, "No errors." ) != NULL )
 			{
@@ -1484,11 +1488,11 @@ void idRenderProgManager::LoadGLSLProgram( const int programIndex, const int ver
 							   ( fragmentShaderIndex >= 0 ) ? fragmentShaders[ fragmentShaderIndex ].name.c_str() : "<Invalid>" );
 				idLib::Printf( "%s\n", infoLog );
 			}
-			
+
 			free( infoLog );
 		}
 	}
-	
+
 	int linked = GL_FALSE;
 	qglGetProgramiv( program, GL_LINK_STATUS, &linked );
 	if( linked == GL_FALSE )
@@ -1500,12 +1504,12 @@ void idRenderProgManager::LoadGLSLProgram( const int programIndex, const int ver
 					  ( fragmentShaderIndex >= 0 ) ? fragmentShaders[ fragmentShaderIndex ].name.c_str() : "<Invalid>" );
 		return;
 	}
-	
+
 	if( r_useUniformArrays.GetBool() )
 	{
 		prog.vertexUniformArray = qglGetUniformLocation( program, VERTEX_UNIFORM_ARRAY_NAME );
 		prog.fragmentUniformArray = qglGetUniformLocation( program, FRAGMENT_UNIFORM_ARRAY_NAME );
-		
+
 		assert( prog.vertexUniformArray != -1 || vertexShaderIndex < 0 || vertexShaders[vertexShaderIndex].uniforms.Num() == 0 );
 		assert( prog.fragmentUniformArray != -1 || fragmentShaderIndex < 0 || fragmentShaders[fragmentShaderIndex].uniforms.Num() == 0 );
 	}
@@ -1525,7 +1529,7 @@ void idRenderProgManager::LoadGLSLProgram( const int programIndex, const int ver
 				prog.uniformLocations.Append( uniformLocation );
 			}
 		}
-		
+
 		// store the USER uniform locations
 		for( int i = 0; i < MAX_GLSL_USER_PARMS; i++ )
 		{
@@ -1539,18 +1543,18 @@ void idRenderProgManager::LoadGLSLProgram( const int programIndex, const int ver
 				prog.uniformLocations.Append( uniformLocation );
 			}
 		}
-		
+
 		// sort the uniforms based on index
 		prog.uniformLocations.SortWithTemplate( idSort_QuickUniforms() );
 	}
-	
+
 	// get the uniform buffer binding for skinning joint matrices
 	GLint blockIndex = qglGetUniformBlockIndex( program, "matrices_ubo" );
 	if( blockIndex != -1 )
 	{
 		qglUniformBlockBinding( program, blockIndex, 0 );
 	}
-	
+
 	// set the texture unit locations once for the render program. We only need to do this once since we only link the program once
 	qglUseProgram( program );
 	for( int i = 0; i < MAX_PROG_TEXTURE_PARMS; ++i )
@@ -1561,7 +1565,7 @@ void idRenderProgManager::LoadGLSLProgram( const int programIndex, const int ver
 			qglUniform1i( loc, i );
 		}
 	}
-	
+
 	idStr programName = vertexShaders[ vertexShaderIndex ].name;
 	programName.StripFileExtension();
 	prog.name = programName;

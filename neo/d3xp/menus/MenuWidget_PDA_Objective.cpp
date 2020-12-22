@@ -43,26 +43,26 @@ void idMenuWidget_PDA_Objective::Update()
 	{
 		return;
 	}
-	
+
 	idSWFScriptObject& root = GetSWFObject()->GetRootObject();
 	if( !BindSprite( root ) || GetSprite() == NULL )
 	{
 		return;
 	}
-	
+
 	idPlayer* player = gameLocal.GetLocalPlayer();
 	if( player == NULL )
 	{
 		return;
 	}
-	
+
 	idSWFScriptObject* dataObj = GetSprite()->GetScriptObject()->GetNestedObj( "info" ); // SS2 note; this "info" sits inside on root > menuData > info > missionInfo
 	idSWFSpriteInstance* dataSprite = dataObj->GetSprite();
-	
+
 	if( dataObj != NULL && dataSprite != NULL )
 	{
 		idSWFSpriteInstance* img = dataObj->GetNestedSprite( "objImg", "img" ); // SS2 note; screenshot of the objective
-		
+
 		if( player->GetInventory()->objectiveNames.Num() == 0 )
 		{
 			dataSprite->StopFrame( 1 ); // SS2 note; frame 1 only shows "txtObj"
@@ -70,7 +70,7 @@ void idMenuWidget_PDA_Objective::Update()
 		else
 		{
 			int numObjectives = player->GetInventory()->objectiveNames.Num();
-			
+
 			int objStartIndex = 0;
 			if( numObjectives == 1 )
 			{
@@ -82,9 +82,9 @@ void idMenuWidget_PDA_Objective::Update()
 				dataSprite->StopFrame( 3 ); // SS2 note; frame 3 shows "txtObj", "txtDesc", "objImg", "obj0" and "obj1" in the missionInfo>info
 				objStartIndex = 1;
 			}
-			
+
 			idSWFTextInstance* txtDesc = dataObj->GetNestedText( "txtDesc" ); // SS2 note; this objective's text derrived from "item_quest"
-			
+
 			int displayCount = 0;
 			for( int index = numObjectives - 1; displayCount < 2 && index >= 0; --index )
 			{
@@ -100,14 +100,14 @@ void idMenuWidget_PDA_Objective::Update()
 						img->SetMaterial( player->GetInventory()->objectiveNames[index].screenshot );
 					}
 				}
-				
+
 				// SS2 note; this sprite doesn't exist on frame1, but 1 instance "obj0" exist on frame 2 and 2 instances named "obj0" and "obj1" exist on frame2
 				// since Doom 3 only allows 2 objectives aat once to exist in PDA, one of those instances, e.g. current objective, is highlighted with "sel" sprite (simply
 				// a backing by default in Doom 3 BFG).
 				// We can expand that to however manu quests we need to display in SS2, eventually
 				idSWFSpriteInstance* objSel = dataObj->GetNestedSprite( va( "obj%d", objStartIndex - displayCount ), "sel" );
 				idSWFTextInstance* txtNote = dataObj->GetNestedText( va( "obj%d", objStartIndex - displayCount ), "txtVal" );
-				
+
 				if( objSel != NULL )
 				{
 					if( displayCount == 0 )
@@ -119,21 +119,21 @@ void idMenuWidget_PDA_Objective::Update()
 						objSel->SetVisible( false );
 					}
 				}
-				
+
 				if( txtNote != NULL )
 				{
 					txtNote->SetText( player->GetInventory()->objectiveNames[index].title.c_str() );
 				}
-				
+
 				if( displayCount == 0 )
 				{
 					txtDesc->SetText( player->GetInventory()->objectiveNames[index].text.c_str() );
 				}
-				
+
 				displayCount++;
 			}
 		}
-		
+
 		// Set the main objective text
 		idTarget_SetPrimaryObjective* mainObj = player->GetPrimaryObjective();
 		idSWFTextInstance* txtMainObj = dataObj->GetNestedText( "txtObj" ); // SS2 note; this will contain text derrived from entity "target_primaryquest"
@@ -163,14 +163,14 @@ void idMenuWidget_PDA_Objective::ObserveEvent( const idMenuWidget& widget, const
 	{
 		return;
 	}
-	
+
 	const idMenuWidget* const listWidget = button->GetParent();
-	
+
 	if( listWidget == NULL )
 	{
 		return;
 	}
-	
+
 	switch( event.type )
 	{
 		case WIDGET_EVENT_FOCUS_ON:

@@ -71,18 +71,18 @@ idPhysics_Base::Save
 void idPhysics_Base::Save( idSaveGame* savefile ) const
 {
 	int i;
-	
+
 	savefile->WriteObject( self );
 	savefile->WriteInt( clipMask );
 	savefile->WriteVec3( gravityVector );
 	savefile->WriteVec3( gravityNormal );
-	
+
 	savefile->WriteInt( contacts.Num() );
 	for( i = 0; i < contacts.Num(); i++ )
 	{
 		savefile->WriteContactInfo( contacts[i] );
 	}
-	
+
 	savefile->WriteInt( contactEntities.Num() );
 	for( i = 0; i < contactEntities.Num(); i++ )
 	{
@@ -98,19 +98,19 @@ idPhysics_Base::Restore
 void idPhysics_Base::Restore( idRestoreGame* savefile )
 {
 	int i, num;
-	
+
 	savefile->ReadObject( reinterpret_cast<idClass*&>( self ) );
 	savefile->ReadInt( clipMask );
 	savefile->ReadVec3( gravityVector );
 	savefile->ReadVec3( gravityNormal );
-	
+
 	savefile->ReadInt( num );
 	contacts.SetNum( num );
 	for( i = 0; i < contacts.Num(); i++ )
 	{
 		savefile->ReadContactInfo( contacts[i] );
 	}
-	
+
 	savefile->ReadInt( num );
 	contactEntities.SetNum( num );
 	for( i = 0; i < contactEntities.Num(); i++ )
@@ -611,7 +611,7 @@ void idPhysics_Base::ClearContacts()
 {
 	int i;
 	idEntity* ent;
-	
+
 	for( i = 0; i < contacts.Num(); i++ )
 	{
 		ent = gameLocal.entities[ contacts[i].entityNum ];
@@ -633,7 +633,7 @@ void idPhysics_Base::AddContactEntity( idEntity* e )
 	int i;
 	idEntity* ent;
 	bool found = false;
-	
+
 	for( i = 0; i < contactEntities.Num(); i++ )
 	{
 		ent = contactEntities[i].GetEntity();
@@ -661,7 +661,7 @@ void idPhysics_Base::RemoveContactEntity( idEntity* e )
 {
 	int i;
 	idEntity* ent;
-	
+
 	for( i = 0; i < contactEntities.Num(); i++ )
 	{
 		ent = contactEntities[i].GetEntity();
@@ -686,7 +686,7 @@ idPhysics_Base::HasGroundContacts
 bool idPhysics_Base::HasGroundContacts() const
 {
 	int i;
-	
+
 	for( i = 0; i < contacts.Num(); i++ )
 	{
 		if( contacts[i].normal * -gravityNormal > 0.0f )
@@ -705,7 +705,7 @@ idPhysics_Base::IsGroundEntity
 bool idPhysics_Base::IsGroundEntity( int entityNum ) const
 {
 	int i;
-	
+
 	for( i = 0; i < contacts.Num(); i++ )
 	{
 		if( contacts[i].entityNum == entityNum && ( contacts[i].normal * -gravityNormal > 0.0f ) )
@@ -724,7 +724,7 @@ idPhysics_Base::IsGroundClipModel
 bool idPhysics_Base::IsGroundClipModel( int entityNum, int id ) const
 {
 	int i;
-	
+
 	for( i = 0; i < contacts.Num(); i++ )
 	{
 		if( contacts[i].entityNum == entityNum && contacts[i].id == id && ( contacts[i].normal * -gravityNormal > 0.0f ) )
@@ -822,10 +822,10 @@ void idPhysics_Base::AddGroundContacts( const idClipModel* clipModel )
 {
 	idVec6 dir;
 	int index, num;
-	
+
 	index = contacts.Num();
 	contacts.SetNum( index + 10 );
-	
+
 	dir.SubVec3( 0 ) = gravityNormal;
 	dir.SubVec3( 1 ) = vec3_origin;
 	// NagaHuntress 08-16-2015: CONTACT_EPSILON * 4 instead of CONTACT_EPSILON. This makes it test a bit furter downwards for gravity based contacts on the ground.
@@ -843,7 +843,7 @@ void idPhysics_Base::AddContactEntitiesForContacts()
 {
 	int i;
 	idEntity* ent;
-	
+
 	for( i = 0; i < contacts.Num(); i++ )
 	{
 		ent = gameLocal.entities[ contacts[i].entityNum ];
@@ -863,7 +863,7 @@ void idPhysics_Base::ActivateContactEntities()
 {
 	int i;
 	idEntity* ent;
-	
+
 	for( i = 0; i < contactEntities.Num(); i++ )
 	{
 		ent = contactEntities[i].GetEntity();
@@ -902,7 +902,7 @@ void idPhysics_Base::DrawVelocity( int id, float linearScale, float angularScale
 	idVec3 dir, org, vec, start, end;
 	idMat3 axis;
 	float length, a;
-	
+
 	dir = GetLinearVelocity( id );
 	dir *= linearScale;
 	if( dir.LengthSqr() > Square( 0.1f ) )
@@ -911,7 +911,7 @@ void idPhysics_Base::DrawVelocity( int id, float linearScale, float angularScale
 		org = GetOrigin( id );
 		gameRenderWorld->DebugArrow( colorRed, org, org + dir, 1 );
 	}
-	
+
 	dir = GetAngularVelocity( id );
 	length = dir.Normalize();
 	length *= angularScale;

@@ -101,7 +101,7 @@ bool rvRollupPanel::Create( DWORD dwStyle, const RECT& rect, HWND parent, unsign
 	wndClass.hInstance     = win32.hInstance;
 	wndClass.style		   = CS_VREDRAW | CS_HREDRAW;
 	RegisterClassEx( &wndClass );
-	
+
 	mWindow = CreateWindowEx( WS_EX_TOOLWINDOW,
 							  "ROLLUP_PANEL",
 							  "",
@@ -111,12 +111,12 @@ bool rvRollupPanel::Create( DWORD dwStyle, const RECT& rect, HWND parent, unsign
 							  NULL,
 							  win32.hInstance,
 							  this );
-							  
+
 	if( !mWindow )
 	{
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -131,30 +131,30 @@ int rvRollupPanel::InsertItem( const char* caption, HWND dialog, bool autoDestro
 {
 	assert( caption );
 	assert( dialog );
-	
+
 	// -1 means add to the end
 	if( index > 0 && index >= mItems.Num() )
 	{
 		index = -1;
 	}
-	
+
 	// Get client rect
 	RECT r;
 	GetClientRect( mWindow, &r );
-	
+
 	// Create the GroupBox control
 	HWND groupbox = CreateWindow( "BUTTON", "", WS_CHILD | BS_GROUPBOX,
 								  r.left, r.top, r.right - r.left, r.bottom - r.top,
 								  mWindow, 0, win32.hInstance, NULL );
-								  
+
 	// Create the expand button
 	HWND button = CreateWindow( "BUTTON", caption, WS_CHILD | BS_AUTOCHECKBOX | BS_PUSHLIKE | BS_FLAT,
 								r.left, r.top, r.right - r.left, r.bottom - r.top,
 								mWindow, 0, win32.hInstance, NULL );
-								
+
 	// Change the button's font
 	SendMessage( button, WM_SETFONT, ( WPARAM ) GetStockObject( DEFAULT_GUI_FONT ), 0 );
-	
+
 	// Add item to the item list
 	RPITEM* item = new RPITEM;
 	item->mExpanded		 = false;
@@ -166,7 +166,7 @@ int rvRollupPanel::InsertItem( const char* caption, HWND dialog, bool autoDestro
 	item->mOldButtonProc = ( WNDPROC ) GetWindowLongPtr( button, GWLP_WNDPROC );
 	item->mAutoDestroy	 = autoDestroy;
 	strcpy( item->mCaption, caption );
-	
+
 	if( index < 0 )
 	{
 		index = mItems.Append( item );
@@ -175,32 +175,32 @@ int rvRollupPanel::InsertItem( const char* caption, HWND dialog, bool autoDestro
 	{
 		mItems.Insert( item, index );
 	}
-	
+
 	// Store data with the dialog window in its user data
 	SetWindowLongPtr( dialog, GWLP_USERDATA, ( LONG_PTR )item );
-	
+
 	// Attach item to button through user data
 	SetWindowLongPtr( button, GWLP_USERDATA, ( LONG_PTR )item );
 	SetWindowLong( button, GWL_ID,			index );
-	
+
 	// Subclass dialog
 	SetWindowLongPtr( dialog, DWLP_DLGPROC, ( LONG_PTR )DialogProc );
-	
+
 	// SubClass button
 	SetWindowLongPtr( button, GWLP_WNDPROC, ( LONG_PTR )ButtonProc );
-	
+
 	// Update
 	mItemHeight += RP_PGBUTTONHEIGHT + ( RP_GRPBOXINDENT / 2 );
 	RecallLayout( );
-	
+
 	// One hook for all panel dialogs
 	if( !mDialogHook )
 	{
 		mDialogHook = SetWindowsHookEx( WH_GETMESSAGE, GetMsgProc, NULL, GetCurrentThreadId() );
 	}
-	
+
 	mDialogs.Append( dialog );
-	
+
 	return index;
 }
 
@@ -218,10 +218,10 @@ void rvRollupPanel::RemoveItem( int index )
 	{
 		return;
 	}
-	
+
 	// remove the item
 	_RemoveItem( index );
-	
+
 	// update the layout
 	RecallLayout( );
 }
@@ -239,7 +239,7 @@ void rvRollupPanel::RemoveAllItems()
 	{
 		_RemoveItem( 0 );
 	}
-	
+
 	// update layout
 	RecallLayout( );
 }
@@ -254,18 +254,18 @@ called by RemoveItem and RemoveAllItems methods to acutally remove the item
 void rvRollupPanel::_RemoveItem( int index )
 {
 	RPITEM* item = mItems[index];
-	
+
 	// get the item rect
 	RECT ir;
 	GetWindowRect( item->mDialog, &ir );
-	
+
 	// update item height
 	mItemHeight -= RP_PGBUTTONHEIGHT + ( RP_GRPBOXINDENT / 2 );
 	if( item->mExpanded )
 	{
 		mItemHeight -= ( ir.bottom - ir.top );
 	}
-	
+
 	// destroy windows
 	if( item->mButton )
 	{
@@ -280,13 +280,13 @@ void rvRollupPanel::_RemoveItem( int index )
 		DestroyWindow( item->mDialog );
 		mDialogs.Remove( item->mDialog );
 	}
-	
+
 	if( mDialogs.Num() <= 0 )
 	{
 		UnhookWindowsHookEx( mDialogHook );
 		mDialogHook = NULL;
 	}
-	
+
 	// finish up
 	mItems.RemoveIndex( index );
 	delete item;
@@ -306,11 +306,11 @@ void rvRollupPanel::ExpandItem( int index, bool expand )
 	{
 		return;
 	}
-	
+
 	_ExpandItem( mItems[index], expand );
-	
+
 	RecallLayout( );
-	
+
 	// scroll to this page (automatic page visibility)
 	if( expand )
 	{
@@ -328,13 +328,13 @@ expand or collapse the item at the given index
 void rvRollupPanel::ExpandAllItems( bool expand )
 {
 	int i;
-	
+
 	// expand all items
 	for( i = 0; i < mItems.Num(); i ++ )
 	{
 		_ExpandItem( mItems[i], expand );
 	}
-	
+
 	RecallLayout();
 }
 
@@ -352,13 +352,13 @@ void rvRollupPanel::_ExpandItem( RPITEM* item, bool expand )
 	{
 		return;
 	}
-	
+
 	RECT ir;
 	GetWindowRect( item->mDialog, &ir );
-	
+
 	// Expand-collapse
 	item->mExpanded = expand;
-	
+
 	if( expand )
 	{
 		mItemHeight += ( ir.bottom - ir.top );
@@ -383,7 +383,7 @@ void rvRollupPanel::EnableItem( int index, bool enable )
 	{
 		return;
 	}
-	
+
 	_EnableItem( mItems[index], enable );
 	RecallLayout( );
 }
@@ -398,12 +398,12 @@ enable/disable all items in the panel
 void rvRollupPanel::EnableAllItems( bool enable )
 {
 	int i;
-	
+
 	for( i = 0; i < mItems.Num(); i++ )
 	{
 		_EnableItem( mItems[i], enable );
 	}
-	
+
 	RecallLayout( );
 }
 
@@ -422,12 +422,12 @@ void rvRollupPanel::_EnableItem( RPITEM* item, bool enable )
 	{
 		return;
 	}
-	
+
 	RECT ir;
 	GetWindowRect( item->mDialog, &ir );
-	
+
 	item->mEnable = enable;
-	
+
 	if( item->mExpanded )
 	{
 		mItemHeight -= ( ir.bottom - ir.top );
@@ -450,22 +450,22 @@ void rvRollupPanel::ScrollToItem( int index, bool top )
 	{
 		return;
 	}
-	
+
 	RPITEM* item = mItems[index];
-	
+
 	// get rects
 	RECT r;
 	RECT ir;
 	GetWindowRect( mWindow, &r );
 	GetWindowRect( item->mDialog, &ir );
-	
+
 	// check page visibility
 	if( top || ( ( ir.bottom > r.bottom ) || ( ir.top < r.top ) ) )
 	{
 		// compute new mStartYPos
 		GetWindowRect( item->mButton, &ir );
 		mStartYPos -= ( ir.top - r.top );
-		
+
 		RecallLayout();
 	}
 }
@@ -484,11 +484,11 @@ int rvRollupPanel::MoveItemAt( int index, int newIndex )
 	{
 		return -1;
 	}
-	
+
 	// remove page from its old position
 	RPITEM* item = mItems[index];
 	mItems.RemoveIndex( index );
-	
+
 	// insert at its new position
 	if( newIndex < 0 )
 	{
@@ -499,9 +499,9 @@ int rvRollupPanel::MoveItemAt( int index, int newIndex )
 		mItems.Insert( item, newIndex );
 		index = newIndex;
 	}
-	
+
 	RecallLayout( );
-	
+
 	return index;
 }
 
@@ -518,11 +518,11 @@ void rvRollupPanel::RecallLayout( void )
 	RECT r;
 	int  posy;
 	int	 i;
-	
+
 	// check StartPosY
 	GetClientRect( mWindow, &r );
 	bottomPagePos = mStartYPos + mItemHeight;
-	
+
 	if( bottomPagePos < r.bottom - r.top )
 	{
 		mStartYPos = ( r.bottom - r.top ) - mItemHeight;
@@ -531,28 +531,28 @@ void rvRollupPanel::RecallLayout( void )
 	{
 		mStartYPos = 0;
 	}
-	
+
 	// update layout
 #ifdef DEFERPOS
 	HDWP hdwp;
 	hdwp = BeginDeferWindowPos( mItems.Num() * 3 );
 #endif
 	posy = mStartYPos;
-	
+
 	for( i = 0; i < mItems.Num(); i++ )
 	{
 		RPITEM* item = mItems[i];
-		
+
 		// enable / disable button
 		SendMessage( item->mButton, BM_SETCHECK, ( item->mEnable & item->mExpanded ) ? BST_CHECKED : BST_UNCHECKED, 0 );
 		EnableWindow( item->mButton, item->mEnable );
-		
+
 		// Expanded
 		if( item->mExpanded && item->mEnable )
 		{
 			RECT ir;
 			GetWindowRect( item->mDialog, &ir );
-			
+
 			// update GroupBox position and size
 #ifdef DEFERPOS
 			DeferWindowPos( hdwp,
@@ -563,7 +563,7 @@ void rvRollupPanel::RecallLayout( void )
 							( r.right - r.left ) - 3 - RP_SCROLLBARWIDTH,
 							( ir.bottom - ir.top ) + RP_PGBUTTONHEIGHT + RP_GRPBOXINDENT - 4,
 							SWP_NOZORDER | SWP_SHOWWINDOW );
-							
+
 			//Update Dialog position and size
 #ifdef DEFERPOS
 			DeferWindowPos( hdwp,
@@ -573,7 +573,7 @@ void rvRollupPanel::RecallLayout( void )
 							item->mDialog, 0, RP_GRPBOXINDENT, posy + RP_PGBUTTONHEIGHT,
 							( r.right - r.left ) - RP_SCROLLBARWIDTH - ( RP_GRPBOXINDENT * 2 ),
 							ir.bottom - ir.top, SWP_NOZORDER | SWP_SHOWWINDOW );
-							
+
 			//Update Button's position and size
 #ifdef DEFERPOS
 			DeferWindowPos( hdwp,
@@ -583,7 +583,7 @@ void rvRollupPanel::RecallLayout( void )
 							item->mButton, 0, RP_GRPBOXINDENT, posy,
 							( r.right - r.left ) - RP_SCROLLBARWIDTH - ( RP_GRPBOXINDENT * 2 ),
 							RP_PGBUTTONHEIGHT, SWP_NOZORDER | SWP_SHOWWINDOW );
-							
+
 			posy += ( ir.bottom - ir.top ) + RP_PGBUTTONHEIGHT;
 		}
 		// collapsed
@@ -597,7 +597,7 @@ void rvRollupPanel::RecallLayout( void )
 #endif
 							item->mGroupBox, 0, 2, posy,
 							( r.right - r.left ) - 3 - RP_SCROLLBARWIDTH, 16, SWP_NOZORDER | SWP_SHOWWINDOW );
-							
+
 			// update Dialog position and size
 #ifdef DEFERPOS
 			DeferWindowPos( hdwp,
@@ -605,7 +605,7 @@ void rvRollupPanel::RecallLayout( void )
 			SetWindowPos(
 #endif
 							item->mDialog, 0, RP_GRPBOXINDENT, 0, 0, 0, SWP_NOZORDER | SWP_HIDEWINDOW | SWP_NOSIZE | SWP_NOMOVE );
-							
+
 			// update Button's position and size
 #ifdef DEFERPOS
 			DeferWindowPos( hdwp,
@@ -615,18 +615,18 @@ void rvRollupPanel::RecallLayout( void )
 							item->mButton, 0, RP_GRPBOXINDENT, posy,
 							( r.right - r.left ) - RP_SCROLLBARWIDTH - ( RP_GRPBOXINDENT * 2 ),
 							RP_PGBUTTONHEIGHT, SWP_NOZORDER | SWP_SHOWWINDOW );
-							
+
 			posy += RP_PGBUTTONHEIGHT;
 		}
-		
+
 		posy += ( RP_GRPBOXINDENT / 2 );
-		
+
 	}
-	
+
 #ifdef DEFERPOS
 	EndDeferWindowPos( hdwp );
 #endif
-	
+
 	// update Scroll Bar
 	RECT br;
 	SetRect( &br, r.right - RP_SCROLLBARWIDTH, r.top, r.right, r.bottom );
@@ -644,7 +644,7 @@ Return -1 if no matching item was found, otherwise the index of the item
 int rvRollupPanel::GetItemIndex( HWND wnd )
 {
 	int i;
-	
+
 	//Search matching button's hwnd
 	for( i = 0; i < mItems.Num(); i++ )
 	{
@@ -653,14 +653,14 @@ int rvRollupPanel::GetItemIndex( HWND wnd )
 			return i;
 		}
 	}
-	
+
 	return -1;
 }
 
 int rvRollupPanel::GetItemIndex( const char* caption )
 {
 	int i;
-	
+
 	//Search matching button's hwnd
 	for( i = 0; i < mItems.Num(); i++ )
 	{
@@ -669,7 +669,7 @@ int rvRollupPanel::GetItemIndex( const char* caption )
 			return i;
 		}
 	}
-	
+
 	return -1;
 }
 
@@ -687,7 +687,7 @@ RPITEM* rvRollupPanel::GetItem( int index )
 	{
 		return NULL;
 	}
-	
+
 	return mItems[index];
 }
 
@@ -702,10 +702,10 @@ LRESULT CALLBACK rvRollupPanel::DialogProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 {
 	RPITEM*			item  = ( RPITEM* )GetWindowLongPtr( hWnd, GWLP_USERDATA );
 	rvRollupPanel*	_this = ( rvRollupPanel* )GetWindowLongPtr( GetParent( hWnd ), GWLP_USERDATA );
-	
+
 	RECT r;
 	GetClientRect( _this->mWindow, &r );
-	
+
 	if( _this->mItemHeight > r.bottom - r.top )
 	{
 		switch( uMsg )
@@ -719,7 +719,7 @@ LRESULT CALLBACK rvRollupPanel::DialogProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				::SetCapture( hWnd );
 				return 0;
 			}
-			
+
 			case WM_LBUTTONUP:
 			case WM_MBUTTONUP:
 			{
@@ -730,7 +730,7 @@ LRESULT CALLBACK rvRollupPanel::DialogProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				}
 				break;
 			}
-			
+
 			case WM_MOUSEMOVE:
 				if( ( ::GetCapture() == hWnd ) && ( wParam == MK_LBUTTON || wParam == MK_MBUTTON ) )
 				{
@@ -742,9 +742,9 @@ LRESULT CALLBACK rvRollupPanel::DialogProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 					InvalidateRect( _this->mWindow, NULL, TRUE );
 					return 0;
 				}
-				
+
 				break;
-				
+
 			case WM_SETCURSOR:
 				if( ( HWND )wParam == hWnd )
 				{
@@ -754,7 +754,7 @@ LRESULT CALLBACK rvRollupPanel::DialogProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				break;
 		}
 	}
-	
+
 	return ::CallWindowProc( item->mOldDlgProc, hWnd, uMsg, wParam, lParam );
 }
 
@@ -771,7 +771,7 @@ LRESULT CALLBACK rvRollupPanel::ButtonProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 	{
 		return FALSE;
 	}
-	
+
 	RPITEM* item = ( RPITEM* )GetWindowLongPtr( hWnd, GWLP_USERDATA );
 	return ::CallWindowProc( item->mOldButtonProc, hWnd, uMsg, wParam, lParam );
 }
@@ -787,54 +787,54 @@ LRESULT CALLBACK rvRollupPanel::WindowProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 {
 	rvRollupPanel* panel;
 	panel = ( rvRollupPanel* )GetWindowLongPtr( hWnd, GWLP_USERDATA );
-	
+
 	switch( uMsg )
 	{
 		case WM_CREATE:
 		{
 			LPCREATESTRUCT	cs;
-			
+
 			// Attach the class to the window first
 			cs = ( LPCREATESTRUCT ) lParam;
 			panel = ( rvRollupPanel* ) cs->lpCreateParams;
 			SetWindowLongPtr( hWnd, GWLP_USERDATA, ( LONG_PTR )panel );
 			break;
 		}
-		
+
 		case WM_COMMAND:
 			panel->HandleCommand( wParam, lParam );
 			break;
-			
+
 		case WM_PAINT:
 			return panel->HandlePaint( wParam, lParam );
-			
+
 		case WM_SIZE:
 			return panel->HandleSize( wParam, lParam );
-			
+
 		case WM_LBUTTONDOWN:
 			panel->HandleLButtonDown( wParam, lParam );
 			break;
-			
+
 		case WM_LBUTTONUP:
 			panel->HandleLButtonUp( wParam, lParam );
 			break;
-			
+
 		case WM_MOUSEMOVE:
 			panel->HandleMouseMove( wParam, lParam );
 			break;
-			
+
 		case WM_MOUSEWHEEL:
 			panel->HandleMouseWheel( wParam, lParam );
 			break;
-			
+
 		case WM_MOUSEACTIVATE:
 			panel->HandleMouseActivate( wParam, lParam );
 			break;
-			
+
 		case WM_CONTEXTMENU:
 			return panel->HandleContextMenu( wParam, lParam );
 	}
-	
+
 	return DefWindowProc( hWnd, uMsg, wParam, lParam );
 }
 
@@ -856,7 +856,7 @@ int rvRollupPanel::HandleCommand( WPARAM wParam, LPARAM lParam )
 	{
 		ExpandAllItems( false );
 	}
-	
+
 	// popupMenu command to expand page
 	else if( LOWORD( wParam ) >= RP_IDM_STARTITEMS &&
 			 LOWORD( wParam ) <  RP_IDM_STARTITEMS + GetItemCount( ) )
@@ -864,7 +864,7 @@ int rvRollupPanel::HandleCommand( WPARAM wParam, LPARAM lParam )
 		int index = LOWORD( wParam ) - RP_IDM_STARTITEMS;
 		ExpandItem( index, !IsItemExpanded( index ) );
 	}
-	
+
 	// button command
 	else if( HIWORD( wParam ) == BN_CLICKED )
 	{
@@ -875,7 +875,7 @@ int rvRollupPanel::HandleCommand( WPARAM wParam, LPARAM lParam )
 			return 0;
 		}
 	}
-	
+
 	return 0;
 }
 
@@ -895,18 +895,18 @@ int rvRollupPanel::HandlePaint( WPARAM wParam, LPARAM lParam )
 	int			sbPos;
 	int			sbSize;
 	int			clientHeight;
-	
+
 	dc = BeginPaint( mWindow, &ps );
-	
+
 	// scrollbar
 	GetClientRect( mWindow, &r );
 	SetRect( &br, r.right - RP_SCROLLBARWIDTH, r.top, r.right, r.bottom );
 	DrawEdge( dc, &br, EDGE_RAISED, BF_RECT );
-	
+
 	sbPos = 0;
 	sbSize = 0;
 	clientHeight = ( r.bottom - r.top ) - 4;
-	
+
 	if( mItemHeight > ( r.bottom - r.top ) )
 	{
 		sbSize = clientHeight - ( ( ( mItemHeight - ( r.bottom - r.top ) ) * clientHeight ) / mItemHeight );
@@ -916,23 +916,23 @@ int rvRollupPanel::HandlePaint( WPARAM wParam, LPARAM lParam )
 	{
 		sbSize = clientHeight;
 	}
-	
+
 	br.left		+= 2;
 	br.right	-= 1;
 	br.top		= sbPos + 2;
 	br.bottom	= br.top + sbSize;
-	
+
 	HBRUSH brush;
 	brush = CreateSolidBrush( RP_SCROLLBARCOLOR );
 	FillRect( dc, &br, brush );
 	DeleteObject( brush );
-	
+
 	SetRect( &r, br.left, 2, br.right, br.top );
 	FillRect( dc, &r, ( HBRUSH )GetStockObject( BLACK_BRUSH ) );
-	
+
 	SetRect( &r, br.left, br.bottom, br.right, 2 + clientHeight );
 	FillRect( dc, &r, ( HBRUSH )GetStockObject( BLACK_BRUSH ) );
-	
+
 	return 0;
 }
 
@@ -962,27 +962,27 @@ int rvRollupPanel::HandleLButtonDown( WPARAM wParam, LPARAM lParam )
 	RECT	r;
 	RECT	br;
 	POINT	point;
-	
+
 	GetClientRect( mWindow, &r );
 	if( mItemHeight <= r.bottom - r.top )
 	{
 		return 0;
 	}
-	
+
 	point.x = LOWORD( lParam );
 	point.y = HIWORD( lParam );
-	
+
 	SetRect( &br, r.right - RP_SCROLLBARWIDTH, r.top, r.right, r.bottom );
-	
+
 	if( ( wParam & MK_LBUTTON ) && PtInRect( &br, point ) )
 	{
 		SetCapture( mWindow );
-		
+
 		int clientHeight = ( r.bottom - r.top ) - 4;
-		
+
 		int sbSize = clientHeight - ( ( ( mItemHeight - ( r.bottom - r.top ) ) * clientHeight ) / mItemHeight );
 		int	sbPos  = -( mStartYPos * clientHeight ) / mItemHeight;
-		
+
 		// click inside scrollbar cursor
 		if( ( point.y < ( sbPos + sbSize ) ) && ( point.y > sbPos ) )
 		{
@@ -993,7 +993,7 @@ int rvRollupPanel::HandleLButtonDown( WPARAM wParam, LPARAM lParam )
 		{
 			int distup	 = point.y - sbPos;
 			int distdown = ( sbPos + sbSize ) - point.y;
-			
+
 			if( distup < distdown )
 			{
 				//above
@@ -1005,15 +1005,15 @@ int rvRollupPanel::HandleLButtonDown( WPARAM wParam, LPARAM lParam )
 				mSBOffset = -sbSize;
 			}
 		}
-		
+
 		// calc new m_nStartYPos from mouse pos
 		int targetPos = point.y + mSBOffset;
 		mStartYPos = - ( targetPos * mItemHeight ) / clientHeight;
-		
+
 		// update
 		RecallLayout();
 	}
-	
+
 	return 0;
 }
 
@@ -1030,7 +1030,7 @@ int rvRollupPanel::HandleLButtonUp( WPARAM wParam, LPARAM lParam )
 	{
 		ReleaseCapture();
 	}
-	
+
 	return 0;
 }
 
@@ -1046,32 +1046,32 @@ int rvRollupPanel::HandleMouseMove( WPARAM wParam, LPARAM lParam )
 	RECT  r;
 	RECT  br;
 	POINT point;
-	
+
 	GetClientRect( mWindow, &r );
 	if( mItemHeight <= r.bottom - r.top )
 	{
 		return 0;
 	}
-	
+
 	point.x = LOWORD( lParam );
 	point.y = HIWORD( lParam );
-	
+
 	SetRect( &br, r.right - RP_SCROLLBARWIDTH, r.top, r.right, r.bottom );
-	
+
 	if( ( wParam & MK_LBUTTON ) && ( GetCapture() == mWindow ) )
 	{
 		// calc new m_nStartYPos from mouse pos
 		int clientHeight	= ( r.bottom - r.top ) - 4;
 		int targetPos		= point.y + mSBOffset;
-		
+
 		mStartYPos = - ( targetPos * mItemHeight ) / clientHeight;
-		
+
 		RecallLayout( );
-		
+
 		InvalidateRect( mWindow, NULL, FALSE );
 //		UpdateWindow ( mWindow );
 	}
-	
+
 	return 0;
 }
 
@@ -1086,9 +1086,9 @@ int rvRollupPanel::HandleMouseWheel( WPARAM wParam, LPARAM lParam )
 {
 	// calc new m_nStartYPos
 	mStartYPos += ( HIWORD( wParam ) / 4 );
-	
+
 	RecallLayout();
-	
+
 	return 0;
 }
 
@@ -1117,35 +1117,35 @@ int rvRollupPanel::HandleContextMenu( WPARAM wParam, LPARAM lParam )
 	HMENU menu;
 	int	  i;
 	POINT point;
-	
+
 	menu = CreatePopupMenu( );
 	if( !menu )
 	{
 		return 0;
 	}
-	
+
 	point.x = LOWORD( lParam );
 	point.y = HIWORD( lParam );
-	
+
 	AppendMenu( menu, MF_STRING,		RP_IDM_EXPANDALL,	"Expand all"	);
 	AppendMenu( menu, MF_STRING,		RP_IDM_COLLAPSEALL,	"Collapse all"	);
 	AppendMenu( menu, MF_SEPARATOR,	0,					""	);
-	
+
 	//Add all pages with checked style for expanded ones
 	for( i = 0; i < mItems.Num(); i++ )
 	{
 		char itemName[1024];
 		GetWindowText( mItems[i]->mButton, itemName, 1023 );
 		AppendMenu( menu, MF_STRING, RP_IDM_STARTITEMS + i, itemName );
-		
+
 		if( mItems[i]->mExpanded )
 		{
 			CheckMenuItem( menu, RP_IDM_STARTITEMS + i, MF_CHECKED );
 		}
-		
+
 		TrackPopupMenu( menu, TPM_LEFTALIGN | TPM_LEFTBUTTON, point.x, point.y, 0, mWindow, NULL );
 	}
-	
+
 	return 0;
 }
 
@@ -1159,7 +1159,7 @@ Ensures normal dialog functions work in the alpha select dialog
 LRESULT FAR PASCAL rvRollupPanel::GetMsgProc( int nCode, WPARAM wParam, LPARAM lParam )
 {
 	LPMSG lpMsg = ( LPMSG ) lParam;
-	
+
 	if( nCode >= 0 && PM_REMOVE == wParam )
 	{
 		// Don't translate non-input events.
@@ -1182,7 +1182,7 @@ LRESULT FAR PASCAL rvRollupPanel::GetMsgProc( int nCode, WPARAM wParam, LPARAM l
 			}
 		}
 	}
-	
+
 	return CallNextHookEx( mDialogHook, nCode, wParam, lParam );
 }
 
@@ -1208,7 +1208,7 @@ void rvRollupPanel::AutoSize( void )
 			width = w;
 		}
 	}
-	
+
 	RECT cr;
 	GetWindowRect( mWindow, &cr );
 	SetWindowPos( mWindow, NULL, 0, 0, width, cr.bottom - cr.top, SWP_NOMOVE | SWP_NOZORDER );

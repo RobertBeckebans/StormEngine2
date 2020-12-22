@@ -127,18 +127,18 @@ void DialogAFConstraintHinge::InitJointLists( void )
 	m_comboAnchorJoint.ResetContent();
 	m_comboAxisJoint1.ResetContent();
 	m_comboAxisJoint2.ResetContent();
-	
+
 	if( !file )
 	{
 		return;
 	}
-	
+
 	const idRenderModel* model = gameEdit->ANIM_GetModelFromName( file->model );
 	if( !model )
 	{
 		return;
 	}
-	
+
 	int numJoints = model->NumJoints();
 	for( int i = 0; i < numJoints; i++ )
 	{
@@ -180,9 +180,9 @@ void DialogAFConstraintHinge::LoadConstraint( idDeclAF_Constraint* c )
 {
 	int i, s1, s2;
 	idAngles angles;
-	
+
 	constraint = c;
-	
+
 	// load anchor from the current idDeclAF_Constraint
 	SetSafeComboBoxSelection( &m_comboAnchorJoint, constraint->anchor.joint1.c_str(), -1 );
 	m_anchor_x = constraint->anchor.ToVec3().x;
@@ -197,7 +197,7 @@ void DialogAFConstraintHinge::LoadConstraint( idDeclAF_Constraint* c )
 		i = IDC_RADIO_ANCHOR_COORDINATES;
 	}
 	CheckRadioButton( IDC_RADIO_ANCHOR_JOINT, IDC_RADIO_ANCHOR_COORDINATES, i );
-	
+
 	// hinge axis
 	s1 = SetSafeComboBoxSelection( &m_comboAxisJoint1, constraint->axis.joint1.c_str(), -1 );
 	s2 = SetSafeComboBoxSelection( &m_comboAxisJoint2, constraint->axis.joint2.c_str(), s1 );
@@ -214,7 +214,7 @@ void DialogAFConstraintHinge::LoadConstraint( idDeclAF_Constraint* c )
 		constraint->axis.type = idAFVector::VEC_COORDS;
 	}
 	CheckRadioButton( IDC_RADIO_HINGE_AXIS_BONE, IDC_RADIO_HINGE_AXIS_ANGLES, i );
-	
+
 	// hinge limit
 	if( constraint->limit == idDeclAF_Constraint::LIMIT_CONE )
 	{
@@ -228,7 +228,7 @@ void DialogAFConstraintHinge::LoadConstraint( idDeclAF_Constraint* c )
 	m_limitAngle1 = constraint->limitAngles[0];
 	m_limitAngle2 = constraint->limitAngles[1];
 	m_limitAngle3 = constraint->limitAngles[2];
-	
+
 	// update displayed values
 	UpdateData( FALSE );
 }
@@ -242,20 +242,20 @@ void DialogAFConstraintHinge::SaveConstraint( void )
 {
 	int s1, s2;
 	CString str;
-	
+
 	if( !file || !constraint )
 	{
 		return;
 	}
 	UpdateData( TRUE );
-	
+
 	// save anchor to the current idDeclAF_Constraint
 	GetSafeComboBoxSelection( &m_comboAnchorJoint, str, -1 );
 	constraint->anchor.joint1 = str;
 	constraint->anchor.ToVec3().x = m_anchor_x;
 	constraint->anchor.ToVec3().y = m_anchor_y;
 	constraint->anchor.ToVec3().z = m_anchor_z;
-	
+
 	// hinge axis
 	if( constraint->axis.type == idAFVector::VEC_BONEDIR )
 	{
@@ -268,12 +268,12 @@ void DialogAFConstraintHinge::SaveConstraint( void )
 	{
 		constraint->axis.ToVec3() = idAngles( m_axisPitch, m_axisYaw, 0.0f ).ToForward();
 	}
-	
+
 	// hinge limit
 	constraint->limitAngles[0] = m_limitAngle1;
 	constraint->limitAngles[1] = m_limitAngle2;
 	constraint->limitAngles[2] = m_limitAngle3;
-	
+
 	AFDialogSetFileModified();
 }
 

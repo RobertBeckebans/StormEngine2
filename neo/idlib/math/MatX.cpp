@@ -122,16 +122,16 @@ idMatX::RemoveRow
 idMatX& idMatX::RemoveRow( int r )
 {
 	int i;
-	
+
 	assert( r < numRows );
-	
+
 	numRows--;
-	
+
 	for( i = r; i < numRows; i++ )
 	{
 		memcpy( &mat[i * numColumns], &mat[( i + 1 ) * numColumns], numColumns * sizeof( float ) );
 	}
-	
+
 	return *this;
 }
 
@@ -143,17 +143,17 @@ idMatX::RemoveColumn
 idMatX& idMatX::RemoveColumn( int r )
 {
 	int i;
-	
+
 	assert( r < numColumns );
-	
+
 	numColumns--;
-	
+
 	for( i = 0; i < numRows - 1; i++ )
 	{
 		memmove( &mat[i * numColumns + r], &mat[i * ( numColumns + 1 ) + r + 1], numColumns * sizeof( float ) );
 	}
 	memmove( &mat[i * numColumns + r], &mat[i * ( numColumns + 1 ) + r + 1], ( numColumns - r ) * sizeof( float ) );
-	
+
 	return *this;
 }
 
@@ -165,12 +165,12 @@ idMatX::RemoveRowColumn
 idMatX& idMatX::RemoveRowColumn( int r )
 {
 	int i;
-	
+
 	assert( r < numRows && r < numColumns );
-	
+
 	numRows--;
 	numColumns--;
-	
+
 	if( r > 0 )
 	{
 		for( i = 0; i < r - 1; i++ )
@@ -179,15 +179,15 @@ idMatX& idMatX::RemoveRowColumn( int r )
 		}
 		memmove( &mat[i * numColumns + r], &mat[i * ( numColumns + 1 ) + r + 1], ( numColumns - r ) * sizeof( float ) );
 	}
-	
+
 	memcpy( &mat[r * numColumns], &mat[( r + 1 ) * ( numColumns + 1 )], r * sizeof( float ) );
-	
+
 	for( i = r; i < numRows - 1; i++ )
 	{
 		memcpy( &mat[i * numColumns + r], &mat[( i + 1 ) * ( numColumns + 1 ) + r + 1], numColumns * sizeof( float ) );
 	}
 	memcpy( &mat[i * numColumns + r], &mat[( i + 1 ) * ( numColumns + 1 ) + r + 1], ( numColumns - r ) * sizeof( float ) );
-	
+
 	return *this;
 }
 
@@ -200,121 +200,121 @@ void idMatX::CopyLowerToUpperTriangle()
 {
 	assert( ( GetNumColumns() & 3 ) == 0 );
 	assert( GetNumColumns() >= GetNumRows() );
-	
-	
+
+
 	const int n = GetNumColumns();
 	const int m = GetNumRows();
-	
+
 	const int n0 = 0;
 	const int n1 = n;
 	const int n2 = ( n << 1 );
 	const int n3 = ( n << 1 ) + n;
 	const int n4 = ( n << 2 );
-	
+
 	const int b1 = ( ( m - 0 ) >> 1 ) & 1;	// ( m & 3 ) > 1
 	const int b2 = ( ( m - 1 ) >> 1 ) & 1;	// ( m & 3 ) > 2 (provided ( m & 3 ) > 0)
-	
+
 	const int n1_masked = ( n & -b1 );
 	const int n2_masked = ( n & -b1 ) + ( n & -b2 );
-	
+
 	const __m128 mask0 = __m128c( _mm_set_epi32( 0,  0,  0, -1 ) );
 	const __m128 mask1 = __m128c( _mm_set_epi32( 0,  0, -1, -1 ) );
 	const __m128 mask2 = __m128c( _mm_set_epi32( 0, -1, -1, -1 ) );
 	const __m128 mask3 = __m128c( _mm_set_epi32( -1, -1, -1, -1 ) );
-	
+
 	const __m128 bottomMask[2] = { __m128c( _mm_set1_epi32( 0 ) ), __m128c( _mm_set1_epi32( -1 ) ) };
-	
+
 	float* __restrict basePtr = ToFloatPtr();
-	
+
 	for( int i = 0; i < m - 3; i += 4 )
 	{
-	
+
 		// copy top left diagonal 4x4 block elements
 		__m128 r0 = _mm_and_ps( _mm_load_ps( basePtr + n0 ), mask0 );
 		__m128 r1 = _mm_and_ps( _mm_load_ps( basePtr + n1 ), mask1 );
 		__m128 r2 = _mm_and_ps( _mm_load_ps( basePtr + n2 ), mask2 );
 		__m128 r3 = _mm_and_ps( _mm_load_ps( basePtr + n3 ), mask3 );
-		
+
 		__m128 t0 = _mm_unpacklo_ps( r0, r2 );	// x0, z0, x1, z1
 		__m128 t1 = _mm_unpackhi_ps( r0, r2 );	// x2, z2, x3, z3
 		__m128 t2 = _mm_unpacklo_ps( r1, r3 );	// y0, w0, y1, w1
 		__m128 t3 = _mm_unpackhi_ps( r1, r3 );	// y2, w2, y3, w3
-		
+
 		__m128 s0 = _mm_unpacklo_ps( t0, t2 );	// x0, y0, z0, w0
 		__m128 s1 = _mm_unpackhi_ps( t0, t2 );	// x1, y1, z1, w1
 		__m128 s2 = _mm_unpacklo_ps( t1, t3 );	// x2, y2, z2, w2
 		__m128 s3 = _mm_unpackhi_ps( t1, t3 );	// x3, y3, z3, w3
-		
+
 		r0 = _mm_or_ps( r0, s0 );
 		r1 = _mm_or_ps( r1, s1 );
 		r2 = _mm_or_ps( r2, s2 );
 		r3 = _mm_or_ps( r3, s3 );
-		
+
 		_mm_store_ps( basePtr + n0, r0 );
 		_mm_store_ps( basePtr + n1, r1 );
 		_mm_store_ps( basePtr + n2, r2 );
 		_mm_store_ps( basePtr + n3, r3 );
-		
+
 		// copy one column of 4x4 blocks to one row of 4x4 blocks
 		const float* __restrict srcPtr = basePtr;
 		float* __restrict dstPtr = basePtr;
-		
+
 		for( int j = i + 4; j < m - 3; j += 4 )
 		{
 			srcPtr += n4;
 			dstPtr += 4;
-			
+
 			__m128 r0 = _mm_load_ps( srcPtr + n0 );
 			__m128 r1 = _mm_load_ps( srcPtr + n1 );
 			__m128 r2 = _mm_load_ps( srcPtr + n2 );
 			__m128 r3 = _mm_load_ps( srcPtr + n3 );
-			
+
 			__m128 t0 = _mm_unpacklo_ps( r0, r2 );	// x0, z0, x1, z1
 			__m128 t1 = _mm_unpackhi_ps( r0, r2 );	// x2, z2, x3, z3
 			__m128 t2 = _mm_unpacklo_ps( r1, r3 );	// y0, w0, y1, w1
 			__m128 t3 = _mm_unpackhi_ps( r1, r3 );	// y2, w2, y3, w3
-			
+
 			r0 = _mm_unpacklo_ps( t0, t2 );			// x0, y0, z0, w0
 			r1 = _mm_unpackhi_ps( t0, t2 );			// x1, y1, z1, w1
 			r2 = _mm_unpacklo_ps( t1, t3 );			// x2, y2, z2, w2
 			r3 = _mm_unpackhi_ps( t1, t3 );			// x3, y3, z3, w3
-			
+
 			_mm_store_ps( dstPtr + n0, r0 );
 			_mm_store_ps( dstPtr + n1, r1 );
 			_mm_store_ps( dstPtr + n2, r2 );
 			_mm_store_ps( dstPtr + n3, r3 );
 		}
-		
+
 		// copy the last partial 4x4 block elements
 		if( m & 3 )
 		{
 			srcPtr += n4;
 			dstPtr += 4;
-			
+
 			__m128 r0 = _mm_load_ps( srcPtr + n0 );
 			__m128 r1 = _mm_and_ps( _mm_load_ps( srcPtr + n1_masked ), bottomMask[b1] );
 			__m128 r2 = _mm_and_ps( _mm_load_ps( srcPtr + n2_masked ), bottomMask[b2] );
 			__m128 r3 = _mm_setzero_ps();
-			
+
 			__m128 t0 = _mm_unpacklo_ps( r0, r2 );	// x0, z0, x1, z1
 			__m128 t1 = _mm_unpackhi_ps( r0, r2 );	// x2, z2, x3, z3
 			__m128 t2 = _mm_unpacklo_ps( r1, r3 );	// y0, w0, y1, w1
 			__m128 t3 = _mm_unpackhi_ps( r1, r3 );	// y2, w2, y3, w3
-			
+
 			r0 = _mm_unpacklo_ps( t0, t2 );			// x0, y0, z0, w0
 			r1 = _mm_unpackhi_ps( t0, t2 );			// x1, y1, z1, w1
 			r2 = _mm_unpacklo_ps( t1, t3 );			// x2, y2, z2, w2
 			r3 = _mm_unpackhi_ps( t1, t3 );			// x3, y3, z3, w3
-			
+
 			_mm_store_ps( dstPtr + n0, r0 );
 			_mm_store_ps( dstPtr + n1, r1 );
 			_mm_store_ps( dstPtr + n2, r2 );
 			_mm_store_ps( dstPtr + n3, r3 );
 		}
-		
+
 		basePtr += n4 + 4;
 	}
-	
+
 	// copy the lower right partial diagonal 4x4 block elements
 	if( m & 3 )
 	{
@@ -322,26 +322,26 @@ void idMatX::CopyLowerToUpperTriangle()
 		__m128 r1 = _mm_and_ps( _mm_load_ps( basePtr + n1_masked ), _mm_and_ps( mask1, bottomMask[b1] ) );
 		__m128 r2 = _mm_and_ps( _mm_load_ps( basePtr + n2_masked ), _mm_and_ps( mask2, bottomMask[b2] ) );
 		__m128 r3 = _mm_setzero_ps();
-		
+
 		__m128 t0 = _mm_unpacklo_ps( r0, r2 );	// x0, z0, x1, z1
 		__m128 t1 = _mm_unpackhi_ps( r0, r2 );	// x2, z2, x3, z3
 		__m128 t2 = _mm_unpacklo_ps( r1, r3 );	// y0, w0, y1, w1
 		__m128 t3 = _mm_unpackhi_ps( r1, r3 );	// y2, w2, y3, w3
-		
+
 		__m128 s0 = _mm_unpacklo_ps( t0, t2 );	// x0, y0, z0, w0
 		__m128 s1 = _mm_unpackhi_ps( t0, t2 );	// x1, y1, z1, w1
 		__m128 s2 = _mm_unpacklo_ps( t1, t3 );	// x2, y2, z2, w2
-		
+
 		r0 = _mm_or_ps( r0, s0 );
 		r1 = _mm_or_ps( r1, s1 );
 		r2 = _mm_or_ps( r2, s2 );
-		
+
 		_mm_store_ps( basePtr + n2_masked, r2 );
 		_mm_store_ps( basePtr + n1_masked, r1 );
 		_mm_store_ps( basePtr + n0, r0 );
 	}
-	
-	
+
+
 #ifdef _DEBUG
 	for( int i = 0; i < numRows; i++ )
 	{
@@ -362,12 +362,12 @@ idMatX::IsOrthogonal
 bool idMatX::IsOrthogonal( const float epsilon ) const
 {
 	float* ptr1, *ptr2, sum;
-	
+
 	if( !IsSquare() )
 	{
 		return false;
 	}
-	
+
 	ptr1 = mat;
 	for( int i = 0; i < numRows; i++ )
 	{
@@ -400,12 +400,12 @@ idMatX::IsOrthonormal
 bool idMatX::IsOrthonormal( const float epsilon ) const
 {
 	float* ptr1, *ptr2, sum;
-	
+
 	if( !IsSquare() )
 	{
 		return false;
 	}
-	
+
 	ptr1 = mat;
 	for( int i = 0; i < numRows; i++ )
 	{
@@ -424,7 +424,7 @@ bool idMatX::IsOrthonormal( const float epsilon ) const
 			}
 		}
 		ptr1 += numColumns;
-		
+
 		ptr2 = mat + i;
 		sum = ptr2[0] * ptr2[0] - 1.0f;
 		for( int j = 1; j < numRows; j++ )
@@ -453,29 +453,29 @@ bool idMatX::IsPMatrix( const float epsilon ) const
 	int i, j;
 	float d;
 	idMatX m;
-	
+
 	if( !IsSquare() )
 	{
 		return false;
 	}
-	
+
 	if( numRows <= 0 )
 	{
 		return true;
 	}
-	
+
 	if( ( *this )[0][0] <= epsilon )
 	{
 		return false;
 	}
-	
+
 	if( numRows <= 1 )
 	{
 		return true;
 	}
-	
+
 	m.SetData( numRows - 1, numColumns - 1, MATX_ALLOCA( ( numRows - 1 ) * ( numColumns - 1 ) ) );
-	
+
 	for( i = 1; i < numRows; i++ )
 	{
 		for( j = 1; j < numColumns; j++ )
@@ -483,12 +483,12 @@ bool idMatX::IsPMatrix( const float epsilon ) const
 			m[i - 1][j - 1] = ( *this )[i][j];
 		}
 	}
-	
+
 	if( !m.IsPMatrix( epsilon ) )
 	{
 		return false;
 	}
-	
+
 	for( i = 1; i < numRows; i++ )
 	{
 		d = ( *this )[i][0] / ( *this )[0][0];
@@ -497,12 +497,12 @@ bool idMatX::IsPMatrix( const float epsilon ) const
 			m[i - 1][j - 1] = ( *this )[i][j] - d * ( *this )[0][j];
 		}
 	}
-	
+
 	if( !m.IsPMatrix( epsilon ) )
 	{
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -517,12 +517,12 @@ idMatX::IsZMatrix
 bool idMatX::IsZMatrix( const float epsilon ) const
 {
 	int i, j;
-	
+
 	if( !IsSquare() )
 	{
 		return false;
 	}
-	
+
 	for( i = 0; i < numRows; i++ )
 	{
 		for( j = 0; j < numColumns; j++ )
@@ -549,17 +549,17 @@ bool idMatX::IsPositiveDefinite( const float epsilon ) const
 	int i, j, k;
 	float d, s;
 	idMatX m;
-	
+
 	// the matrix must be square
 	if( !IsSquare() )
 	{
 		return false;
 	}
-	
+
 	// copy matrix
 	m.SetData( numRows, numColumns, MATX_ALLOCA( numRows * numColumns ) );
 	m = *this;
-	
+
 	// add transpose
 	for( i = 0; i < numRows; i++ )
 	{
@@ -568,11 +568,11 @@ bool idMatX::IsPositiveDefinite( const float epsilon ) const
 			m[i][j] += ( *this )[j][i];
 		}
 	}
-	
+
 	// test Positive Definiteness with Gaussian pivot steps
 	for( i = 0; i < numRows; i++ )
 	{
-	
+
 		for( j = i; j < numColumns; j++ )
 		{
 			if( m[j][j] <= epsilon )
@@ -580,7 +580,7 @@ bool idMatX::IsPositiveDefinite( const float epsilon ) const
 				return false;
 			}
 		}
-		
+
 		d = 1.0f / m[i][i];
 		for( j = i + 1; j < numColumns; j++ )
 		{
@@ -592,7 +592,7 @@ bool idMatX::IsPositiveDefinite( const float epsilon ) const
 			}
 		}
 	}
-	
+
 	return true;
 }
 
@@ -606,17 +606,17 @@ idMatX::IsSymmetricPositiveDefinite
 bool idMatX::IsSymmetricPositiveDefinite( const float epsilon ) const
 {
 	idMatX m;
-	
+
 	// the matrix must be symmetric
 	if( !IsSymmetric( epsilon ) )
 	{
 		return false;
 	}
-	
+
 	// copy matrix
 	m.SetData( numRows, numColumns, MATX_ALLOCA( numRows * numColumns ) );
 	m = *this;
-	
+
 	// being able to obtain Cholesky factors is both a necessary and sufficient condition for positive definiteness
 	return m.Cholesky_Factor();
 }
@@ -634,17 +634,17 @@ bool idMatX::IsPositiveSemiDefinite( const float epsilon ) const
 	int i, j, k;
 	float d, s;
 	idMatX m;
-	
+
 	// the matrix must be square
 	if( !IsSquare() )
 	{
 		return false;
 	}
-	
+
 	// copy original matrix
 	m.SetData( numRows, numColumns, MATX_ALLOCA( numRows * numColumns ) );
 	m = *this;
-	
+
 	// add transpose
 	for( i = 0; i < numRows; i++ )
 	{
@@ -653,11 +653,11 @@ bool idMatX::IsPositiveSemiDefinite( const float epsilon ) const
 			m[i][j] += ( *this )[j][i];
 		}
 	}
-	
+
 	// test Positive Semi Definiteness with Gaussian pivot steps
 	for( i = 0; i < numRows; i++ )
 	{
-	
+
 		for( j = i; j < numColumns; j++ )
 		{
 			if( m[j][j] < -epsilon )
@@ -680,12 +680,12 @@ bool idMatX::IsPositiveSemiDefinite( const float epsilon ) const
 				}
 			}
 		}
-		
+
 		if( m[i][i] <= epsilon )
 		{
 			continue;
 		}
-		
+
 		d = 1.0f / m[i][i];
 		for( j = i + 1; j < numColumns; j++ )
 		{
@@ -697,7 +697,7 @@ bool idMatX::IsPositiveSemiDefinite( const float epsilon ) const
 			}
 		}
 	}
-	
+
 	return true;
 }
 
@@ -716,7 +716,7 @@ bool idMatX::IsSymmetricPositiveSemiDefinite( const float epsilon ) const
 	{
 		return false;
 	}
-	
+
 	return IsPositiveSemiDefinite( epsilon );
 }
 
@@ -731,7 +731,7 @@ bool idMatX::LowerTriangularInverse()
 {
 	int i, j, k;
 	double d, sum;
-	
+
 	for( i = 0; i < numRows; i++ )
 	{
 		d = ( *this )[i][i];
@@ -740,7 +740,7 @@ bool idMatX::LowerTriangularInverse()
 			return false;
 		}
 		( *this )[i][i] = d = 1.0f / d;
-		
+
 		for( j = 0; j < i; j++ )
 		{
 			sum = 0.0f;
@@ -765,7 +765,7 @@ bool idMatX::UpperTriangularInverse()
 {
 	int i, j, k;
 	double d, sum;
-	
+
 	for( i = numRows - 1; i >= 0; i-- )
 	{
 		d = ( *this )[i][i];
@@ -774,7 +774,7 @@ bool idMatX::UpperTriangularInverse()
 			return false;
 		}
 		( *this )[i][i] = d = 1.0f / d;
-		
+
 		for( j = numRows - 1; j > i; j-- )
 		{
 			sum = 0.0f;
@@ -809,10 +809,10 @@ void idMatX::Update_RankOne( const idVecX& v, const idVecX& w, float alpha )
 {
 	int i, j;
 	float s;
-	
+
 	assert( v.GetSize() >= numRows );
 	assert( w.GetSize() >= numColumns );
-	
+
 	for( i = 0; i < numRows; i++ )
 	{
 		s = alpha * v[i];
@@ -834,10 +834,10 @@ void idMatX::Update_RankOneSymmetric( const idVecX& v, float alpha )
 {
 	int i, j;
 	float s;
-	
+
 	assert( numRows == numColumns );
 	assert( v.GetSize() >= numRows );
-	
+
 	for( i = 0; i < numRows; i++ )
 	{
 		s = alpha * v[i];
@@ -864,11 +864,11 @@ idMatX::Update_RowColumn
 void idMatX::Update_RowColumn( const idVecX& v, const idVecX& w, int r )
 {
 	int i;
-	
+
 	assert( w[r] == 0.0f );
 	assert( v.GetSize() >= numColumns );
 	assert( w.GetSize() >= numRows );
-	
+
 	for( i = 0; i < numRows; i++ )
 	{
 		( *this )[i][r] += v[i];
@@ -895,10 +895,10 @@ idMatX::Update_RowColumnSymmetric
 void idMatX::Update_RowColumnSymmetric( const idVecX& v, int r )
 {
 	int i;
-	
+
 	assert( numRows == numColumns );
 	assert( v.GetSize() >= numRows );
-	
+
 	for( i = 0; i < r; i++ )
 	{
 		( *this )[i][r] += v[i];
@@ -927,13 +927,13 @@ idMatX::Update_Increment
 void idMatX::Update_Increment( const idVecX& v, const idVecX& w )
 {
 	int i;
-	
+
 	assert( numRows == numColumns );
 	assert( v.GetSize() >= numRows + 1 );
 	assert( w.GetSize() >= numColumns + 1 );
-	
+
 	ChangeSize( numRows + 1, numColumns + 1, false );
-	
+
 	for( i = 0; i < numRows; i++ )
 	{
 		( *this )[i][numColumns - 1] = v[i];
@@ -959,12 +959,12 @@ idMatX::Update_IncrementSymmetric
 void idMatX::Update_IncrementSymmetric( const idVecX& v )
 {
 	int i;
-	
+
 	assert( numRows == numColumns );
 	assert( v.GetSize() >= numRows + 1 );
-	
+
 	ChangeSize( numRows + 1, numColumns + 1, false );
-	
+
 	for( i = 0; i < numRows - 1; i++ )
 	{
 		( *this )[i][numColumns - 1] = v[i];
@@ -998,19 +998,19 @@ bool idMatX::Inverse_GaussJordan()
 {
 	int i, j, k, r, c;
 	float d, max;
-	
+
 	assert( numRows == numColumns );
-	
+
 	int* columnIndex = ( int* ) _alloca16( numRows * sizeof( int ) );
 	int* rowIndex = ( int* ) _alloca16( numRows * sizeof( int ) );
 	bool* pivot = ( bool* ) _alloca16( numRows * sizeof( bool ) );
-	
+
 	memset( pivot, 0, numRows * sizeof( bool ) );
-	
+
 	// elimination with full pivoting
 	for( i = 0; i < numRows; i++ )
 	{
-	
+
 		// search the whole matrix except for pivoted rows for the maximum absolute value
 		max = 0.0f;
 		r = c = 0;
@@ -1033,25 +1033,25 @@ bool idMatX::Inverse_GaussJordan()
 				}
 			}
 		}
-		
+
 		if( max == 0.0f )
 		{
 			// matrix is not invertible
 			return false;
 		}
-		
+
 		pivot[c] = true;
-		
+
 		// swap rows such that entry (c,c) has the pivot entry
 		if( r != c )
 		{
 			SwapRows( r, c );
 		}
-		
+
 		// keep track of the row permutation
 		rowIndex[i] = r;
 		columnIndex[i] = c;
-		
+
 		// scale the row to make the pivot entry equal to 1
 		d = 1.0f / ( *this )[c][c];
 		( *this )[c][c] = 1.0f;
@@ -1059,7 +1059,7 @@ bool idMatX::Inverse_GaussJordan()
 		{
 			( *this )[c][k] *= d;
 		}
-		
+
 		// zero out the pivot column entries in the other rows
 		for( j = 0; j < numRows; j++ )
 		{
@@ -1074,7 +1074,7 @@ bool idMatX::Inverse_GaussJordan()
 			}
 		}
 	}
-	
+
 	// reorder rows to store the inverse of the original matrix
 	for( j = numRows - 1; j >= 0; j-- )
 	{
@@ -1088,7 +1088,7 @@ bool idMatX::Inverse_GaussJordan()
 			}
 		}
 	}
-	
+
 	return true;
 }
 
@@ -1104,25 +1104,25 @@ bool idMatX::Inverse_UpdateRankOne( const idVecX& v, const idVecX& w, float alph
 	int i, j;
 	float beta, s;
 	idVecX y, z;
-	
+
 	assert( numRows == numColumns );
 	assert( v.GetSize() >= numColumns );
 	assert( w.GetSize() >= numRows );
-	
+
 	y.SetData( numRows, VECX_ALLOCA( numRows ) );
 	z.SetData( numRows, VECX_ALLOCA( numRows ) );
-	
+
 	Multiply( y, v );
 	TransposeMultiply( z, w );
 	beta = 1.0f + ( w * y );
-	
+
 	if( beta == 0.0f )
 	{
 		return false;
 	}
-	
+
 	alpha /= beta;
-	
+
 	for( i = 0; i < numRows; i++ )
 	{
 		s = y[i] * alpha;
@@ -1150,17 +1150,17 @@ idMatX::Inverse_UpdateRowColumn
 bool idMatX::Inverse_UpdateRowColumn( const idVecX& v, const idVecX& w, int r )
 {
 	idVecX s;
-	
+
 	assert( numRows == numColumns );
 	assert( v.GetSize() >= numColumns );
 	assert( w.GetSize() >= numRows );
 	assert( r >= 0 && r < numRows && r < numColumns );
 	assert( w[r] == 0.0f );
-	
+
 	s.SetData( Max( numRows, numColumns ), VECX_ALLOCA( Max( numRows, numColumns ) ) );
 	s.Zero();
 	s[r] = 1.0f;
-	
+
 	if( !Inverse_UpdateRankOne( v, s, 1.0f ) )
 	{
 		return false;
@@ -1187,18 +1187,18 @@ idMatX::Inverse_UpdateIncrement
 bool idMatX::Inverse_UpdateIncrement( const idVecX& v, const idVecX& w )
 {
 	idVecX v2;
-	
+
 	assert( numRows == numColumns );
 	assert( v.GetSize() >= numRows + 1 );
 	assert( w.GetSize() >= numColumns + 1 );
-	
+
 	ChangeSize( numRows + 1, numColumns + 1, true );
 	( *this )[numRows - 1][numRows - 1] = 1.0f;
-	
+
 	v2.SetData( numRows, VECX_ALLOCA( numRows ) );
 	v2 = v;
 	v2[numRows - 1] -= 1.0f;
-	
+
 	return Inverse_UpdateRowColumn( v2, w, numRows - 1 );
 }
 
@@ -1213,29 +1213,29 @@ idMatX::Inverse_UpdateDecrement
 bool idMatX::Inverse_UpdateDecrement( const idVecX& v, const idVecX& w, int r )
 {
 	idVecX v1, w1;
-	
+
 	assert( numRows == numColumns );
 	assert( v.GetSize() >= numRows );
 	assert( w.GetSize() >= numColumns );
 	assert( r >= 0 && r < numRows && r < numColumns );
-	
+
 	v1.SetData( numRows, VECX_ALLOCA( numRows ) );
 	w1.SetData( numRows, VECX_ALLOCA( numRows ) );
-	
+
 	// update the row and column to identity
 	v1 = -v;
 	w1 = -w;
 	v1[r] += 1.0f;
 	w1[r] = 0.0f;
-	
+
 	if( !Inverse_UpdateRowColumn( v1, w1, r ) )
 	{
 		return false;
 	}
-	
+
 	// physically remove the row and column
 	Update_Decrement( r );
-	
+
 	return true;
 }
 
@@ -1268,7 +1268,7 @@ bool idMatX::LU_Factor( int* index, float* det )
 {
 	int i, j, k, newi, min;
 	double s, t, d, w;
-	
+
 	// if partial pivoting should be used
 	if( index )
 	{
@@ -1277,15 +1277,15 @@ bool idMatX::LU_Factor( int* index, float* det )
 			index[i] = i;
 		}
 	}
-	
+
 	w = 1.0f;
 	min = Min( numRows, numColumns );
 	for( i = 0; i < min; i++ )
 	{
-	
+
 		newi = i;
 		s = idMath::Fabs( ( *this )[i][i] );
-		
+
 		if( index )
 		{
 			// find the largest absolute pivot
@@ -1299,22 +1299,22 @@ bool idMatX::LU_Factor( int* index, float* det )
 				}
 			}
 		}
-		
+
 		if( s == 0.0f )
 		{
 			return false;
 		}
-		
+
 		if( newi != i && index )
 		{
-		
+
 			w = -w;
-			
+
 			// swap index elements
 			k = index[i];
 			index[i] = index[newi];
 			index[newi] = k;
-			
+
 			// swap rows
 			for( j = 0; j < numColumns; j++ )
 			{
@@ -1323,7 +1323,7 @@ bool idMatX::LU_Factor( int* index, float* det )
 				( *this )[i][j] = t;
 			}
 		}
-		
+
 		if( i < numRows )
 		{
 			d = 1.0f / ( *this )[i][i];
@@ -1332,7 +1332,7 @@ bool idMatX::LU_Factor( int* index, float* det )
 				( *this )[j][i] *= d;
 			}
 		}
-		
+
 		if( i < min - 1 )
 		{
 			for( j = i + 1; j < numRows; j++ )
@@ -1345,7 +1345,7 @@ bool idMatX::LU_Factor( int* index, float* det )
 			}
 		}
 	}
-	
+
 	if( det )
 	{
 		for( i = 0; i < numRows; i++ )
@@ -1354,7 +1354,7 @@ bool idMatX::LU_Factor( int* index, float* det )
 		}
 		*det = w;
 	}
-	
+
 	return true;
 }
 
@@ -1370,13 +1370,13 @@ bool idMatX::LU_UpdateRankOne( const idVecX& v, const idVecX& w, float alpha, in
 	int i, j, max;
 	float* y, *z;
 	double diag, beta, p0, p1, d;
-	
+
 	assert( v.GetSize() >= numColumns );
 	assert( w.GetSize() >= numRows );
-	
+
 	y = ( float* ) _alloca16( v.GetSize() * sizeof( float ) );
 	z = ( float* ) _alloca16( w.GetSize() * sizeof( float ) );
-	
+
 	if( index != NULL )
 	{
 		for( i = 0; i < numRows; i++ )
@@ -1391,46 +1391,46 @@ bool idMatX::LU_UpdateRankOne( const idVecX& v, const idVecX& w, float alpha, in
 			y[i] = alpha * v[i];
 		}
 	}
-	
+
 	memcpy( z, w.ToFloatPtr(), w.GetSize() * sizeof( float ) );
-	
+
 	max = Min( numRows, numColumns );
 	for( i = 0; i < max; i++ )
 	{
 		diag = ( *this )[i][i];
-		
+
 		p0 = y[i];
 		p1 = z[i];
 		diag += p0 * p1;
-		
+
 		if( diag == 0.0f )
 		{
 			return false;
 		}
-		
+
 		beta = p1 / diag;
-		
+
 		( *this )[i][i] = diag;
-		
+
 		for( j = i + 1; j < numColumns; j++ )
 		{
-		
+
 			d = ( *this )[i][j];
-			
+
 			d += p0 * z[j];
 			z[j] -= beta * d;
-			
+
 			( *this )[i][j] = d;
 		}
-		
+
 		for( j = i + 1; j < numRows; j++ )
 		{
-		
+
 			d = ( *this )[j][i];
-			
+
 			y[j] -= p0 * d;
 			d += beta * y[j];
-			
+
 			( *this )[j][i] = d;
 		}
 	}
@@ -1455,16 +1455,16 @@ bool idMatX::LU_UpdateRowColumn( const idVecX& v, const idVecX& w, int r, int* i
 #if 0
 
 	idVecX s;
-	
+
 	assert( v.GetSize() >= numColumns );
 	assert( w.GetSize() >= numRows );
 	assert( r >= 0 && r < numRows && r < numColumns );
 	assert( w[r] == 0.0f );
-	
+
 	s.SetData( Max( numRows, numColumns ), VECX_ALLOCA( Max( numRows, numColumns ) ) );
 	s.Zero();
 	s[r] = 1.0f;
-	
+
 	if( !LU_UpdateRankOne( v, s, 1.0f, index ) )
 	{
 		return false;
@@ -1474,23 +1474,23 @@ bool idMatX::LU_UpdateRowColumn( const idVecX& v, const idVecX& w, int r, int* i
 		return false;
 	}
 	return true;
-	
+
 #else
-	
+
 	int i, j, min, max, rp;
 	float* y0, *y1, *z0, *z1;
 	double diag, beta0, beta1, p0, p1, q0, q1, d;
-	
+
 	assert( v.GetSize() >= numColumns );
 	assert( w.GetSize() >= numRows );
 	assert( r >= 0 && r < numColumns && r < numRows );
 	assert( w[r] == 0.0f );
-	
+
 	y0 = ( float* ) _alloca16( v.GetSize() * sizeof( float ) );
 	z0 = ( float* ) _alloca16( w.GetSize() * sizeof( float ) );
 	y1 = ( float* ) _alloca16( v.GetSize() * sizeof( float ) );
 	z1 = ( float* ) _alloca16( w.GetSize() * sizeof( float ) );
-	
+
 	if( index != NULL )
 	{
 		for( i = 0; i < numRows; i++ )
@@ -1512,22 +1512,22 @@ bool idMatX::LU_UpdateRowColumn( const idVecX& v, const idVecX& w, int r, int* i
 		memcpy( y0, v.ToFloatPtr(), v.GetSize() * sizeof( float ) );
 		rp = r;
 	}
-	
+
 	memset( y1, 0, v.GetSize() * sizeof( float ) );
 	y1[rp] = 1.0f;
-	
+
 	memset( z0, 0, w.GetSize() * sizeof( float ) );
 	z0[r] = 1.0f;
-	
+
 	memcpy( z1, w.ToFloatPtr(), w.GetSize() * sizeof( float ) );
-	
+
 	// update the beginning of the to be updated row and column
 	min = Min( r, rp );
 	for( i = 0; i < min; i++ )
 	{
 		p0 = y0[i];
 		beta1 = z1[i] / ( *this )[i][i];
-	
+
 		( *this )[i][r] += p0;
 		for( j = i + 1; j < numColumns; j++ )
 		{
@@ -1539,67 +1539,67 @@ bool idMatX::LU_UpdateRowColumn( const idVecX& v, const idVecX& w, int r, int* i
 		}
 		( *this )[rp][i] += beta1;
 	}
-	
+
 	// update the lower right corner starting at r,r
 	max = Min( numRows, numColumns );
 	for( i = min; i < max; i++ )
 	{
 		diag = ( *this )[i][i];
-	
+
 		p0 = y0[i];
 		p1 = z0[i];
 		diag += p0 * p1;
-	
+
 		if( diag == 0.0f )
 		{
 			return false;
 		}
-	
+
 		beta0 = p1 / diag;
-	
+
 		q0 = y1[i];
 		q1 = z1[i];
 		diag += q0 * q1;
-	
+
 		if( diag == 0.0f )
 		{
 			return false;
 		}
-	
+
 		beta1 = q1 / diag;
-	
+
 		( *this )[i][i] = diag;
-	
+
 		for( j = i + 1; j < numColumns; j++ )
 		{
-	
+
 			d = ( *this )[i][j];
-	
+
 			d += p0 * z0[j];
 			z0[j] -= beta0 * d;
-	
+
 			d += q0 * z1[j];
 			z1[j] -= beta1 * d;
-	
+
 			( *this )[i][j] = d;
 		}
-	
+
 		for( j = i + 1; j < numRows; j++ )
 		{
-	
+
 			d = ( *this )[j][i];
-	
+
 			y0[j] -= p0 * d;
 			d += beta0 * y0[j];
-	
+
 			y1[j] -= q0 * d;
 			d += beta1 * y1[j];
-	
+
 			( *this )[j][i] = d;
 		}
 	}
 	return true;
-	
+
 #endif
 }
 
@@ -1619,13 +1619,13 @@ bool idMatX::LU_UpdateIncrement( const idVecX& v, const idVecX& w, int* index )
 {
 	int i, j;
 	float sum;
-	
+
 	assert( numRows == numColumns );
 	assert( v.GetSize() >= numRows + 1 );
 	assert( w.GetSize() >= numColumns + 1 );
-	
+
 	ChangeSize( numRows + 1, numColumns + 1, true );
-	
+
 	// add row to L
 	for( i = 0; i < numRows - 1; i++ )
 	{
@@ -1636,13 +1636,13 @@ bool idMatX::LU_UpdateIncrement( const idVecX& v, const idVecX& w, int* index )
 		}
 		( *this )[numRows - 1 ][i] = sum / ( *this )[i][i];
 	}
-	
+
 	// add row to the permutation index
 	if( index != NULL )
 	{
 		index[numRows - 1] = numRows - 1;
 	}
-	
+
 	// add column to U
 	for( i = 0; i < numRows; i++ )
 	{
@@ -1660,7 +1660,7 @@ bool idMatX::LU_UpdateIncrement( const idVecX& v, const idVecX& w, int* index )
 		}
 		( *this )[i][numRows - 1] = sum;
 	}
-	
+
 	return true;
 }
 
@@ -1677,18 +1677,18 @@ bool idMatX::LU_UpdateDecrement( const idVecX& v, const idVecX& w, const idVecX&
 {
 	int i, p;
 	idVecX v1, w1;
-	
+
 	assert( numRows == numColumns );
 	assert( v.GetSize() >= numColumns );
 	assert( w.GetSize() >= numRows );
 	assert( r >= 0 && r < numRows && r < numColumns );
-	
+
 	v1.SetData( numRows, VECX_ALLOCA( numRows ) );
 	w1.SetData( numRows, VECX_ALLOCA( numRows ) );
-	
+
 	if( index != NULL )
 	{
-	
+
 		// find the pivot row
 		for( p = i = 0; i < numRows; i++ )
 		{
@@ -1698,44 +1698,44 @@ bool idMatX::LU_UpdateDecrement( const idVecX& v, const idVecX& w, const idVecX&
 				break;
 			}
 		}
-		
+
 		// update the row and column to identity
 		v1 = -v;
 		w1 = -u;
-		
+
 		if( p != r )
 		{
 			SwapValues( v1[index[r]], v1[index[p]] );
 			SwapValues( index[r], index[p] );
 		}
-		
+
 		v1[r] += 1.0f;
 		w1[r] = 0.0f;
-		
+
 		if( !LU_UpdateRowColumn( v1, w1, r, index ) )
 		{
 			return false;
 		}
-		
+
 		if( p != r )
 		{
-		
+
 			if( idMath::Fabs( u[p] ) < 1e-4f )
 			{
 				// NOTE: an additional row interchange is required for numerical stability
 			}
-			
+
 			// move row index[r] of the original matrix to row index[p] of the original matrix
 			v1.Zero();
 			v1[index[p]] = 1.0f;
 			w1 = u - w;
-			
+
 			if( !LU_UpdateRankOne( v1, w1, 1.0f, index ) )
 			{
 				return false;
 			}
 		}
-		
+
 		// remove the row from the permutation index
 		for( i = r; i < numRows - 1; i++ )
 		{
@@ -1748,25 +1748,25 @@ bool idMatX::LU_UpdateDecrement( const idVecX& v, const idVecX& w, const idVecX&
 				index[i]--;
 			}
 		}
-		
+
 	}
 	else
 	{
-	
+
 		v1 = -v;
 		w1 = -w;
 		v1[r] += 1.0f;
 		w1[r] = 0.0f;
-		
+
 		if( !LU_UpdateRowColumn( v1, w1, r, index ) )
 		{
 			return false;
 		}
 	}
-	
+
 	// physically remove the row and column
 	Update_Decrement( r );
-	
+
 	return true;
 }
 
@@ -1781,9 +1781,9 @@ void idMatX::LU_Solve( idVecX& x, const idVecX& b, const int* index ) const
 {
 	int i, j;
 	double sum;
-	
+
 	assert( x.GetSize() == numColumns && b.GetSize() == numRows );
-	
+
 	// solve L
 	for( i = 0; i < numRows; i++ )
 	{
@@ -1801,7 +1801,7 @@ void idMatX::LU_Solve( idVecX& x, const idVecX& b, const int* index ) const
 		}
 		x[i] = sum;
 	}
-	
+
 	// solve U
 	for( i = numRows - 1; i >= 0; i-- )
 	{
@@ -1825,17 +1825,17 @@ void idMatX::LU_Inverse( idMatX& inv, const int* index ) const
 {
 	int i, j;
 	idVecX x, b;
-	
+
 	assert( numRows == numColumns );
-	
+
 	x.SetData( numRows, VECX_ALLOCA( numRows ) );
 	b.SetData( numRows, VECX_ALLOCA( numRows ) );
 	b.Zero();
 	inv.SetSize( numRows, numColumns );
-	
+
 	for( i = 0; i < numRows; i++ )
 	{
-	
+
 		b[i] = 1.0f;
 		LU_Solve( x, b, index );
 		for( j = 0; j < numRows; j++ )
@@ -1856,7 +1856,7 @@ idMatX::LU_UnpackFactors
 void idMatX::LU_UnpackFactors( idMatX& L, idMatX& U ) const
 {
 	int i, j;
-	
+
 	L.Zero( numRows, numColumns );
 	U.Zero( numRows, numColumns );
 	for( i = 0; i < numRows; i++ )
@@ -1884,12 +1884,12 @@ void idMatX::LU_MultiplyFactors( idMatX& m, const int* index ) const
 {
 	int r, rp, i, j;
 	double sum;
-	
+
 	m.SetSize( numRows, numColumns );
-	
+
 	for( r = 0; r < numRows; r++ )
 	{
-	
+
 		if( index != NULL )
 		{
 			rp = index[r];
@@ -1898,7 +1898,7 @@ void idMatX::LU_MultiplyFactors( idMatX& m, const int* index ) const
 		{
 			rp = r;
 		}
-		
+
 		// calculate row of matrix
 		for( i = 0; i < numColumns; i++ )
 		{
@@ -1934,13 +1934,13 @@ bool idMatX::QR_Factor( idVecX& c, idVecX& d )
 	int i, j, k;
 	double scale, s, t, sum;
 	bool singular = false;
-	
+
 	assert( numRows == numColumns );
 	assert( c.GetSize() >= numRows && d.GetSize() >= numRows );
-	
+
 	for( k = 0; k < numRows - 1; k++ )
 	{
-	
+
 		scale = 0.0f;
 		for( i = k; i < numRows; i++ )
 		{
@@ -1957,20 +1957,20 @@ bool idMatX::QR_Factor( idVecX& c, idVecX& d )
 		}
 		else
 		{
-		
+
 			s = 1.0f / scale;
 			for( i = k; i < numRows; i++ )
 			{
 				( *this )[i][k] *= s;
 			}
-			
+
 			sum = 0.0f;
 			for( i = k; i < numRows; i++ )
 			{
 				s = ( *this )[i][k];
 				sum += s * s;
 			}
-			
+
 			s = idMath::Sqrt( sum );
 			if( ( *this )[k][k] < 0.0f )
 			{
@@ -1979,10 +1979,10 @@ bool idMatX::QR_Factor( idVecX& c, idVecX& d )
 			( *this )[k][k] += s;
 			c[k] = s * ( *this )[k][k];
 			d[k] = -scale * s;
-			
+
 			for( j = k + 1; j < numRows; j++ )
 			{
-			
+
 				sum = 0.0f;
 				for( i = k; i < numRows; i++ )
 				{
@@ -2001,7 +2001,7 @@ bool idMatX::QR_Factor( idVecX& c, idVecX& d )
 	{
 		singular = true;
 	}
-	
+
 	return !singular;
 }
 
@@ -2016,7 +2016,7 @@ void idMatX::QR_Rotate( idMatX& R, int i, float a, float b )
 {
 	int j;
 	float f, c, s, w, y;
-	
+
 	if( a == 0.0f )
 	{
 		c = 0.0f;
@@ -2070,14 +2070,14 @@ bool idMatX::QR_UpdateRankOne( idMatX& R, const idVecX& v, const idVecX& w, floa
 	int i, k;
 	float f;
 	idVecX u;
-	
+
 	assert( v.GetSize() >= numColumns );
 	assert( w.GetSize() >= numRows );
-	
+
 	u.SetData( v.GetSize(), VECX_ALLOCA( v.GetSize() ) );
 	TransposeMultiply( u, v );
 	u *= alpha;
-	
+
 	for( k = v.GetSize() - 1; k > 0; k-- )
 	{
 		if( u[k] != 0.0f )
@@ -2130,16 +2130,16 @@ idMatX::QR_UpdateRowColumn
 bool idMatX::QR_UpdateRowColumn( idMatX& R, const idVecX& v, const idVecX& w, int r )
 {
 	idVecX s;
-	
+
 	assert( v.GetSize() >= numColumns );
 	assert( w.GetSize() >= numRows );
 	assert( r >= 0 && r < numRows && r < numColumns );
 	assert( w[r] == 0.0f );
-	
+
 	s.SetData( Max( numRows, numColumns ), VECX_ALLOCA( Max( numRows, numColumns ) ) );
 	s.Zero();
 	s[r] = 1.0f;
-	
+
 	if( !QR_UpdateRankOne( R, v, s, 1.0f ) )
 	{
 		return false;
@@ -2166,21 +2166,21 @@ idMatX::QR_UpdateIncrement
 bool idMatX::QR_UpdateIncrement( idMatX& R, const idVecX& v, const idVecX& w )
 {
 	idVecX v2;
-	
+
 	assert( numRows == numColumns );
 	assert( v.GetSize() >= numRows + 1 );
 	assert( w.GetSize() >= numColumns + 1 );
-	
+
 	ChangeSize( numRows + 1, numColumns + 1, true );
 	( *this )[numRows - 1][numRows - 1] = 1.0f;
-	
+
 	R.ChangeSize( R.numRows + 1, R.numColumns + 1, true );
 	R[R.numRows - 1][R.numRows - 1] = 1.0f;
-	
+
 	v2.SetData( numRows, VECX_ALLOCA( numRows ) );
 	v2 = v;
 	v2[numRows - 1] -= 1.0f;
-	
+
 	return QR_UpdateRowColumn( R, v2, w, numRows - 1 );
 }
 
@@ -2195,30 +2195,30 @@ idMatX::QR_UpdateDecrement
 bool idMatX::QR_UpdateDecrement( idMatX& R, const idVecX& v, const idVecX& w, int r )
 {
 	idVecX v1, w1;
-	
+
 	assert( numRows == numColumns );
 	assert( v.GetSize() >= numRows );
 	assert( w.GetSize() >= numColumns );
 	assert( r >= 0 && r < numRows && r < numColumns );
-	
+
 	v1.SetData( numRows, VECX_ALLOCA( numRows ) );
 	w1.SetData( numRows, VECX_ALLOCA( numRows ) );
-	
+
 	// update the row and column to identity
 	v1 = -v;
 	w1 = -w;
 	v1[r] += 1.0f;
 	w1[r] = 0.0f;
-	
+
 	if( !QR_UpdateRowColumn( R, v1, w1, r ) )
 	{
 		return false;
 	}
-	
+
 	// physically remove the row and column
 	Update_Decrement( r );
 	R.Update_Decrement( r );
-	
+
 	return true;
 }
 
@@ -2233,20 +2233,20 @@ void idMatX::QR_Solve( idVecX& x, const idVecX& b, const idVecX& c, const idVecX
 {
 	int i, j;
 	double sum, t;
-	
+
 	assert( numRows == numColumns );
 	assert( x.GetSize() >= numRows && b.GetSize() >= numRows );
 	assert( c.GetSize() >= numRows && d.GetSize() >= numRows );
-	
+
 	for( i = 0; i < numRows; i++ )
 	{
 		x[i] = b[i];
 	}
-	
+
 	// multiply b with transpose of Q
 	for( i = 0; i < numRows - 1; i++ )
 	{
-	
+
 		sum = 0.0f;
 		for( j = i; j < numRows; j++ )
 		{
@@ -2258,11 +2258,11 @@ void idMatX::QR_Solve( idVecX& x, const idVecX& b, const idVecX& c, const idVecX
 			x[j] -= t * ( *this )[j][i];
 		}
 	}
-	
+
 	// backsubstitution with R
 	for( i = numRows - 1; i >= 0; i-- )
 	{
-	
+
 		sum = x[i];
 		for( j = i + 1; j < numRows; j++ )
 		{
@@ -2283,16 +2283,16 @@ void idMatX::QR_Solve( idVecX& x, const idVecX& b, const idMatX& R ) const
 {
 	int i, j;
 	double sum;
-	
+
 	assert( numRows == numColumns );
-	
+
 	// multiply b with transpose of Q
 	TransposeMultiply( x, b );
-	
+
 	// backsubstitution with R
 	for( i = numRows - 1; i >= 0; i-- )
 	{
-	
+
 		sum = x[i];
 		for( j = i + 1; j < numRows; j++ )
 		{
@@ -2313,17 +2313,17 @@ void idMatX::QR_Inverse( idMatX& inv, const idVecX& c, const idVecX& d ) const
 {
 	int i, j;
 	idVecX x, b;
-	
+
 	assert( numRows == numColumns );
-	
+
 	x.SetData( numRows, VECX_ALLOCA( numRows ) );
 	b.SetData( numRows, VECX_ALLOCA( numRows ) );
 	b.Zero();
 	inv.SetSize( numRows, numColumns );
-	
+
 	for( i = 0; i < numRows; i++ )
 	{
-	
+
 		b[i] = 1.0f;
 		QR_Solve( x, b, c, d );
 		for( j = 0; j < numRows; j++ )
@@ -2345,7 +2345,7 @@ void idMatX::QR_UnpackFactors( idMatX& Q, idMatX& R, const idVecX& c, const idVe
 {
 	int i, j, k;
 	double sum;
-	
+
 	Q.Identity( numRows, numColumns );
 	for( i = 0; i < numColumns - 1; i++ )
 	{
@@ -2367,7 +2367,7 @@ void idMatX::QR_UnpackFactors( idMatX& Q, idMatX& R, const idVecX& c, const idVe
 			}
 		}
 	}
-	
+
 	R.Zero( numRows, numColumns );
 	for( i = 0; i < numRows; i++ )
 	{
@@ -2391,7 +2391,7 @@ void idMatX::QR_MultiplyFactors( idMatX& m, const idVecX& c, const idVecX& d ) c
 	int i, j, k;
 	double sum;
 	idMatX Q;
-	
+
 	Q.Identity( numRows, numColumns );
 	for( i = 0; i < numColumns - 1; i++ )
 	{
@@ -2413,7 +2413,7 @@ void idMatX::QR_MultiplyFactors( idMatX& m, const idVecX& c, const idVecX& d ) c
 			}
 		}
 	}
-	
+
 	for( i = 0; i < numRows; i++ )
 	{
 		for( j = 0; j < numColumns; j++ )
@@ -2438,7 +2438,7 @@ idMatX::Pythag
 float idMatX::Pythag( float a, float b ) const
 {
 	double at, bt, ct;
-	
+
 	at = idMath::Fabs( a );
 	bt = idMath::Fabs( b );
 	if( at > bt )
@@ -2469,7 +2469,7 @@ void idMatX::SVD_BiDiag( idVecX& w, idVecX& rv1, float& anorm )
 {
 	int i, j, k, l;
 	double f, h, r, g, s, scale;
-	
+
 	anorm = 0.0f;
 	g = s = scale = 0.0f;
 	for( i = 0; i < numColumns; i++ )
@@ -2583,7 +2583,7 @@ void idMatX::SVD_InitialWV( idVecX& w, idMatX& V, idVecX& rv1 )
 {
 	int i, j, k, l;
 	double f, g, s;
-	
+
 	g = 0.0f;
 	for( i = ( numColumns - 1 ); i >= 0; i-- )
 	{
@@ -2679,20 +2679,20 @@ bool idMatX::SVD_Factor( idVecX& w, idMatX& V )
 	double c, f, h, s, x, y, z, r, g = 0.0f;
 	float anorm = 0.0f;
 	idVecX rv1;
-	
+
 	if( numRows < numColumns )
 	{
 		return false;
 	}
-	
+
 	rv1.SetData( numColumns, VECX_ALLOCA( numColumns ) );
 	rv1.Zero();
 	w.Zero( numColumns );
 	V.Zero( numColumns, numColumns );
-	
+
 	SVD_BiDiag( w, rv1, anorm );
 	SVD_InitialWV( w, V, rv1 );
-	
+
 	for( k = numColumns - 1; k >= 0; k-- )
 	{
 		for( its = 1; its <= 30; its++ )
@@ -2719,7 +2719,7 @@ bool idMatX::SVD_Factor( idVecX& w, idMatX& V )
 				for( i = l; i <= k; i++ )
 				{
 					f = s * rv1[i];
-					
+
 					if( ( idMath::Fabs( f ) + anorm ) != anorm /* idMath::Fabs( f ) > idMath::FLT_EPSILON */ )
 					{
 						g = w[i];
@@ -2825,14 +2825,14 @@ void idMatX::SVD_Solve( idVecX& x, const idVecX& b, const idVecX& w, const idMat
 	int i, j;
 	double sum;
 	idVecX tmp;
-	
+
 	assert( x.GetSize() >= numColumns );
 	assert( b.GetSize() >= numColumns );
 	assert( w.GetSize() == numColumns );
 	assert( V.GetNumRows() == numColumns && V.GetNumColumns() == numColumns );
-	
+
 	tmp.SetData( numColumns, VECX_ALLOCA( numColumns ) );
-	
+
 	for( i = 0; i < numColumns; i++ )
 	{
 		sum = 0.0f;
@@ -2869,11 +2869,11 @@ void idMatX::SVD_Inverse( idMatX& inv, const idVecX& w, const idMatX& V ) const
 	int i, j, k;
 	double wi, sum;
 	idMatX V2;
-	
+
 	assert( numRows == numColumns );
-	
+
 	V2 = V;
-	
+
 	// V * [diag(1/w[i])]
 	for( i = 0; i < numRows; i++ )
 	{
@@ -2884,7 +2884,7 @@ void idMatX::SVD_Inverse( idMatX& inv, const idVecX& w, const idMatX& V ) const
 			V2[j][i] *= wi;
 		}
 	}
-	
+
 	// V * [diag(1/w[i])] * Ut
 	for( i = 0; i < numRows; i++ )
 	{
@@ -2911,9 +2911,9 @@ void idMatX::SVD_MultiplyFactors( idMatX& m, const idVecX& w, const idMatX& V ) 
 {
 	int r, i, j;
 	double sum;
-	
+
 	m.SetSize( numRows, V.GetNumRows() );
-	
+
 	for( r = 0; r < numRows; r++ )
 	{
 		// calculate row of matrix
@@ -2954,17 +2954,17 @@ bool idMatX::Cholesky_Factor()
 	int i, j, k;
 	float* invSqrt;
 	double sum;
-	
+
 	assert( numRows == numColumns );
-	
+
 	invSqrt = ( float* ) _alloca16( numRows * sizeof( float ) );
-	
+
 	for( i = 0; i < numRows; i++ )
 	{
-	
+
 		for( j = 0; j < i; j++ )
 		{
-		
+
 			sum = ( *this )[i][j];
 			for( k = 0; k < j; k++ )
 			{
@@ -2972,18 +2972,18 @@ bool idMatX::Cholesky_Factor()
 			}
 			( *this )[i][j] = sum * invSqrt[j];
 		}
-		
+
 		sum = ( *this )[i][i];
 		for( k = 0; k < i; k++ )
 		{
 			sum -= ( *this )[i][k] * ( *this )[i][k];
 		}
-		
+
 		if( sum <= 0.0f )
 		{
 			return false;
 		}
-		
+
 		invSqrt[i] = idMath::InvSqrt( sum );
 		( *this )[i][i] = invSqrt[i] * sum;
 	}
@@ -3003,14 +3003,14 @@ bool idMatX::Cholesky_UpdateRankOne( const idVecX& v, float alpha, int offset )
 	int i, j;
 	float* y;
 	double diag, invDiag, diagSqr, newDiag, newDiagSqr, beta, p, d;
-	
+
 	assert( numRows == numColumns );
 	assert( v.GetSize() >= numRows );
 	assert( offset >= 0 && offset < numRows );
-	
+
 	y = ( float* ) _alloca16( v.GetSize() * sizeof( float ) );
 	memcpy( y, v.ToFloatPtr(), v.GetSize() * sizeof( float ) );
-	
+
 	for( i = offset; i < numColumns; i++ )
 	{
 		p = y[i];
@@ -3018,26 +3018,26 @@ bool idMatX::Cholesky_UpdateRankOne( const idVecX& v, float alpha, int offset )
 		invDiag = 1.0f / diag;
 		diagSqr = diag * diag;
 		newDiagSqr = diagSqr + alpha * p * p;
-		
+
 		if( newDiagSqr <= 0.0f )
 		{
 			return false;
 		}
-		
+
 		( *this )[i][i] = newDiag = idMath::Sqrt( newDiagSqr );
-		
+
 		alpha /= newDiagSqr;
 		beta = p * alpha;
 		alpha *= diagSqr;
-		
+
 		for( j = i + 1; j < numRows; j++ )
 		{
-		
+
 			d = ( *this )[j][i] * invDiag;
-			
+
 			y[j] -= p * d;
 			d += beta * y[j];
-			
+
 			( *this )[j][i] = d * newDiag;
 		}
 	}
@@ -3063,16 +3063,16 @@ bool idMatX::Cholesky_UpdateRowColumn( const idVecX& v, int r )
 	double sum;
 	float* original, *y;
 	idVecX addSub;
-	
+
 	assert( numRows == numColumns );
 	assert( v.GetSize() >= numRows );
 	assert( r >= 0 && r < numRows );
-	
+
 	addSub.SetData( numColumns, ( float* ) _alloca16( numColumns * sizeof( float ) ) );
-	
+
 	if( r == 0 )
 	{
-	
+
 		if( numColumns == 1 )
 		{
 			double v0 = v[0];
@@ -3090,14 +3090,14 @@ bool idMatX::Cholesky_UpdateRowColumn( const idVecX& v, int r )
 		{
 			addSub[i] = v[i];
 		}
-		
+
 	}
 	else
 	{
-	
+
 		original = ( float* ) _alloca16( numColumns * sizeof( float ) );
 		y = ( float* ) _alloca16( numColumns * sizeof( float ) );
-		
+
 		// calculate original row/column of matrix
 		for( i = 0; i < numRows; i++ )
 		{
@@ -3108,7 +3108,7 @@ bool idMatX::Cholesky_UpdateRowColumn( const idVecX& v, int r )
 			}
 			original[i] = sum;
 		}
-		
+
 		// solve for y in L * y = original + v
 		for( i = 0; i < r; i++ )
 		{
@@ -3119,7 +3119,7 @@ bool idMatX::Cholesky_UpdateRowColumn( const idVecX& v, int r )
 			}
 			( *this )[r][i] = sum / ( *this )[i][i];
 		}
-		
+
 		// if the last row/column of the matrix is updated
 		if( r == numColumns - 1 )
 		{
@@ -3136,7 +3136,7 @@ bool idMatX::Cholesky_UpdateRowColumn( const idVecX& v, int r )
 			( *this )[r][r] = idMath::Sqrt( sum );
 			return true;
 		}
-		
+
 		// calculate the row/column to be added to the lower right sub matrix starting at (r, r)
 		for( i = r; i < numColumns; i++ )
 		{
@@ -3148,17 +3148,17 @@ bool idMatX::Cholesky_UpdateRowColumn( const idVecX& v, int r )
 			addSub[i] = v[i] - ( sum - original[i] );
 		}
 	}
-	
+
 	// add row/column to the lower right sub matrix starting at (r, r)
-	
+
 #if 0
-	
+
 	idVecX v1, v2;
 	double d;
-	
+
 	v1.SetData( numColumns, ( float* ) _alloca16( numColumns * sizeof( float ) ) );
 	v2.SetData( numColumns, ( float* ) _alloca16( numColumns * sizeof( float ) ) );
-	
+
 	d = idMath::SQRT_1OVER2;
 	v1[r] = ( 0.5f * addSub[r] + 1.0f ) * d;
 	v2[r] = ( 0.5f * addSub[r] - 1.0f ) * d;
@@ -3166,7 +3166,7 @@ bool idMatX::Cholesky_UpdateRowColumn( const idVecX& v, int r )
 	{
 		v1[i] = v2[i] = addSub[i] * d;
 	}
-	
+
 	// update
 	if( !Cholesky_UpdateRankOne( v1, 1.0f, r ) )
 	{
@@ -3177,16 +3177,16 @@ bool idMatX::Cholesky_UpdateRowColumn( const idVecX& v, int r )
 	{
 		return false;
 	}
-	
+
 #else
-	
+
 	float* v1, *v2;
 	double diag, invDiag, diagSqr, newDiag, newDiagSqr;
 	double alpha1, alpha2, beta1, beta2, p1, p2, d;
-	
+
 	v1 = ( float* ) _alloca16( numColumns * sizeof( float ) );
 	v2 = ( float* ) _alloca16( numColumns * sizeof( float ) );
-	
+
 	d = idMath::SQRT_1OVER2;
 	v1[r] = ( 0.5f * addSub[r] + 1.0f ) * d;
 	v2[r] = ( 0.5f * addSub[r] - 1.0f ) * d;
@@ -3194,10 +3194,10 @@ bool idMatX::Cholesky_UpdateRowColumn( const idVecX& v, int r )
 	{
 		v1[i] = v2[i] = addSub[i] * d;
 	}
-	
+
 	alpha1 = 1.0f;
 	alpha2 = -1.0f;
-	
+
 	// simultaneous update/downdate of the sub matrix starting at (r, r)
 	for( i = r; i < numColumns; i++ )
 	{
@@ -3206,48 +3206,48 @@ bool idMatX::Cholesky_UpdateRowColumn( const idVecX& v, int r )
 		invDiag = 1.0f / diag;
 		diagSqr = diag * diag;
 		newDiagSqr = diagSqr + alpha1 * p1 * p1;
-	
+
 		if( newDiagSqr <= 0.0f )
 		{
 			return false;
 		}
-	
+
 		alpha1 /= newDiagSqr;
 		beta1 = p1 * alpha1;
 		alpha1 *= diagSqr;
-	
+
 		p2 = v2[i];
 		diagSqr = newDiagSqr;
 		newDiagSqr = diagSqr + alpha2 * p2 * p2;
-	
+
 		if( newDiagSqr <= 0.0f )
 		{
 			return false;
 		}
-	
+
 		( *this )[i][i] = newDiag = idMath::Sqrt( newDiagSqr );
-	
+
 		alpha2 /= newDiagSqr;
 		beta2 = p2 * alpha2;
 		alpha2 *= diagSqr;
-	
+
 		for( j = i + 1; j < numRows; j++ )
 		{
-	
+
 			d = ( *this )[j][i] * invDiag;
-	
+
 			v1[j] -= p1 * d;
 			d += beta1 * v1[j];
-	
+
 			v2[j] -= p2 * d;
 			d += beta2 * v2[j];
-	
+
 			( *this )[j][i] = d * newDiag;
 		}
 	}
-	
+
 #endif
-	
+
 	return true;
 }
 
@@ -3268,14 +3268,14 @@ bool idMatX::Cholesky_UpdateIncrement( const idVecX& v )
 	int i, j;
 	float* x;
 	double sum;
-	
+
 	assert( numRows == numColumns );
 	assert( v.GetSize() >= numRows + 1 );
-	
+
 	ChangeSize( numRows + 1, numColumns + 1, false );
-	
+
 	x = ( float* ) _alloca16( numRows * sizeof( float ) );
-	
+
 	// solve for x in L * x = v
 	for( i = 0; i < numRows - 1; i++ )
 	{
@@ -3286,7 +3286,7 @@ bool idMatX::Cholesky_UpdateIncrement( const idVecX& v )
 		}
 		x[i] = sum / ( *this )[i][i];
 	}
-	
+
 	// calculate new row of L and calculate the square of the diagonal entry
 	sum = v[numRows - 1];
 	for( i = 0; i < numRows - 1; i++ )
@@ -3294,15 +3294,15 @@ bool idMatX::Cholesky_UpdateIncrement( const idVecX& v )
 		( *this )[numRows - 1][i] = x[i];
 		sum -= x[i] * x[i];
 	}
-	
+
 	if( sum <= 0.0f )
 	{
 		return false;
 	}
-	
+
 	// store the diagonal entry
 	( *this )[numRows - 1][numRows - 1] = idMath::Sqrt( sum );
-	
+
 	return true;
 }
 
@@ -3317,17 +3317,17 @@ idMatX::Cholesky_UpdateDecrement
 bool idMatX::Cholesky_UpdateDecrement( const idVecX& v, int r )
 {
 	idVecX v1;
-	
+
 	assert( numRows == numColumns );
 	assert( v.GetSize() >= numRows );
 	assert( r >= 0 && r < numRows );
-	
+
 	v1.SetData( numRows, VECX_ALLOCA( numRows ) );
-	
+
 	// update the row and column to identity
 	v1 = -v;
 	v1[r] += 1.0f;
-	
+
 	// NOTE:	msvc compiler bug: the this pointer stored in edi is expected to stay
 	//			untouched when calling Cholesky_UpdateRowColumn in the if statement
 #if 0
@@ -3340,10 +3340,10 @@ bool idMatX::Cholesky_UpdateDecrement( const idVecX& v, int r )
 #endif
 		return false;
 	}
-	
+
 	// physically remove the row and column
 	Update_Decrement( r );
-	
+
 	return true;
 }
 
@@ -3358,10 +3358,10 @@ void idMatX::Cholesky_Solve( idVecX& x, const idVecX& b ) const
 {
 	int i, j;
 	double sum;
-	
+
 	assert( numRows == numColumns );
 	assert( x.GetSize() >= numRows && b.GetSize() >= numRows );
-	
+
 	// solve L
 	for( i = 0; i < numRows; i++ )
 	{
@@ -3372,7 +3372,7 @@ void idMatX::Cholesky_Solve( idVecX& x, const idVecX& b ) const
 		}
 		x[i] = sum / ( *this )[i][i];
 	}
-	
+
 	// solve Lt
 	for( i = numRows - 1; i >= 0; i-- )
 	{
@@ -3396,17 +3396,17 @@ void idMatX::Cholesky_Inverse( idMatX& inv ) const
 {
 	int i, j;
 	idVecX x, b;
-	
+
 	assert( numRows == numColumns );
-	
+
 	x.SetData( numRows, VECX_ALLOCA( numRows ) );
 	b.SetData( numRows, VECX_ALLOCA( numRows ) );
 	b.Zero();
 	inv.SetSize( numRows, numColumns );
-	
+
 	for( i = 0; i < numRows; i++ )
 	{
-	
+
 		b[i] = 1.0f;
 		Cholesky_Solve( x, b );
 		for( j = 0; j < numRows; j++ )
@@ -3428,12 +3428,12 @@ void idMatX::Cholesky_MultiplyFactors( idMatX& m ) const
 {
 	int r, i, j;
 	double sum;
-	
+
 	m.SetSize( numRows, numColumns );
-	
+
 	for( r = 0; r < numRows; r++ )
 	{
-	
+
 		// calculate row of matrix
 		for( i = 0; i < numRows; i++ )
 		{
@@ -3464,14 +3464,14 @@ bool idMatX::LDLT_Factor()
 	int i, j, k;
 	float* v;
 	double d, sum;
-	
+
 	assert( numRows == numColumns );
-	
+
 	v = ( float* ) _alloca16( numRows * sizeof( float ) );
-	
+
 	for( i = 0; i < numRows; i++ )
 	{
-	
+
 		sum = ( *this )[i][i];
 		for( j = 0; j < i; j++ )
 		{
@@ -3479,15 +3479,15 @@ bool idMatX::LDLT_Factor()
 			v[j] = ( *this )[j][j] * d;
 			sum -= v[j] * d;
 		}
-		
+
 		if( sum == 0.0f )
 		{
 			return false;
 		}
-		
+
 		( *this )[i][i] = sum;
 		d = 1.0f / sum;
-		
+
 		for( j = i + 1; j < numRows; j++ )
 		{
 			sum = ( *this )[j][i];
@@ -3498,7 +3498,7 @@ bool idMatX::LDLT_Factor()
 			( *this )[j][i] = sum * d;
 		}
 	}
-	
+
 	return true;
 }
 
@@ -3515,41 +3515,41 @@ bool idMatX::LDLT_UpdateRankOne( const idVecX& v, float alpha, int offset )
 	int i, j;
 	float* y;
 	double diag, newDiag, beta, p, d;
-	
+
 	assert( numRows == numColumns );
 	assert( v.GetSize() >= numRows );
 	assert( offset >= 0 && offset < numRows );
-	
+
 	y = ( float* ) _alloca16( v.GetSize() * sizeof( float ) );
 	memcpy( y, v.ToFloatPtr(), v.GetSize() * sizeof( float ) );
-	
+
 	for( i = offset; i < numColumns; i++ )
 	{
 		p = y[i];
 		diag = ( *this )[i][i];
 		( *this )[i][i] = newDiag = diag + alpha * p * p;
-		
+
 		if( newDiag == 0.0f )
 		{
 			return false;
 		}
-		
+
 		alpha /= newDiag;
 		beta = p * alpha;
 		alpha *= diag;
-		
+
 		for( j = i + 1; j < numRows; j++ )
 		{
-		
+
 			d = ( *this )[j][i];
-			
+
 			y[j] -= p * d;
 			d += beta * y[j];
-			
+
 			( *this )[j][i] = d;
 		}
 	}
-	
+
 	return true;
 }
 
@@ -3572,16 +3572,16 @@ bool idMatX::LDLT_UpdateRowColumn( const idVecX& v, int r )
 	double sum;
 	float* original, *y;
 	idVecX addSub;
-	
+
 	assert( numRows == numColumns );
 	assert( v.GetSize() >= numRows );
 	assert( r >= 0 && r < numRows );
-	
+
 	addSub.SetData( numColumns, ( float* ) _alloca16( numColumns * sizeof( float ) ) );
-	
+
 	if( r == 0 )
 	{
-	
+
 		if( numColumns == 1 )
 		{
 			( *this )[0][0] += v[0];
@@ -3591,14 +3591,14 @@ bool idMatX::LDLT_UpdateRowColumn( const idVecX& v, int r )
 		{
 			addSub[i] = v[i];
 		}
-		
+
 	}
 	else
 	{
-	
+
 		original = ( float* ) _alloca16( numColumns * sizeof( float ) );
 		y = ( float* ) _alloca16( numColumns * sizeof( float ) );
-		
+
 		// calculate original row/column of matrix
 		for( i = 0; i < r; i++ )
 		{
@@ -3624,7 +3624,7 @@ bool idMatX::LDLT_UpdateRowColumn( const idVecX& v, int r )
 			}
 			original[i] = sum;
 		}
-		
+
 		// solve for y in L * y = original + v
 		for( i = 0; i < r; i++ )
 		{
@@ -3635,13 +3635,13 @@ bool idMatX::LDLT_UpdateRowColumn( const idVecX& v, int r )
 			}
 			y[i] = sum;
 		}
-		
+
 		// calculate new row of L
 		for( i = 0; i < r; i++ )
 		{
 			( *this )[r][i] = y[i] / ( *this )[i][i];
 		}
-		
+
 		// if the last row/column of the matrix is updated
 		if( r == numColumns - 1 )
 		{
@@ -3658,7 +3658,7 @@ bool idMatX::LDLT_UpdateRowColumn( const idVecX& v, int r )
 			( *this )[r][r] = sum;
 			return true;
 		}
-		
+
 		// calculate the row/column to be added to the lower right sub matrix starting at (r, r)
 		for( i = 0; i < r; i++ )
 		{
@@ -3681,17 +3681,17 @@ bool idMatX::LDLT_UpdateRowColumn( const idVecX& v, int r )
 			addSub[i] = v[i] - ( sum - original[i] );
 		}
 	}
-	
+
 	// add row/column to the lower right sub matrix starting at (r, r)
-	
+
 #if 0
-	
+
 	idVecX v1, v2;
 	double d;
-	
+
 	v1.SetData( numColumns, ( float* ) _alloca16( numColumns * sizeof( float ) ) );
 	v2.SetData( numColumns, ( float* ) _alloca16( numColumns * sizeof( float ) ) );
-	
+
 	d = idMath::SQRT_1OVER2;
 	v1[r] = ( 0.5f * addSub[r] + 1.0f ) * d;
 	v2[r] = ( 0.5f * addSub[r] - 1.0f ) * d;
@@ -3699,7 +3699,7 @@ bool idMatX::LDLT_UpdateRowColumn( const idVecX& v, int r )
 	{
 		v1[i] = v2[i] = addSub[i] * d;
 	}
-	
+
 	// update
 	if( !LDLT_UpdateRankOne( v1, 1.0f, r ) )
 	{
@@ -3710,15 +3710,15 @@ bool idMatX::LDLT_UpdateRowColumn( const idVecX& v, int r )
 	{
 		return false;
 	}
-	
+
 #else
-	
+
 	float* v1, *v2;
 	double d, diag, newDiag, p1, p2, alpha1, alpha2, beta1, beta2;
-	
+
 	v1 = ( float* ) _alloca16( numColumns * sizeof( float ) );
 	v2 = ( float* ) _alloca16( numColumns * sizeof( float ) );
-	
+
 	d = idMath::SQRT_1OVER2;
 	v1[r] = ( 0.5f * addSub[r] + 1.0f ) * d;
 	v2[r] = ( 0.5f * addSub[r] - 1.0f ) * d;
@@ -3726,59 +3726,59 @@ bool idMatX::LDLT_UpdateRowColumn( const idVecX& v, int r )
 	{
 		v1[i] = v2[i] = addSub[i] * d;
 	}
-	
+
 	alpha1 = 1.0f;
 	alpha2 = -1.0f;
-	
+
 	// simultaneous update/downdate of the sub matrix starting at (r, r)
 	for( i = r; i < numColumns; i++ )
 	{
-	
+
 		diag = ( *this )[i][i];
 		p1 = v1[i];
 		newDiag = diag + alpha1 * p1 * p1;
-	
+
 		if( newDiag == 0.0f )
 		{
 			return false;
 		}
-	
+
 		alpha1 /= newDiag;
 		beta1 = p1 * alpha1;
 		alpha1 *= diag;
-	
+
 		diag = newDiag;
 		p2 = v2[i];
 		newDiag = diag + alpha2 * p2 * p2;
-	
+
 		if( newDiag == 0.0f )
 		{
 			return false;
 		}
-	
+
 		alpha2 /= newDiag;
 		beta2 = p2 * alpha2;
 		alpha2 *= diag;
-	
+
 		( *this )[i][i] = newDiag;
-	
+
 		for( j = i + 1; j < numRows; j++ )
 		{
-	
+
 			d = ( *this )[j][i];
-	
+
 			v1[j] -= p1 * d;
 			d += beta1 * v1[j];
-	
+
 			v2[j] -= p2 * d;
 			d += beta2 * v2[j];
-	
+
 			( *this )[j][i] = d;
 		}
 	}
-	
+
 #endif
-	
+
 	return true;
 }
 
@@ -3799,14 +3799,14 @@ bool idMatX::LDLT_UpdateIncrement( const idVecX& v )
 	int i, j;
 	float* x;
 	double sum, d;
-	
+
 	assert( numRows == numColumns );
 	assert( v.GetSize() >= numRows + 1 );
-	
+
 	ChangeSize( numRows + 1, numColumns + 1, false );
-	
+
 	x = ( float* ) _alloca16( numRows * sizeof( float ) );
-	
+
 	// solve for x in L * x = v
 	for( i = 0; i < numRows - 1; i++ )
 	{
@@ -3817,7 +3817,7 @@ bool idMatX::LDLT_UpdateIncrement( const idVecX& v )
 		}
 		x[i] = sum;
 	}
-	
+
 	// calculate new row of L and calculate the diagonal entry
 	sum = v[numRows - 1];
 	for( i = 0; i < numRows - 1; i++ )
@@ -3825,15 +3825,15 @@ bool idMatX::LDLT_UpdateIncrement( const idVecX& v )
 		( *this )[numRows - 1][i] = d = x[i] / ( *this )[i][i];
 		sum -= d * x[i];
 	}
-	
+
 	if( sum == 0.0f )
 	{
 		return false;
 	}
-	
+
 	// store the diagonal entry
 	( *this )[numRows - 1][numRows - 1] = sum;
-	
+
 	return true;
 }
 
@@ -3848,17 +3848,17 @@ idMatX::LDLT_UpdateDecrement
 bool idMatX::LDLT_UpdateDecrement( const idVecX& v, int r )
 {
 	idVecX v1;
-	
+
 	assert( numRows == numColumns );
 	assert( v.GetSize() >= numRows );
 	assert( r >= 0 && r < numRows );
-	
+
 	v1.SetData( numRows, VECX_ALLOCA( numRows ) );
-	
+
 	// update the row and column to identity
 	v1 = -v;
 	v1[r] += 1.0f;
-	
+
 	// NOTE:	msvc compiler bug: the this pointer stored in edi is expected to stay
 	//			untouched when calling LDLT_UpdateRowColumn in the if statement
 #if 0
@@ -3871,10 +3871,10 @@ bool idMatX::LDLT_UpdateDecrement( const idVecX& v, int r )
 #endif
 		return false;
 	}
-	
+
 	// physically remove the row and column
 	Update_Decrement( r );
-	
+
 	return true;
 }
 
@@ -3889,10 +3889,10 @@ void idMatX::LDLT_Solve( idVecX& x, const idVecX& b ) const
 {
 	int i, j;
 	double sum;
-	
+
 	assert( numRows == numColumns );
 	assert( x.GetSize() >= numRows && b.GetSize() >= numRows );
-	
+
 	// solve L
 	for( i = 0; i < numRows; i++ )
 	{
@@ -3903,13 +3903,13 @@ void idMatX::LDLT_Solve( idVecX& x, const idVecX& b ) const
 		}
 		x[i] = sum;
 	}
-	
+
 	// solve D
 	for( i = 0; i < numRows; i++ )
 	{
 		x[i] /= ( *this )[i][i];
 	}
-	
+
 	// solve Lt
 	for( i = numRows - 2; i >= 0; i-- )
 	{
@@ -3933,17 +3933,17 @@ void idMatX::LDLT_Inverse( idMatX& inv ) const
 {
 	int i, j;
 	idVecX x, b;
-	
+
 	assert( numRows == numColumns );
-	
+
 	x.SetData( numRows, VECX_ALLOCA( numRows ) );
 	b.SetData( numRows, VECX_ALLOCA( numRows ) );
 	b.Zero();
 	inv.SetSize( numRows, numColumns );
-	
+
 	for( i = 0; i < numRows; i++ )
 	{
-	
+
 		b[i] = 1.0f;
 		LDLT_Solve( x, b );
 		for( j = 0; j < numRows; j++ )
@@ -3964,7 +3964,7 @@ idMatX::LDLT_UnpackFactors
 void idMatX::LDLT_UnpackFactors( idMatX& L, idMatX& D ) const
 {
 	int i, j;
-	
+
 	L.Zero( numRows, numColumns );
 	D.Zero( numRows, numColumns );
 	for( i = 0; i < numRows; i++ )
@@ -3990,13 +3990,13 @@ void idMatX::LDLT_MultiplyFactors( idMatX& m ) const
 	int r, i, j;
 	float* v;
 	double sum;
-	
+
 	v = ( float* ) _alloca16( numRows * sizeof( float ) );
 	m.SetSize( numRows, numColumns );
-	
+
 	for( r = 0; r < numRows; r++ )
 	{
-	
+
 		// calculate row of matrix
 		for( i = 0; i < r; i++ )
 		{
@@ -4033,7 +4033,7 @@ idMatX::TriDiagonal_ClearTriangles
 void idMatX::TriDiagonal_ClearTriangles()
 {
 	int i, j;
-	
+
 	assert( numRows == numColumns );
 	for( i = 0; i < numRows - 2; i++ )
 	{
@@ -4057,12 +4057,12 @@ bool idMatX::TriDiagonal_Solve( idVecX& x, const idVecX& b ) const
 	int i;
 	float d;
 	idVecX tmp;
-	
+
 	assert( numRows == numColumns );
 	assert( x.GetSize() >= numRows && b.GetSize() >= numRows );
-	
+
 	tmp.SetData( numRows, VECX_ALLOCA( numRows ) );
-	
+
 	d = ( *this )[0][0];
 	if( d == 0.0f )
 	{
@@ -4099,17 +4099,17 @@ void idMatX::TriDiagonal_Inverse( idMatX& inv ) const
 {
 	int i, j;
 	idVecX x, b;
-	
+
 	assert( numRows == numColumns );
-	
+
 	x.SetData( numRows, VECX_ALLOCA( numRows ) );
 	b.SetData( numRows, VECX_ALLOCA( numRows ) );
 	b.Zero();
 	inv.SetSize( numRows, numColumns );
-	
+
 	for( i = 0; i < numRows; i++ )
 	{
-	
+
 		b[i] = 1.0f;
 		TriDiagonal_Solve( x, b );
 		for( j = 0; j < numRows; j++ )
@@ -4135,17 +4135,17 @@ void idMatX::HouseholderReduction( idVecX& diag, idVecX& subd )
 {
 	int i0, i1, i2, i3;
 	float h, f, g, invH, halfFdivH, scale, invScale, sum;
-	
+
 	assert( numRows == numColumns );
-	
+
 	diag.SetSize( numRows );
 	subd.SetSize( numRows );
-	
+
 	for( i0 = numRows - 1, i3 = numRows - 2; i0 >= 1; i0--, i3-- )
 	{
 		h = 0.0f;
 		scale = 0.0f;
-		
+
 		if( i3 > 0 )
 		{
 			for( i2 = 0; i2 <= i3; i2++ )
@@ -4207,10 +4207,10 @@ void idMatX::HouseholderReduction( idVecX& diag, idVecX& subd )
 		{
 			subd[i0] = ( *this )[i0][i3];
 		}
-		
+
 		diag[i0] = h;
 	}
-	
+
 	diag[0] = 0.0f;
 	subd[0] = 0.0f;
 	for( i0 = 0, i3 = -1; i0 <= numRows - 1; i0++, i3++ )
@@ -4238,7 +4238,7 @@ void idMatX::HouseholderReduction( idVecX& diag, idVecX& subd )
 			( *this )[i0][i1] = 0.0f;
 		}
 	}
-	
+
 	// re-order
 	for( i0 = 1, i3 = 0; i0 < numRows; i0++, i3++ )
 	{
@@ -4263,9 +4263,9 @@ bool idMatX::QL( idVecX& diag, idVecX& subd )
 	const int maxIter = 32;
 	int i0, i1, i2, i3;
 	float a, b, f, g, r, p, s, c;
-	
+
 	assert( numRows == numColumns );
-	
+
 	for( i0 = 0; i0 < numRows; i0++ )
 	{
 		for( i1 = 0; i1 < maxIter; i1++ )
@@ -4282,7 +4282,7 @@ bool idMatX::QL( idVecX& diag, idVecX& subd )
 			{
 				break;
 			}
-			
+
 			g = ( diag[i0 + 1] - diag[i0] ) / ( 2.0f * subd[i0] );
 			r = idMath::Sqrt( g * g + 1.0f );
 			if( g < 0.0f )
@@ -4321,7 +4321,7 @@ bool idMatX::QL( idVecX& diag, idVecX& subd )
 				p = s * r;
 				diag[i3 + 1] = g + p;
 				g = c * r - b;
-				
+
 				for( int i4 = 0; i4 < numRows; i4++ )
 				{
 					f = ( *this )[i4][i3 + 1];
@@ -4355,21 +4355,21 @@ bool idMatX::Eigen_SolveSymmetricTriDiagonal( idVecX& eigenValues )
 {
 	int i;
 	idVecX subd;
-	
+
 	assert( numRows == numColumns );
-	
+
 	subd.SetData( numRows, VECX_ALLOCA( numRows ) );
 	eigenValues.SetSize( numRows );
-	
+
 	for( i = 0; i < numRows - 1; i++ )
 	{
 		eigenValues[i] = ( *this )[i][i];
 		subd[i] = ( *this )[i + 1][i];
 	}
 	eigenValues[numRows - 1] = ( *this )[numRows - 1][numRows - 1];
-	
+
 	Identity();
-	
+
 	return QL( eigenValues, subd );
 }
 
@@ -4386,12 +4386,12 @@ idMatX::Eigen_SolveSymmetric
 bool idMatX::Eigen_SolveSymmetric( idVecX& eigenValues )
 {
 	idVecX subd;
-	
+
 	assert( numRows == numColumns );
-	
+
 	subd.SetData( numRows, VECX_ALLOCA( numRows ) );
 	eigenValues.SetSize( numRows );
-	
+
 	HouseholderReduction( eigenValues, subd );
 	return QL( eigenValues, subd );
 }
@@ -4410,12 +4410,12 @@ void idMatX::HessenbergReduction( idMatX& H )
 	int high = numRows - 1;
 	float scale, f, g, h;
 	idVecX v;
-	
+
 	v.SetData( numRows, VECX_ALLOCA( numRows ) );
-	
+
 	for( m = low + 1; m <= high - 1; m++ )
 	{
-	
+
 		scale = 0.0f;
 		for( i = m; i <= high; i++ )
 		{
@@ -4423,7 +4423,7 @@ void idMatX::HessenbergReduction( idMatX& H )
 		}
 		if( scale != 0.0f )
 		{
-		
+
 			// compute Householder transformation.
 			h = 0.0f;
 			for( i = high; i >= m; i-- )
@@ -4438,7 +4438,7 @@ void idMatX::HessenbergReduction( idMatX& H )
 			}
 			h = h - v[m] * g;
 			v[m] = v[m] - g;
-			
+
 			// apply Householder similarity transformation
 			// H = (I-u*u'/h)*H*(I-u*u')/h)
 			for( j = m; j < numRows; j++ )
@@ -4454,7 +4454,7 @@ void idMatX::HessenbergReduction( idMatX& H )
 					H[i][j] -= f * v[i];
 				}
 			}
-			
+
 			for( i = 0; i <= high; i++ )
 			{
 				f = 0.0f;
@@ -4472,7 +4472,7 @@ void idMatX::HessenbergReduction( idMatX& H )
 			H[m][m - 1] = scale * g;
 		}
 	}
-	
+
 	// accumulate transformations
 	Identity();
 	for( int m = high - 1; m >= low + 1; m-- )
@@ -4542,7 +4542,7 @@ bool idMatX::HessenbergToRealSchur( idMatX& H, idVecX& realEigenValues, idVecX& 
 	int high = numRows - 1;
 	float eps = 2e-16f, exshift = 0.0f;
 	float p = 0.0f, q = 0.0f, r = 0.0f, s = 0.0f, z = 0.0f, t, w, x, y;
-	
+
 	// store roots isolated by balanc and compute matrix norm
 	float norm = 0.0f;
 	for( i = 0; i < numRows; i++ )
@@ -4557,11 +4557,11 @@ bool idMatX::HessenbergToRealSchur( idMatX& H, idVecX& realEigenValues, idVecX& 
 			norm = norm + idMath::Fabs( H[i][j] );
 		}
 	}
-	
+
 	int iter = 0;
 	while( n >= low )
 	{
-	
+
 		// look for single small sub-diagonal element
 		int l = n;
 		while( l > low )
@@ -4577,7 +4577,7 @@ bool idMatX::HessenbergToRealSchur( idMatX& H, idVecX& realEigenValues, idVecX& 
 			}
 			l--;
 		}
-		
+
 		// check for convergence
 		if( l == n )  			// one root found
 		{
@@ -4596,7 +4596,7 @@ bool idMatX::HessenbergToRealSchur( idMatX& H, idVecX& realEigenValues, idVecX& 
 			H[n][n] = H[n][n] + exshift;
 			H[n - 1][n - 1] = H[n - 1][n - 1] + exshift;
 			x = H[n][n];
-			
+
 			if( q >= 0.0f )  		// real pair
 			{
 				if( p >= 0.0f )
@@ -4622,7 +4622,7 @@ bool idMatX::HessenbergToRealSchur( idMatX& H, idVecX& realEigenValues, idVecX& 
 				r = idMath::Sqrt( p * p + q * q );
 				p = p / r;
 				q = q / r;
-				
+
 				// modify row
 				for( j = n - 1; j < numRows; j++ )
 				{
@@ -4630,7 +4630,7 @@ bool idMatX::HessenbergToRealSchur( idMatX& H, idVecX& realEigenValues, idVecX& 
 					H[n - 1][j] = q * z + p * H[n][j];
 					H[n][j] = q * H[n][j] - p * z;
 				}
-				
+
 				// modify column
 				for( i = 0; i <= n; i++ )
 				{
@@ -4638,7 +4638,7 @@ bool idMatX::HessenbergToRealSchur( idMatX& H, idVecX& realEigenValues, idVecX& 
 					H[i][n - 1] = q * z + p * H[i][n];
 					H[i][n] = q * H[i][n] - p * z;
 				}
-				
+
 				// accumulate transformations
 				for( i = low; i <= high; i++ )
 				{
@@ -4656,11 +4656,11 @@ bool idMatX::HessenbergToRealSchur( idMatX& H, idVecX& realEigenValues, idVecX& 
 			}
 			n = n - 2;
 			iter = 0;
-			
+
 		}
 		else  	// no convergence yet
 		{
-		
+
 			// form shift
 			x = H[n][n];
 			y = 0.0f;
@@ -4670,7 +4670,7 @@ bool idMatX::HessenbergToRealSchur( idMatX& H, idVecX& realEigenValues, idVecX& 
 				y = H[n - 1][n - 1];
 				w = H[n][n - 1] * H[n - 1][n];
 			}
-			
+
 			// Wilkinson's original ad hoc shift
 			if( iter == 10 )
 			{
@@ -4683,7 +4683,7 @@ bool idMatX::HessenbergToRealSchur( idMatX& H, idVecX& realEigenValues, idVecX& 
 				x = y = 0.75f * s;
 				w = -0.4375f * s * s;
 			}
-			
+
 			// new ad hoc shift
 			if( iter == 30 )
 			{
@@ -4705,9 +4705,9 @@ bool idMatX::HessenbergToRealSchur( idMatX& H, idVecX& realEigenValues, idVecX& 
 					x = y = w = 0.964f;
 				}
 			}
-			
+
 			iter = iter + 1;
-			
+
 			// look for two consecutive small sub-diagonal elements
 			int m;
 			for( m = n - 2; m >= l; m-- )
@@ -4732,7 +4732,7 @@ bool idMatX::HessenbergToRealSchur( idMatX& H, idVecX& realEigenValues, idVecX& 
 					break;
 				}
 			}
-			
+
 			for( i = m + 2; i <= n; i++ )
 			{
 				H[i][i - 2] = 0.0f;
@@ -4741,7 +4741,7 @@ bool idMatX::HessenbergToRealSchur( idMatX& H, idVecX& realEigenValues, idVecX& 
 					H[i][i - 3] = 0.0f;
 				}
 			}
-			
+
 			// double QR step involving rows l:n and columns m:n
 			for( k = m; k <= n - 1; k++ )
 			{
@@ -4784,7 +4784,7 @@ bool idMatX::HessenbergToRealSchur( idMatX& H, idVecX& realEigenValues, idVecX& 
 					z = r / s;
 					q = q / p;
 					r = r / p;
-					
+
 					// modify row
 					for( j = k; j < numRows; j++ )
 					{
@@ -4797,7 +4797,7 @@ bool idMatX::HessenbergToRealSchur( idMatX& H, idVecX& realEigenValues, idVecX& 
 						H[k][j] = H[k][j] - p * x;
 						H[k + 1][j] = H[k + 1][j] - p * y;
 					}
-					
+
 					// modify column
 					for( i = 0; i <= Min( n, k + 3 ); i++ )
 					{
@@ -4810,7 +4810,7 @@ bool idMatX::HessenbergToRealSchur( idMatX& H, idVecX& realEigenValues, idVecX& 
 						H[i][k] = H[i][k] - p;
 						H[i][k + 1] = H[i][k + 1] - p * q;
 					}
-					
+
 					// accumulate transformations
 					for( i = low; i <= high; i++ )
 					{
@@ -4827,18 +4827,18 @@ bool idMatX::HessenbergToRealSchur( idMatX& H, idVecX& realEigenValues, idVecX& 
 			}
 		}
 	}
-	
+
 	// backsubstitute to find vectors of upper triangular form
 	if( norm == 0.0f )
 	{
 		return false;
 	}
-	
+
 	for( n = numRows - 1; n >= 0; n-- )
 	{
 		p = realEigenValues[n];
 		q = imaginaryEigenValues[n];
-		
+
 		if( q == 0.0f )  		// real vector
 		{
 			int l = n;
@@ -4886,7 +4886,7 @@ bool idMatX::HessenbergToRealSchur( idMatX& H, idVecX& realEigenValues, idVecX& 
 							H[i + 1][n] = ( -s - y * t ) / z;
 						}
 					}
-					
+
 					// overflow control
 					t = idMath::Fabs( H[i][n] );
 					if( ( eps * t ) * t > 1 )
@@ -4902,7 +4902,7 @@ bool idMatX::HessenbergToRealSchur( idMatX& H, idVecX& realEigenValues, idVecX& 
 		else if( q < 0.0f )  	// complex vector
 		{
 			int l = n - 1;
-			
+
 			// last vector component imaginary so matrix is triangular
 			if( idMath::Fabs( H[n][n - 1] ) > idMath::Fabs( H[n - 1][n] ) )
 			{
@@ -4926,7 +4926,7 @@ bool idMatX::HessenbergToRealSchur( idMatX& H, idVecX& realEigenValues, idVecX& 
 					sa = sa + H[i][j] * H[j][n];
 				}
 				w = H[i][i] - p;
-				
+
 				if( imaginaryEigenValues[i] < 0.0f )
 				{
 					z = w;
@@ -4962,7 +4962,7 @@ bool idMatX::HessenbergToRealSchur( idMatX& H, idVecX& realEigenValues, idVecX& 
 							ComplexDivision( -r - y * H[i][n - 1], -s - y * H[i][n], z, q, H[i + 1][n - 1], H[i + 1][n] );
 						}
 					}
-					
+
 					// overflow control
 					t = Max( idMath::Fabs( H[i][n - 1] ), idMath::Fabs( H[i][n] ) );
 					if( ( eps * t ) * t > 1 )
@@ -4977,7 +4977,7 @@ bool idMatX::HessenbergToRealSchur( idMatX& H, idVecX& realEigenValues, idVecX& 
 			}
 		}
 	}
-	
+
 	// vectors of isolated roots
 	for( i = 0; i < numRows; i++ )
 	{
@@ -4989,7 +4989,7 @@ bool idMatX::HessenbergToRealSchur( idMatX& H, idVecX& realEigenValues, idVecX& 
 			}
 		}
 	}
-	
+
 	// back transformation to get eigenvectors of original matrix
 	for( j = numRows - 1; j >= low; j-- )
 	{
@@ -5003,7 +5003,7 @@ bool idMatX::HessenbergToRealSchur( idMatX& H, idVecX& realEigenValues, idVecX& 
 			( *this )[i][j] = z;
 		}
 	}
-	
+
 	return true;
 }
 
@@ -5019,17 +5019,17 @@ idMatX::Eigen_Solve
 bool idMatX::Eigen_Solve( idVecX& realEigenValues, idVecX& imaginaryEigenValues )
 {
 	idMatX H;
-	
+
 	assert( numRows == numColumns );
-	
+
 	realEigenValues.SetSize( numRows );
 	imaginaryEigenValues.SetSize( numRows );
-	
+
 	H = *this;
-	
+
 	// reduce to Hessenberg form
 	HessenbergReduction( H );
-	
+
 	// reduce Hessenberg to real Schur form
 	return HessenbergToRealSchur( H, realEigenValues, imaginaryEigenValues );
 }
@@ -5098,16 +5098,16 @@ float idMatX::DeterminantGeneric() const
 	int* index;
 	float det;
 	idMatX tmp;
-	
+
 	index = ( int* ) _alloca16( numRows * sizeof( int ) );
 	tmp.SetData( numRows, numColumns, MATX_ALLOCA( numRows * numColumns ) );
 	tmp = *this;
-	
+
 	if( !tmp.LU_Factor( index, &det ) )
 	{
 		return 0.0f;
 	}
-	
+
 	return det;
 }
 
@@ -5121,23 +5121,23 @@ bool idMatX::InverseSelfGeneric()
 	int i, j, *index;
 	idMatX tmp;
 	idVecX x, b;
-	
+
 	index = ( int* ) _alloca16( numRows * sizeof( int ) );
 	tmp.SetData( numRows, numColumns, MATX_ALLOCA( numRows * numColumns ) );
 	tmp = *this;
-	
+
 	if( !tmp.LU_Factor( index ) )
 	{
 		return false;
 	}
-	
+
 	x.SetData( numRows, VECX_ALLOCA( numRows ) );
 	b.SetData( numRows, VECX_ALLOCA( numRows ) );
 	b.Zero();
-	
+
 	for( i = 0; i < numRows; i++ )
 	{
-	
+
 		b[i] = 1.0f;
 		tmp.LU_Solve( x, b, index );
 		for( j = 0; j < numRows; j++ )
@@ -5159,158 +5159,158 @@ void idMatX::Test()
 	idMatX original, m1, m2, m3, q1, q2, r1, r2;
 	idVecX v, w, u, c, d;
 	int offset, size, *index1, *index2;
-	
+
 	size = 6;
 	original.Random( size, size, 0 );
 	original = original * original.Transpose();
-	
+
 	index1 = ( int* ) _alloca16( ( size + 1 ) * sizeof( index1[0] ) );
 	index2 = ( int* ) _alloca16( ( size + 1 ) * sizeof( index2[0] ) );
-	
+
 	/*
 		idMatX::LowerTriangularInverse
 	*/
-	
+
 	m1 = original;
 	m1.ClearUpperTriangle();
 	m2 = m1;
-	
+
 	m2.InverseSelf();
 	m1.LowerTriangularInverse();
-	
+
 	if( !m1.Compare( m2, 1e-4f ) )
 	{
 		idLib::common->Warning( "idMatX::LowerTriangularInverse failed" );
 	}
-	
+
 	/*
 		idMatX::UpperTriangularInverse
 	*/
-	
+
 	m1 = original;
 	m1.ClearLowerTriangle();
 	m2 = m1;
-	
+
 	m2.InverseSelf();
 	m1.UpperTriangularInverse();
-	
+
 	if( !m1.Compare( m2, 1e-4f ) )
 	{
 		idLib::common->Warning( "idMatX::UpperTriangularInverse failed" );
 	}
-	
+
 	/*
 		idMatX::Inverse_GaussJordan
 	*/
-	
+
 	m1 = original;
-	
+
 	m1.Inverse_GaussJordan();
 	m1 *= original;
-	
+
 	if( !m1.IsIdentity( 1e-4f ) )
 	{
 		idLib::common->Warning( "idMatX::Inverse_GaussJordan failed" );
 	}
-	
+
 	/*
 		idMatX::Inverse_UpdateRankOne
 	*/
-	
+
 	m1 = original;
 	m2 = original;
-	
+
 	w.Random( size, 1 );
 	v.Random( size, 2 );
-	
+
 	// invert m1
 	m1.Inverse_GaussJordan();
-	
+
 	// modify and invert m2
 	m2.Update_RankOne( v, w, 1.0f );
 	if( !m2.Inverse_GaussJordan() )
 	{
 		assert( 0 );
 	}
-	
+
 	// update inverse of m1
 	m1.Inverse_UpdateRankOne( v, w, 1.0f );
-	
+
 	if( !m1.Compare( m2, 1e-4f ) )
 	{
 		idLib::common->Warning( "idMatX::Inverse_UpdateRankOne failed" );
 	}
-	
+
 	/*
 		idMatX::Inverse_UpdateRowColumn
 	*/
-	
+
 	for( offset = 0; offset < size; offset++ )
 	{
 		m1 = original;
 		m2 = original;
-		
+
 		v.Random( size, 1 );
 		w.Random( size, 2 );
 		w[offset] = 0.0f;
-		
+
 		// invert m1
 		m1.Inverse_GaussJordan();
-		
+
 		// modify and invert m2
 		m2.Update_RowColumn( v, w, offset );
 		if( !m2.Inverse_GaussJordan() )
 		{
 			assert( 0 );
 		}
-		
+
 		// update inverse of m1
 		m1.Inverse_UpdateRowColumn( v, w, offset );
-		
+
 		if( !m1.Compare( m2, 1e-3f ) )
 		{
 			idLib::common->Warning( "idMatX::Inverse_UpdateRowColumn failed" );
 		}
 	}
-	
+
 	/*
 		idMatX::Inverse_UpdateIncrement
 	*/
-	
+
 	m1 = original;
 	m2 = original;
-	
+
 	v.Random( size + 1, 1 );
 	w.Random( size + 1, 2 );
 	w[size] = 0.0f;
-	
+
 	// invert m1
 	m1.Inverse_GaussJordan();
-	
+
 	// modify and invert m2
 	m2.Update_Increment( v, w );
 	if( !m2.Inverse_GaussJordan() )
 	{
 		assert( 0 );
 	}
-	
+
 	// update inverse of m1
 	m1.Inverse_UpdateIncrement( v, w );
-	
+
 	if( !m1.Compare( m2, 1e-4f ) )
 	{
 		idLib::common->Warning( "idMatX::Inverse_UpdateIncrement failed" );
 	}
-	
+
 	/*
 		idMatX::Inverse_UpdateDecrement
 	*/
-	
+
 	for( offset = 0; offset < size; offset++ )
 	{
 		m1 = original;
 		m2 = original;
-		
+
 		v.SetSize( 6 );
 		w.SetSize( 6 );
 		for( int i = 0; i < size; i++ )
@@ -5318,54 +5318,54 @@ void idMatX::Test()
 			v[i] = original[i][offset];
 			w[i] = original[offset][i];
 		}
-		
+
 		// invert m1
 		m1.Inverse_GaussJordan();
-		
+
 		// modify and invert m2
 		m2.Update_Decrement( offset );
 		if( !m2.Inverse_GaussJordan() )
 		{
 			assert( 0 );
 		}
-		
+
 		// update inverse of m1
 		m1.Inverse_UpdateDecrement( v, w, offset );
-		
+
 		if( !m1.Compare( m2, 1e-3f ) )
 		{
 			idLib::common->Warning( "idMatX::Inverse_UpdateDecrement failed" );
 		}
 	}
-	
+
 	/*
 		idMatX::LU_Factor
 	*/
-	
+
 	m1 = original;
-	
+
 	m1.LU_Factor( NULL );	// no pivoting
 	m1.LU_UnpackFactors( m2, m3 );
 	m1 = m2 * m3;
-	
+
 	if( !original.Compare( m1, 1e-4f ) )
 	{
 		idLib::common->Warning( "idMatX::LU_Factor failed" );
 	}
-	
+
 	/*
 		idMatX::LU_UpdateRankOne
 	*/
-	
+
 	m1 = original;
 	m2 = original;
-	
+
 	w.Random( size, 1 );
 	v.Random( size, 2 );
-	
+
 	// factor m1
 	m1.LU_Factor( index1 );
-	
+
 	// modify and factor m2
 	m2.Update_RankOne( v, w, 1.0f );
 	if( !m2.LU_Factor( index2 ) )
@@ -5374,33 +5374,33 @@ void idMatX::Test()
 	}
 	m2.LU_MultiplyFactors( m3, index2 );
 	m2 = m3;
-	
+
 	// update factored m1
 	m1.LU_UpdateRankOne( v, w, 1.0f, index1 );
 	m1.LU_MultiplyFactors( m3, index1 );
 	m1 = m3;
-	
+
 	if( !m1.Compare( m2, 1e-4f ) )
 	{
 		idLib::common->Warning( "idMatX::LU_UpdateRankOne failed" );
 	}
-	
+
 	/*
 		idMatX::LU_UpdateRowColumn
 	*/
-	
+
 	for( offset = 0; offset < size; offset++ )
 	{
 		m1 = original;
 		m2 = original;
-		
+
 		v.Random( size, 1 );
 		w.Random( size, 2 );
 		w[offset] = 0.0f;
-		
+
 		// factor m1
 		m1.LU_Factor( index1 );
-		
+
 		// modify and factor m2
 		m2.Update_RowColumn( v, w, offset );
 		if( !m2.LU_Factor( index2 ) )
@@ -5409,32 +5409,32 @@ void idMatX::Test()
 		}
 		m2.LU_MultiplyFactors( m3, index2 );
 		m2 = m3;
-		
+
 		// update m1
 		m1.LU_UpdateRowColumn( v, w, offset, index1 );
 		m1.LU_MultiplyFactors( m3, index1 );
 		m1 = m3;
-		
+
 		if( !m1.Compare( m2, 1e-3f ) )
 		{
 			idLib::common->Warning( "idMatX::LU_UpdateRowColumn failed" );
 		}
 	}
-	
+
 	/*
 		idMatX::LU_UpdateIncrement
 	*/
-	
+
 	m1 = original;
 	m2 = original;
-	
+
 	v.Random( size + 1, 1 );
 	w.Random( size + 1, 2 );
 	w[size] = 0.0f;
-	
+
 	// factor m1
 	m1.LU_Factor( index1 );
-	
+
 	// modify and factor m2
 	m2.Update_Increment( v, w );
 	if( !m2.LU_Factor( index2 ) )
@@ -5443,26 +5443,26 @@ void idMatX::Test()
 	}
 	m2.LU_MultiplyFactors( m3, index2 );
 	m2 = m3;
-	
+
 	// update factored m1
 	m1.LU_UpdateIncrement( v, w, index1 );
 	m1.LU_MultiplyFactors( m3, index1 );
 	m1 = m3;
-	
+
 	if( !m1.Compare( m2, 1e-4f ) )
 	{
 		idLib::common->Warning( "idMatX::LU_UpdateIncrement failed" );
 	}
-	
+
 	/*
 		idMatX::LU_UpdateDecrement
 	*/
-	
+
 	for( offset = 0; offset < size; offset++ )
 	{
 		m1 = original;
 		m2 = original;
-		
+
 		v.SetSize( 6 );
 		w.SetSize( 6 );
 		for( int i = 0; i < size; i++ )
@@ -5470,10 +5470,10 @@ void idMatX::Test()
 			v[i] = original[i][offset];
 			w[i] = original[offset][i];
 		}
-		
+
 		// factor m1
 		m1.LU_Factor( index1 );
-		
+
 		// modify and factor m2
 		m2.Update_Decrement( offset );
 		if( !m2.LU_Factor( index2 ) )
@@ -5482,74 +5482,74 @@ void idMatX::Test()
 		}
 		m2.LU_MultiplyFactors( m3, index2 );
 		m2 = m3;
-		
+
 		u.SetSize( 6 );
 		for( int i = 0; i < size; i++ )
 		{
 			u[i] = original[index1[offset]][i];
 		}
-		
+
 		// update factors of m1
 		m1.LU_UpdateDecrement( v, w, u, offset, index1 );
 		m1.LU_MultiplyFactors( m3, index1 );
 		m1 = m3;
-		
+
 		if( !m1.Compare( m2, 1e-3f ) )
 		{
 			idLib::common->Warning( "idMatX::LU_UpdateDecrement failed" );
 		}
 	}
-	
+
 	/*
 		idMatX::LU_Inverse
 	*/
-	
+
 	m2 = original;
-	
+
 	m2.LU_Factor( NULL );
 	m2.LU_Inverse( m1, NULL );
 	m1 *= original;
-	
+
 	if( !m1.IsIdentity( 1e-4f ) )
 	{
 		idLib::common->Warning( "idMatX::LU_Inverse failed" );
 	}
-	
+
 	/*
 		idMatX::QR_Factor
 	*/
-	
+
 	c.SetSize( size );
 	d.SetSize( size );
-	
+
 	m1 = original;
-	
+
 	m1.QR_Factor( c, d );
 	m1.QR_UnpackFactors( q1, r1, c, d );
 	m1 = q1 * r1;
-	
+
 	if( !original.Compare( m1, 1e-4f ) )
 	{
 		idLib::common->Warning( "idMatX::QR_Factor failed" );
 	}
-	
+
 	/*
 		idMatX::QR_UpdateRankOne
 	*/
-	
+
 	c.SetSize( size );
 	d.SetSize( size );
-	
+
 	m1 = original;
 	m2 = original;
-	
+
 	w.Random( size, 0 );
 	v = w;
-	
+
 	// factor m1
 	m1.QR_Factor( c, d );
 	m1.QR_UnpackFactors( q1, r1, c, d );
-	
+
 	// modify and factor m2
 	m2.Update_RankOne( v, w, 1.0f );
 	if( !m2.QR_Factor( c, d ) )
@@ -5558,36 +5558,36 @@ void idMatX::Test()
 	}
 	m2.QR_UnpackFactors( q2, r2, c, d );
 	m2 = q2 * r2;
-	
+
 	// update factored m1
 	q1.QR_UpdateRankOne( r1, v, w, 1.0f );
 	m1 = q1 * r1;
-	
+
 	if( !m1.Compare( m2, 1e-4f ) )
 	{
 		idLib::common->Warning( "idMatX::QR_UpdateRankOne failed" );
 	}
-	
+
 	/*
 		idMatX::QR_UpdateRowColumn
 	*/
-	
+
 	for( offset = 0; offset < size; offset++ )
 	{
 		c.SetSize( size );
 		d.SetSize( size );
-		
+
 		m1 = original;
 		m2 = original;
-		
+
 		v.Random( size, 1 );
 		w.Random( size, 2 );
 		w[offset] = 0.0f;
-		
+
 		// factor m1
 		m1.QR_Factor( c, d );
 		m1.QR_UnpackFactors( q1, r1, c, d );
-		
+
 		// modify and factor m2
 		m2.Update_RowColumn( v, w, offset );
 		if( !m2.QR_Factor( c, d ) )
@@ -5596,35 +5596,35 @@ void idMatX::Test()
 		}
 		m2.QR_UnpackFactors( q2, r2, c, d );
 		m2 = q2 * r2;
-		
+
 		// update m1
 		q1.QR_UpdateRowColumn( r1, v, w, offset );
 		m1 = q1 * r1;
-		
+
 		if( !m1.Compare( m2, 1e-3f ) )
 		{
 			idLib::common->Warning( "idMatX::QR_UpdateRowColumn failed" );
 		}
 	}
-	
+
 	/*
 		idMatX::QR_UpdateIncrement
 	*/
-	
+
 	c.SetSize( size + 1 );
 	d.SetSize( size + 1 );
-	
+
 	m1 = original;
 	m2 = original;
-	
+
 	v.Random( size + 1, 1 );
 	w.Random( size + 1, 2 );
 	w[size] = 0.0f;
-	
+
 	// factor m1
 	m1.QR_Factor( c, d );
 	m1.QR_UnpackFactors( q1, r1, c, d );
-	
+
 	// modify and factor m2
 	m2.Update_Increment( v, w );
 	if( !m2.QR_Factor( c, d ) )
@@ -5633,28 +5633,28 @@ void idMatX::Test()
 	}
 	m2.QR_UnpackFactors( q2, r2, c, d );
 	m2 = q2 * r2;
-	
+
 	// update factored m1
 	q1.QR_UpdateIncrement( r1, v, w );
 	m1 = q1 * r1;
-	
+
 	if( !m1.Compare( m2, 1e-4f ) )
 	{
 		idLib::common->Warning( "idMatX::QR_UpdateIncrement failed" );
 	}
-	
+
 	/*
 		idMatX::QR_UpdateDecrement
 	*/
-	
+
 	for( offset = 0; offset < size; offset++ )
 	{
 		c.SetSize( size + 1 );
 		d.SetSize( size + 1 );
-		
+
 		m1 = original;
 		m2 = original;
-		
+
 		v.SetSize( 6 );
 		w.SetSize( 6 );
 		for( int i = 0; i < size; i++ )
@@ -5662,11 +5662,11 @@ void idMatX::Test()
 			v[i] = original[i][offset];
 			w[i] = original[offset][i];
 		}
-		
+
 		// factor m1
 		m1.QR_Factor( c, d );
 		m1.QR_UnpackFactors( q1, r1, c, d );
-		
+
 		// modify and factor m2
 		m2.Update_Decrement( offset );
 		if( !m2.QR_Factor( c, d ) )
@@ -5675,92 +5675,92 @@ void idMatX::Test()
 		}
 		m2.QR_UnpackFactors( q2, r2, c, d );
 		m2 = q2 * r2;
-		
+
 		// update factors of m1
 		q1.QR_UpdateDecrement( r1, v, w, offset );
 		m1 = q1 * r1;
-		
+
 		if( !m1.Compare( m2, 1e-3f ) )
 		{
 			idLib::common->Warning( "idMatX::QR_UpdateDecrement failed" );
 		}
 	}
-	
+
 	/*
 		idMatX::QR_Inverse
 	*/
-	
+
 	m2 = original;
-	
+
 	m2.QR_Factor( c, d );
 	m2.QR_Inverse( m1, c, d );
 	m1 *= original;
-	
+
 	if( !m1.IsIdentity( 1e-4f ) )
 	{
 		idLib::common->Warning( "idMatX::QR_Inverse failed" );
 	}
-	
+
 	/*
 		idMatX::SVD_Factor
 	*/
-	
+
 	m1 = original;
 	m3.Zero( size, size );
 	w.Zero( size );
-	
+
 	m1.SVD_Factor( w, m3 );
 	m2.Diag( w );
 	m3.TransposeSelf();
 	m1 = m1 * m2 * m3;
-	
+
 	if( !original.Compare( m1, 1e-4f ) )
 	{
 		idLib::common->Warning( "idMatX::SVD_Factor failed" );
 	}
-	
+
 	/*
 		idMatX::SVD_Inverse
 	*/
-	
+
 	m2 = original;
-	
+
 	m2.SVD_Factor( w, m3 );
 	m2.SVD_Inverse( m1, w, m3 );
 	m1 *= original;
-	
+
 	if( !m1.IsIdentity( 1e-4f ) )
 	{
 		idLib::common->Warning( "idMatX::SVD_Inverse failed" );
 	}
-	
+
 	/*
 		idMatX::Cholesky_Factor
 	*/
-	
+
 	m1 = original;
-	
+
 	m1.Cholesky_Factor();
 	m1.Cholesky_MultiplyFactors( m2 );
-	
+
 	if( !original.Compare( m2, 1e-4f ) )
 	{
 		idLib::common->Warning( "idMatX::Cholesky_Factor failed" );
 	}
-	
+
 	/*
 		idMatX::Cholesky_UpdateRankOne
 	*/
-	
+
 	m1 = original;
 	m2 = original;
-	
+
 	w.Random( size, 0 );
-	
+
 	// factor m1
 	m1.Cholesky_Factor();
 	m1.ClearUpperTriangle();
-	
+
 	// modify and factor m2
 	m2.Update_RankOneSymmetric( w, 1.0f );
 	if( !m2.Cholesky_Factor() )
@@ -5768,32 +5768,32 @@ void idMatX::Test()
 		assert( 0 );
 	}
 	m2.ClearUpperTriangle();
-	
+
 	// update factored m1
 	m1.Cholesky_UpdateRankOne( w, 1.0f, 0 );
-	
+
 	if( !m1.Compare( m2, 1e-4f ) )
 	{
 		idLib::common->Warning( "idMatX::Cholesky_UpdateRankOne failed" );
 	}
-	
+
 	/*
 		idMatX::Cholesky_UpdateRowColumn
 	*/
-	
+
 	for( offset = 0; offset < size; offset++ )
 	{
 		m1 = original;
 		m2 = original;
-		
+
 		// factor m1
 		m1.Cholesky_Factor();
 		m1.ClearUpperTriangle();
-		
+
 		int pdtable[] = { 1, 0, 1, 0, 0, 0 };
 		w.Random( size, pdtable[offset] );
 		w *= 0.1f;
-		
+
 		// modify and factor m2
 		m2.Update_RowColumnSymmetric( w, offset );
 		if( !m2.Cholesky_Factor() )
@@ -5801,137 +5801,137 @@ void idMatX::Test()
 			assert( 0 );
 		}
 		m2.ClearUpperTriangle();
-		
+
 		// update m1
 		m1.Cholesky_UpdateRowColumn( w, offset );
-		
+
 		if( !m1.Compare( m2, 1e-3f ) )
 		{
 			idLib::common->Warning( "idMatX::Cholesky_UpdateRowColumn failed" );
 		}
 	}
-	
+
 	/*
 		idMatX::Cholesky_UpdateIncrement
 	*/
-	
+
 	m1.Random( size + 1, size + 1, 0 );
 	m3 = m1 * m1.Transpose();
-	
+
 	m1.SquareSubMatrix( m3, size );
 	m2 = m1;
-	
+
 	w.SetSize( size + 1 );
 	for( int i = 0; i < size + 1; i++ )
 	{
 		w[i] = m3[size][i];
 	}
-	
+
 	// factor m1
 	m1.Cholesky_Factor();
-	
+
 	// modify and factor m2
 	m2.Update_IncrementSymmetric( w );
 	if( !m2.Cholesky_Factor() )
 	{
 		assert( 0 );
 	}
-	
+
 	// update factored m1
 	m1.Cholesky_UpdateIncrement( w );
-	
+
 	m1.ClearUpperTriangle();
 	m2.ClearUpperTriangle();
-	
+
 	if( !m1.Compare( m2, 1e-4f ) )
 	{
 		idLib::common->Warning( "idMatX::Cholesky_UpdateIncrement failed" );
 	}
-	
+
 	/*
 		idMatX::Cholesky_UpdateDecrement
 	*/
-	
+
 	for( offset = 0; offset < size; offset += size - 1 )
 	{
 		m1 = original;
 		m2 = original;
-		
+
 		v.SetSize( 6 );
 		for( int i = 0; i < size; i++ )
 		{
 			v[i] = original[i][offset];
 		}
-		
+
 		// factor m1
 		m1.Cholesky_Factor();
-		
+
 		// modify and factor m2
 		m2.Update_Decrement( offset );
 		if( !m2.Cholesky_Factor() )
 		{
 			assert( 0 );
 		}
-		
+
 		// update factors of m1
 		m1.Cholesky_UpdateDecrement( v, offset );
-		
+
 		if( !m1.Compare( m2, 1e-3f ) )
 		{
 			idLib::common->Warning( "idMatX::Cholesky_UpdateDecrement failed" );
 		}
 	}
-	
+
 	/*
 		idMatX::Cholesky_Inverse
 	*/
-	
+
 	m2 = original;
-	
+
 	m2.Cholesky_Factor();
 	m2.Cholesky_Inverse( m1 );
 	m1 *= original;
-	
+
 	if( !m1.IsIdentity( 1e-4f ) )
 	{
 		idLib::common->Warning( "idMatX::Cholesky_Inverse failed" );
 	}
-	
+
 	/*
 		idMatX::LDLT_Factor
 	*/
-	
+
 	m1 = original;
-	
+
 	m1.LDLT_Factor();
 	m1.LDLT_MultiplyFactors( m2 );
-	
+
 	if( !original.Compare( m2, 1e-4f ) )
 	{
 		idLib::common->Warning( "idMatX::LDLT_Factor failed" );
 	}
-	
+
 	m1.LDLT_UnpackFactors( m2, m3 );
 	m2 = m2 * m3 * m2.Transpose();
-	
+
 	if( !original.Compare( m2, 1e-4f ) )
 	{
 		idLib::common->Warning( "idMatX::LDLT_Factor failed" );
 	}
-	
+
 	/*
 		idMatX::LDLT_UpdateRankOne
 	*/
-	
+
 	m1 = original;
 	m2 = original;
-	
+
 	w.Random( size, 0 );
-	
+
 	// factor m1
 	m1.LDLT_Factor();
 	m1.ClearUpperTriangle();
-	
+
 	// modify and factor m2
 	m2.Update_RankOneSymmetric( w, 1.0f );
 	if( !m2.LDLT_Factor() )
@@ -5939,30 +5939,30 @@ void idMatX::Test()
 		assert( 0 );
 	}
 	m2.ClearUpperTriangle();
-	
+
 	// update factored m1
 	m1.LDLT_UpdateRankOne( w, 1.0f, 0 );
-	
+
 	if( !m1.Compare( m2, 1e-4f ) )
 	{
 		idLib::common->Warning( "idMatX::LDLT_UpdateRankOne failed" );
 	}
-	
+
 	/*
 		idMatX::LDLT_UpdateRowColumn
 	*/
-	
+
 	for( offset = 0; offset < size; offset++ )
 	{
 		m1 = original;
 		m2 = original;
-		
+
 		w.Random( size, 0 );
-		
+
 		// factor m1
 		m1.LDLT_Factor();
 		m1.ClearUpperTriangle();
-		
+
 		// modify and factor m2
 		m2.Update_RowColumnSymmetric( w, offset );
 		if( !m2.LDLT_Factor() )
@@ -5970,116 +5970,116 @@ void idMatX::Test()
 			assert( 0 );
 		}
 		m2.ClearUpperTriangle();
-		
+
 		// update m1
 		m1.LDLT_UpdateRowColumn( w, offset );
-		
+
 		if( !m1.Compare( m2, 1e-3f ) )
 		{
 			idLib::common->Warning( "idMatX::LDLT_UpdateRowColumn failed" );
 		}
 	}
-	
+
 	/*
 		idMatX::LDLT_UpdateIncrement
 	*/
-	
+
 	m1.Random( size + 1, size + 1, 0 );
 	m3 = m1 * m1.Transpose();
-	
+
 	m1.SquareSubMatrix( m3, size );
 	m2 = m1;
-	
+
 	w.SetSize( size + 1 );
 	for( int i = 0; i < size + 1; i++ )
 	{
 		w[i] = m3[size][i];
 	}
-	
+
 	// factor m1
 	m1.LDLT_Factor();
-	
+
 	// modify and factor m2
 	m2.Update_IncrementSymmetric( w );
 	if( !m2.LDLT_Factor() )
 	{
 		assert( 0 );
 	}
-	
+
 	// update factored m1
 	m1.LDLT_UpdateIncrement( w );
-	
+
 	m1.ClearUpperTriangle();
 	m2.ClearUpperTriangle();
-	
+
 	if( !m1.Compare( m2, 1e-4f ) )
 	{
 		idLib::common->Warning( "idMatX::LDLT_UpdateIncrement failed" );
 	}
-	
+
 	/*
 		idMatX::LDLT_UpdateDecrement
 	*/
-	
+
 	for( offset = 0; offset < size; offset++ )
 	{
 		m1 = original;
 		m2 = original;
-		
+
 		v.SetSize( 6 );
 		for( int i = 0; i < size; i++ )
 		{
 			v[i] = original[i][offset];
 		}
-		
+
 		// factor m1
 		m1.LDLT_Factor();
-		
+
 		// modify and factor m2
 		m2.Update_Decrement( offset );
 		if( !m2.LDLT_Factor() )
 		{
 			assert( 0 );
 		}
-		
+
 		// update factors of m1
 		m1.LDLT_UpdateDecrement( v, offset );
-		
+
 		if( !m1.Compare( m2, 1e-3f ) )
 		{
 			idLib::common->Warning( "idMatX::LDLT_UpdateDecrement failed" );
 		}
 	}
-	
+
 	/*
 		idMatX::LDLT_Inverse
 	*/
-	
+
 	m2 = original;
-	
+
 	m2.LDLT_Factor();
 	m2.LDLT_Inverse( m1 );
 	m1 *= original;
-	
+
 	if( !m1.IsIdentity( 1e-4f ) )
 	{
 		idLib::common->Warning( "idMatX::LDLT_Inverse failed" );
 	}
-	
+
 	/*
 		idMatX::Eigen_SolveSymmetricTriDiagonal
 	*/
-	
+
 	m3 = original;
 	m3.TriDiagonal_ClearTriangles();
 	m1 = m3;
-	
+
 	v.SetSize( size );
-	
+
 	m1.Eigen_SolveSymmetricTriDiagonal( v );
-	
+
 	m3.TransposeMultiply( m2, m1 );
-	
+
 	for( int i = 0; i < size; i++ )
 	{
 		for( int j = 0; j < size; j++ )
@@ -6087,25 +6087,25 @@ void idMatX::Test()
 			m1[i][j] *= v[j];
 		}
 	}
-	
+
 	if( !m1.Compare( m2, 1e-4f ) )
 	{
 		idLib::common->Warning( "idMatX::Eigen_SolveSymmetricTriDiagonal failed" );
 	}
-	
+
 	/*
 		idMatX::Eigen_SolveSymmetric
 	*/
-	
+
 	m3 = original;
 	m1 = m3;
-	
+
 	v.SetSize( size );
-	
+
 	m1.Eigen_SolveSymmetric( v );
-	
+
 	m3.TransposeMultiply( m2, m1 );
-	
+
 	for( int i = 0; i < size; i++ )
 	{
 		for( int j = 0; j < size; j++ )
@@ -6113,26 +6113,26 @@ void idMatX::Test()
 			m1[i][j] *= v[j];
 		}
 	}
-	
+
 	if( !m1.Compare( m2, 1e-4f ) )
 	{
 		idLib::common->Warning( "idMatX::Eigen_SolveSymmetric failed" );
 	}
-	
+
 	/*
 		idMatX::Eigen_Solve
 	*/
-	
+
 	m3 = original;
 	m1 = m3;
-	
+
 	v.SetSize( size );
 	w.SetSize( size );
-	
+
 	m1.Eigen_Solve( v, w );
-	
+
 	m3.TransposeMultiply( m2, m1 );
-	
+
 	for( int i = 0; i < size; i++ )
 	{
 		for( int j = 0; j < size; j++ )
@@ -6140,7 +6140,7 @@ void idMatX::Test()
 			m1[i][j] *= v[j];
 		}
 	}
-	
+
 	if( !m1.Compare( m2, 1e-4f ) )
 	{
 		idLib::common->Warning( "idMatX::Eigen_Solve failed" );

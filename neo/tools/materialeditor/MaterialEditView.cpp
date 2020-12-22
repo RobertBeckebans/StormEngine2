@@ -33,7 +33,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "MaterialEditView.h"
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
+	#define new DEBUG_NEW
 #endif
 
 #define EDIT_HEIGHT 25
@@ -78,28 +78,28 @@ void MaterialEditView::MV_OnMaterialSelectionChange( MaterialDoc* pMaterial )
 
 	//Apply any text changes that have been made
 	ApplyMaterialSource();
-	
+
 	if( pMaterial )
 	{
 		m_nameEdit.SetWindowText( pMaterial->name );
 		m_textView.SetReadOnly( false );
-		
+
 		//If the edit tab is selected then get the source
 		int sel = m_tabs.GetCurSel();
 		if( sel == 1 )
 		{
 			GetMaterialSource();
 		}
-		
+
 		currentMaterialName = pMaterial->name;
 	}
 	else
 	{
 		m_nameEdit.SetWindowText( "" );
-		
+
 		GetMaterialSource();
 		m_textView.SetReadOnly( true );
-		
+
 		currentMaterialName = "";
 	}
 }
@@ -119,14 +119,14 @@ idStr MaterialEditView::GetSourceText()
 {
 	idStr text;
 	m_textView.GetText( text );
-	
+
 	text.Replace( "\n", "" );
 	text.Replace( "\r", "\r\n" );
 	text.Replace( "\v", "\r\n" );
 	text.StripLeading( "\r\n" );
 	text.Insert( "\r\n\r\n", 0 );
 	text.StripTrailing( "\r\n" );
-	
+
 	return text;
 }
 
@@ -141,21 +141,21 @@ void MaterialEditView::GetMaterialSource()
 	sourceInit = true;
 	m_textView.SetText( "" );
 	sourceInit = false;
-	
+
 	if( materialDocManager )
 	{
 		MaterialDoc* material = materialDocManager->GetCurrentMaterialDoc();
 		if( material )
 		{
 			idStr text = material->GetEditSourceText();
-			
+
 			// clean up new-line crapola
 			text.Replace( "\r", "" );
 			text.Replace( "\n", "\r" );
 			text.Replace( "\v", "\r" );
 			text.StripLeading( '\r' );
 			text.Append( "\r" );
-			
+
 			sourceInit = true;
 			m_textView.SetText( text );
 			sourceInit = false;
@@ -171,16 +171,18 @@ void MaterialEditView::ApplyMaterialSource()
 {
 
 	if( !sourceChanged )
+	{
 		return;
-		
+	}
+
 	MaterialDoc* material = materialDocManager->CreateMaterialDoc( currentMaterialName );
-	
+
 	if( material )
 	{
 		idStr text = GetSourceText();
 		material->ApplySourceModify( text );
 	}
-	
+
 	sourceChanged = false;
 }
 
@@ -191,7 +193,7 @@ void MaterialEditView::DoDataExchange( CDataExchange* pDX )
 {
 
 	CFormView::DoDataExchange( pDX );
-	
+
 	DDX_Control( pDX, IDC_MATERIALEDITOR_EDIT_TEXT, m_textView );
 }
 
@@ -202,14 +204,14 @@ void MaterialEditView::OnInitialUpdate()
 {
 
 	CFormView::OnInitialUpdate();
-	
+
 	if( !initHack )
 	{
 		initHack = true;
 		m_textView.Init();
 		m_textView.LoadKeyWordsFromFile( "editors/material.def" );
 		m_textView.ShowWindow( SW_HIDE );
-		
+
 		m_textView.SetText( "" );
 		m_textView.SetReadOnly( true );
 	}
@@ -221,35 +223,37 @@ void MaterialEditView::OnInitialUpdate()
 int MaterialEditView::OnCreate( LPCREATESTRUCT lpCreateStruct )
 {
 	if( CFormView::OnCreate( lpCreateStruct ) == -1 )
+	{
 		return -1;
-		
+	}
+
 	m_nameEdit.Create( WS_CHILD | WS_VISIBLE | WS_TABSTOP | WS_BORDER | ES_READONLY, CRect( 0, 0, 0, 0 ), this, NAME_CONTROL );
-	
+
 	m_editSplitter.CreateStatic( this, 1, 2 );
-	
+
 	if( !m_editSplitter.CreateView( 0, 0, RUNTIME_CLASS( StageView ), CSize( 200, 200 ), NULL ) )
 	{
 		TRACE0( "Failed to create stage property pane\n" );
 		return -1;
 	}
-	
+
 	if( !m_editSplitter.CreateView( 0, 1, RUNTIME_CLASS( MaterialPropTreeView ), CSize( 500, 200 ), NULL ) )
 	{
 		TRACE0( "Failed to create property pane\n" );
 		return -1;
 	}
-	
+
 	m_nameEdit.SetFont( materialEditorFont );
-	
+
 	m_stageView = ( StageView* )m_editSplitter.GetPane( 0, 0 );
 	m_materialPropertyView = ( MaterialPropTreeView* )m_editSplitter.GetPane( 0, 1 );
-	
+
 	m_tabs.Create( TCS_BOTTOM | TCS_FLATBUTTONS | WS_CHILD | WS_VISIBLE, CRect( 0, 0, 0, 0 ), this, EDIT_TAB_CONTROL );
 	m_tabs.InsertItem( 0, "Properties" );
 	m_tabs.InsertItem( 1, "Text" );
-	
+
 	m_tabs.SetFont( materialEditorFont );
-	
+
 	return 0;
 }
 
@@ -259,28 +263,28 @@ int MaterialEditView::OnCreate( LPCREATESTRUCT lpCreateStruct )
 void MaterialEditView::OnSize( UINT nType, int cx, int cy )
 {
 	CFormView::OnSize( nType, cx, cy );
-	
+
 	CRect tabRect;
 	m_tabs.GetItemRect( 0, tabRect );
-	
+
 	int tabHeight = tabRect.Height() + 5;
-	
+
 	//Hardcode the edit window height
 	if( m_nameEdit.GetSafeHwnd() )
 	{
 		m_nameEdit.MoveWindow( 1, 1, cx - 2, 20 );
 	}
-	
+
 	if( m_tabs.GetSafeHwnd() )
 	{
 		m_tabs.MoveWindow( 0, cy - tabHeight, cx, tabHeight );
 	}
-	
+
 	if( m_editSplitter.GetSafeHwnd() )
 	{
 		m_editSplitter.MoveWindow( 1, 22, cx - 2, cy - tabHeight - 22 );
 	}
-	
+
 	if( m_textView.GetSafeHwnd() )
 	{
 		m_textView.MoveWindow( 1, 22, cx - 2, cy - tabHeight - 22 );
@@ -295,22 +299,22 @@ void MaterialEditView::OnTcnSelChange( NMHDR* pNMHDR, LRESULT* pResult )
 {
 
 	int sel = m_tabs.GetCurSel();
-	
+
 	switch( sel )
 	{
 		case 0:
 			m_editSplitter.ShowWindow( SW_SHOW );
 			m_textView.ShowWindow( SW_HIDE );
-			
+
 			ApplyMaterialSource();
-			
+
 			m_stageView->RefreshStageList();
-			
+
 			break;
 		case 1:
 			m_editSplitter.ShowWindow( SW_HIDE );
 			m_textView.ShowWindow( SW_SHOW );
-			
+
 			GetMaterialSource();
 			m_textView.SetReadOnly( false );
 	}

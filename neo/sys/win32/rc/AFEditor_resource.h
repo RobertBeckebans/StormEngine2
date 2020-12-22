@@ -361,10 +361,10 @@ If you have questions concerning this license or the applicable additional terms
 //
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_3D_CONTROLS                1
-#define _APS_NEXT_RESOURCE_VALUE        113
-#define _APS_NEXT_COMMAND_VALUE         20000
-#define _APS_NEXT_CONTROL_VALUE         514
-#define _APS_NEXT_SYMED_VALUE           113
+	#define _APS_3D_CONTROLS                1
+	#define _APS_NEXT_RESOURCE_VALUE        113
+	#define _APS_NEXT_COMMAND_VALUE         20000
+	#define _APS_NEXT_CONTROL_VALUE         514
+	#define _APS_NEXT_SYMED_VALUE           113
 #endif
 #endif

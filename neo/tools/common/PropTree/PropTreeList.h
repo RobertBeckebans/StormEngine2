@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 #define AFX_PROPTREELIST_H__2E09E831_09F5_44AA_B41D_9C4BF495873C__INCLUDED_
 
 #if _MSC_VER > 1000
-#pragma once
+	#pragma once
 #endif // _MSC_VER > 1000
 // PropTreeList.h : header file
 //
@@ -62,42 +62,42 @@ class PROPTREE_API CPropTreeList : public CWnd
 public:
 	CPropTreeList();
 	virtual ~CPropTreeList();
-	
+
 	BOOL Create( DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID );
-	
+
 // Attributes
 public:
 	void SetPropOwner( CPropTree* pProp );
-	
+
 protected:
 	// CPropTree class that this class belongs
 	CPropTree*		m_pProp;
-	
+
 	// bitmap back buffer for flicker free drawing
 	CBitmap			m_BackBuffer;
-	
+
 	// current diminsions of the back buffer
 	CSize			m_BackBufferSize;
-	
+
 	// splitter pevious position
 	LONG			m_nPrevCol;
-	
+
 	// TRUE if we are dragging the splitter
 	BOOL			m_bColDrag;
-	
+
 // Operations
 public:
 	void UpdateResize();
-	
+
 protected:
 	void RecreateBackBuffer( int cx, int cy );
 	void CheckVisibleFocus();
-	
+
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CPropTreeList)
 	//}}AFX_VIRTUAL
-	
+
 // Implementation
 public:
 

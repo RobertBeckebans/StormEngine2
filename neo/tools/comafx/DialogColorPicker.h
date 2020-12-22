@@ -83,7 +83,7 @@ class CDialogColorPicker : public CDialog
 public:
 	CDialogColorPicker( COLORREF c, CWnd* pParent = NULL ); // standard constructor
 	~CDialogColorPicker();
-	
+
 	COLORREF		GetColor()
 	{
 		return color.color();
@@ -92,21 +92,21 @@ public:
 	{
 		return overBright;
 	};
-	
-	
+
+
 	// Dialog Data
 	//{{AFX_DATA(CDialogColorPicker)
 	enum { IDD = IDD_DIALOG_COLORS };
 	float			m_overBright;
 	//}}AFX_DATA
-	
+
 	void	( *UpdateParent )( float r, float g, float b, float a );
-	
+
 	// Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CDialogColorPicker)
 	//}}AFX_VIRTUAL
-	
+
 // Implementation
 protected:
 
@@ -129,51 +129,51 @@ protected:
 	afx_msg void	OnBtnColor();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
-	
+
 	void			DrawFilledColor( CDC* pDC, CRect cr, COLORREF c );
 	void			DrawLines( CDC* pDC );
 	void			DrawXorRect( CDC* pDC, CRect& cr );
 	void			CalcSlopes();
 	void			CalcCuboid();
-	
+
 	void			CreateBrightDIB();
 	void			SetDIBPalette();
 	void			DrawMarkers( CDC* pDC );
 	void			TrackPoint( CPoint pt );
 	void			CalcRects();
-	
+
 	BOOL			InCircle( CPoint pt );
 	BOOL			InBright( CPoint pt );
 	BOOL			InOverBright( CPoint pt );
-	
-	
+
+
 	void			SetSpinVals();
 	void			SetEditVals();
 	void			DrawAll();
-	
+
 	void			DrawRGB( CDC* pDC );
 	void			DrawHSB( CDC* pDC );
-	
+
 	void			LoadMappedBitmap( CBitmap& bitmap, UINT nIdResource, CSize& size );
-	
+
 	CBitmap			m_RgbBitmap, m_HsbBitmap;
-	
+
 	CDC				memDC;
 	CPoint			m_Centre;
 	CDIB			m_BrightDIB;
-	
+
 	int				rgbWidth;
 	int				rgbHeight;
 	int				hsbWidth;
 	int				hsbHeight;
-	
+
 	int				m_nMouseIn;
 	CRect			m_CurrentRect, brightMark;
 	CRect			brightRect;
 	CRect			overBrightRect;
-	
+
 	HSVType			hsvColor;
-	
+
 	RGBType			color;
 	RGBType			m_OldColor;
 	CPoint			Vertex;
@@ -188,16 +188,16 @@ protected:
 	int				GreenLen;
 	int				BlueLen;
 	LineDesc		lines[3];
-	
-	
+
+
 	CRect			rgbRect;
 	CRect			hsbRect;
 	CRect			OldColorRect;
 	CRect			NewColorRect;
-	
+
 	BOOL			m_bInitOver;
 	BOOL			m_bInDrawAll;
-	
+
 	float			overBright;
 };
 

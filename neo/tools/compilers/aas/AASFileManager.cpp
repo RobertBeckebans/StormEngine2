@@ -46,7 +46,7 @@ class idAASFileManagerLocal : public idAASFileManager
 {
 public:
 	virtual						~idAASFileManagerLocal() {}
-	
+
 	virtual idAASFile* 			LoadAAS( const char* fileName, unsigned int mapFileCRC );
 	virtual void				FreeAAS( idAASFile* file );
 };

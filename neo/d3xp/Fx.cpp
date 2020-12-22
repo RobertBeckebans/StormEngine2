@@ -57,17 +57,17 @@ idEntityFx::Save
 void idEntityFx::Save( idSaveGame* savefile ) const
 {
 	int i;
-	
+
 	savefile->WriteInt( started );
 	savefile->WriteInt( nextTriggerTime );
 	savefile->WriteFX( fxEffect );
 	savefile->WriteString( systemName );
-	
+
 	savefile->WriteInt( actions.Num() );
-	
+
 	for( i = 0; i < actions.Num(); i++ )
 	{
-	
+
 		if( actions[i].lightDefHandle >= 0 )
 		{
 			savefile->WriteBool( true );
@@ -77,7 +77,7 @@ void idEntityFx::Save( idSaveGame* savefile ) const
 		{
 			savefile->WriteBool( false );
 		}
-		
+
 		if( actions[i].modelDefHandle >= 0 )
 		{
 			savefile->WriteBool( true );
@@ -87,7 +87,7 @@ void idEntityFx::Save( idSaveGame* savefile ) const
 		{
 			savefile->WriteBool( false );
 		}
-		
+
 		savefile->WriteFloat( actions[i].delay );
 		savefile->WriteInt( actions[i].start );
 		savefile->WriteBool( actions[i].soundStarted );
@@ -107,18 +107,18 @@ void idEntityFx::Restore( idRestoreGame* savefile )
 	int i;
 	int num;
 	bool hasObject;
-	
+
 	savefile->ReadInt( started );
 	savefile->ReadInt( nextTriggerTime );
 	savefile->ReadFX( fxEffect );
 	savefile->ReadString( systemName );
-	
+
 	savefile->ReadInt( num );
-	
+
 	actions.SetNum( num );
 	for( i = 0; i < num; i++ )
 	{
-	
+
 		savefile->ReadBool( hasObject );
 		if( hasObject )
 		{
@@ -130,7 +130,7 @@ void idEntityFx::Restore( idRestoreGame* savefile )
 			memset( &actions[i].renderLight, 0, sizeof( renderLight_t ) );
 			actions[i].lightDefHandle = -1;
 		}
-		
+
 		savefile->ReadBool( hasObject );
 		if( hasObject )
 		{
@@ -142,12 +142,12 @@ void idEntityFx::Restore( idRestoreGame* savefile )
 			memset( &actions[i].renderEntity, 0, sizeof( renderEntity_t ) );
 			actions[i].modelDefHandle = -1;
 		}
-		
+
 		savefile->ReadFloat( actions[i].delay );
-		
+
 		// let the FX regenerate the particleSystem
 		actions[i].particleSystem = -1;
-		
+
 		savefile->ReadInt( actions[i].start );
 		savefile->ReadBool( actions[i].soundStarted );
 		savefile->ReadBool( actions[i].shakeStarted );
@@ -168,30 +168,30 @@ void idEntityFx::Setup( const char* fx )
 	{
 		return;					// already started
 	}
-	
+
 	// early during MP Spawn() with no information. wait till we ReadFromSnapshot for more
 	if( common->IsClient() && ( !fx || fx[0] == '\0' ) )
 	{
 		return;
 	}
-	
+
 	systemName = fx;
 	started = 0;
-	
+
 	fxEffect = static_cast<const idDeclFX*>( declManager->FindType( DECL_FX, systemName.c_str() ) );
-	
+
 	if( fxEffect )
 	{
 		idFXLocalAction localAction;
-		
+
 		memset( &localAction, 0, sizeof( idFXLocalAction ) );
-		
+
 		actions.AssureSize( fxEffect->events.Num(), localAction );
-		
+
 		for( int i = 0; i < fxEffect->events.Num(); i++ )
 		{
 			const idFXSingleAction& fxaction = fxEffect->events[i];
-			
+
 			idFXLocalAction& laction = actions[i];
 			if( fxaction.random1 || fxaction.random2 )
 			{
@@ -314,7 +314,7 @@ idEntityFx::Duration
 const int idEntityFx::Duration()
 {
 	int max = 0;
-	
+
 	if( !fxEffect )
 	{
 		return max;
@@ -328,7 +328,7 @@ const int idEntityFx::Duration()
 			max = d;
 		}
 	}
-	
+
 	return max;
 }
 
@@ -366,7 +366,7 @@ void idEntityFx::ApplyFade( const idFXSingleAction& fxaction, idFXLocalAction& l
 			laction.renderEntity.shaderParms[SHADERPARM_RED] = ( fxaction.fadeInTime ) ? fadePct : 1.0f - fadePct;
 			laction.renderEntity.shaderParms[SHADERPARM_GREEN] = ( fxaction.fadeInTime ) ? fadePct : 1.0f - fadePct;
 			laction.renderEntity.shaderParms[SHADERPARM_BLUE] = ( fxaction.fadeInTime ) ? fadePct : 1.0f - fadePct;
-			
+
 			gameRenderWorld->UpdateEntityDef( laction.modelDefHandle, &laction.renderEntity );
 		}
 		if( laction.lightDefHandle != -1 )
@@ -374,7 +374,7 @@ void idEntityFx::ApplyFade( const idFXSingleAction& fxaction, idFXLocalAction& l
 			laction.renderLight.shaderParms[SHADERPARM_RED] = fxaction.lightColor.x * ( ( fxaction.fadeInTime ) ? fadePct : 1.0f - fadePct );
 			laction.renderLight.shaderParms[SHADERPARM_GREEN] = fxaction.lightColor.y * ( ( fxaction.fadeInTime ) ? fadePct : 1.0f - fadePct );
 			laction.renderLight.shaderParms[SHADERPARM_BLUE] = fxaction.lightColor.z * ( ( fxaction.fadeInTime ) ? fadePct : 1.0f - fadePct );
-			
+
 			gameRenderWorld->UpdateLightDef( laction.lightDefHandle, &laction.renderLight );
 		}
 	}
@@ -391,17 +391,17 @@ void idEntityFx::Run( int time )
 	idEntity* ent = NULL;
 	const idDict* projectileDef = NULL;
 	idProjectile* projectile = NULL;
-	
+
 	if( !fxEffect )
 	{
 		return;
 	}
-	
+
 	for( ieff = 0; ieff < fxEffect->events.Num(); ieff++ )
 	{
 		const idFXSingleAction& fxaction = fxEffect->events[ieff];
 		idFXLocalAction& laction = actions[ieff];
-		
+
 		//
 		// if we're currently done with this one
 		//
@@ -409,7 +409,7 @@ void idEntityFx::Run( int time )
 		{
 			continue;
 		}
-		
+
 		//
 		// see if it's delayed
 		//
@@ -420,7 +420,7 @@ void idEntityFx::Run( int time )
 				continue;
 			}
 		}
-		
+
 		//
 		// each event can have it's own delay and restart
 		//
@@ -445,7 +445,7 @@ void idEntityFx::Run( int time )
 			}
 			continue;
 		}
-		
+
 		if( fxaction.fire.Length() )
 		{
 			for( j = 0; j < fxEffect->events.Num(); j++ )
@@ -456,7 +456,7 @@ void idEntityFx::Run( int time )
 				}
 			}
 		}
-		
+
 		idFXLocalAction* useAction;
 		if( fxaction.sibling == -1 )
 		{
@@ -467,7 +467,7 @@ void idEntityFx::Run( int time )
 			useAction = &actions[fxaction.sibling];
 		}
 		assert( useAction );
-		
+
 		switch( fxaction.type )
 		{
 			case FX_ATTACHLIGHT:
@@ -540,7 +540,9 @@ void idEntityFx::Run( int time )
 					// note that this must be negative (into the surface) for the decal depth to work right
 					idVec3 dir = decalDir * -1.0f;
 					if( dir.LengthSqr() < 0.0001f ) // if no dir, we use gravity
+					{
 						dir = GetPhysics()->GetGravity();
+					}
 					dir.Normalize();
 					gameLocal.ProjectDecal( GetPhysics()->GetOrigin(), dir, 8.0f, true, fxaction.size, fxaction.data );
 					//gameLocal.ProjectDecal( GetPhysics()->GetOrigin(), GetPhysics()->GetGravity(), 8.0f, true, fxaction.size, fxaction.data );
@@ -657,13 +659,13 @@ void idEntityFx::Run( int time )
 				{
 					idStr	shockDefName;
 					useAction->shakeStarted = true;
-					
+
 					shockDefName = fxaction.data;
 					if( !shockDefName.Length() )
 					{
 						shockDefName = "func_shockwave";
 					}
-					
+
 					projectileDef = gameLocal.FindEntityDefDict( shockDefName, false );
 					if( !projectileDef )
 					{
@@ -718,7 +720,7 @@ void idEntityFx::Spawn()
 	{
 		return;
 	}
-	
+
 	const char* fx;
 	nextTriggerTime = 0;
 	fxEffect = NULL;
@@ -749,12 +751,12 @@ void idEntityFx::Think()
 	{
 		return;
 	}
-	
+
 	if( thinkFlags & TH_THINK )
 	{
 		Run( gameLocal.time );
 	}
-	
+
 	RunPhysics();
 	Present();
 }
@@ -773,11 +775,11 @@ void idEntityFx::Event_ClearFx()
 	{
 		return;
 	}
-	
+
 	Stop();
 	CleanUp();
 	BecomeInactive( TH_THINK );
-	
+
 	if( spawnArgs.GetBool( "test" ) )
 	{
 		PostEventMS( &EV_Activate, 0, this );
@@ -811,15 +813,15 @@ void idEntityFx::Event_Trigger( idEntity* activator )
 	{
 		return;
 	}
-	
+
 	float		fxActionDelay;
 	const char* fx;
-	
+
 	if( gameLocal.time < nextTriggerTime )
 	{
 		return;
 	}
-	
+
 	if( spawnArgs.GetString( "fx", "", &fx ) )
 	{
 		Setup( fx );
@@ -827,7 +829,7 @@ void idEntityFx::Event_Trigger( idEntity* activator )
 		PostEventMS( &EV_Fx_KillFx, Duration() );
 		BecomeActive( TH_THINK );
 	}
-	
+
 	fxActionDelay = spawnArgs.GetFloat( "fxActionDelay" );
 	if( fxActionDelay != 0.0f )
 	{
@@ -855,7 +857,7 @@ idEntityFx* idEntityFx::StartFx( const char* fx, const idVec3* useOrigin, const 
 	{
 		return NULL;
 	}
-	
+
 	idDict args;
 	args.SetBool( "start", true );
 	args.Set( "fx", fx );
@@ -872,10 +874,14 @@ idEntityFx* idEntityFx::StartFx( const char* fx, const idVec3* useOrigin, const 
 	}
 	// foresthale 20140402: added decalDir so that StartFx can pass it to FX_DECAL
 	if( useDecalDir )
+	{
 		nfx->decalDir = *useDecalDir;
+	}
 	else
-		nfx->decalDir = idVec3( 0.0f, 0.0f, 0.0f ); // no decalDir specified, we check for this in FX_DECAL
-		
+	{
+		nfx->decalDir = idVec3( 0.0f, 0.0f, 0.0f );    // no decalDir specified, we check for this in FX_DECAL
+	}
+
 	if( bind )
 	{
 		// never bind to world spawn
@@ -909,12 +915,12 @@ idEntityFx::ReadFromSnapshot
 void idEntityFx::ReadFromSnapshot( const idBitMsg& msg )
 {
 	int fx_index, start_time, max_lapse;
-	
+
 	GetPhysics()->ReadFromSnapshot( msg );
 	ReadBindFromSnapshot( msg );
 	fx_index = gameLocal.ClientRemapDecl( DECL_FX, msg.ReadLong() );
 	start_time = msg.ReadLong();
-	
+
 	if( fx_index != -1 && start_time > 0 && !fxEffect && started < 0 )
 	{
 		spawnArgs.GetInt( "effect_lapse", "1000", max_lapse );
@@ -947,7 +953,7 @@ void idEntityFx::ClientThink( const int curTime, const float fraction, const boo
 	{
 		Run( gameLocal.serverTime );
 	}
-	
+
 	InterpolatePhysics( fraction );
 	Present();
 }
@@ -987,7 +993,7 @@ idTeleporter::Event_DoAction
 void idTeleporter::Event_DoAction( idEntity* activator )
 {
 	float angle;
-	
+
 	angle = spawnArgs.GetFloat( "angle" );
 	idAngles a( 0, spawnArgs.GetFloat( "angle" ), 0 );
 	activator->Teleport( GetPhysics()->GetOrigin(), a, NULL );

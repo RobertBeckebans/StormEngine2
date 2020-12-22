@@ -50,9 +50,9 @@ typedef struct portalStack_s
 {
 	dmapPortal_t*	p;
 	const struct portalStack_s* next;
-	
+
 	idScreenRect	rect;
-	
+
 	int			numPortalPlanes;
 	idPlane		portalPlanes[MAX_PORTAL_PLANES + 1];
 	// positive side is outside the visible frustum
@@ -74,21 +74,21 @@ idScreenRect idDmapRenderWorldLocal::ScreenRectFromWinding( const idWinding* w, 
 	idVec3			v;
 	idVec3			ndc;
 	float			windowX, windowY;
-	
+
 	r.Clear();
 	for( i = 0; i < w->GetNumPoints(); i++ )
 	{
 		R_LocalPointToGlobal( space->modelMatrix, ( *w )[i].ToVec3(), v );
 		R_GlobalToNormalizedDeviceCoordinates( v, ndc );
-		
+
 		windowX = 0.5f * ( 1.0f + ndc[0] ) * ( dmap_tr.viewDef->viewport.x2 - dmap_tr.viewDef->viewport.x1 );
 		windowY = 0.5f * ( 1.0f + ndc[1] ) * ( dmap_tr.viewDef->viewport.y2 - dmap_tr.viewDef->viewport.y1 );
-		
+
 		r.AddPoint( windowX, windowY );
 	}
-	
+
 	r.Expand();
-	
+
 	return r;
 }
 
@@ -103,28 +103,28 @@ bool idDmapRenderWorldLocal::PortalIsFoggedOut( const dmapPortal_t* p )
 	const idWinding*	w;
 	int			i;
 	idPlane		forward;
-	
+
 	ldef = p->doublePortal->fogLight;
 	if( !ldef )
 	{
 		return false;
 	}
-	
+
 	// find the current density of the fog
 	const idMaterial*	lightShader = ldef->lightShader;
 	int		size = sizeof( float ) * lightShader->GetNumRegisters();
 	float*	regs = ( float* )_alloca( size );
-	
+
 	lightShader->EvaluateRegisters( regs, ldef->parms.shaderParms, dmap_tr.viewDef->renderView.shaderParms, dmap_tr.viewDef->renderView.time * 0.001f, ldef->parms.referenceSound );
-	
+
 	const shaderStage_t*	stage = lightShader->GetStage( 0 );
-	
+
 	float alpha = regs[stage->color.registers[3]];
-	
-	
+
+
 	// if they left the default value on, set a fog distance of 500
 	float	a;
-	
+
 	if( alpha <= 1.0f )
 	{
 		a = -0.5f / DEFAULT_FOG_DISTANCE;
@@ -134,24 +134,24 @@ bool idDmapRenderWorldLocal::PortalIsFoggedOut( const dmapPortal_t* p )
 		// otherwise, distance = alpha color
 		a = -0.5f / alpha;
 	}
-	
+
 	forward[0] = a * dmap_tr.viewDef->worldSpace.modelViewMatrix[2];
 	forward[1] = a * dmap_tr.viewDef->worldSpace.modelViewMatrix[6];
 	forward[2] = a * dmap_tr.viewDef->worldSpace.modelViewMatrix[10];
 	forward[3] = a * dmap_tr.viewDef->worldSpace.modelViewMatrix[14];
-	
+
 	w = p->w;
 	for( i = 0; i < w->GetNumPoints(); i++ )
 	{
 		float	d;
-		
+
 		d = forward.Distance( ( *w )[i].ToVec3() );
 		if( d < 0.5f )
 		{
 			return false;		// a point not clipped off
 		}
 	}
-	
+
 	return true;
 }
 
@@ -172,12 +172,12 @@ void idDmapRenderWorldLocal::FloodViewThroughArea_r( const idVec3 origin, int ar
 	idVec3			v1, v2;
 	int				addPlanes;
 	idFixedWinding	w;		// we won't overflow because MAX_PORTAL_PLANES = 20
-	
+
 	area = &portalAreas[areaNum];
-	
+
 	// cull models and lights to the current collection of planes
 	AddAreaRefs( areaNum, ps );
-	
+
 	if( areaScreenRect[areaNum].IsEmpty() )
 	{
 		areaScreenRect[areaNum] = ps->rect;
@@ -186,7 +186,7 @@ void idDmapRenderWorldLocal::FloodViewThroughArea_r( const idVec3 origin, int ar
 	{
 		areaScreenRect[areaNum].Union( ps->rect );
 	}
-	
+
 	// go through all the portals
 	for( p = area->portals; p; p = p->next )
 	{
@@ -195,14 +195,14 @@ void idDmapRenderWorldLocal::FloodViewThroughArea_r( const idVec3 origin, int ar
 		{
 			continue;
 		}
-		
+
 		// make sure this portal is facing away from the view
 		d = p->plane.Distance( origin );
 		if( d < -0.1f )
 		{
 			continue;
 		}
-		
+
 		// make sure the portal isn't in our stack trace,
 		// which would cause an infinite loop
 		for( check = ps; check; check = check->next )
@@ -216,12 +216,12 @@ void idDmapRenderWorldLocal::FloodViewThroughArea_r( const idVec3 origin, int ar
 		{
 			continue;	// already in stack
 		}
-		
+
 		// if we are very close to the portal surface, don't bother clipping
 		// it, which tends to give epsilon problems that make the area vanish
 		if( d < 1.0f )
 		{
-		
+
 			// go through this portal
 			newStack = *ps;
 			newStack.p = p;
@@ -229,7 +229,7 @@ void idDmapRenderWorldLocal::FloodViewThroughArea_r( const idVec3 origin, int ar
 			FloodViewThroughArea_r( origin, p->intoArea, &newStack );
 			continue;
 		}
-		
+
 		// clip the portal winding to all of the planes
 		w = *p->w;
 		for( j = 0; j < ps->numPortalPlanes; j++ )
@@ -243,33 +243,33 @@ void idDmapRenderWorldLocal::FloodViewThroughArea_r( const idVec3 origin, int ar
 		{
 			continue;	// portal not visible
 		}
-		
+
 		// see if it is fogged out
 		if( PortalIsFoggedOut( p ) )
 		{
 			continue;
 		}
-		
+
 		// go through this portal
 		newStack.p = p;
 		newStack.next = ps;
-		
+
 		// find the screen pixel bounding box of the remaining portal
 		// so we can scissor things outside it
 		newStack.rect = ScreenRectFromWinding( &w, &dmap_tr.identitySpace );
-		
+
 		// slop might have spread it a pixel outside, so trim it back
 		newStack.rect.Intersect( ps->rect );
-		
+
 		// generate a set of clipping planes that will further restrict
 		// the visible view beyond just the scissor rect
-		
+
 		addPlanes = w.GetNumPoints();
 		if( addPlanes > MAX_PORTAL_PLANES )
 		{
 			addPlanes = MAX_PORTAL_PLANES;
 		}
-		
+
 		newStack.numPortalPlanes = 0;
 		for( i = 0; i < addPlanes; i++ )
 		{
@@ -278,26 +278,26 @@ void idDmapRenderWorldLocal::FloodViewThroughArea_r( const idVec3 origin, int ar
 			{
 				j = 0;
 			}
-			
+
 			v1 = origin - w[i].ToVec3();
 			v2 = origin - w[j].ToVec3();
-			
+
 			newStack.portalPlanes[newStack.numPortalPlanes].Normal().Cross( v2, v1 );
-			
+
 			// if it is degenerate, skip the plane
 			if( newStack.portalPlanes[newStack.numPortalPlanes].Normalize() < 0.01f )
 			{
 				continue;
 			}
 			newStack.portalPlanes[newStack.numPortalPlanes].FitThroughPoint( origin );
-			
+
 			newStack.numPortalPlanes++;
 		}
-		
+
 		// the last stack plane is the portal plane
 		newStack.portalPlanes[newStack.numPortalPlanes] = p->plane;
 		newStack.numPortalPlanes++;
-		
+
 		FloodViewThroughArea_r( origin, p->intoArea, &newStack );
 	}
 }
@@ -316,26 +316,26 @@ void idDmapRenderWorldLocal::FlowViewThroughPortals( const idVec3 origin, int nu
 {
 	dmapPortalStack_t	ps;
 	int				i;
-	
+
 	ps.next = NULL;
 	ps.p = NULL;
-	
+
 	for( i = 0; i < numPlanes; i++ )
 	{
 		ps.portalPlanes[i] = planes[i];
 	}
-	
+
 	ps.numPortalPlanes = numPlanes;
 	ps.rect = dmap_tr.viewDef->scissor;
-	
+
 	if( dmap_tr.viewDef->areaNum < 0 )
 	{
-	
+
 		for( i = 0; i < numPortalAreas; i++ )
 		{
 			areaScreenRect[i] = dmap_tr.viewDef->scissor;
 		}
-		
+
 		// if outside the world, mark everything
 		for( i = 0; i < numPortalAreas; i++ )
 		{
@@ -344,12 +344,12 @@ void idDmapRenderWorldLocal::FlowViewThroughPortals( const idVec3 origin, int nu
 	}
 	else
 	{
-	
+
 		for( i = 0; i < numPortalAreas; i++ )
 		{
 			areaScreenRect[i].Clear();
 		}
-		
+
 		// flood out through portals, setting area viewCount
 		FloodViewThroughArea_r( origin, dmap_tr.viewDef->areaNum, &ps );
 	}
@@ -375,12 +375,12 @@ void idDmapRenderWorldLocal::FloodLightThroughArea_r( idDmapRenderLightLocal* li
 	idVec3			v1, v2;
 	int				addPlanes;
 	idFixedWinding	w;		// we won't overflow because MAX_PORTAL_PLANES = 20
-	
+
 	area = &portalAreas[areaNum];
-	
+
 	// add an areaRef
 	AddLightRefToArea( light, area );
-	
+
 	// go through all the portals
 	for( p = area->portals; p; p = p->next )
 	{
@@ -390,7 +390,7 @@ void idDmapRenderWorldLocal::FloodLightThroughArea_r( idDmapRenderLightLocal* li
 		{
 			continue;
 		}
-		
+
 		// make sure the portal isn't in our stack trace,
 		// which would cause an infinite loop
 		for( check = ps; check; check = check->next )
@@ -405,7 +405,7 @@ void idDmapRenderWorldLocal::FloodLightThroughArea_r( idDmapRenderLightLocal* li
 		{
 			continue;	// already in stack
 		}
-		
+
 		// if we are very close to the portal surface, don't bother clipping
 		// it, which tends to give epsilon problems that make the area vanish
 		if( d < 1.0f )
@@ -417,7 +417,7 @@ void idDmapRenderWorldLocal::FloodLightThroughArea_r( idDmapRenderLightLocal* li
 			FloodLightThroughArea_r( light, p->intoArea, &newStack );
 			continue;
 		}
-		
+
 		// clip the portal winding to all of the planes
 		w = *p->w;
 		for( j = 0; j < ps->numPortalPlanes; j++ )
@@ -444,20 +444,20 @@ void idDmapRenderWorldLocal::FloodLightThroughArea_r( idDmapRenderLightLocal* li
 		{
 			continue;	// portal not visible
 		}
-		
+
 		// go through this portal
 		newStack.p = p;
 		newStack.next = ps;
-		
+
 		// generate a set of clipping planes that will further restrict
 		// the visible view beyond just the scissor rect
-		
+
 		addPlanes = w.GetNumPoints();
 		if( addPlanes > MAX_PORTAL_PLANES )
 		{
 			addPlanes = MAX_PORTAL_PLANES;
 		}
-		
+
 		newStack.numPortalPlanes = 0;
 		for( i = 0; i < addPlanes; i++ )
 		{
@@ -466,22 +466,22 @@ void idDmapRenderWorldLocal::FloodLightThroughArea_r( idDmapRenderLightLocal* li
 			{
 				j = 0;
 			}
-			
+
 			v1 = light->globalLightOrigin - w[i].ToVec3();
 			v2 = light->globalLightOrigin - w[j].ToVec3();
-			
+
 			newStack.portalPlanes[newStack.numPortalPlanes].Normal().Cross( v2, v1 );
-			
+
 			// if it is degenerate, skip the plane
 			if( newStack.portalPlanes[newStack.numPortalPlanes].Normalize() < 0.01f )
 			{
 				continue;
 			}
 			newStack.portalPlanes[newStack.numPortalPlanes].FitThroughPoint( light->globalLightOrigin );
-			
+
 			newStack.numPortalPlanes++;
 		}
-		
+
 		FloodLightThroughArea_r( light, p->intoArea, &newStack );
 	}
 }
@@ -500,22 +500,22 @@ void idDmapRenderWorldLocal::FlowLightThroughPortals( idDmapRenderLightLocal* li
 {
 	dmapPortalStack_t	ps;
 	int				i;
-	
+
 	// if the light origin areaNum is not in a valid area,
 	// the light won't have any area refs
 	if( light->areaNum == -1 )
 	{
 		return;
 	}
-	
+
 	memset( &ps, 0, sizeof( ps ) );
-	
+
 	ps.numPortalPlanes = 6;
 	for( i = 0; i < 6; i++ )
 	{
 		ps.portalPlanes[i] = light->frustum[i];
 	}
-	
+
 	FloodLightThroughArea_r( light, light->areaNum, &ps );
 }
 
@@ -532,13 +532,13 @@ areaNumRef_t* idDmapRenderWorldLocal::FloodFrustumAreas_r( const idFrustum& frus
 	dmapPortalArea_t* portalArea;
 	idBounds newBounds;
 	areaNumRef_t* a;
-	
+
 	portalArea = &portalAreas[areaNum];
-	
+
 	// go through all the portals
 	for( p = portalArea->portals; p; p = p->next )
 	{
-	
+
 		// check if we already visited the area the portal leads to
 		for( a = areas; a; a = a->next )
 		{
@@ -551,39 +551,39 @@ areaNumRef_t* idDmapRenderWorldLocal::FloodFrustumAreas_r( const idFrustum& frus
 		{
 			continue;
 		}
-		
+
 		// the frustum origin must be at the front of the portal plane
 		if( p->plane.Side( frustum.GetOrigin(), 0.1f ) == SIDE_BACK )
 		{
 			continue;
 		}
-		
+
 		// the frustum must cross the portal plane
 		if( frustum.PlaneSide( p->plane, 0.0f ) != PLANESIDE_CROSS )
 		{
 			continue;
 		}
-		
+
 		// get the bounds for the portal winding projected in the frustum
 		frustum.ProjectionBounds( *p->w, newBounds );
-		
+
 		newBounds.IntersectSelf( bounds );
-		
+
 		if( newBounds[0][0] > newBounds[1][0] || newBounds[0][1] > newBounds[1][1] || newBounds[0][2] > newBounds[1][2] )
 		{
 			continue;
 		}
-		
+
 		newBounds[1][0] = frustum.GetFarDistance();
-		
+
 		a = areaNumRefAllocator.Alloc();
 		a->areaNum = p->intoArea;
 		a->next = areas;
 		areas = a;
-		
+
 		areas = FloodFrustumAreas_r( frustum, p->intoArea, newBounds, areas );
 	}
-	
+
 	return areas;
 }
 
@@ -599,16 +599,16 @@ areaNumRef_t* idDmapRenderWorldLocal::FloodFrustumAreas( const idFrustum& frustu
 {
 	idBounds bounds;
 	areaNumRef_t* a;
-	
+
 	// bounds that cover the whole frustum
 	bounds[0].Set( frustum.GetNearDistance(), -1.0f, -1.0f );
 	bounds[1].Set( frustum.GetFarDistance(), 1.0f, 1.0f );
-	
+
 	for( a = areas; a; a = a->next )
 	{
 		areas = FloodFrustumAreas_r( frustum, a->areaNum, bounds, areas );
 	}
-	
+
 	return areas;
 }
 
@@ -635,7 +635,7 @@ bool idDmapRenderWorldLocal::CullEntityByPortals( const idDmapRenderEntityLocal*
 	{
 		return false;
 	}
-	
+
 	// try to cull the entire thing using the reference bounds.
 	// we do not yet do callbacks or dynamic model creation,
 	// because we want to do all touching of the model after
@@ -646,7 +646,7 @@ bool idDmapRenderWorldLocal::CullEntityByPortals( const idDmapRenderEntityLocal*
 	{
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -665,22 +665,22 @@ void idDmapRenderWorldLocal::AddAreaEntityRefs( int areaNum, const dmapPortalSta
 	dmapPortalArea_t*		area;
 	dmapViewEntity_t*		vEnt;
 	idBounds			b;
-	
+
 	area = &portalAreas[areaNum];
-	
+
 	for( ref = area->entityRefs.areaNext; ref != &area->entityRefs; ref = ref->areaNext )
 	{
 		entity = ref->entity;
-		
+
 		// debug tool to allow viewing of only one entity at a time
 		if( r_singleEntity.GetInteger() >= 0 && r_singleEntity.GetInteger() != entity->index )
 		{
 			continue;
 		}
-		
+
 		// remove decals that are completely faded away
 		R_FreeEntityDefFadedDecalsDmap( entity, dmap_tr.viewDef->renderView.time );
-		
+
 		// check for completely suppressing the model
 		if( !r_skipSuppress.GetBool() )
 		{
@@ -695,7 +695,7 @@ void idDmapRenderWorldLocal::AddAreaEntityRefs( int areaNum, const dmapPortalSta
 				continue;
 			}
 		}
-		
+
 		// cull reference bounds
 		if( CullEntityByPortals( entity, ps ) )
 		{
@@ -703,9 +703,9 @@ void idDmapRenderWorldLocal::AddAreaEntityRefs( int areaNum, const dmapPortalSta
 			// still be visible through others
 			continue;
 		}
-		
+
 		vEnt = R_SetEntityDefViewEntityDmap( entity );
-		
+
 		// possibly expand the scissor rect
 		vEnt->scissorRect.Union( ps->rect );
 	}
@@ -725,12 +725,12 @@ bool idDmapRenderWorldLocal::CullLightByPortals( const idDmapRenderLightLocal* l
 	const srfDmapTriangles_t*	tri;
 	float			d;
 	idFixedWinding	w;		// we won't overflow because MAX_PORTAL_PLANES = 20
-	
+
 	if( r_useLightCulling.GetInteger() == 0 )
 	{
 		return false;
 	}
-	
+
 	if( r_useLightCulling.GetInteger() >= 2 )
 	{
 		// exact clip of light faces against all planes
@@ -744,18 +744,18 @@ bool idDmapRenderWorldLocal::CullLightByPortals( const idDmapRenderLightLocal* l
 			{
 				continue;
 			}
-			
+
 			// get the exact winding for this side
 			const idWinding* ow = light->frustumWindings[i];
-			
+
 			// projected lights may have one of the frustums degenerated
 			if( !ow )
 			{
 				continue;
 			}
-			
+
 			w = *ow;
-			
+
 			// now check the winding against each of the portalStack planes
 			for( j = 0; j < ps->numPortalPlanes - 1; j++ )
 			{
@@ -764,7 +764,7 @@ bool idDmapRenderWorldLocal::CullLightByPortals( const idDmapRenderLightLocal* l
 					break;
 				}
 			}
-			
+
 			if( w.GetNumPoints() )
 			{
 				// part of the winding is visible through the portalStack,
@@ -774,14 +774,14 @@ bool idDmapRenderWorldLocal::CullLightByPortals( const idDmapRenderLightLocal* l
 		}
 		// none of the light surfaces were visible
 		return true;
-		
+
 	}
 	else
 	{
-	
+
 		// simple point check against each plane
 		tri = light->frustumTris;
-		
+
 		// check against frustum planes
 		for( i = 0; i < ps->numPortalPlanes - 1; i++ )
 		{
@@ -801,7 +801,7 @@ bool idDmapRenderWorldLocal::CullLightByPortals( const idDmapRenderLightLocal* l
 			}
 		}
 	}
-	
+
 	return false;
 }
 
@@ -818,19 +818,19 @@ void idDmapRenderWorldLocal::AddAreaLightRefs( int areaNum, const dmapPortalStac
 	dmapPortalArea_t*		area;
 	idDmapRenderLightLocal*			light;
 	dmapViewLight_t*			vLight;
-	
+
 	area = &portalAreas[areaNum];
-	
+
 	for( lref = area->lightRefs.areaNext; lref != &area->lightRefs; lref = lref->areaNext )
 	{
 		light = lref->light;
-		
+
 		// debug tool to allow viewing of only one light at a time
 		if( r_singleLight.GetInteger() >= 0 && r_singleLight.GetInteger() != light->index )
 		{
 			continue;
 		}
-		
+
 		// check for being closed off behind a door
 		// a light that doesn't cast shadows will still light even if it is behind a door
 		if( r_useLightCulling.GetInteger() >= 3 &&
@@ -839,7 +839,7 @@ void idDmapRenderWorldLocal::AddAreaLightRefs( int areaNum, const dmapPortalStac
 		{
 			continue;
 		}
-		
+
 		// cull frustum
 		if( CullLightByPortals( light, ps ) )
 		{
@@ -847,9 +847,9 @@ void idDmapRenderWorldLocal::AddAreaLightRefs( int areaNum, const dmapPortalStac
 			// still be visible through others
 			continue;
 		}
-		
+
 		vLight = R_SetLightDefViewLightDmap( light );
-		
+
 		// expand the scissor rect
 		vLight->scissorRect.Union( ps->rect );
 	}
@@ -868,7 +868,7 @@ void idDmapRenderWorldLocal::AddAreaRefs( int areaNum, const dmapPortalStack_t* 
 	// mark the viewCount, so r_showPortals can display the
 	// considered portals
 	portalAreas[areaNum].viewCount = dmap_tr.viewCount;
-	
+
 	// add the models and lights, using more precise culling to the planes
 	AddAreaEntityRefs( areaNum, ps );
 	AddAreaLightRefs( areaNum, ps );
@@ -883,14 +883,14 @@ void idDmapRenderWorldLocal::BuildConnectedAreas_r( int areaNum )
 {
 	dmapPortalArea_t*	area;
 	dmapPortal_t*		portal;
-	
+
 	if( dmap_tr.viewDef->connectedAreas[areaNum] )
 	{
 		return;
 	}
-	
+
 	dmap_tr.viewDef->connectedAreas[areaNum] = true;
-	
+
 	// flood through all non-blocked portals
 	area = &portalAreas[areaNum];
 	for( portal = area->portals; portal; portal = portal->next )
@@ -912,10 +912,10 @@ This is only valid for a given view, not all views in a frame
 void idDmapRenderWorldLocal::BuildConnectedAreas( void )
 {
 	int		i;
-	
+
 	dmap_tr.viewDef->connectedAreas = ( bool* )R_FrameAlloc( numPortalAreas
 									  * sizeof( dmap_tr.viewDef->connectedAreas[0] ) );
-									  
+
 	// if we are outside the world, we can see all areas
 	if( dmap_tr.viewDef->areaNum == -1 )
 	{
@@ -925,7 +925,7 @@ void idDmapRenderWorldLocal::BuildConnectedAreas( void )
 		}
 		return;
 	}
-	
+
 	// start with none visible, and flood fill from the current area
 	memset( dmap_tr.viewDef->connectedAreas, 0, numPortalAreas * sizeof( dmap_tr.viewDef->connectedAreas[0] ) );
 	BuildConnectedAreas_r( dmap_tr.viewDef->areaNum );
@@ -947,7 +947,7 @@ void idDmapRenderWorldLocal::FindViewLightsAndEntities( void )
 	// clear the visible lightDef and entityDef lists
 	dmap_tr.viewDef->viewLights = NULL;
 	dmap_tr.viewDef->viewEntitys = NULL;
-	
+
 	// find the area to start the portal flooding in
 	if( !r_usePortals.GetBool() )
 	{
@@ -958,15 +958,15 @@ void idDmapRenderWorldLocal::FindViewLightsAndEntities( void )
 	{
 		dmap_tr.viewDef->areaNum = PointInArea( dmap_tr.viewDef->initialViewAreaOrigin );
 	}
-	
+
 	// determine all possible connected areas for
 	// light-behind-door culling
 	BuildConnectedAreas();
-	
+
 	// bump the view count, invalidating all
 	// visible areas
 	dmap_tr.viewCount++;
-	
+
 	// flow through all the portals and add models / lights
 	if( r_singleArea.GetBool() )
 	{
@@ -977,20 +977,20 @@ void idDmapRenderWorldLocal::FindViewLightsAndEntities( void )
 			dmapPortalStack_t	ps;
 			int				i;
 			static int lastPrintedAreaNum;
-			
+
 			if( dmap_tr.viewDef->areaNum != lastPrintedAreaNum )
 			{
 				lastPrintedAreaNum = dmap_tr.viewDef->areaNum;
 				common->Printf( "entering portal area %i\n", dmap_tr.viewDef->areaNum );
 			}
-			
+
 			for( i = 0; i < 5; i++ )
 			{
 				ps.portalPlanes[i] = dmap_tr.viewDef->frustum[i];
 			}
 			ps.numPortalPlanes = 5;
 			ps.rect = dmap_tr.viewDef->scissor;
-			
+
 			AddAreaRefs( dmap_tr.viewDef->areaNum, &ps );
 		}
 	}
@@ -1027,12 +1027,12 @@ qhandle_t idDmapRenderWorldLocal::FindPortal( const idBounds& b ) const
 	idBounds		wb;
 	dmapDoublePortal_t*	portal;
 	idWinding*		w;
-	
+
 	for( i = 0; i < numInterAreaPortals; i++ )
 	{
 		portal = &doublePortals[i];
 		w = portal->portals[0]->w;
-		
+
 		wb.Clear();
 		for( j = 0; j < w->GetNumPoints(); j++ )
 		{
@@ -1043,7 +1043,7 @@ qhandle_t idDmapRenderWorldLocal::FindPortal( const idBounds& b ) const
 			return i + 1;
 		}
 	}
-	
+
 	return 0;
 }
 
@@ -1059,7 +1059,7 @@ void	idDmapRenderWorldLocal::FloodConnectedAreas( dmapPortalArea_t* area, int po
 		return;
 	}
 	area->connectedAreaNum[portalAttributeIndex] = connectedAreaNum;
-	
+
 	for( dmapPortal_t* p = area->portals; p; p = p->next )
 	{
 		if( !( p->doublePortal->blockingBits & ( 1 << portalAttributeIndex ) ) )
@@ -1085,11 +1085,11 @@ bool	idDmapRenderWorldLocal::AreasAreConnected( int areaNum1, int areaNum2, port
 	{
 		common->Error( "idDmapRenderWorldLocal::AreAreasConnected: bad parms: %i, %i", areaNum1, areaNum2 );
 	}
-	
+
 	int	attribute = 0;
-	
+
 	int	intConnection = ( int )connection;
-	
+
 	while( intConnection > 1 )
 	{
 		attribute++;
@@ -1099,7 +1099,7 @@ bool	idDmapRenderWorldLocal::AreasAreConnected( int areaNum1, int areaNum2, port
 	{
 		common->Error( "idDmapRenderWorldLocal::AreasAreConnected: bad connection number: %i\n", ( int )connection );
 	}
-	
+
 	return portalAreas[areaNum1].connectedAreaNum[attribute] == portalAreas[areaNum2].connectedAreaNum[attribute];
 }
 
@@ -1117,7 +1117,7 @@ void		idDmapRenderWorldLocal::SetPortalState( qhandle_t portal, int blockTypes )
 	{
 		return;
 	}
-	
+
 	if( portal < 1 || portal > numInterAreaPortals )
 	{
 		common->Error( "SetPortalState: bad portal number %i", portal );
@@ -1128,7 +1128,7 @@ void		idDmapRenderWorldLocal::SetPortalState( qhandle_t portal, int blockTypes )
 		return;
 	}
 	doublePortals[portal - 1].blockingBits = blockTypes;
-	
+
 	// leave the connectedAreaGroup the same on one side,
 	// then flood fill from the other side with a new number for each changed attribute
 	for( int i = 0; i < NUM_PORTAL_ATTRIBUTES; i++ )
@@ -1139,7 +1139,7 @@ void		idDmapRenderWorldLocal::SetPortalState( qhandle_t portal, int blockTypes )
 			FloodConnectedAreas( &portalAreas[doublePortals[portal - 1].portals[1]->intoArea], i );
 		}
 	}
-	
+
 	if( common->WriteDemo() )
 	{
 		common->WriteDemo()->WriteInt( DS_RENDER );
@@ -1160,12 +1160,12 @@ int		idDmapRenderWorldLocal::GetPortalState( qhandle_t portal )
 	{
 		return 0;
 	}
-	
+
 	if( portal < 1 || portal > numInterAreaPortals )
 	{
 		common->Error( "GetPortalState: bad portal number %i", portal );
 	}
-	
+
 	return doublePortals[portal - 1].blockingBits;
 }
 

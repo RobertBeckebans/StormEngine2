@@ -91,16 +91,16 @@ public:
 	int						armor;
 	int						maxarmor;
 	int						powerupEndTime[ MAX_POWERUPS ];
-	
+
 	RechargeAmmo_t			rechargeAmmo[ AMMO_NUMTYPES ];
-	
+
 	int						deplete_armor;
 	float					deplete_rate;
 	int						deplete_ammount;
 	int						nextArmorDepleteTime;
-	
+
 	int						pdasViewed[4]; // 128 bit flags for indicating if a pda has been viewed
-	
+
 	int						selPDA;
 	int						selEMail;
 	int						selVideo;
@@ -111,21 +111,21 @@ public:
 	idList<const idDeclPDA*>	pdas;
 	idList<const idDeclVideo*>	videos;
 	idList<const idDeclEmail*>	emails;
-	
+
 	bool					ammoPulse;
 	bool					weaponPulse;
 	bool					armorPulse;
 	int						lastGiveTime;
-	
+
 	idList<idLevelTriggerInfo, TAG_IDLIB_LIST_PLAYER> levelTriggers;
-	
+
 	idInventory();
 	~idInventory();
-	
+
 	// save games
 	void					Save( idSaveGame* savefile ) const;					// archives object for save game file
 	void					Restore( idRestoreGame* savefile );					// unarchives object from save game file
-	
+
 	void					Clear();
 	void					GivePowerUp( idPlayer* player, int powerup, int msec );
 	void					ClearPowerUps();
@@ -140,36 +140,36 @@ public:
 	ammo_t					AmmoIndexForWeaponClass( const char* weapon_classname, int* ammoRequired );
 	const char* 			AmmoPickupNameForIndex( ammo_t ammonum ) const;
 	void					AddPickupName( const char* name, idPlayer* owner );   //_D3XP
-	
+
 	int						HasAmmo( ammo_t type, int amount );
 	bool					UseAmmo( ammo_t type, int amount );
 	int						HasAmmo( const char* weapon_classname, bool includeClip = false, idPlayer* owner = NULL );			// _D3XP
-	
+
 	bool					HasEmptyClipCannotRefill( const char* weapon_classname, idPlayer* owner );
-	
+
 	void					UpdateArmor();
-	
+
 	void					SetInventoryAmmoForType( const int ammoType, const int amount );
 	void					SetClipAmmoForWeapon( const int weapon, const int amount );
-	
+
 	int						GetInventoryAmmoForType( const int ammoType ) const;
 	int						GetClipAmmoForWeapon( const int weapon ) const;
-	
+
 	void					WriteAmmoToSnapshot( idBitMsg& msg ) const;
 	void					ReadAmmoFromSnapshot( const idBitMsg& msg, int ownerEntityNumber );
-	
+
 	void					SetRemoteClientAmmo( const int ownerEntityNumber );
-	
+
 	int						nextItemPickup;
 	int						nextItemNum;
 	int						onePickupTime;
 	idList<idStr>			pickupItemNames;
 	idList<idObjectiveInfo>	objectiveNames;
-	
+
 	void					InitRechargeAmmo( idPlayer* owner );
 	void					RechargeAmmo( idPlayer* owner );
 	bool					CanGive( idPlayer* owner, const idDict& spawnArgs, const char* statname, const char* value );
-	
+
 private:
 	idArray< idPredictedValue< int >, AMMO_NUMTYPES >		ammo;
 	idArray< idPredictedValue< int >, MAX_WEAPONS >			clip;

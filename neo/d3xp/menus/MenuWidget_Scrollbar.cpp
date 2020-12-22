@@ -34,7 +34,7 @@ If you have questions concerning this license or the applicable additional terms
 void idMenuWidget_ScrollBar::Initialize( idMenuHandler* data )
 {
 	idMenuWidget::Initialize( data );
-	
+
 	AddEventAction( WIDGET_EVENT_DRAG_START ).Set( new( TAG_SWF ) idWidgetActionHandler( this, WIDGET_ACTION_EVENT_DRAG_START, WIDGET_EVENT_DRAG_START ) );
 	AddEventAction( WIDGET_EVENT_DRAG_STOP ).Set( new( TAG_SWF ) idWidgetActionHandler( this, WIDGET_ACTION_EVENT_DRAG_STOP, WIDGET_EVENT_DRAG_STOP ) );
 }
@@ -51,27 +51,27 @@ void idMenuWidget_ScrollBar::Update()
 	{
 		return;
 	}
-	
+
 	idSWFScriptObject& root = GetSWFObject()->GetRootObject();
 	if( !BindSprite( root ) || GetSprite() == NULL )
 	{
 		return;
 	}
-	
+
 	if( GetParent() == NULL )
 	{
 		return;
 	}
-	
+
 	CalcTopAndBottom();
-	
+
 	idSWFScriptObject* node = GetSprite()->GetScriptObject()->GetNestedObj( "node" );
 	idSWFSpriteInstance* nodeSprite = GetSprite()->GetScriptObject()->GetNestedSprite( "node" );
 	if( node != NULL && nodeSprite != NULL )
 	{
 		node->Set( "onDrag", new( TAG_SWF ) WrapWidgetSWFEvent( this, WIDGET_EVENT_DRAG_START, 0 ) );
 		node->Set( "onRelease", new( TAG_SWF ) WrapWidgetSWFEvent( this, WIDGET_EVENT_DRAG_STOP, 0 ) );
-		
+
 		const idMenuWidget_DynamicList* const list = dynamic_cast< const idMenuWidget_DynamicList* const >( GetParent() );
 		if( list != NULL )
 		{
@@ -89,7 +89,7 @@ void idMenuWidget_ScrollBar::Update()
 				nodeSprite->SetVisible( 0 );
 			}
 		}
-		
+
 		idMenuWidget_InfoBox* const infoBox = dynamic_cast< idMenuWidget_InfoBox* const >( GetParent() );
 		if( infoBox != NULL )
 		{
@@ -122,13 +122,13 @@ void idMenuWidget_ScrollBar::CalcTopAndBottom()
 	{
 		return;
 	}
-	
+
 	idSWFScriptObject& root = GetSWFObject()->GetRootObject();
 	if( !BindSprite( root ) || GetSprite() == NULL )
 	{
 		return;
 	}
-	
+
 	int tempPos = 0.0f;
 	idSWFSpriteInstance* curMC = GetSprite()->GetScriptObject()->GetNestedSprite( "top" );
 	if( curMC != NULL )
@@ -141,7 +141,7 @@ void idMenuWidget_ScrollBar::CalcTopAndBottom()
 		}
 	}
 	yTop = tempPos;
-	
+
 	tempPos = 0.0f;
 	curMC = GetSprite()->GetScriptObject()->GetNestedSprite( "bottom" );
 	if( curMC != NULL )
@@ -167,37 +167,37 @@ void idMenuWidget_ScrollBar::CalculatePosition( float x, float y )
 	{
 		return;
 	}
-	
+
 	if( y >= yTop && y <= yBot )
 	{
 		float range = yBot - yTop;
 		float val = y - yTop;
-		
+
 		float percent = val / range;
 		idSWFSpriteInstance* node = GetSprite()->GetScriptObject()->GetNestedSprite( "node" );
 		if( node != NULL )
 		{
 			node->SetYPos( percent * range );
 		}
-		
+
 		idMenuWidget_DynamicList* const list = dynamic_cast< idMenuWidget_DynamicList* const >( GetParent() );
 		if( list != NULL )
 		{
 			float maxScroll = list->GetTotalNumberOfOptions() - list->GetNumVisibleOptions();
 			int offset = list->GetViewOffset();
-			
+
 			float segment = ( maxScroll + 0.5f ) / 100.0f;
 			int newOffset = ( int )( ( ( percent * segment ) * 100.0f ) );
-			
+
 			if( newOffset >= maxScroll )
 			{
 				int i = 1;
 				i = i;
 			}
-			
+
 			if( newOffset != offset )
 			{
-			
+
 				int viewIndex = list->GetViewIndex();
 				list->SetViewOffset( newOffset );
 				idLib::Printf( "newOffset = %d\n", newOffset );
@@ -212,7 +212,7 @@ void idMenuWidget_ScrollBar::CalculatePosition( float x, float y )
 					list->SetViewIndex( viewIndex );
 				}
 				idLib::Printf( "newView = %d\n", list->GetViewIndex() );
-				
+
 				int newFocus = viewIndex - newOffset;
 				if( newFocus >= 0 )
 				{
@@ -221,7 +221,7 @@ void idMenuWidget_ScrollBar::CalculatePosition( float x, float y )
 				list->Update();
 			}
 		}
-		
+
 		idMenuWidget_InfoBox* const infoBox = dynamic_cast< idMenuWidget_InfoBox* const >( GetParent() );
 		if( infoBox != NULL )
 		{
@@ -246,19 +246,19 @@ bool idMenuWidget_ScrollBar::HandleAction( idWidgetAction& action, const idWidge
 {
 
 	widgetAction_t actionType = action.GetType();
-	
+
 	switch( actionType )
 	{
 		case WIDGET_ACTION_SCROLL_DRAG:
 		{
-		
+
 			if( event.parms.Num() != 3 )
 			{
 				return true;
 			}
-			
+
 			dragging = true;
-			
+
 			float x = event.parms[0].ToFloat();
 			float y = event.parms[1].ToFloat();
 			bool initial = event.parms[2].ToBool();
@@ -266,7 +266,7 @@ bool idMenuWidget_ScrollBar::HandleAction( idWidgetAction& action, const idWidge
 			{
 				CalcTopAndBottom();
 			}
-			
+
 			CalculatePosition( x, y );
 			return true;
 		}
@@ -276,7 +276,7 @@ bool idMenuWidget_ScrollBar::HandleAction( idWidgetAction& action, const idWidge
 			return true;
 		}
 	}
-	
+
 	return idMenuWidget::HandleAction( action, event, widget, forceHandled );
 }
 

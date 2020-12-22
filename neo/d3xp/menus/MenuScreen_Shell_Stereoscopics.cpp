@@ -56,14 +56,14 @@ idMenuScreen_Shell_Stereoscopics::Initialize
 void idMenuScreen_Shell_Stereoscopics::Initialize( idMenuHandler* data )
 {
 	idMenuScreen::Initialize( data );
-	
+
 	if( data != NULL )
 	{
 		menuGUI = data->GetGUI();
 	}
-	
+
 	SetSpritePath( "menuStereoscopics" );
-	
+
 	options = new( TAG_SWF ) idMenuWidget_DynamicList();
 	options->SetNumVisibleOptions( NUM_SYSTEM_OPTIONS_OPTIONS );
 	options->SetSpritePath( GetSpritePath(), "info", "options" );
@@ -71,16 +71,16 @@ void idMenuScreen_Shell_Stereoscopics::Initialize( idMenuHandler* data )
 	options->SetControlList( true );
 	options->Initialize( data );
 	AddChild( options );
-	
+
 	btnBack = new( TAG_SWF ) idMenuWidget_Button();
 	btnBack->Initialize( data );
 	btnBack->SetLabel( "#str_swf_settings" );
 	btnBack->SetSpritePath( GetSpritePath(), "info", "btnBack" );
 	btnBack->AddEventAction( WIDGET_EVENT_PRESS ).Set( WIDGET_ACTION_GO_BACK );
 	AddChild( btnBack );
-	
+
 	idMenuWidget_ControlButton* control;
-	
+
 	control = new( TAG_SWF ) idMenuWidget_ControlButton();
 	control->SetOptionType( OPTION_SLIDER_TEXT );
 	control->SetLabel( "#str_swf_stereoscopic_rendering" );	// Stereoscopics
@@ -88,7 +88,7 @@ void idMenuScreen_Shell_Stereoscopics::Initialize( idMenuHandler* data )
 	control->SetupEvents( DEFAULT_REPEAT_TIME, options->GetChildren().Num() );
 	control->AddEventAction( WIDGET_EVENT_PRESS ).Set( WIDGET_ACTION_PRESS_FOCUSED, options->GetChildren().Num() );
 	options->AddChild( control );
-	
+
 	control = new( TAG_SWF ) idMenuWidget_ControlButton();
 	control->SetOptionType( OPTION_SLIDER_BAR );
 	control->SetLabel( "#str_swf_stereo_seperation" );	// View Offset
@@ -96,7 +96,7 @@ void idMenuScreen_Shell_Stereoscopics::Initialize( idMenuHandler* data )
 	control->SetupEvents( 2, options->GetChildren().Num() );
 	control->AddEventAction( WIDGET_EVENT_PRESS ).Set( WIDGET_ACTION_PRESS_FOCUSED, options->GetChildren().Num() );
 	options->AddChild( control );
-	
+
 	control = new( TAG_SWF ) idMenuWidget_ControlButton();
 	control->SetOptionType( OPTION_SLIDER_TOGGLE );
 	control->SetLabel( "#str_swf_stereo_eye_swap" );	// Swap Eyes
@@ -104,7 +104,7 @@ void idMenuScreen_Shell_Stereoscopics::Initialize( idMenuHandler* data )
 	control->SetupEvents( DEFAULT_REPEAT_TIME, options->GetChildren().Num() );
 	control->AddEventAction( WIDGET_EVENT_PRESS ).Set( WIDGET_ACTION_PRESS_FOCUSED, options->GetChildren().Num() );
 	options->AddChild( control );
-	
+
 	options->AddEventAction( WIDGET_EVENT_SCROLL_DOWN ).Set( new( TAG_SWF ) idWidgetActionHandler( options, WIDGET_ACTION_EVENT_SCROLL_DOWN_START_REPEATER, WIDGET_EVENT_SCROLL_DOWN ) );
 	options->AddEventAction( WIDGET_EVENT_SCROLL_UP ).Set( new( TAG_SWF ) idWidgetActionHandler( options, WIDGET_ACTION_EVENT_SCROLL_UP_START_REPEATER, WIDGET_EVENT_SCROLL_UP ) );
 	options->AddEventAction( WIDGET_EVENT_SCROLL_DOWN_RELEASE ).Set( new( TAG_SWF ) idWidgetActionHandler( options, WIDGET_ACTION_EVENT_STOP_REPEATER, WIDGET_EVENT_SCROLL_DOWN_RELEASE ) );
@@ -113,7 +113,7 @@ void idMenuScreen_Shell_Stereoscopics::Initialize( idMenuHandler* data )
 	options->AddEventAction( WIDGET_EVENT_SCROLL_UP_LSTICK ).Set( new( TAG_SWF ) idWidgetActionHandler( options, WIDGET_ACTION_EVENT_SCROLL_UP_START_REPEATER, WIDGET_EVENT_SCROLL_UP_LSTICK ) );
 	options->AddEventAction( WIDGET_EVENT_SCROLL_DOWN_LSTICK_RELEASE ).Set( new( TAG_SWF ) idWidgetActionHandler( options, WIDGET_ACTION_EVENT_STOP_REPEATER, WIDGET_EVENT_SCROLL_DOWN_LSTICK_RELEASE ) );
 	options->AddEventAction( WIDGET_EVENT_SCROLL_UP_LSTICK_RELEASE ).Set( new( TAG_SWF ) idWidgetActionHandler( options, WIDGET_ACTION_EVENT_STOP_REPEATER, WIDGET_EVENT_SCROLL_UP_LSTICK_RELEASE ) );
-	
+
 	leftEyeMat = declManager->FindMaterial( "auroraLeftEye" );
 	rightEyeMat = declManager->FindMaterial( "auroraRightEye" );
 }
@@ -141,12 +141,12 @@ void idMenuScreen_Shell_Stereoscopics::Update()
 				buttonInfo->label = "#str_swf_back";
 			}
 			buttonInfo->action.Set( WIDGET_ACTION_GO_BACK );
-			
+
 			buttonInfo = cmdBar->GetButton( idMenuWidget_CommandBar::BUTTON_JOY1 );
 			buttonInfo->action.Set( WIDGET_ACTION_PRESS_FOCUSED );
 		}
 	}
-	
+
 	idSWFScriptObject& root = GetSWFObject()->GetRootObject();
 	if( BindSprite( root ) )
 	{
@@ -156,19 +156,19 @@ void idMenuScreen_Shell_Stereoscopics::Update()
 			heading->SetText( "#str_swf_stereoscopics_heading" );	// STEREOSCOPIC RENDERING
 			heading->SetStrokeInfo( true, 0.75f, 1.75f );
 		}
-		
+
 		idSWFSpriteInstance* gradient = GetSprite()->GetScriptObject()->GetNestedSprite( "info", "gradient" );
 		if( gradient != NULL && heading != NULL )
 		{
 			gradient->SetXPos( heading->GetTextLength() );
 		}
 	}
-	
+
 	if( btnBack != NULL )
 	{
 		btnBack->BindSprite( root );
 	}
-	
+
 	idMenuScreen::Update();
 }
 
@@ -181,17 +181,17 @@ void idMenuScreen_Shell_Stereoscopics::ShowScreen( const mainMenuTransition_t tr
 {
 	stereoData.LoadData();
 	idMenuScreen::ShowScreen( transitionType );
-	
+
 	if( GetSprite() != NULL )
 	{
 		idSWFSpriteInstance* leftEye = GetSprite()->GetScriptObject()->GetNestedSprite( "info", "leftEye" );
 		idSWFSpriteInstance* rightEye = GetSprite()->GetScriptObject()->GetNestedSprite( "info", "rightEye" );
-		
+
 		if( leftEye != NULL && leftEyeMat != NULL )
 		{
 			leftEye->SetMaterial( leftEyeMat );
 		}
-		
+
 		if( rightEye != NULL && rightEyeMat != NULL )
 		{
 			rightEye->SetMaterial( rightEyeMat );
@@ -225,7 +225,7 @@ void idMenuScreen_Shell_Stereoscopics::HideScreen( const mainMenuTransition_t tr
 					//     (the old way would have been unnecessarily painful on POSIX systems)
 					//Sys_ReLaunch();
 					// DG end
-					
+
 					// motorsep 12-28-2014; reverted back to the original Sys_ReLaunch; guys from RBDoom 3 BFG team made it impossible to pass any cmds on restart
 					idStr cmdLine = Sys_GetCmdLine();
 					if( cmdLine.Find( "com_skipIntroVideos" ) < 0 )
@@ -270,10 +270,10 @@ bool idMenuScreen_Shell_Stereoscopics::HandleAction( idWidgetAction& action, con
 			return false;
 		}
 	}
-	
+
 	widgetAction_t actionType = action.GetType();
 	const idSWFParmList& parms = action.GetParms();
-	
+
 	switch( actionType )
 	{
 		case WIDGET_ACTION_GO_BACK:
@@ -286,18 +286,18 @@ bool idMenuScreen_Shell_Stereoscopics::HandleAction( idWidgetAction& action, con
 		}
 		case WIDGET_ACTION_PRESS_FOCUSED:
 		{
-		
+
 			if( options == NULL )
 			{
 				return true;
 			}
-			
+
 			int selectionIndex = options->GetFocusIndex();
 			if( parms.Num() > 0 )
 			{
 				selectionIndex = parms[0].ToInteger();
 			}
-			
+
 			if( selectionIndex != options->GetFocusIndex() )
 			{
 				options->SetViewIndex( options->GetViewOffset() + selectionIndex );
@@ -305,17 +305,17 @@ bool idMenuScreen_Shell_Stereoscopics::HandleAction( idWidgetAction& action, con
 			}
 			stereoData.AdjustField( selectionIndex, 1 );
 			options->Update();
-			
+
 			return true;
 		}
 		case WIDGET_ACTION_START_REPEATER:
 		{
-		
+
 			if( options == NULL )
 			{
 				return true;
 			}
-			
+
 			if( parms.Num() == 4 )
 			{
 				int selectionIndex = parms[3].ToInteger();
@@ -328,7 +328,7 @@ bool idMenuScreen_Shell_Stereoscopics::HandleAction( idWidgetAction& action, con
 			break;
 		}
 	}
-	
+
 	return idMenuWidget::HandleAction( action, event, widget, forceHandled );
 }
 
@@ -359,9 +359,9 @@ void idMenuScreen_Shell_Stereoscopics::idMenuDataSource_StereoSettings::LoadData
 {
 
 	fields[ STEREO_FIELD_ENABLE ].SetInteger( renderSystem->GetStereoScopicRenderingMode() );
-	
+
 	fields[ STEREO_FIELD_SEPERATION ].SetFloat( 100.0f * ( stereoRender_interOccularCentimeters.GetFloat() / MAX_INTEROCCULAR_DISTANCE ) );
-	
+
 	fields[ STEREO_FIELD_SWAP_EYES ].SetBool( stereoRender_swapEyes.GetBool() );
 	originalFields = fields;
 }
@@ -378,7 +378,7 @@ void idMenuScreen_Shell_Stereoscopics::idMenuDataSource_StereoSettings::CommitDa
 	{
 		cvarSystem->SetModifiedFlags( CVAR_ARCHIVE );
 	}
-	
+
 	// make the committed fields into the backup fields
 	originalFields = fields;
 }
@@ -398,36 +398,36 @@ void idMenuScreen_Shell_Stereoscopics::idMenuDataSource_StereoSettings::AdjustFi
 		{
 			numOptions--;
 		}
-		
+
 		int adjusted = fields[ fieldIndex ].ToInteger() + adjustAmount;
 		adjusted += numOptions;
 		adjusted %= numOptions;
 		fields[fieldIndex].SetInteger( adjusted );
 		renderSystem->EnableStereoScopicRendering( ( stereo3DMode_t )adjusted );
-		
+
 		gameLocal.Shell_ClearRepeater();
-		
+
 	}
 	else if( fieldIndex == STEREO_FIELD_SWAP_EYES )
 	{
-	
+
 		fields[ fieldIndex ].SetBool( !fields[ fieldIndex ].ToBool() );
 		stereoRender_swapEyes.SetBool( fields[ fieldIndex ].ToBool() );
-		
+
 	}
 	else if( fieldIndex == STEREO_FIELD_SEPERATION )
 	{
-	
+
 		float newValue = idMath::ClampFloat( 0.0f, 100.0f, fields[ fieldIndex ].ToFloat() + adjustAmount );
 		fields[ fieldIndex ].SetFloat( newValue );
-		
+
 		stereoRender_interOccularCentimeters.SetFloat( ( fields[ STEREO_FIELD_SEPERATION ].ToFloat() / 100.0f ) * MAX_INTEROCCULAR_DISTANCE );
-		
+
 	}
-	
+
 	// do this so we don't save every time we modify a setting.  Only save once when we leave the screen
 	cvarSystem->ClearModifiedFlags( CVAR_ARCHIVE );
-	
+
 }
 
 /*
@@ -455,17 +455,17 @@ bool idMenuScreen_Shell_Stereoscopics::idMenuDataSource_StereoSettings::IsDataCh
 	{
 		return true;
 	}
-	
+
 	if( fields[ STEREO_FIELD_ENABLE ].ToInteger() != originalFields[ STEREO_FIELD_ENABLE ].ToInteger() )
 	{
 		return true;
 	}
-	
+
 	if( fields[ STEREO_FIELD_SEPERATION ].ToFloat() != originalFields[ STEREO_FIELD_SEPERATION ].ToFloat() )
 	{
 		return true;
 	}
-	
+
 	return false;
 }
 

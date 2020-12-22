@@ -42,7 +42,7 @@ public:
 		selectedPoints.Clear();
 	};
 	~idPointListInterface() {};
-	
+
 	virtual int			numPoints()
 	{
 		return 0;
@@ -54,7 +54,7 @@ public:
 	{
 		return NULL;
 	}
-	
+
 	int					numSelectedPoints()
 	{
 		return selectedPoints.Num();
@@ -67,7 +67,7 @@ public:
 	void				deselectAll();
 	virtual void		updateSelection( const idVec3& move );
 	void				drawSelection();
-	
+
 protected:
 	idList<int>			selectedPoints;
 };
@@ -76,7 +76,7 @@ protected:
 class idSplineList
 {
 	friend class		idCamera;
-	
+
 public:
 
 	idSplineList()
@@ -92,25 +92,25 @@ public:
 	{
 		clear();
 	}
-	
+
 	void				clearControl();
 	void				clearSpline();
 	void				parse( idParser* src );
 	void				write( idFile* f, const char* name );
-	
+
 	void				clear();
 	void				initPosition( long startTime, long totalTime );
 	const idVec3* 		getPosition( long time );
-	
+
 	void				draw( bool editMode );
 	void				addToRenderer();
-	
+
 	void				setSelectedPoint( idVec3* p );
 	idVec3* 			getSelectedPoint()
 	{
 		return selected;
 	}
-	
+
 	void				addPoint( const idVec3& v )
 	{
 		controlPoints.Append( new idVec3( v ) );
@@ -121,7 +121,7 @@ public:
 		controlPoints.Append( new idVec3( x, y, z ) );
 		dirty = true;
 	}
-	
+
 	void				updateSelection( const idVec3& move );
 	void				startEdit()
 	{
@@ -140,7 +140,7 @@ public:
 	{
 		return granularity;
 	}
-	
+
 	int					numPoints()
 	{
 		return controlPoints.Num();
@@ -171,7 +171,7 @@ public:
 		splineTime[index] += time;
 	}
 	float				totalDistance();
-	
+
 	int					getActiveSegment()
 	{
 		return activeSegment;
@@ -184,9 +184,9 @@ public:
 	{
 		return splinePoints.Num();
 	}
-	
+
 	void				setColors( idVec4& path, idVec4& segment, idVec4& control, idVec4& active );
-	
+
 	const char* 		getName()
 	{
 		return name.c_str();
@@ -195,7 +195,7 @@ public:
 	{
 		name = p;
 	}
-	
+
 	bool				validTime();
 	void				setTime( long t )
 	{
@@ -205,7 +205,7 @@ public:
 	{
 		baseTime = t;
 	}
-	
+
 protected:
 	idStr				name;
 	float				calcSpline( int step, float tension );
@@ -259,7 +259,7 @@ public:
 	{
 		clear();
 	}
-	
+
 	// this can be done with RTTI syntax but i like the derived classes setting a type
 	// makes serialization a bit easier to see
 	//
@@ -270,7 +270,7 @@ public:
 		SPLINE,
 		POSITION_COUNT
 	};
-	
+
 	virtual void		clearVelocities();
 	virtual void		clear()
 	{
@@ -333,7 +333,7 @@ public:
 		float secs = ( float )time / 1000;
 		baseVelocity = distance / secs;
 	}
-	
+
 protected:
 	static const char* 	positionStr[POSITION_COUNT];
 	long				startTime;
@@ -359,13 +359,13 @@ public:
 		pos = p;
 	}
 	~idFixedPosition() { }
-	
+
 	void				init()
 	{
 		pos.Zero();
 		type = idCameraPosition::FIXED;
 	}
-	
+
 	virtual void		addPoint( const idVec3& v )
 	{
 		pos = v;
@@ -393,7 +393,7 @@ public:
 	{
 		glLabeledPoint( colorBlue, pos, ( editMode ) ? 5 : 3, "Fixed point" );
 	}
-	
+
 protected:
 	idVec3				pos;
 };
@@ -412,7 +412,7 @@ public:
 		endPos = end;
 	}
 	~idInterpolatedPosition() { }
-	
+
 	void				init()
 	{
 		type = idCameraPosition::INTERPOLATED;
@@ -420,7 +420,7 @@ public:
 		startPos.Zero();
 		endPos.Zero();
 	}
-	
+
 	virtual const idVec3* getPosition( long t );
 	void				parse( idParser* src );
 	void				write( idFile* f, const char* name );
@@ -433,7 +433,7 @@ public:
 	virtual void		addPoint( const idVec3& v );
 	virtual void		draw( bool editMode );
 	virtual void		start( long t );
-	
+
 protected:
 	bool				first;
 	idVec3				startPos;
@@ -455,7 +455,7 @@ public:
 		init();
 	}
 	~idSplinePosition() { }
-	
+
 	void				init()
 	{
 		type = idCameraPosition::SPLINE;
@@ -489,7 +489,7 @@ public:
 		idCameraPosition::updateSelection( move );
 		target.buildSpline();
 	}
-	
+
 protected:
 	idSplineList		target;
 	long				lastTime;
@@ -516,7 +516,7 @@ public:
 		time = t;
 	}
 	~idCameraFOV() { }
-	
+
 	void				SetFOV( float f )
 	{
 		fov = f;
@@ -529,7 +529,7 @@ public:
 	void				reset( float startfov, float endfov, int start, int len );
 	void				parse( idParser* src );
 	void				write( idFile* f, const char* name );
-	
+
 protected:
 	float				fov;
 	float				startFOV;
@@ -560,7 +560,7 @@ public:
 		EVENT_FEATHER,
 		EVENT_COUNT
 	};
-	
+
 	idCameraEvent()
 	{
 		paramStr = "";
@@ -574,7 +574,7 @@ public:
 		time = n;
 	}
 	~idCameraEvent() { }
-	
+
 	eventType			getType()
 	{
 		return type;
@@ -605,15 +605,15 @@ public:
 	{
 		return triggered;
 	}
-	
+
 	static const char* 	eventStr[EVENT_COUNT];
-	
+
 protected:
 	eventType			type;
 	idStr				paramStr;
 	long				time;
 	bool				triggered;
-	
+
 };
 
 class idCameraDef
@@ -628,7 +628,7 @@ public:
 	{
 		clear();
 	}
-	
+
 	void				clear();
 	idCameraPosition* 	startNewCamera( idCameraPosition::positionType type );
 	void				addEvent( idCameraEvent::eventType t, const char* param, long time );
@@ -647,9 +647,9 @@ public:
 	bool				load( const char* filename );
 	void				save( const char* filename );
 	void				buildCamera();
-	
+
 	void				addTarget( const char* name, idCameraPosition::positionType type );
-	
+
 	idCameraPosition* 	getActiveTarget();
 	idCameraPosition* 	getActiveTarget( int index );
 	int					numTargets()
@@ -696,9 +696,9 @@ public:
 		name = p;
 	}
 	idCameraPosition* 	getPositionObj();
-	
+
 	static idCameraPosition* newFromType( idCameraPosition::positionType t );
-	
+
 protected:
 	idStr				name;
 	int					currentCameraPosition;
@@ -712,7 +712,7 @@ protected:
 	float				totalTime;
 	float				baseTime;
 	long				startTime;
-	
+
 	bool				cameraEdit;
 	bool				editMode;
 };

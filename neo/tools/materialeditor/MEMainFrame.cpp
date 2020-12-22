@@ -35,7 +35,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "MaterialDef.h"
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
+	#define new DEBUG_NEW
 #endif
 
 #define TAB_CONTROL 0x1006
@@ -47,9 +47,9 @@ BEGIN_MESSAGE_MAP( MEMainFrame, CFrameWnd )
 	ON_WM_SETFOCUS()
 	ON_WM_DESTROY()
 	ON_WM_SIZE()
-	
+
 	ON_NOTIFY( TCN_SELCHANGE, TAB_CONTROL, OnTcnSelChange )
-	
+
 	ON_COMMAND( ID_ME_FILE_EXIT, OnFileExit )
 	ON_COMMAND( ID_ME_FILE_SAVEMATERIAL, OnFileSaveMaterial )
 	ON_COMMAND( ID_ME_FILE_SAVEFILE, OnFileSaveFile )
@@ -57,14 +57,14 @@ BEGIN_MESSAGE_MAP( MEMainFrame, CFrameWnd )
 	ON_UPDATE_COMMAND_UI( ID_ME_FILE_SAVEMATERIAL, OnFileSaveMaterialUpdate )
 	ON_UPDATE_COMMAND_UI( ID_ME_FILE_SAVEFILE, OnFileSaveFileUpdate )
 	ON_UPDATE_COMMAND_UI( ID_ME_FILE_SAVE, OnFileSaveAllUpdate )
-	
+
 	ON_COMMAND( ID_ME_PREVIEW_APPLYCHANGES, OnApplyMaterial )
 	ON_COMMAND( ID_ME_PREVIEW_APPLYFILE, OnApplyFile )
 	ON_COMMAND( ID_ME_PREVIEW_APPLYALL, OnApplyAll )
 	ON_UPDATE_COMMAND_UI( ID_ME_PREVIEW_APPLYCHANGES, OnApplyMaterialUpdate )
 	ON_UPDATE_COMMAND_UI( ID_ME_PREVIEW_APPLYFILE, OnApplyFileUpdate )
 	ON_UPDATE_COMMAND_UI( ID_ME_PREVIEW_APPLYALL, OnApplyAllUpdate )
-	
+
 	ON_COMMAND( ID_ME_EDIT_CUT, OnEditCut )
 	ON_COMMAND( ID_ME_EDIT_COPY, OnEditCopy )
 	ON_COMMAND( ID_ME_EDIT_PASTE, OnEditPaste )
@@ -75,15 +75,15 @@ BEGIN_MESSAGE_MAP( MEMainFrame, CFrameWnd )
 	ON_UPDATE_COMMAND_UI( ID_ME_EDIT_PASTE, OnEditPasteUpdate )
 	ON_UPDATE_COMMAND_UI( ID_ME_EDIT_DELETE, OnEditDeleteUpdate )
 	ON_UPDATE_COMMAND_UI( ID_ME_EDIT_RENAME, OnEditRenameUpdate )
-	
+
 	ON_COMMAND( ID_ME_EDIT_FIND, OnEditFind )
 	ON_COMMAND( ID_ME_EDIT_FIND_NEXT, OnEditFindNext )
-	
+
 	ON_COMMAND( ID_ME_EDIT_UNDO, OnEditUndo )
 	ON_COMMAND( ID_ME_EDIT_REDO, OnEditRedo )
 	ON_UPDATE_COMMAND_UI( ID_ME_EDIT_UNDO, OnEditUndoUpdate )
 	ON_UPDATE_COMMAND_UI( ID_ME_EDIT_REDO, OnEditRedoUpdate )
-	
+
 	ON_COMMAND( ID_VIEW_INCLUDEFILENAME, OnViewIncludeFile )
 	ON_COMMAND( ID_PREVIEW_RELOADARBPROGRAMS, OnReloadArbPrograms )
 	ON_COMMAND( ID_PREVIEW_RELOADIMAGES, OnReloadImages )
@@ -105,9 +105,9 @@ MEMainFrame::MEMainFrame()
 
 	currentDoc = NULL;
 	m_find = NULL;
-	
+
 	searchData.searched = false;
-	
+
 	options.Load();
 }
 
@@ -133,11 +133,13 @@ void MEMainFrame::PrintConsoleMessage( const char* msg )
 BOOL MEMainFrame::PreCreateWindow( CREATESTRUCT& cs )
 {
 	if( !CFrameWnd::PreCreateWindow( cs ) )
+	{
 		return FALSE;
-		
+	}
+
 	cs.dwExStyle &= ~WS_EX_CLIENTEDGE;
 	cs.lpszClass = AfxRegisterWndClass( 0 );
-	
+
 	return TRUE;
 }
 
@@ -149,80 +151,88 @@ BOOL MEMainFrame::OnCreateClient( LPCREATESTRUCT lpcs, CCreateContext* pContext 
 {
 	CCreateContext consoleContext;
 	consoleContext.m_pNewViewClass = RUNTIME_CLASS( ConsoleView );
-	
+
 	m_consoleView = ( ConsoleView* )CreateView( &consoleContext );
 	m_consoleView->ShowWindow( SW_HIDE );
-	
+
 	m_tabs.Create( TCS_BOTTOM | TCS_FLATBUTTONS | WS_CHILD | WS_VISIBLE, CRect( 0, 0, 0, 0 ), this, TAB_CONTROL );
 	m_tabs.InsertItem( 0, "Editor" );
 	m_tabs.InsertItem( 1, "Console" );
 	m_tabs.SetFont( materialEditorFont );
-	
+
 	m_splitterWnd.CreateStatic( this, 2, 1 );
-	
-	
+
+
 	m_editSplitter.CreateStatic( &m_splitterWnd, 1, 2, WS_CHILD | WS_VISIBLE | WS_BORDER, m_splitterWnd.IdFromRowCol( 0, 0 ) );
-	
+
 	if( !m_editSplitter.CreateView( 0, 0, RUNTIME_CLASS( MaterialTreeView ), CSize( 300, 200 ), pContext ) )
 	{
 		TRACE0( "Failed to create material list pane\n" );
 		return FALSE;
 	}
-	
+
 	if( !m_editSplitter.CreateView( 0, 1, RUNTIME_CLASS( MaterialEditView ), CSize( 200, 200 ), pContext ) )
 	{
 		TRACE0( "Failed to create stage property pane\n" );
 		return FALSE;
 	}
-	
-	
+
+
 	m_previewSplitter.CreateStatic( &m_splitterWnd, 1, 2, WS_CHILD | WS_VISIBLE | WS_BORDER, m_splitterWnd.IdFromRowCol( 1, 0 ) );
-	
+
 	if( !m_previewSplitter.CreateView( 0, 0, RUNTIME_CLASS( MaterialPreviewPropView ), CSize( 300, 200 ), pContext ) )
 	{
 		TRACE0( "Failed to create preview property pane\n" );
 		return FALSE;
 	}
-	
+
 	if( !m_previewSplitter.CreateView( 0, 1, RUNTIME_CLASS( MaterialPreviewView ), CSize( 100, 200 ), pContext ) )
 	{
 		TRACE0( "Failed to create preview pane\n" );
 		return FALSE;
 	}
-	
+
 	//Get references to all of the views
 	m_materialTreeView = ( MaterialTreeView* )m_editSplitter.GetPane( 0, 0 );
 	m_previewPropertyView = ( MaterialPreviewPropView* )m_previewSplitter.GetPane( 0, 0 );
 	m_materialPreviewView = ( MaterialPreviewView* )m_previewSplitter.GetPane( 0, 1 );
-	
+
 	m_materialEditView = ( MaterialEditView* )m_editSplitter.GetPane( 0, 1 );
 	m_stageView = m_materialEditView->m_stageView;
 	m_materialPropertyView = m_materialEditView->m_materialPropertyView;
 	m_materialEditSplitter = &m_materialEditView->m_editSplitter;
-	
+
 	//Load the splitter positions from the registry
 	int val = options.GetMaterialEditHeight();
 	if( val <= 0 )
+	{
 		val = 300;
+	}
 	m_splitterWnd.SetRowInfo( 0, val, 0 );
-	
+
 	val = options.GetMaterialTreeWidth();
 	if( val <= 0 )
+	{
 		val = 300;
+	}
 	m_editSplitter.SetColumnInfo( 0, val, 0 );
-	
+
 	val = options.GetStageWidth();
 	if( val <= 0 )
+	{
 		val = 200;
+	}
 	m_materialEditSplitter->SetColumnInfo( 0, val, 0 );
-	
+
 	val = options.GetPreviewPropertiesWidth();
 	if( val <= 0 )
+	{
 		val = 300;
+	}
 	m_previewSplitter.SetColumnInfo( 0, val, 0 );
-	
-	
-	
+
+
+
 	//Register the views with the document manager
 	materialDocManager.RegisterMaterialView( this );
 	materialDocManager.RegisterMaterialView( m_materialTreeView );
@@ -230,36 +240,40 @@ BOOL MEMainFrame::OnCreateClient( LPCREATESTRUCT lpcs, CCreateContext* pContext 
 	materialDocManager.RegisterMaterialView( m_materialPropertyView );
 	materialDocManager.RegisterMaterialView( m_materialPreviewView );
 	materialDocManager.RegisterMaterialView( m_materialEditView );
-	
+
 	//Let the stage window know about the prop window
 	m_stageView->SetMaterialPropertyView( m_materialPropertyView );
-	
+
 	//Let the preview props now about the preview window
 	m_previewPropertyView->RegisterPreviewView( m_materialPreviewView );
 	m_previewPropertyView->InitializePropTree();
 	m_previewPropertyView->GetPropertyTreeCtrl().SetColumn( 120 );
-	
+
 	MaterialDefManager::InitializeMaterialDefLists();
-	
+
 	//Some prop tree initialization
 	//m_materialPropertyView->InitializePropTreeDefs();
 	val = options.GetMaterialPropHeadingWidth();
 	if( val <= 0 )
+	{
 		val = 200;
+	}
 	m_materialPropertyView->GetPropertyTreeCtrl().SetColumn( val );
 	m_materialPropertyView->LoadSettings();
-	
-	
+
+
 	val = options.GetPreviewPropHeadingWidth();
 	if( val <= 0 )
+	{
 		val = 120;
+	}
 	m_previewPropertyView->GetPropertyTreeCtrl().SetColumn( val );
-	
+
 	//Build the material list
 	m_materialTreeView->InitializeMaterialList( true );
-	
+
 	SetActiveView( m_materialTreeView );
-	
+
 	return CFrameWnd::OnCreateClient( lpcs, pContext );
 }
 
@@ -271,18 +285,20 @@ BOOL MEMainFrame::OnCreateClient( LPCREATESTRUCT lpcs, CCreateContext* pContext 
 int MEMainFrame::OnCreate( LPCREATESTRUCT lpCreateStruct )
 {
 	if( CFrameWnd::OnCreate( lpCreateStruct ) == -1 )
+	{
 		return -1;
-		
-		
+	}
+
+
 	if( !m_wndToolBar.CreateEx( this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP	| CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC ) ||
 			!m_wndToolBar.LoadToolBar( IDR_ME_MAINFRAME ) )
 	{
 		TRACE0( "Failed to create toolbar\n" );
 		return -1;      // fail to create
 	}
-	
-	
-	
+
+
+
 	if( !m_wndStatusBar.Create( this ) ||
 			!m_wndStatusBar.SetIndicators( indicators,
 										   sizeof( indicators ) / sizeof( UINT ) ) )
@@ -290,10 +306,10 @@ int MEMainFrame::OnCreate( LPCREATESTRUCT lpCreateStruct )
 		TRACE0( "Failed to create status bar\n" );
 		return -1;      // fail to create
 	}
-	
+
 	//Load the window placement from the options
 	options.GetWindowPlacement( "mainframe", m_hWnd );
-	
+
 	return 0;
 }
 
@@ -304,36 +320,36 @@ int MEMainFrame::OnCreate( LPCREATESTRUCT lpCreateStruct )
 void MEMainFrame::OnDestroy()
 {
 	CFrameWnd::OnDestroy();
-	
+
 	int cur;
 	int min;
-	
+
 	m_splitterWnd.GetRowInfo( 0, cur, min );
 	options.SetMaterialEditHeight( cur );
-	
+
 	m_editSplitter.GetColumnInfo( 0, cur, min );
 	options.SetMaterialTreeWidth( cur );
-	
+
 	m_materialEditSplitter->GetColumnInfo( 0, cur, min );
 	options.SetStageWidth( cur );
-	
+
 	m_previewSplitter.GetColumnInfo( 0, cur, min );
 	options.SetPreviewPropertiesWidth( cur );
-	
-	
+
+
 	cur = m_materialPropertyView->GetPropertyTreeCtrl().GetColumn();
 	options.SetMaterialPropHeadingWidth( cur );
-	
+
 	cur = m_previewPropertyView->GetPropertyTreeCtrl().GetColumn();
 	options.SetPreviewPropHeadingWidth( cur );
-	
+
 	options.SetWindowPlacement( "mainframe", m_hWnd );
 	options.Save();
-	
+
 	m_materialPropertyView->SaveSettings();
-	
+
 	MaterialDefManager::DestroyMaterialDefLists();
-	
+
 	AfxGetApp()->ExitInstance();
 }
 
@@ -345,22 +361,22 @@ void MEMainFrame::OnDestroy()
 void MEMainFrame::OnSize( UINT nType, int cx, int cy )
 {
 	CFrameWnd::OnSize( nType, cx, cy );
-	
+
 	CRect statusRect;
 	m_wndStatusBar.GetWindowRect( statusRect );
-	
+
 	CRect toolbarRect;
 	m_wndToolBar.GetWindowRect( toolbarRect );
-	
+
 	CRect tabRect;
 	m_tabs.GetItemRect( 0, tabRect );
-	
+
 	int tabHeight = tabRect.Height() + 5;
-	
+
 	m_splitterWnd.MoveWindow( 0, toolbarRect.Height(), cx, cy - statusRect.Height() - toolbarRect.Height() - tabHeight );
-	
+
 	m_tabs.MoveWindow( 0, cy - statusRect.Height() - tabHeight, cx, tabHeight );
-	
+
 	m_consoleView->MoveWindow( 0, toolbarRect.Height(), cx, cy - statusRect.Height() - toolbarRect.Height() - tabHeight );
 }
 
@@ -372,18 +388,18 @@ void MEMainFrame::OnTcnSelChange( NMHDR* pNMHDR, LRESULT* pResult )
 {
 
 	int sel = m_tabs.GetCurSel();
-	
+
 	switch( sel )
 	{
 		case 0:
 			m_splitterWnd.ShowWindow( SW_SHOW );
 			m_consoleView->ShowWindow( SW_HIDE );
-			
+
 			break;
 		case 1:
 			m_splitterWnd.ShowWindow( SW_HIDE );
 			m_consoleView->ShowWindow( SW_SHOW );
-			
+
 			CRect rect;
 			GetWindowRect( rect );
 			MoveWindow( rect );
@@ -440,17 +456,17 @@ void MEMainFrame::OnFileSaveMaterialUpdate( CCmdUI* pCmdUI )
 {
 
 	MaterialDoc* pDoc = materialDocManager.GetCurrentMaterialDoc();
-	
+
 	if( pCmdUI->m_pMenu == NULL )
 	{
 		pCmdUI->Enable( TRUE );
 		return;
 	}
-	
+
 	if( pDoc && pDoc->modified )
 	{
 		pCmdUI->Enable( TRUE );
-		
+
 	}
 	else
 	{
@@ -469,7 +485,7 @@ void MEMainFrame::OnFileSaveFileUpdate( CCmdUI* pCmdUI )
 		pCmdUI->Enable( TRUE );
 		return;
 	}
-	
+
 	if( m_materialTreeView->CanSaveFile() )
 	{
 		pCmdUI->Enable( TRUE );
@@ -491,7 +507,7 @@ void MEMainFrame::OnFileSaveAllUpdate( CCmdUI* pCmdUI )
 		pCmdUI->Enable( TRUE );
 		return;
 	}
-	
+
 	if( materialDocManager.IsAnyModified() )
 	{
 		pCmdUI->Enable( TRUE );
@@ -541,13 +557,13 @@ void MEMainFrame::OnApplyAll()
 void MEMainFrame::OnApplyMaterialUpdate( CCmdUI* pCmdUI )
 {
 	MaterialDoc* pDoc = materialDocManager.GetCurrentMaterialDoc();
-	
+
 	if( pCmdUI->m_pMenu == NULL )
 	{
 		pCmdUI->Enable( TRUE );
 		return;
 	}
-	
+
 	if( pDoc && pDoc->applyWaiting )
 	{
 		pCmdUI->Enable( TRUE );
@@ -570,9 +586,9 @@ void MEMainFrame::OnApplyFileUpdate( CCmdUI* pCmdUI )
 		pCmdUI->Enable( TRUE );
 		return;
 	}
-	
+
 	MaterialDoc* pDoc = materialDocManager.GetCurrentMaterialDoc();
-	
+
 	if( pDoc && materialDocManager.DoesFileNeedApply( pDoc->renderMaterial->GetFileName() ) )
 	{
 		pCmdUI->Enable( TRUE );
@@ -595,7 +611,7 @@ void MEMainFrame::OnApplyAllUpdate( CCmdUI* pCmdUI )
 		pCmdUI->Enable( TRUE );
 		return;
 	}
-	
+
 	if( materialDocManager.DoesAnyNeedApply() )
 	{
 		pCmdUI->Enable( TRUE );
@@ -646,7 +662,7 @@ void MEMainFrame::OnEditCopy()
 void MEMainFrame::OnEditPaste()
 {
 	CWnd* focus = GetFocus();
-	
+
 	if( focus )
 	{
 		if( focus->IsKindOf( RUNTIME_CLASS( StageView ) ) )
@@ -710,9 +726,9 @@ void MEMainFrame::OnEditCutUpdate( CCmdUI* pCmdUI )
 		pCmdUI->Enable( TRUE );
 		return;
 	}
-	
+
 	BOOL enable = FALSE;
-	
+
 	CWnd* focus = GetFocus();
 	if( focus )
 	{
@@ -735,7 +751,7 @@ void MEMainFrame::OnEditCutUpdate( CCmdUI* pCmdUI )
 			enable = TRUE;
 		}
 	}
-	
+
 	pCmdUI->Enable( enable );
 }
 
@@ -750,9 +766,9 @@ void MEMainFrame::OnEditCopyUpdate( CCmdUI* pCmdUI )
 		pCmdUI->Enable( TRUE );
 		return;
 	}
-	
+
 	BOOL enable = FALSE;
-	
+
 	CWnd* focus = GetFocus();
 	if( focus )
 	{
@@ -775,7 +791,7 @@ void MEMainFrame::OnEditCopyUpdate( CCmdUI* pCmdUI )
 			enable = TRUE;
 		}
 	}
-	
+
 	pCmdUI->Enable( enable );
 }
 
@@ -790,9 +806,9 @@ void MEMainFrame::OnEditPasteUpdate( CCmdUI* pCmdUI )
 		pCmdUI->Enable( TRUE );
 		return;
 	}
-	
+
 	BOOL enable = FALSE;
-	
+
 	CWnd* focus = GetFocus();
 	if( focus )
 	{
@@ -815,7 +831,7 @@ void MEMainFrame::OnEditPasteUpdate( CCmdUI* pCmdUI )
 			enable = TRUE;
 		}
 	}
-	
+
 	pCmdUI->Enable( enable );
 }
 
@@ -830,9 +846,9 @@ void MEMainFrame::OnEditDeleteUpdate( CCmdUI* pCmdUI )
 		pCmdUI->Enable( TRUE );
 		return;
 	}
-	
+
 	BOOL enable = FALSE;
-	
+
 	CWnd* focus = GetFocus();
 	if( focus )
 	{
@@ -854,9 +870,9 @@ void MEMainFrame::OnEditDeleteUpdate( CCmdUI* pCmdUI )
 		{
 			enable = TRUE;
 		}
-		
+
 	}
-	
+
 	pCmdUI->Enable( enable );
 }
 
@@ -871,9 +887,9 @@ void MEMainFrame::OnEditRenameUpdate( CCmdUI* pCmdUI )
 		pCmdUI->Enable( TRUE );
 		return;
 	}
-	
+
 	BOOL enable = FALSE;
-	
+
 	CWnd* focus = GetFocus();
 	if( focus )
 	{
@@ -908,7 +924,9 @@ void MEMainFrame::OnEditFind()
 		m_find->ShowWindow( SW_SHOW );
 	}
 	else
+	{
 		m_find->SetActiveWindow();
+	}
 }
 
 /**
@@ -935,7 +953,7 @@ void MEMainFrame::OnEditUndo()
 			return;
 		}
 	}
-	
+
 	materialDocManager.Undo();
 }
 
@@ -955,7 +973,7 @@ void MEMainFrame::OnEditRedo()
 			return;
 		}
 	}
-	
+
 	materialDocManager.Redo();
 }
 
@@ -970,7 +988,7 @@ void MEMainFrame::OnEditUndoUpdate( CCmdUI* pCmdUI )
 		pCmdUI->Enable( TRUE );
 		return;
 	}
-	
+
 	CWnd* focus = GetFocus();
 	if( focus )
 	{
@@ -980,7 +998,7 @@ void MEMainFrame::OnEditUndoUpdate( CCmdUI* pCmdUI )
 			return;
 		}
 	}
-	
+
 	pCmdUI->Enable( materialDocManager.IsUndoAvailable() );
 }
 
@@ -995,7 +1013,7 @@ void MEMainFrame::OnEditRedoUpdate( CCmdUI* pCmdUI )
 		pCmdUI->Enable( TRUE );
 		return;
 	}
-	
+
 	CWnd* focus = GetFocus();
 	if( focus )
 	{
@@ -1005,7 +1023,7 @@ void MEMainFrame::OnEditRedoUpdate( CCmdUI* pCmdUI )
 			return;
 		}
 	}
-	
+
 	pCmdUI->Enable( materialDocManager.IsRedoAvailable() );
 }
 
@@ -1016,10 +1034,10 @@ void MEMainFrame::OnViewIncludeFile()
 {
 
 	CMenu* mmenu = GetMenu();
-	
+
 	UINT state = mmenu->GetMenuState( ID_VIEW_INCLUDEFILENAME, MF_BYCOMMAND );
 	ASSERT( state != 0xFFFFFFFF );
-	
+
 	if( state & MF_CHECKED )
 	{
 		mmenu->CheckMenuItem( ID_VIEW_INCLUDEFILENAME, MF_UNCHECKED | MF_BYCOMMAND );
@@ -1075,7 +1093,7 @@ void MEMainFrame::FindNext( MaterialSearchData_t* search )
 			return;
 		}
 	}
-	
+
 	//The material tree controls the searching
 	if( !m_materialTreeView->FindNextMaterial( &searchData ) )
 	{

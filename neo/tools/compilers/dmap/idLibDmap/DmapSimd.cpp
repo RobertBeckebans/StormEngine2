@@ -59,33 +59,33 @@ void idDmapSIMD::InitProcessor( const char* module, bool forceGeneric )
 {
 	int cpuid;
 	idDmapSIMDProcessor* newProcessor;
-	
+
 	cpuid = idLib::sys->GetProcessorId();
-	
+
 	if( forceGeneric )
 	{
-	
+
 		newProcessor = dmapGenericSIMD;
-		
+
 	}
 	else
 	{
-	
+
 		if( !dmapProcessor )
 		{
 			dmapProcessor = dmapGenericSIMD;
 			dmapProcessor->cpuid = cpuid;
 		}
-		
+
 		newProcessor = dmapProcessor;
 	}
-	
+
 	if( newProcessor != dmapSIMDProcessor )
 	{
 		dmapSIMDProcessor = newProcessor;
 		idLib::common->Printf( "%s using %s for SIMD processing\n", module, dmapSIMDProcessor->GetName() );
 	}
-	
+
 	if( cpuid & CPUID_SSE )
 	{
 		idLib::sys->FPU_SetFTZ( true );

@@ -3,7 +3,7 @@
 
 Doom 3 BFG Edition GPL Source Code
 Copyright (C) 1993-2012 id Software LLC, a ZeniMax Media company.
-Copyright (C) 2014-2016 Robert Beckebans
+Copyright (C) 2013-2016 Robert Beckebans
 Copyright (C) 2014-2016 Kot in Action Creative Artel
 
 This file is part of the Doom 3 BFG Edition GPL Source Code ("Doom 3 BFG Edition Source Code").
@@ -27,6 +27,7 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+
 #pragma hdrstop
 #include "precompiled.h"
 
@@ -126,7 +127,7 @@ ID_INLINE void idImage::DeriveOpts()
 	if( cubeFiles != CF_2D && usage != TD_SHADOW_ARRAY ) // foresthale 2014-10-05: we want to hit the TD_SHADOW_ARRAY case below
 	{
 		// motorsep 05-17-2015; setting parameters for cubemap / skybox images
-		
+
 		if( usage == TD_HIGHQUALITY_CUBE )
 		{
 			opts.colorFormat = CFM_DEFAULT;
@@ -143,12 +144,12 @@ ID_INLINE void idImage::DeriveOpts()
 			skyboxRGBswap = false;
 		}
 	}
-	
+
 	if( opts.format == FMT_NONE )
 	{
 		opts.colorFormat = CFM_DEFAULT;
 		opts.sRGB = false; // foresthale 2014-02-20: fixed r_useSRGB texture handling
-		
+
 		switch( usage )
 		{
 			case TD_COVERAGE:
@@ -158,11 +159,11 @@ ID_INLINE void idImage::DeriveOpts()
 			case TD_DEPTH:
 				opts.format = FMT_DEPTH;
 				break;
-				
+
 			case TD_SHADOW_ARRAY:
 				opts.format = FMT_SHADOW_ARRAY;
 				break;
-				
+
 			case TD_DIFFUSE:
 				// TD_DIFFUSE gets only set to when its a diffuse texture for an interaction
 				opts.gammaMips = true;
@@ -265,11 +266,11 @@ ID_INLINE void idImage::DeriveOpts()
 				opts.format = FMT_RGBA8;
 		}
 	}
-	
+
 	if( opts.numLevels == 0 )
 	{
 		opts.numLevels = 1;
-		
+
 		if( filter == TF_LINEAR || filter == TF_NEAREST )
 		{
 			// don't create mip maps if we aren't going to be using them
@@ -315,18 +316,18 @@ GenerateImage
 void idImage::GenerateImage( const byte* pic, int width, int height, textureFilter_t filterParm, textureRepeat_t repeatParm, textureUsage_t usageParm )
 {
 	PurgeImage();
-	
+
 	filter = filterParm;
 	repeat = repeatParm;
 	usage = usageParm;
 	cubeFiles = CF_2D;
-	
+
 	opts.textureType = TT_2D;
 	opts.width = width;
 	opts.height = height;
 	opts.numLevels = 0;
 	DeriveOpts();
-	
+
 	// if we don't have a rendering context, just return after we
 	// have filled in the parms.  We must have the values set, or
 	// an image match from a shader before the render starts would miss
@@ -335,22 +336,26 @@ void idImage::GenerateImage( const byte* pic, int width, int height, textureFilt
 	{
 		return;
 	}
-	
+
 	const bool toolUsage = IsToolUsage( usageParm );
-	
+
 	idBinaryImage im( GetName() );
-	
+
 	// foresthale 2014-05-30: give a nice progress display when binarizing
 	commonLocal.LoadPacifierBinarizeFilename( GetName() , "generated image" );
 	if( opts.numLevels > 1 )
+	{
 		commonLocal.LoadPacifierBinarizeProgressTotal( opts.width * opts.height * 4 / 3 );
+	}
 	else
+	{
 		commonLocal.LoadPacifierBinarizeProgressTotal( opts.width * opts.height );
+	}
 	im.Load2DFromMemory( width, height, pic, opts.numLevels, opts.format, opts.colorFormat, opts.gammaMips, toolUsage );
 	commonLocal.LoadPacifierBinarizeEnd();
-	
+
 	AllocImage();
-	
+
 	for( int i = 0; i < im.NumImages(); i++ )
 	{
 		const bimageImage_t& img = im.GetImageHeader( i );
@@ -369,19 +374,19 @@ Non-square cube sides are not allowed
 void idImage::GenerateCubeImage( const byte* pic[6], int size, textureFilter_t filterParm, textureUsage_t usageParm )
 {
 	PurgeImage();
-	
+
 	filter = filterParm;
 	repeat = TR_CLAMP;
 	usage = usageParm;
 	cubeFiles = CF_NATIVE;
-	
+
 	opts.textureType = TT_CUBIC;
 	opts.width = size;
 	opts.height = size;
 	opts.numLevels = 0;
 	opts.format = FMT_DXT5;
 	DeriveOpts();
-	
+
 	// if we don't have a rendering context, just return after we
 	// have filled in the parms.  We must have the values set, or
 	// an image match from a shader before the render starts would miss
@@ -390,21 +395,25 @@ void idImage::GenerateCubeImage( const byte* pic[6], int size, textureFilter_t f
 	{
 		return;
 	}
-	
+
 	const bool toolUsage = IsToolUsage( usageParm );
-	
+
 	idBinaryImage im( GetName() );
 	// foresthale 2014-05-30: give a nice progress display when binarizing
 	commonLocal.LoadPacifierBinarizeFilename( GetName(), "generated cube image" );
 	if( opts.numLevels > 1 )
+	{
 		commonLocal.LoadPacifierBinarizeProgressTotal( opts.width * opts.width * 6 * 4 / 3 );
+	}
 	else
+	{
 		commonLocal.LoadPacifierBinarizeProgressTotal( opts.width * opts.width * 6 );
+	}
 	im.LoadCubeFromMemory( size, pic, opts.numLevels, opts.format, opts.colorFormat, opts.gammaMips, toolUsage, usage );
 	commonLocal.LoadPacifierBinarizeEnd();
-	
+
 	AllocImage();
-	
+
 	for( int i = 0; i < im.NumImages(); i++ )
 	{
 		const bimageImage_t& img = im.GetImageHeader( i );
@@ -417,18 +426,18 @@ void idImage::GenerateCubeImage( const byte* pic[6], int size, textureFilter_t f
 void idImage::GenerateShadowArray( int width, int height, textureFilter_t filterParm, textureRepeat_t repeatParm, textureUsage_t usageParm )
 {
 	PurgeImage();
-	
+
 	filter = filterParm;
 	repeat = repeatParm;
 	usage = usageParm;
 	cubeFiles = CF_2D_ARRAY;
-	
+
 	opts.textureType = TT_2D_ARRAY;
 	opts.width = width;
 	opts.height = height;
 	opts.numLevels = 0;
 	DeriveOpts();
-	
+
 	// if we don't have a rendering context, just return after we
 	// have filled in the parms.  We must have the values set, or
 	// an image match from a shader before the render starts would miss
@@ -437,12 +446,12 @@ void idImage::GenerateShadowArray( int width, int height, textureFilter_t filter
 	{
 		return;
 	}
-	
+
 	//idBinaryImage im( GetName() );
 	//im.Load2DFromMemory( width, height, pic, opts.numLevels, opts.format, opts.colorFormat, opts.gammaMips );
-	
+
 	AllocImage();
-	
+
 	/*
 	for( int i = 0; i < im.NumImages(); i++ )
 	{
@@ -470,7 +479,7 @@ void idImage::BindAttachmentOnFBO( int attachmentType, int layer )
 		assert( opts.textureType == TT_2D_ARRAY );
 		qglFramebufferTextureLayer( GL_FRAMEBUFFER, attachmentType, texnum, 0, layer );
 	}
-	
+
 }
 
 /*
@@ -483,14 +492,14 @@ name contains GetName() upon entry
 void idImage::GetGeneratedName( idStr& _name, const textureUsage_t& _usage, const cubeFiles_t& _cube )
 {
 	idStrStatic< 64 > extension;
-	
+
 	_name.ExtractFileExtension( extension );
 	_name.StripFileExtension();
-	
+
 	const char* qualitySuffix = !IsToolUsage( _usage ) && image_highQualityCompression.GetBool() ? "hq" : "lq";
-	
+
 	_name += va( "#__%02d%02d_%s", ( int )_usage, ( int )_cube, qualitySuffix );
-	
+
 	if( extension.Length() > 0 )
 	{
 		_name.SetFileExtension( extension );
@@ -514,14 +523,14 @@ void idImage::ActuallyLoadImage( bool fromBackEnd )
 	{
 		return;
 	}
-	
+
 	// this is the ONLY place generatorFunction will ever be called
 	if( generatorFunction )
 	{
 		generatorFunction( this );
 		return;
 	}
-	
+
 	if( com_productionMode.GetInteger() != 0 )
 	{
 		sourceFileTime = FILE_NOT_FOUND_TIMESTAMP;
@@ -551,20 +560,20 @@ void idImage::ActuallyLoadImage( bool fromBackEnd )
 			R_LoadImageProgram( GetName(), NULL, NULL, NULL, &sourceFileTime, &usage );
 		}
 	}
-	
+
 	const bool toolUsage = IsToolUsage( usage );
-	
+
 	// Figure out opts.colorFormat and opts.format so we can make sure the binary image is up to date
 	DeriveOpts();
-	
+
 	idStrStatic< MAX_OSPATH > generatedName = GetName();
 	GetGeneratedName( generatedName, usage, cubeFiles );
-	
+
 	idBinaryImage im( generatedName );
 	binaryFileTime = ( !toolUsage || r_cacheToolImages.GetBool() ) ? im.LoadFromGeneratedFile( sourceFileTime, toolUsage ) : FILE_NOT_FOUND_TIMESTAMP;
-	
+
 	const bool binaryFileFound = binaryFileTime != FILE_NOT_FOUND_TIMESTAMP;
-	
+
 	// BFHACK, do not want to tweak on buildgame so catch these images here
 	/*if( !binaryFileFound && fileSystem->UsingResourceFiles() )
 	{
@@ -608,9 +617,9 @@ void idImage::ActuallyLoadImage( bool fromBackEnd )
 	}
 	}
 	}*/
-	
+
 	const bimageFile_t& header = im.GetFileHeader();
-	
+
 	if( ( ( fileSystem->InProductionMode() || sourceFileTime <= 0 ) && binaryFileFound )
 			|| ( ( binaryFileFound )
 				 && ( header.colorFormat == opts.colorFormat )
@@ -635,46 +644,60 @@ void idImage::ActuallyLoadImage( bool fromBackEnd )
 	{
 		idStr binarizeReason = "binarize: unknown reason";
 		if( !binaryFileFound )
+		{
 			binarizeReason = va( "binarize: binary file not found '%s'", generatedName.c_str() );
+		}
 		else if( header.colorFormat != opts.colorFormat )
+		{
 			binarizeReason = va( "binarize: mismatch color format '%s'", generatedName.c_str() );
+		}
 		else if( header.colorFormat != opts.colorFormat )
+		{
 			binarizeReason = va( "binarize: mismatched color format '%s'", generatedName.c_str() );
+		}
 		else if( header.textureType != opts.textureType )
+		{
 			binarizeReason = va( "binarize: mismatched texture type '%s'", generatedName.c_str() );
+		}
 		else if( toolUsage )
+		{
 			binarizeReason = va( "binarize: tool usage '%s'", generatedName.c_str() );
-			
+		}
+
 		if( cubeFiles != CF_2D )
 		{
 			int size;
 			byte* pics[6];
-			
+
 			if( !R_LoadCubeImages( GetName(), cubeFiles, pics, &size, &sourceFileTime ) || size == 0 )
 			{
 				idLib::Warning( "Couldn't load cube image: %s", GetName() );
 				return;
 			}
-			
+
 			repeat = TR_CLAMP;
-			
+
 			opts.textureType = TT_CUBIC;
 			opts.width = size;
 			opts.height = size;
 			opts.numLevels = 0;
-			
+
 			DeriveOpts();
-			
+
 			// foresthale 2014-05-30: give a nice progress display when binarizing
 			commonLocal.LoadPacifierBinarizeFilename( generatedName.c_str(), binarizeReason.c_str() );
 			if( opts.numLevels > 1 )
+			{
 				commonLocal.LoadPacifierBinarizeProgressTotal( opts.width * opts.width * 6 * 4 / 3 );
+			}
 			else
+			{
 				commonLocal.LoadPacifierBinarizeProgressTotal( opts.width * opts.width * 6 );
+			}
 			im.LoadCubeFromMemory( size, ( const byte** )pics, opts.numLevels, opts.format, opts.colorFormat, opts.gammaMips, toolUsage, usage );
 			commonLocal.LoadPacifierBinarizeEnd();
 			repeat = TR_CLAMP;
-			
+
 			for( int i = 0; i < 6; i++ )
 			{
 				if( pics[i] )
@@ -687,23 +710,25 @@ void idImage::ActuallyLoadImage( bool fromBackEnd )
 		{
 			int width, height;
 			byte* pic;
-			
+
 			// load the full specification, and perform any image program calculations
 			R_LoadImageProgram( GetName(), &pic, &width, &height, &sourceFileTime, &usage );
-			
+
 			if( pic == NULL )
 			{
 				// motorsep 01-16-2015; only print that debug warning when "developer" cvar is set to 1
 				if( com_developer.GetBool() )
+				{
 					idLib::Warning( "Couldn't load image: %s : %s", GetName(), generatedName.c_str() );
-					
+				}
+
 				// create a default so it doesn't get continuously reloaded
 				opts.width = 8;
 				opts.height = 8;
 				opts.numLevels = 1;
 				DeriveOpts();
 				AllocImage();
-				
+
 				// clear the data so it's not left uninitialized
 				idTempArray<byte> clear( opts.width * opts.height * 4 );
 				memset( clear.Ptr(), 0, clear.Size() );
@@ -711,34 +736,40 @@ void idImage::ActuallyLoadImage( bool fromBackEnd )
 				{
 					SubImageUpload( level, 0, 0, 0, opts.width >> level, opts.height >> level, clear.Ptr() );
 				}
-				
+
 				return;
 			}
-			
+
 			opts.width = width;
 			opts.height = height;
 			opts.numLevels = 0;
 			DeriveOpts();
-			
+
 			// foresthale 2014-05-30: give a nice progress display when binarizing
 			commonLocal.LoadPacifierBinarizeFilename( generatedName.c_str(), binarizeReason.c_str() );
 			if( opts.numLevels > 1 )
+			{
 				commonLocal.LoadPacifierBinarizeProgressTotal( opts.width * opts.height * 4 / 3 );
+			}
 			else
+			{
 				commonLocal.LoadPacifierBinarizeProgressTotal( opts.width * opts.height );
+			}
 			im.Load2DFromMemory( opts.width, opts.height, pic, opts.numLevels, opts.format, opts.colorFormat, opts.gammaMips, toolUsage );
 			commonLocal.LoadPacifierBinarizeEnd();
-			
+
 			Mem_Free( pic );
 		}
-		
+
 		if( !toolUsage || r_cacheToolImages.GetBool() )
+		{
 			binaryFileTime = im.WriteGeneratedFile( sourceFileTime, toolUsage );
+		}
 	}
-	
+
 	AllocImage();
-	
-	
+
+
 	for( int i = 0; i < im.NumImages(); i++ )
 	{
 		const bimageImage_t& img = im.GetImageHeader( i );
@@ -758,16 +789,16 @@ void idImage::Bind()
 {
 
 	RENDERLOG_PRINTF( "idImage::Bind( %s )\n", GetName() );
-	
+
 	// load the image if necessary (FIXME: not SMP safe!)
 	if( !IsLoaded() )
 	{
 		// load the image on demand here, which isn't our normal game operating mode
 		ActuallyLoadImage( true );
 	}
-	
+
 	const int texUnit = backEnd.glState.currenttmu;
-	
+
 	tmu_t* tmu = &backEnd.glState.tmu[texUnit];
 	// bind the texture
 	if( opts.textureType == TT_2D )
@@ -777,7 +808,7 @@ void idImage::Bind()
 			tmu->current2DMap = texnum;
 			qglBindMultiTextureEXT( GL_TEXTURE0_ARB + texUnit, GL_TEXTURE_2D, texnum );
 		}
-		
+
 		// foresthale 2014-05-10: when using the tools code (which does not use shaders) we have to manage the texture unit enables
 		if( com_editors )
 		{
@@ -792,7 +823,7 @@ void idImage::Bind()
 			tmu->currentCubeMap = texnum;
 			qglBindMultiTextureEXT( GL_TEXTURE0_ARB + texUnit, GL_TEXTURE_CUBE_MAP_EXT, texnum );
 		}
-		
+
 		// foresthale 2014-05-10: when using the tools code (which does not use shaders) we have to manage the texture unit enables
 		if( com_editors )
 		{
@@ -805,13 +836,13 @@ void idImage::Bind()
 		if( tmu->current2DArray != texnum )
 		{
 			tmu->current2DArray = texnum;
-			
+
 			// RB begin
 			qglBindMultiTextureEXT( GL_TEXTURE0 + texUnit, GL_TEXTURE_2D_ARRAY, texnum );
 		}
 	}
-	
-	
+
+
 }
 
 /*
@@ -844,24 +875,24 @@ void idImage::CopyFramebuffer( int x, int y, int imageWidth, int imageHeight )
 		repeat = TR_CLAMP;
 		AllocImage();
 	}
-	
+
 	qglBindTexture( ( opts.textureType == TT_CUBIC ) ? GL_TEXTURE_CUBE_MAP_EXT : GL_TEXTURE_2D, texnum );
-	
+
 	// foresthale 2014-02-20: HDR view rendering - this seems to not be changed anywhere and conflicts with FBO rendering
 	//qglReadBuffer( GL_BACK );
-	
+
 	opts.width = imageWidth;
 	opts.height = imageHeight;
 	// foresthale 2014-02-20: HDR view rendering
 	qglCopyTexImage2D( GL_TEXTURE_2D, 0, opts.format == FMT_RGBA16F ? GL_RGBA16F : GL_RGBA8, x, y, imageWidth, imageHeight, 0 );
-	
+
 	// these shouldn't be necessary if the image was initialized properly
 	qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 	qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-	
+
 	qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 	qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-	
+
 	backEnd.pc.c_copyFrameBuffer++;
 }
 
@@ -873,11 +904,11 @@ CopyDepthbuffer
 void idImage::CopyDepthbuffer( int x, int y, int imageWidth, int imageHeight )
 {
 	qglBindTexture( ( opts.textureType == TT_CUBIC ) ? GL_TEXTURE_CUBE_MAP_EXT : GL_TEXTURE_2D, texnum );
-	
+
 	opts.width = imageWidth;
 	opts.height = imageHeight;
 	qglCopyTexImage2D( GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, x, y, imageWidth, imageHeight, 0 );
-	
+
 	backEnd.pc.c_copyFrameBuffer++;
 }
 
@@ -900,7 +931,7 @@ void idImage::UploadScratch( const byte* data, int cols, int rows )
 		{
 			pic[i] = data + cols * rows * 4 * i;
 		}
-		
+
 		if( opts.textureType != TT_CUBIC || usage != TD_LOOKUP_TABLE_RGBA )
 		{
 			GenerateCubeImage( pic, cols, TF_LINEAR, TD_LOOKUP_TABLE_RGBA );
@@ -917,7 +948,7 @@ void idImage::UploadScratch( const byte* data, int cols, int rows )
 		{
 			SubImageUpload( 0, 0, 0, i, opts.width, opts.height, pic[i] );
 		}
-		
+
 	}
 	else
 	{
@@ -975,7 +1006,7 @@ void idImage::Print() const
 	{
 		common->Printf( " " );
 	}
-	
+
 	switch( opts.textureType )
 	{
 		case TT_2D:
@@ -988,9 +1019,9 @@ void idImage::Print() const
 			common->Printf( "<BAD TYPE:%i>", opts.textureType );
 			break;
 	}
-	
+
 	common->Printf( "%4i %4i ",	opts.width, opts.height );
-	
+
 	switch( opts.format )
 	{
 #define NAME_FORMAT( x ) case FMT_##x: common->Printf( "%-6s ", #x ); break;
@@ -1011,7 +1042,7 @@ void idImage::Print() const
 			common->Printf( "<%3i>", opts.format );
 			break;
 	}
-	
+
 	switch( filter )
 	{
 		case TF_DEFAULT:
@@ -1027,7 +1058,7 @@ void idImage::Print() const
 			common->Printf( "<BAD FILTER:%i>", filter );
 			break;
 	}
-	
+
 	switch( repeat )
 	{
 		case TR_REPEAT:
@@ -1046,9 +1077,9 @@ void idImage::Print() const
 			common->Printf( "<BAD REPEAT:%i>", repeat );
 			break;
 	}
-	
+
 	common->Printf( "%4ik ", StorageSize() / 1024 );
-	
+
 	common->Printf( " %s\n", GetName() );
 }
 
@@ -1064,10 +1095,12 @@ void idImage::Reload( bool force )
 	{
 		common->DPrintf( "regenerating %s.\n", GetName() );
 		if( opts.textureType != TT_2D_ARRAY && cubeFiles != CF_2D_ARRAY )  // motorsep 12-18-2014; we don't need to regenerate shadowmaps (maybe even none of the functional images) since they aren't being modified
+		{
 			generatorFunction( this );
+		}
 		return;
 	}
-	
+
 	// check file times
 	if( !force )
 	{
@@ -1086,11 +1119,11 @@ void idImage::Reload( bool force )
 			return;
 		}
 	}
-	
+
 	common->DPrintf( "reloading %s.\n", GetName() );
-	
+
 	PurgeImage();
-	
+
 	// Load is from the front end, so the back end must be synced
 	ActuallyLoadImage( false );
 }

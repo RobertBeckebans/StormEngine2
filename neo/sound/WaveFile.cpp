@@ -49,12 +49,12 @@ returns false, there is no need to call Close.
 bool idWaveFile::Open( const char* filename )
 {
 	Close();
-	
+
 	if( filename == NULL || filename[0] == 0 )
 	{
 		return false;
 	}
-	
+
 	if( file == NULL )
 	{
 		file = fileSystem->OpenFileReadMemory( filename );
@@ -63,35 +63,35 @@ bool idWaveFile::Open( const char* filename )
 			return false;
 		}
 	}
-	
+
 	if( file->Length() == 0 )
 	{
 		Close();
 		return false;
 	}
-	
+
 	struct header_t
 	{
 		uint32 id;
 		uint32 size;
 		uint32 format;
 	} header;
-	
+
 	file->Read( &header, sizeof( header ) );
 	idSwap::Big( header.id );
 	idSwap::Little( header.size );
 	idSwap::Big( header.format );
-	
+
 	if( header.id != 'RIFF' || header.format != 'WAVE' || header.size < 4 )
 	{
 		Close();
 		idLib::Warning( "Header is not RIFF WAVE in %s", filename );
 		return false;
 	}
-	
+
 	uint32 riffSize = header.size + 8;
 	uint32 offset = sizeof( header );
-	
+
 	// Scan the file collecting chunks
 	while( offset < riffSize )
 	{
@@ -109,23 +109,23 @@ bool idWaveFile::Open( const char* filename )
 		idSwap::Big( chunkHeader.id );
 		idSwap::Little( chunkHeader.size );
 		offset += sizeof( chunkHeader );
-		
+
 		if( chunks.Num() >= chunks.Max() )
 		{
 			Close();
 			idLib::Warning( "More than %d chunks in %s", chunks.Max(), filename );
 			return false;
 		}
-		
+
 		chunk_t* chunk = chunks.Alloc();
 		chunk->id = chunkHeader.id;
 		chunk->size = chunkHeader.size;
 		chunk->offset = offset;
 		offset += chunk->size;
-		
+
 		file->Seek( offset, FS_SEEK_SET );
 	}
-	
+
 	return true;
 }
 
@@ -210,7 +210,7 @@ otherwise, returns a human-readable error message.
 const char* idWaveFile::ReadWaveFormat( waveFmt_t& format )
 {
 	memset( &format, 0, sizeof( format ) );
-	
+
 	uint32 formatSize = SeekToChunk( waveFmt_t::id );
 	if( formatSize == 0 )
 	{
@@ -220,9 +220,9 @@ const char* idWaveFile::ReadWaveFormat( waveFmt_t& format )
 	{
 		return "Format chunk too small";
 	}
-	
+
 	Read( &format.basic, sizeof( format.basic ) );
-	
+
 	idSwapClass<waveFmt_t::basic_t> swap;
 	swap.Little( format.basic.formatTag );
 	swap.Little( format.basic.numChannels );
@@ -230,7 +230,7 @@ const char* idWaveFile::ReadWaveFormat( waveFmt_t& format )
 	swap.Little( format.basic.avgBytesPerSec );
 	swap.Little( format.basic.blockSize );
 	swap.Little( format.basic.bitsPerSample );
-	
+
 	if( format.basic.formatTag == FORMAT_PCM )
 	{
 	}
@@ -308,7 +308,7 @@ const char* idWaveFile::ReadWaveFormat( waveFmt_t& format )
 	{
 		return "Unknown wave format tag";
 	}
-	
+
 	return NULL;
 }
 
@@ -330,7 +330,7 @@ bool idWaveFile::ReadWaveFormatDirect( waveFmt_t& format, idFile* file )
 	swap.Little( format.basic.avgBytesPerSec );
 	swap.Little( format.basic.blockSize );
 	swap.Little( format.basic.bitsPerSample );
-	
+
 	if( format.basic.formatTag == FORMAT_PCM )
 	{
 	}
@@ -408,7 +408,7 @@ bool idWaveFile::ReadWaveFormatDirect( waveFmt_t& format, idFile* file )
 	{
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -474,7 +474,7 @@ bool idWaveFile::WriteSampleDataDirect( idList< sampleData_t >& sampleData, idFi
 	uint32 chunkSize = 36 + samplerData;
 	uint32 zero = 0;
 	uint32 numSamples = sampleData.Num();
-	
+
 	file->Write( &chunkSize, sizeof( uint32 ) );
 	file->Write( &zero, sizeof( uint32 ) );
 	file->Write( &zero, sizeof( uint32 ) );
@@ -485,7 +485,7 @@ bool idWaveFile::WriteSampleDataDirect( idList< sampleData_t >& sampleData, idFi
 	file->Write( &zero, sizeof( uint32 ) );
 	file->Write( &numSamples, sizeof( uint32 ) );
 	file->Write( &samplerData, sizeof( uint32 ) );
-	
+
 	for( int i = 0; i < sampleData.Num(); ++i )
 	{
 		file->Write( &zero, sizeof( uint32 ) );
@@ -547,27 +547,27 @@ bool idWaveFile::ReadLoopData( int& start, int& end )
 	{
 		return false;
 	}
-	
+
 	samplerChunk_t smpl;
 	Read( &smpl, sizeof( smpl ) );
 	idSwap::Little( smpl.numSampleLoops );
-	
+
 	if( smpl.numSampleLoops < 1 )
 	{
 		return false; // this is possible returning false lets us know there are more then 1 sample look in the file and is not appropriate for traditional looping
 	}
-	
+
 	sampleData_t smplData;
 	Read( &smplData, sizeof( smplData ) );
 	idSwap::Little( smplData.start );
 	idSwap::Little( smplData.end );
-	
+
 	if( smplData.type != 0 )
 	{
 		idLib::Warning( "Invalid loop type in %s", file->GetName() );
 		return false;
 	}
-	
+
 	start = smplData.start;
 	end = smplData.end;
 	return true;

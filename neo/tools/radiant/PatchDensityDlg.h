@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 #define AFX_PATCHDENSITYDLG_H__509162A1_1023_11D2_AFFB_00AA00A410FC__INCLUDED_
 
 #if _MSC_VER >= 1000
-#pragma once
+	#pragma once
 #endif // _MSC_VER >= 1000
 // PatchDensityDlg.h : header file
 //
@@ -44,22 +44,22 @@ class CPatchDensityDlg : public CDialog
 // Construction
 public:
 	CPatchDensityDlg( CWnd* pParent = NULL ); // standard constructor
-	
+
 // Dialog Data
 	//{{AFX_DATA(CPatchDensityDlg)
 	enum { IDD = IDD_DIALOG_NEWPATCH };
 	CComboBox	m_wndWidth;
 	CComboBox	m_wndHeight;
 	//}}AFX_DATA
-	
-	
+
+
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CPatchDensityDlg)
 protected:
 	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	//}}AFX_VIRTUAL
-	
+
 // Implementation
 protected:
 

@@ -148,12 +148,12 @@ void idActor::PlayFootStepSound()
 {
 	const char* sound = NULL;
 	const idMaterial* material;
-	
+
 	if( !GetPhysics()->HasGroundContacts() )
 	{
 		return;
 	}
-	
+
 	// start footstep sound based on material type
 	material = GetPhysics()->GetContact( 0 ).material;
 	if( material != NULL )
@@ -189,7 +189,7 @@ idActor::Event_DisableEyeFocus
 void idActor::Event_DisableEyeFocus()
 {
 	allowEyeFocus = false;
-	
+
 	idEntity* headEnt = head.GetEntity();
 	if( headEnt )
 	{
@@ -320,23 +320,25 @@ void idActor::Event_StopAnim( int channel, int frames )
 		case ANIMCHANNEL_HEAD :
 			headAnim.StopAnim( frames );
 			break;
-			
+
 		case ANIMCHANNEL_TORSO :
 			torsoAnim.StopAnim( frames );
 			break;
-			
+
 		case ANIMCHANNEL_LEGS :
 			legsAnim.StopAnim( frames );
 			break;
-			
+
 		case ANIMCHANNEL_EYELIDS:
 			break;
-			
+
 		case ANIMCHANNEL_ALL:
 			for( int i = 1; i < ANIMCHANNEL_COUNT; ++i )
+			{
 				Event_StopAnim( i, frames );
+			}
 			break;
-			
+
 		default:
 			gameLocal.Error( "Unknown anim group" );
 			break;
@@ -364,16 +366,20 @@ void idActor::Event_PlayAnim( int channel, const char* animname )
 		idThread::ReturnInt( 0 );
 		return;
 	}
-	
+
 	if( ANIMCHANNEL_ALL == channel )
 	{
 		// start from 1, skip ANIMCHANNEL_ALL
 		for( int i = 1; i < ANIMCHANNEL_COUNT; ++i )
+		{
 			InternalPlayAnim( i, anim );
+		}
 	}
 	else
+	{
 		InternalPlayAnim( channel, anim );
-		
+	}
+
 	idThread::ReturnInt( 1 );
 }
 
@@ -386,7 +392,7 @@ void idActor::Event_PlayCycle( int channel, const char* animname )
 {
 	animFlags_t	flags;
 	int			anim;
-	
+
 	anim = GetAnim( channel, animname );
 	if( !anim )
 	{
@@ -401,7 +407,7 @@ void idActor::Event_PlayCycle( int channel, const char* animname )
 		idThread::ReturnInt( false );
 		return;
 	}
-	
+
 	switch( channel )
 	{
 		case ANIMCHANNEL_HEAD :
@@ -419,7 +425,7 @@ void idActor::Event_PlayCycle( int channel, const char* animname )
 				}
 			}
 			break;
-			
+
 		case ANIMCHANNEL_TORSO :
 			torsoAnim.idleAnim = false;
 			torsoAnim.CycleAnim( anim );
@@ -438,7 +444,7 @@ void idActor::Event_PlayCycle( int channel, const char* animname )
 				}
 			}
 			break;
-			
+
 		case ANIMCHANNEL_LEGS :
 			legsAnim.idleAnim = false;
 			legsAnim.CycleAnim( anim );
@@ -457,11 +463,11 @@ void idActor::Event_PlayCycle( int channel, const char* animname )
 				}
 			}
 			break;
-			
+
 		default:
 			gameLocal.Error( "Unknown anim group" );
 	}
-	
+
 	idThread::ReturnInt( true );
 }
 
@@ -483,38 +489,42 @@ void idActor::Event_IdleAnim( int channel, const char* animname )
 		{
 			gameLocal.DPrintf( "missing '%s' animation on '%s' (%s)\n", animname, name.c_str(), GetEntityDefName() );
 		}
-		
+
 		switch( channel )
 		{
 			case ANIMCHANNEL_HEAD :
 				headAnim.BecomeIdle();
 				break;
-				
+
 			case ANIMCHANNEL_TORSO :
 				torsoAnim.BecomeIdle();
 				break;
-				
+
 			case ANIMCHANNEL_LEGS :
 				legsAnim.BecomeIdle();
 				break;
-				
+
 			default:
 				gameLocal.Error( "Unknown anim group" );
 		}
-		
+
 		idThread::ReturnInt( false );
 		return;
 	}
-	
+
 	if( ANIMCHANNEL_ALL == channel )
 	{
 		// start from 1, skip ANIMCHANNEL_ALL
 		for( int i = 1; i < ANIMCHANNEL_COUNT; ++i )
+		{
 			InternalIdleAnim( i, anim );
+		}
 	}
 	else
+	{
 		InternalIdleAnim( channel, anim );
-		
+	}
+
 	idThread::ReturnInt( 1 );
 }
 
@@ -526,7 +536,7 @@ idActor::Event_SetSyncedAnimWeight
 void idActor::Event_SetSyncedAnimWeight( int channel, int anim, float weight )
 {
 	idEntity* headEnt;
-	
+
 	headEnt = head.GetEntity();
 	switch( channel )
 	{
@@ -548,7 +558,7 @@ void idActor::Event_SetSyncedAnimWeight( int channel, int anim, float weight )
 				}
 			}
 			break;
-			
+
 		case ANIMCHANNEL_TORSO :
 			animator.CurrentAnim( ANIMCHANNEL_TORSO )->SetSyncedAnimWeight( anim, weight );
 			if( legsAnim.IsIdle() )
@@ -560,7 +570,7 @@ void idActor::Event_SetSyncedAnimWeight( int channel, int anim, float weight )
 				animator.CurrentAnim( ANIMCHANNEL_ALL )->SetSyncedAnimWeight( anim, weight );
 			}
 			break;
-			
+
 		case ANIMCHANNEL_LEGS :
 			animator.CurrentAnim( ANIMCHANNEL_LEGS )->SetSyncedAnimWeight( anim, weight );
 			if( torsoAnim.IsIdle() )
@@ -572,7 +582,7 @@ void idActor::Event_SetSyncedAnimWeight( int channel, int anim, float weight )
 				}
 			}
 			break;
-			
+
 		default:
 			gameLocal.Error( "Unknown anim group" );
 	}
@@ -598,7 +608,7 @@ void idActor::Event_OverrideAnim( int channel )
 				SyncAnimChannels( ANIMCHANNEL_HEAD, ANIMCHANNEL_LEGS, legsAnim.lastAnimBlendFrames );
 			}
 			break;
-			
+
 		case ANIMCHANNEL_TORSO :
 			torsoAnim.Disable();
 			SyncAnimChannels( ANIMCHANNEL_TORSO, ANIMCHANNEL_LEGS, legsAnim.lastAnimBlendFrames );
@@ -607,12 +617,12 @@ void idActor::Event_OverrideAnim( int channel )
 				SyncAnimChannels( ANIMCHANNEL_HEAD, ANIMCHANNEL_TORSO, torsoAnim.lastAnimBlendFrames );
 			}
 			break;
-			
+
 		case ANIMCHANNEL_LEGS :
 			legsAnim.Disable();
 			SyncAnimChannels( ANIMCHANNEL_LEGS, ANIMCHANNEL_TORSO, torsoAnim.lastAnimBlendFrames );
 			break;
-			
+
 		default:
 			gameLocal.Error( "Unknown anim group" );
 			break;
@@ -631,15 +641,15 @@ void idActor::Event_EnableAnim( int channel, int blendFrames )
 		case ANIMCHANNEL_HEAD :
 			headAnim.Enable( blendFrames );
 			break;
-			
+
 		case ANIMCHANNEL_TORSO :
 			torsoAnim.Enable( blendFrames );
 			break;
-			
+
 		case ANIMCHANNEL_LEGS :
 			legsAnim.Enable( blendFrames );
 			break;
-			
+
 		default:
 			gameLocal.Error( "Unknown anim group" );
 			break;
@@ -659,17 +669,17 @@ void idActor::Event_SetBlendFrames( int channel, int blendFrames )
 			headAnim.animBlendFrames = blendFrames;
 			headAnim.lastAnimBlendFrames = blendFrames;
 			break;
-			
+
 		case ANIMCHANNEL_TORSO :
 			torsoAnim.animBlendFrames = blendFrames;
 			torsoAnim.lastAnimBlendFrames = blendFrames;
 			break;
-			
+
 		case ANIMCHANNEL_LEGS :
 			legsAnim.animBlendFrames = blendFrames;
 			legsAnim.lastAnimBlendFrames = blendFrames;
 			break;
-			
+
 		default:
 			gameLocal.Error( "Unknown anim group" );
 			break;
@@ -688,15 +698,15 @@ void idActor::Event_GetBlendFrames( int channel )
 		case ANIMCHANNEL_HEAD :
 			idThread::ReturnInt( headAnim.animBlendFrames );
 			break;
-			
+
 		case ANIMCHANNEL_TORSO :
 			idThread::ReturnInt( torsoAnim.animBlendFrames );
 			break;
-			
+
 		case ANIMCHANNEL_LEGS :
 			idThread::ReturnInt( legsAnim.animBlendFrames );
 			break;
-			
+
 		default:
 			gameLocal.Error( "Unknown anim group" );
 			break;
@@ -724,31 +734,31 @@ idActor::Event_AnimDone
 void idActor::Event_AnimDone( int channel, int blendFrames )
 {
 	bool result;
-	
+
 	switch( channel )
 	{
 		case ANIMCHANNEL_HEAD :
 			result = headAnim.AnimDone( blendFrames );
 			idThread::ReturnInt( result );
 			break;
-			
+
 		case ANIMCHANNEL_TORSO :
 			result = torsoAnim.AnimDone( blendFrames );
 			idThread::ReturnInt( result );
 			break;
-			
+
 		case ANIMCHANNEL_LEGS :
 			result = legsAnim.AnimDone( blendFrames );
 			idThread::ReturnInt( result );
 			break;
-			
+
 		case ANIMCHANNEL_ALL:
 			result = headAnim.AnimDone( blendFrames ) &&
 					 torsoAnim.AnimDone( blendFrames ) &&
 					 legsAnim.AnimDone( blendFrames );
 			idThread::ReturnInt( result );
 			break;
-			
+
 		default:
 			gameLocal.Error( "Unknown anim group" );
 	}
@@ -799,7 +809,7 @@ idActor::Event_ChooseAnim
 void idActor::Event_ChooseAnim( int channel, const char* animname )
 {
 	int anim;
-	
+
 	anim = GetAnim( channel, animname );
 	if( anim )
 	{
@@ -817,7 +827,7 @@ void idActor::Event_ChooseAnim( int channel, const char* animname )
 			return;
 		}
 	}
-	
+
 	idThread::ReturnString( "" );
 }
 
@@ -829,7 +839,7 @@ idActor::Event_AnimLength
 void idActor::Event_AnimLength( int channel, const char* animname )
 {
 	int anim;
-	
+
 	anim = GetAnim( channel, animname );
 	if( anim )
 	{
@@ -847,7 +857,7 @@ void idActor::Event_AnimLength( int channel, const char* animname )
 			return;
 		}
 	}
-	
+
 	idThread::ReturnFloat( 0.0f );
 }
 
@@ -859,7 +869,7 @@ idActor::Event_AnimDistance
 void idActor::Event_AnimDistance( int channel, const char* animname )
 {
 	int anim;
-	
+
 	anim = GetAnim( channel, animname );
 	if( anim )
 	{
@@ -877,7 +887,7 @@ void idActor::Event_AnimDistance( int channel, const char* animname )
 			return;
 		}
 	}
-	
+
 	idThread::ReturnFloat( 0.0f );
 }
 
@@ -900,7 +910,7 @@ idActor::Event_NextEnemy
 void idActor::Event_NextEnemy( idEntity* ent )
 {
 	idActor* actor;
-	
+
 	if( !ent || ( ent == this ) )
 	{
 		actor = enemyList.Next();
@@ -911,14 +921,14 @@ void idActor::Event_NextEnemy( idEntity* ent )
 		{
 			gameLocal.Error( "'%s' cannot be an enemy", ent->name.c_str() );
 		}
-		
+
 		actor = static_cast<idActor*>( ent );
 		if( actor->enemyNode.ListHead() != &enemyList )
 		{
 			gameLocal.Error( "'%s' is not in '%s' enemy list", actor->name.c_str(), name.c_str() );
 		}
 	}
-	
+
 	for( ; actor != NULL; actor = actor->enemyNode.Next() )
 	{
 		if( !actor->fl.hidden )
@@ -927,7 +937,7 @@ void idActor::Event_NextEnemy( idEntity* ent )
 			return;
 		}
 	}
-	
+
 	idThread::ReturnEntity( NULL );
 }
 
@@ -1058,7 +1068,7 @@ void idActor::Event_GetDamageGroupScale( const char* groupName )
 			return;
 		}
 	}
-	
+
 	idThread::ReturnFloat( 0 );
 }
 

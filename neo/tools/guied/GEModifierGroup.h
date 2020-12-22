@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 #define GEMODIFIERGROUP_H_
 
 #ifndef GEMODIFIER_H_
-#include "GEModifier.h"
+	#include "GEModifier.h"
 #endif
 
 class rvGEModifierGroup : public rvGEModifier
@@ -40,24 +40,24 @@ public:
 
 	rvGEModifierGroup( );
 	~rvGEModifierGroup( );
-	
+
 	virtual bool		Apply( void );
 	virtual bool		Undo( void );
-	
+
 	virtual bool		CanMerge( rvGEModifier* merge );
-	
+
 	virtual bool		Merge( rvGEModifier* merge );
-	
+
 	virtual bool		IsValid( void );
-	
+
 	bool				Append( rvGEModifier* mod );
 	int					GetCount( void );
-	
-	
+
+
 protected:
 
 	idList<rvGEModifier*>	mModifiers;
-	
+
 };
 
 ID_INLINE int rvGEModifierGroup::GetCount( void )

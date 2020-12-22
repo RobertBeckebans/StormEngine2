@@ -47,40 +47,40 @@ void idMenuHandler_PDA::Update()
 	{
 		return;
 	}
-	
+
 	if( activeScreen != nextScreen )
 	{
-	
+
 		if( nextScreen == PDA_AREA_INVALID )
 		{
 			menuScreens[ activeScreen ]->HideScreen( static_cast<mainMenuTransition_t>( transition ) );
-			
+
 			idMenuWidget_CommandBar* cmdBar = dynamic_cast< idMenuWidget_CommandBar* >( GetChildFromIndex( PDA_WIDGET_CMD_BAR ) );
 			if( cmdBar != NULL )
 			{
 				cmdBar->ClearAllButtons();
 				cmdBar->Update();
 			}
-			
+
 			idSWFSpriteInstance* menu = gui->GetRootObject().GetNestedSprite( "navBar" );
 			idSWFSpriteInstance* bg = gui->GetRootObject().GetNestedSprite( "background" );
 			idSWFSpriteInstance* edging = gui->GetRootObject().GetNestedSprite( "_fullScreen" );
-			
+
 			if( menu != NULL )
 			{
 				menu->PlayFrame( "rollOff" );
 			}
-			
+
 			if( bg != NULL )
 			{
 				bg->PlayFrame( "rollOff" );
 			}
-			
+
 			if( edging != NULL )
 			{
 				edging->PlayFrame( "rollOff" );
 			}
-			
+
 		}
 		else
 		{
@@ -88,18 +88,18 @@ void idMenuHandler_PDA::Update()
 			{
 				menuScreens[ activeScreen ]->HideScreen( static_cast<mainMenuTransition_t>( transition ) );
 			}
-			
+
 			if( nextScreen > PDA_AREA_INVALID && nextScreen < PDA_NUM_AREAS && menuScreens[ nextScreen ] != NULL )
 			{
 				menuScreens[ nextScreen ]->UpdateCmds();
 				menuScreens[ nextScreen ]->ShowScreen( static_cast<mainMenuTransition_t>( transition ) );
 			}
 		}
-		
+
 		transition = MENU_TRANSITION_INVALID;
 		activeScreen = nextScreen;
 	}
-	
+
 	idPlayer* player = gameLocal.GetLocalPlayer();
 	if( player != NULL )
 	{
@@ -108,14 +108,14 @@ void idMenuHandler_PDA::Update()
 			bool isPlaying = player->IsSoundChannelPlaying( SND_CHANNEL_PDA_AUDIO );
 			UpdateAudioLogPlaying( isPlaying );
 		}
-		
+
 		if( activeScreen == PDA_AREA_VIDEO_DISKS )
 		{
 			bool isPlaying = player->IsSoundChannelPlaying( SND_CHANNEL_PDA_VIDEO );
 			UdpateVideoPlaying( isPlaying );
 		}
 	}
-	
+
 	idMenuHandler::Update();
 }
 
@@ -141,7 +141,7 @@ void idMenuHandler_PDA::ActivateMenu( bool show )
 
 
 	idMenuHandler::ActivateMenu( show );
-	
+
 	if( show )
 	{
 		// Add names to pda
@@ -150,7 +150,7 @@ void idMenuHandler_PDA::ActivateMenu( bool show )
 		{
 			return;
 		}
-		
+
 		pdaNames.Clear();
 		for( int j = 0; j < player->GetInventory()->pdas.Num(); j++ )
 		{
@@ -164,7 +164,7 @@ void idMenuHandler_PDA::ActivateMenu( bool show )
 		{
 			pdaList->SetListData( pdaNames );
 		}
-		
+
 		navOptions.Clear();
 		navOptions.Append( idLocalization::GetString( "#str_04190" ) );
 		navOptions.Append( idLocalization::GetString( "#str_01442" ) );
@@ -177,7 +177,7 @@ void idMenuHandler_PDA::ActivateMenu( bool show )
 			navBar->SetFocusIndex( 0 );
 			navBar->Update();
 		}
-		
+
 		idMenuWidget_CommandBar* cmdBar = dynamic_cast< idMenuWidget_CommandBar* >( GetChildFromIndex( PDA_WIDGET_CMD_BAR ) );
 		if( cmdBar != NULL )
 		{
@@ -190,7 +190,7 @@ void idMenuHandler_PDA::ActivateMenu( bool show )
 		nextScreen = PDA_AREA_INVALID;
 		activeScreen = PDA_AREA_INVALID;
 	}
-	
+
 }
 
 /*
@@ -201,7 +201,7 @@ idMenuHandler_PDA::Initialize
 void idMenuHandler_PDA::Initialize( const char* swfFile, idSoundWorld* sw )
 {
 	idMenuHandler::Initialize( swfFile, sw );
-	
+
 	//---------------------
 	// Initialize the menus
 	//---------------------
@@ -210,27 +210,27 @@ void idMenuHandler_PDA::Initialize( const char* swfFile, idSoundWorld* sw )
 	menuScreens[ (screenId) ]->Initialize( menuHandler ); \
 	menuScreens[ (screenId) ]->AddRef(); \
 	menuScreens[ (screenId) ]->SetNoAutoFree( true );
-	
+
 	for( int i = 0; i < PDA_NUM_AREAS; ++i )
 	{
 		menuScreens[ i ] = NULL;
 	}
-	
+
 	BIND_PDA_SCREEN( PDA_AREA_USER_DATA, idMenuScreen_PDA_UserData, this );
 	BIND_PDA_SCREEN( PDA_AREA_USER_EMAIL, idMenuScreen_PDA_UserEmails, this );
 	BIND_PDA_SCREEN( PDA_AREA_VIDEO_DISKS, idMenuScreen_PDA_VideoDisks, this );
 	BIND_PDA_SCREEN( PDA_AREA_INVENTORY, idMenuScreen_PDA_Inventory, this );
-	
-	
+
+
 	pdaScrollBar.SetSpritePath( "pda_persons", "info", "scrollbar" );
 	pdaScrollBar.Initialize( this );
 	pdaScrollBar.SetNoAutoFree( true );
-	
+
 	pdaList.SetSpritePath( "pda_persons", "info", "list" );
 	pdaList.SetNumVisibleOptions( MAX_PDA_ITEMS );
 	pdaList.SetWrappingAllowed( true );
 	pdaList.SetNoAutoFree( true );
-	
+
 	while( pdaList.GetChildren().Num() < MAX_PDA_ITEMS )
 	{
 		idMenuWidget_Button* const buttonWidget = new( TAG_SWF ) idMenuWidget_Button();
@@ -260,7 +260,7 @@ void idMenuHandler_PDA::Initialize( const char* swfFile, idSoundWorld* sw )
 	}
 	pdaList.AddChild( &pdaScrollBar );
 	pdaList.Initialize( this );
-	
+
 	navBar.SetSpritePath( "navBar", "options" );
 	navBar.Initialize( this );
 	navBar.SetNumVisibleOptions( MAX_NAV_OPTIONS );
@@ -273,7 +273,7 @@ void idMenuHandler_PDA::Initialize( const char* swfFile, idSoundWorld* sw )
 	for( int count = 0; count < ( MAX_NAV_OPTIONS * 2 - 1 ); ++count )
 	{
 		idMenuWidget_NavButton* const navButton = new( TAG_SWF ) idMenuWidget_NavButton();
-		
+
 		if( count < MAX_NAV_OPTIONS - 1 )
 		{
 			navButton->AddEventAction( WIDGET_EVENT_PRESS ).Set( WIDGET_ACTION_PDA_SELECT_NAV, count );
@@ -287,10 +287,10 @@ void idMenuHandler_PDA::Initialize( const char* swfFile, idSoundWorld* sw )
 		{
 			navButton->AddEventAction( WIDGET_EVENT_PRESS ).Set( WIDGET_ACTION_PDA_SELECT_NAV, -1 );
 		}
-		
+
 		navBar.AddChild( navButton );
 	}
-	
+
 	//
 	// command bar
 	//
@@ -298,12 +298,12 @@ void idMenuHandler_PDA::Initialize( const char* swfFile, idSoundWorld* sw )
 	commandBarWidget.SetSpritePath( "prompts" );
 	commandBarWidget.Initialize( this );
 	commandBarWidget.SetNoAutoFree( true );
-	
+
 	AddChild( &navBar );
 	AddChild( &pdaList );
 	AddChild( &pdaScrollBar );
 	AddChild( &commandBarWidget );
-	
+
 	pdaList.AddEventAction( WIDGET_EVENT_SCROLL_DOWN_LSTICK ).Set( new( TAG_SWF ) idWidgetActionHandler( &pdaList, WIDGET_ACTION_EVENT_SCROLL_DOWN_START_REPEATER, WIDGET_EVENT_SCROLL_DOWN_LSTICK ) );
 	pdaList.AddEventAction( WIDGET_EVENT_SCROLL_UP_LSTICK ).Set( new( TAG_SWF ) idWidgetActionHandler( &pdaList, WIDGET_ACTION_EVENT_SCROLL_UP_START_REPEATER, WIDGET_EVENT_SCROLL_UP_LSTICK ) );
 	pdaList.AddEventAction( WIDGET_EVENT_SCROLL_DOWN_LSTICK_RELEASE ).Set( new( TAG_SWF ) idWidgetActionHandler( &pdaList, WIDGET_ACTION_EVENT_STOP_REPEATER, WIDGET_EVENT_SCROLL_DOWN_LSTICK_RELEASE ) );
@@ -312,14 +312,14 @@ void idMenuHandler_PDA::Initialize( const char* swfFile, idSoundWorld* sw )
 	pdaList.AddEventAction( WIDGET_EVENT_SCROLL_UP ).Set( new( TAG_SWF ) idWidgetActionHandler( &pdaList, WIDGET_ACTION_EVENT_SCROLL_UP_START_REPEATER, WIDGET_EVENT_SCROLL_UP ) );
 	pdaList.AddEventAction( WIDGET_EVENT_SCROLL_DOWN_RELEASE ).Set( new( TAG_SWF ) idWidgetActionHandler( &pdaList, WIDGET_ACTION_EVENT_STOP_REPEATER, WIDGET_EVENT_SCROLL_DOWN_RELEASE ) );
 	pdaList.AddEventAction( WIDGET_EVENT_SCROLL_UP_RELEASE ).Set( new( TAG_SWF ) idWidgetActionHandler( &pdaList, WIDGET_ACTION_EVENT_STOP_REPEATER, WIDGET_EVENT_SCROLL_UP_RELEASE ) );
-	
+
 	menuScreens[ PDA_AREA_USER_DATA ]->RegisterEventObserver( &pdaList );
 	menuScreens[ PDA_AREA_USER_EMAIL ]->RegisterEventObserver( &pdaList );
-	
+
 	idPlayer* player = gameLocal.GetLocalPlayer();
 	if( player != NULL )
 	{
-	
+
 		for( int j = 0; j < MAX_WEAPONS; j++ )
 		{
 			const char* weaponDefName = va( "def_weapon%d", j );
@@ -334,9 +334,9 @@ void idMenuHandler_PDA::Initialize( const char* swfFile, idSoundWorld* sw )
 				}
 			}
 		}
-		
+
 	}
-	
+
 	class idPDAGGUIClose : public idSWFScriptFunction_RefCounted
 	{
 	public:
@@ -350,12 +350,12 @@ void idMenuHandler_PDA::Initialize( const char* swfFile, idSoundWorld* sw )
 			return idSWFScriptVar();
 		}
 	};
-	
+
 	if( gui != NULL )
 	{
 		gui->SetGlobal( "closePDA", new idPDAGGUIClose() );
 	}
-	
+
 	// precache sounds
 	// don't load gui music for the pause menu to save some memory
 	const idSoundShader* soundShader = NULL;
@@ -413,10 +413,10 @@ bool idMenuHandler_PDA::HandleAction( idWidgetAction& action, const idWidgetEven
 	{
 		return true;
 	}
-	
+
 	widgetAction_t actionType = action.GetType();
 	const idSWFParmList& parms = action.GetParms();
-	
+
 	if( event.type == WIDGET_EVENT_COMMAND )
 	{
 		if( menuScreens[ activeScreen ] != NULL && !forceHandled )
@@ -435,7 +435,7 @@ bool idMenuHandler_PDA::HandleAction( idWidgetAction& action, const idWidgetEven
 			}
 		}
 	}
-	
+
 	switch( actionType )
 	{
 		case WIDGET_ACTION_PDA_SELECT_USER:
@@ -451,7 +451,7 @@ bool idMenuHandler_PDA::HandleAction( idWidgetAction& action, const idWidgetEven
 		}
 		case WIDGET_ACTION_SCROLL_TAB:
 		{
-		
+
 			if( transition != MENU_TRANSITION_INVALID )
 			{
 				return true;
@@ -470,11 +470,11 @@ bool idMenuHandler_PDA::HandleAction( idWidgetAction& action, const idWidgetEven
 				{
 					focused = 0;
 				}
-				
+
 				navBar->SetViewIndex( focused );
 				navBar->SetFocusIndex( focused, true );
 				navBar->Update();
-				
+
 				nextScreen = activeScreen + delta;
 				if( nextScreen < 0 )
 				{
@@ -484,7 +484,7 @@ bool idMenuHandler_PDA::HandleAction( idWidgetAction& action, const idWidgetEven
 				{
 					nextScreen = 0;
 				}
-				
+
 				if( delta < 0 )
 				{
 					transition = MENU_TRANSITION_BACK;
@@ -493,14 +493,14 @@ bool idMenuHandler_PDA::HandleAction( idWidgetAction& action, const idWidgetEven
 				{
 					transition = MENU_TRANSITION_ADVANCE;
 				}
-				
+
 			}
 			return true;
 		}
 		case WIDGET_ACTION_PDA_SELECT_NAV:
 		{
 			int index = parms[0].ToInteger();
-			
+
 			if( index == -1 && activeScreen == PDA_AREA_USER_EMAIL )
 			{
 				idMenuScreen_PDA_UserEmails* screen = dynamic_cast< idMenuScreen_PDA_UserEmails* const >( menuScreens[ PDA_AREA_USER_EMAIL ] );
@@ -510,20 +510,20 @@ bool idMenuHandler_PDA::HandleAction( idWidgetAction& action, const idWidgetEven
 				}
 				return true;
 			}
-			
+
 			// click on the current nav tab
 			if( index == -1 )
 			{
 				return true;
 			}
-			
+
 			idMenuWidget_NavBar* navBar = dynamic_cast< idMenuWidget_NavBar* >( GetChildFromIndex( PDA_WIDGET_NAV_BAR ) );
 			if( navBar != NULL )
 			{
 				navBar->SetViewIndex( navBar->GetViewOffset() + index );
 				navBar->SetFocusIndex( index, true );
 				navBar->Update();
-				
+
 				if( index < activeScreen )
 				{
 					nextScreen = index;
@@ -543,14 +543,14 @@ bool idMenuHandler_PDA::HandleAction( idWidgetAction& action, const idWidgetEven
 			{
 				int index = parms[0].ToInteger();
 				idMenuWidget_DynamicList* pdaList = dynamic_cast< idMenuWidget_DynamicList* >( GetChildFromIndex( PDA_WIDGET_PDA_LIST ) );
-				
+
 				bool change = false;
 				if( pdaList != NULL )
 				{
 					int pdaIndex = pdaList->GetViewIndex();
 					change = PlayPDAAudioLog( pdaIndex, index );
 				}
-				
+
 				if( change )
 				{
 					if( widget->GetParent() != NULL )
@@ -564,7 +564,7 @@ bool idMenuHandler_PDA::HandleAction( idWidgetAction& action, const idWidgetEven
 					}
 				}
 			}
-			
+
 			return true;
 		}
 		case WIDGET_ACTION_SELECT_PDA_VIDEO:
@@ -584,7 +584,7 @@ bool idMenuHandler_PDA::HandleAction( idWidgetAction& action, const idWidgetEven
 			return true;
 		}
 	}
-	
+
 	return idMenuHandler::HandleAction( action, event, widget, forceHandled );
 }
 
@@ -602,7 +602,7 @@ bool idMenuHandler_PDA::PlayPDAAudioLog( int pdaIndex, int audioIndex )
 		if( pda != NULL && pda->GetNumAudios() > audioIndex )
 		{
 			const idDeclAudio* aud = pda->GetAudioByIndex( audioIndex );
-			
+
 			if( audioFile == aud )
 			{
 				player->EndAudioLog();
@@ -632,9 +632,9 @@ idMenuScreen* idMenuHandler_PDA::GetMenuScreen( int index )
 	{
 		return NULL;
 	}
-	
+
 	return menuScreens[ index ];
-	
+
 }
 
 /*
@@ -649,7 +649,7 @@ void idMenuHandler_PDA::UpdateAudioLogPlaying( bool playing )
 	{
 		menuScreens[ activeScreen ]->Update();
 	}
-	
+
 	audioLogPlaying = playing;
 	if( !playing )
 	{
@@ -674,7 +674,7 @@ void idMenuHandler_PDA::UdpateVideoPlaying( bool playing )
 			{
 				player->EndVideoDisk();
 			}
-			
+
 			idMenuScreen_PDA_VideoDisks* screen = dynamic_cast< idMenuScreen_PDA_VideoDisks* const >( menuScreens[ PDA_AREA_VIDEO_DISKS ] );
 			if( screen != NULL )
 			{
@@ -685,7 +685,7 @@ void idMenuHandler_PDA::UdpateVideoPlaying( bool playing )
 				screen->Update();
 			}
 		}
-		
+
 		videoPlaying = playing;
 	}
 }

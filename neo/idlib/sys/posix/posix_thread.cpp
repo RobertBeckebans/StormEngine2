@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "../../precompiled.h"
 
 #ifdef __FreeBSD__
-#include <pthread_ng.h> // for pthread_set_name_np
+	#include <pthread_ng.h> // for pthread_set_name_np
 #endif
 
 // DG: Note: On Linux you need at least (e)glibc 2.12 to be able to set the threadname
@@ -59,10 +59,12 @@ static int Sys_SetThreadName( pthread_t handle, const char* name )
 	// http://man7.org/linux/man-pages/man3/pthread_setname_np.3.html
 	// on my machine a longer name (eg "JobListProcessor_0") caused an ENOENT error (instead of ERANGE)
 	assert( strlen( name ) < 16 );
-	
+
 	ret = pthread_setname_np( handle, name );
 	if( ret != 0 )
+	{
 		idLib::common->Printf( "Setting threadname \"%s\" failed, reason: %s (%i)\n", name, strerror( errno ), errno );
+	}
 	// pthread_getname_np(pthread_t, char*, size_t)
 #elif defined(__FreeBSD__)
 	// according to http://www.freebsd.org/cgi/man.cgi?query=pthread_set_name_np&sektion=3
@@ -75,10 +77,10 @@ static int Sys_SetThreadName( pthread_t handle, const char* name )
 		// this needs to be called in the thread to be named!
 		ret = pthread_setname_np(name);
 		// int pthread_getname_np(pthread_t, char*, size_t);
-	
+
 		// so we'd have to wrap the xthread_t function in Sys_CreateThread and set the name in the wrapping function...
 	*/
-	
+
 	return ret;
 }
 
@@ -96,20 +98,20 @@ uintptr_t Sys_CreateThread( xthread_t function, void* parms, xthreadPriority pri
 {
 	pthread_attr_t attr;
 	pthread_attr_init( &attr );
-	
+
 	if( pthread_attr_setdetachstate( &attr, PTHREAD_CREATE_JOINABLE ) != 0 )
 	{
 		idLib::common->FatalError( "ERROR: pthread_attr_setdetachstate %s failed\n", name );
 		return ( uintptr_t )0;
 	}
-	
+
 	pthread_t handle;
 	if( pthread_create( ( pthread_t* )&handle, &attr, ( pthread_function_t )function, parms ) != 0 )
 	{
 		idLib::common->FatalError( "ERROR: pthread_create %s failed\n", name );
 		return ( uintptr_t )0;
 	}
-	
+
 #if defined(DEBUG_THREADS)
 	if( Sys_SetThreadName( handle, name ) != 0 )
 	{
@@ -117,40 +119,40 @@ uintptr_t Sys_CreateThread( xthread_t function, void* parms, xthreadPriority pri
 		return ( uintptr_t )0;
 	}
 #endif
-	
+
 	pthread_attr_destroy( &attr );
-	
-	
+
+
 #if 0
 	// RB: realtime policies require root privileges
-	
+
 	// all Linux threads have one of the following scheduling policies:
-	
+
 	// SCHED_OTHER or SCHED_NORMAL: the default policy,  priority: [-20..0..19], default 0
-	
+
 	// SCHED_FIFO: first in/first out realtime policy
-	
+
 	// SCHED_RR: round-robin realtime policy
-	
+
 	// SCHED_BATCH: similar to SCHED_OTHER, but with a throughput orientation
-	
+
 	// SCHED_IDLE: lower priority than SCHED_OTHER
-	
+
 	int schedulePolicy = SCHED_OTHER;
 	struct sched_param scheduleParam;
-	
+
 	int error = pthread_getschedparam( handle, &schedulePolicy, &scheduleParam );
 	if( error != 0 )
 	{
 		idLib::common->FatalError( "ERROR: pthread_getschedparam %s failed: %s\n", name, strerror( error ) );
 		return ( uintptr_t )0;
 	}
-	
+
 	schedulePolicy = SCHED_FIFO;
-	
+
 	int minPriority = sched_get_priority_min( schedulePolicy );
 	int maxPriority = sched_get_priority_max( schedulePolicy );
-	
+
 	if( priority == THREAD_HIGHEST )
 	{
 		//  we better sleep enough to do this
@@ -172,7 +174,7 @@ uintptr_t Sys_CreateThread( xthread_t function, void* parms, xthreadPriority pri
 	{
 		scheduleParam.__sched_priority = minPriority;
 	}
-	
+
 	// set new priority
 	error = pthread_setschedparam( handle, schedulePolicy, &scheduleParam );
 	if( error != 0 )
@@ -180,7 +182,7 @@ uintptr_t Sys_CreateThread( xthread_t function, void* parms, xthreadPriority pri
 		idLib::common->FatalError( "ERROR: pthread_setschedparam( name = %s, policy = %i, priority = %i ) failed: %s\n", name, schedulePolicy, scheduleParam.__sched_priority, strerror( error ) );
 		return ( uintptr_t )0;
 	}
-	
+
 	pthread_getschedparam( handle, &schedulePolicy, &scheduleParam );
 	if( error != 0 )
 	{
@@ -188,9 +190,9 @@ uintptr_t Sys_CreateThread( xthread_t function, void* parms, xthreadPriority pri
 		return ( uintptr_t )0;
 	}
 #endif
-	
+
 	// Under Linux, we don't set the thread affinity and let the OS deal with scheduling
-	
+
 	return ( uintptr_t )handle;
 }
 
@@ -223,21 +225,21 @@ void Sys_DestroyThread( uintptr_t threadHandle )
 	{
 		return;
 	}
-	
+
 	char	name[128];
 	name[0] = '\0';
-	
+
 #if defined(DEBUG_THREADS)
 	pthread_getname_np( threadHandle, name, sizeof( name ) );
 #endif
-	
+
 #if 0 //!defined(__ANDROID__)
 	if( pthread_cancel( ( pthread_t )threadHandle ) != 0 )
 	{
 		idLib::common->FatalError( "ERROR: pthread_cancel %s failed\n", name );
 	}
 #endif
-	
+
 	if( pthread_join( ( pthread_t )threadHandle, NULL ) != 0 )
 	{
 		idLib::common->FatalError( "ERROR: pthread_join %s failed\n", name );
@@ -270,18 +272,18 @@ Sys_SignalCreate
 void Sys_SignalCreate( signalHandle_t& handle, bool manualReset )
 {
 	// handle = CreateEvent( NULL, manualReset, FALSE, NULL );
-	
+
 	handle.manualReset = manualReset;
 	// if this is true, the signal is only set to nonsignaled when Clear() is called,
 	// else it's "auto-reset" and the state is set to !signaled after a single waiting
 	// thread has been released
-	
+
 	// the inital state is always "not signaled"
 	handle.signaled = false;
 	handle.waiting = 0;
 #if 0
 	pthread_mutexattr_t attr;
-	
+
 	pthread_mutexattr_init( &attr );
 	pthread_mutexattr_settype( &attr, PTHREAD_MUTEX_ERRORCHECK );
 	//pthread_mutexattr_settype( &attr, PTHREAD_MUTEX_DEFAULT );
@@ -290,9 +292,9 @@ void Sys_SignalCreate( signalHandle_t& handle, bool manualReset )
 #else
 	pthread_mutex_init( &handle.mutex, NULL );
 #endif
-	
+
 	pthread_cond_init( &handle.cond, NULL );
-	
+
 }
 
 /*
@@ -318,7 +320,7 @@ void Sys_SignalRaise( signalHandle_t& handle )
 {
 	// SetEvent( handle );
 	pthread_mutex_lock( &handle.mutex );
-	
+
 	if( handle.manualReset )
 	{
 		// signaled until reset
@@ -345,7 +347,7 @@ void Sys_SignalRaise( signalHandle_t& handle )
 			// http://stackoverflow.com/a/13703585 claims the same.
 		}
 	}
-	
+
 	pthread_mutex_unlock( &handle.mutex );
 }
 
@@ -358,10 +360,10 @@ void Sys_SignalClear( signalHandle_t& handle )
 {
 	// ResetEvent( handle );
 	pthread_mutex_lock( &handle.mutex );
-	
+
 	// TODO: probably signaled could be atomically changed?
 	handle.signaled = false;
-	
+
 	pthread_mutex_unlock( &handle.mutex );
 }
 
@@ -376,15 +378,17 @@ bool Sys_SignalWait( signalHandle_t& handle, int timeout )
 	//DWORD result = WaitForSingleObject( handle, timeout == idSysSignal::WAIT_INFINITE ? INFINITE : timeout );
 	//assert( result == WAIT_OBJECT_0 || ( timeout != idSysSignal::WAIT_INFINITE && result == WAIT_TIMEOUT ) );
 	//return ( result == WAIT_OBJECT_0 );
-	
+
 	int status;
 	pthread_mutex_lock( &handle.mutex );
-	
+
 	if( handle.signaled ) // there is a signal that hasn't been used yet
 	{
 		if( ! handle.manualReset ) // for auto-mode only one thread may be released - this one.
+		{
 			handle.signaled = false;
-			
+		}
+
 		status = 0; // success!
 	}
 	else // we'll have to wait for a signal
@@ -411,13 +415,13 @@ bool Sys_SignalWait( signalHandle_t& handle, int timeout )
 		}
 		--handle.waiting;
 	}
-	
+
 	pthread_mutex_unlock( &handle.mutex );
-	
+
 	assert( status == 0 || ( timeout != idSysSignal::WAIT_INFINITE && status == ETIMEDOUT ) );
-	
+
 	return ( status == 0 );
-	
+
 }
 
 /*
@@ -436,11 +440,11 @@ Sys_MutexCreate
 void Sys_MutexCreate( mutexHandle_t& handle )
 {
 	pthread_mutexattr_t attr;
-	
+
 	pthread_mutexattr_init( &attr );
 	pthread_mutexattr_settype( &attr, PTHREAD_MUTEX_ERRORCHECK );
 	pthread_mutex_init( &handle, &attr );
-	
+
 	pthread_mutexattr_destroy( &attr );
 }
 
@@ -542,7 +546,7 @@ Sys_InterlockedExchange
 interlockedInt_t Sys_InterlockedExchange( interlockedInt_t& value, interlockedInt_t exchange )
 {
 	//return InterlockedExchange( & value, exchange );
-	
+
 	// source: http://gcc.gnu.org/onlinedocs/gcc-4.1.1/gcc/Atomic-Builtins.html
 	// These builtins perform an atomic compare and swap. That is, if the current value of *ptr is oldval, then write newval into *ptr.
 	return __sync_val_compare_and_swap( &value, value, exchange );

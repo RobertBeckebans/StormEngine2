@@ -50,19 +50,19 @@ public:
 		MATERIAL_DEF_TYPE_FLOAT,
 		MATERIAL_DEF_TYPE_INT
 	};
-	
+
 	int					type;
 	idStr				dictName;
 	idStr				displayName;
 	idStr				displayInfo;
 	bool				quotes;
 	idHashTable<DWORD>	viewData;
-	
+
 public:
 
 	MaterialDef( void );
 	virtual ~MaterialDef( void );
-	
+
 	DWORD	GetViewData( const char* viewName );
 	void	SetViewData( const char* viewName, DWORD value );
 };
@@ -94,15 +94,15 @@ public:
 		MATERIAL_DEF_SPECIAL_STAGE,
 		MATERIAL_DEF_NUM
 	};
-	
+
 	static void 				InitializeMaterialDefLists();
 	static void					InitializeMaterialDefList( idLexer* src, const char* typeName, MaterialDefList* list );
-	
+
 	static void					DestroyMaterialDefLists();
-	
+
 	static MaterialDefList*		GetMaterialDefs( int type );
-	
-	
+
+
 protected:
 	static MaterialDefList		materialDefs[MATERIAL_DEF_NUM];
 };

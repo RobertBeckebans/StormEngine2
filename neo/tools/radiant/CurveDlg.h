@@ -35,19 +35,19 @@ If you have questions concerning this license or the applicable additional terms
 class CCurveDlg : public CDialog
 {
 	DECLARE_DYNAMIC( CCurveDlg )
-	
+
 public:
 	CCurveDlg( CWnd* pParent = NULL ); // standard constructor
 	virtual ~CCurveDlg();
-	
+
 // Dialog Data
 	enum { IDD = IDD_DIALOG_NEWCURVE };
-	
+
 	idStr strCurveType;
 protected:
 	CComboBox comboCurve;
 	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	virtual void OnOK();
-	
+
 	DECLARE_MESSAGE_MAP()
 };

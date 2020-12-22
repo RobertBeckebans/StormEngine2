@@ -37,11 +37,11 @@ If you have questions concerning this license or the applicable additional terms
 
 // foresthale 2014-05-29: let's not use the MFC DEBUG_NEW when we have our own...
 #ifdef ID_DEBUG_NEW_MFC
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+	#ifdef _DEBUG
+		#define new DEBUG_NEW
+		#undef THIS_FILE
+		static char THIS_FILE[] = __FILE__;
+	#endif
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
@@ -181,7 +181,7 @@ void CSurfaceDlg::SetTexMods()
 	{
 		m_subdivide = false;
 	}
-	
+
 	int faceCount = g_ptrSelectedFaces.GetSize();
 	face_t* selFace = NULL;
 	if( faceCount )
@@ -199,7 +199,7 @@ void CSurfaceDlg::SetTexMods()
 			}
 		}
 	}
-	
+
 	if( selFace )
 	{
 		float rot;
@@ -210,7 +210,7 @@ void CSurfaceDlg::SetTexMods()
 		m_horzScale = 1.0f;
 		m_vertScale = 1.0f;
 	}
-	
+
 	UpdateData( FALSE );
 }
 
@@ -267,9 +267,9 @@ void CSurfaceDlg::UpdateSpinners( int nScrollCode, int nPos, CScrollBar* pBar )
 	{
 		return;
 	}
-	
+
 	bool up = ( nScrollCode == SB_LINEUP );
-	
+
 // FIXME: bad resource define
 #define IDC_ROTATEA		0
 #define IDC_HSCALEA		0
@@ -297,7 +297,7 @@ void CSurfaceDlg::UpdateSpinners( int nScrollCode, int nPos, CScrollBar* pBar )
 	{
 		Select_ShiftTexture( ( up ) ? -m_vertShift : m_vertShift, 0 );
 	}
-	
+
 	g_changed_surface = true;
 }
 
@@ -321,7 +321,7 @@ void DoSurface( void )
 	// save current state for cancel
 	g_old_texdef = g_qeglobals.d_texturewin.texdef;
 	g_changed_surface = false;
-	
+
 	if( g_surfwin == NULL && g_dlgSurface.GetSafeHwnd() == NULL )
 	{
 		g_patch_texdef.scale[0] = 0.05f;
@@ -330,7 +330,7 @@ void DoSurface( void )
 		g_patch_texdef.shift[1] = 0.05f;
 		// use rotation increment from preferences
 		g_patch_texdef.rotate = g_PrefsDlg.m_nRotation;
-		
+
 		g_dlgSurface.Create( IDD_SURFACE );
 		CRect rct;
 		LONG lSize = sizeof( rct );
@@ -372,10 +372,10 @@ bool ByeByeSurfaceDialog()
 BOOL CSurfaceDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
-	
+
 	g_surfwin = GetSafeHwnd();
 	SetTexMods();
-	
+
 	//m_wndHScale.SetRange(0, 100);
 	//m_wndVScale.SetRange(0, 100);
 	m_wndHShift.SetRange( 0, 100 );
@@ -383,14 +383,14 @@ BOOL CSurfaceDlg::OnInitDialog()
 	m_wndRotate.SetRange( 0, 100 );
 	m_wndWidth.SetRange( 1, 32 );
 	m_wndHeight.SetRange( 1, 32 );
-	
+
 	m_wndVerticalSubdivisions.SetRange( 1, 32 );
 	m_wndVerticalSubdivisions.SetBuddy( &m_wndVert, FALSE );
 	m_wndHorzSubdivisions.SetRange( 1, 32 );
 	m_wndHorzSubdivisions.SetBuddy( &m_wndHorz, FALSE );
 	m_wndVerticalSubdivisions.SetPos( m_nVert );
 	m_wndHorzSubdivisions.SetPos( m_nHorz );
-	
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -411,7 +411,7 @@ void CSurfaceDlg::OnHScroll( UINT nSBCode, UINT nPos, CScrollBar* pScrollBar )
 			m_nHorz = ctrl->GetPos();
 		}
 		UpdateData( FALSE );
-		
+
 		if( m_subdivide )
 		{
 			Patch_SubdivideSelected( ( m_subdivide != FALSE ), m_nHorz, m_nVert );
@@ -508,15 +508,17 @@ HBRUSH CSurfaceDlg::OnCtlColor( CDC* pDC, CWnd* pWnd, UINT nCtlColor )
 int CSurfaceDlg::OnCreate( LPCREATESTRUCT lpCreateStruct )
 {
 	if( CDialog::OnCreate( lpCreateStruct ) == -1 )
+	{
 		return -1;
-		
+	}
+
 	return 0;
 }
 
 BOOL CSurfaceDlg::PreCreateWindow( CREATESTRUCT& cs )
 {
 	// TODO: Add your specialized code here and/or call the base class
-	
+
 	return CDialog::PreCreateWindow( cs );
 }
 
@@ -560,7 +562,7 @@ void CSurfaceDlg::OnBtnAxial()
 void CSurfaceDlg::OnBtnBrushfit()
 {
 	// TODO: Add your control notification handler code here
-	
+
 }
 
 void CSurfaceDlg::OnBtnFacefit()
@@ -600,13 +602,13 @@ void CSurfaceDlg::OnChangeEditHorz()
 	// send this notification unless you override the CDialog::OnInitDialog()
 	// function and call CRichEditCtrl().SetEventMask()
 	// with the ENM_CHANGE flag ORed into the mask.
-	
+
 	// TODO: Add your control notification handler code here
 	UpdateData( TRUE );
 	// turn any patches in explicit subdivides
 	Patch_SubdivideSelected( ( m_subdivide != FALSE ), m_nHorz, m_nVert );
 	Sys_UpdateWindows( W_CAMERA | W_XY );
-	
+
 }
 
 void CSurfaceDlg::OnChangeEditVert()
@@ -615,13 +617,13 @@ void CSurfaceDlg::OnChangeEditVert()
 	// send this notification unless you override the CDialog::OnInitDialog()
 	// function and call CRichEditCtrl().SetEventMask()
 	// with the ENM_CHANGE flag ORed into the mask.
-	
+
 	// TODO: Add your control notification handler code here
 	UpdateData( TRUE );
 	// turn any patches in explicit subdivides
 	Patch_SubdivideSelected( ( m_subdivide != FALSE ), m_nHorz, m_nVert );
 	Sys_UpdateWindows( W_CAMERA | W_XY );
-	
+
 }
 
 BOOL CSurfaceDlg::PreTranslateMessage( MSG* pMsg )

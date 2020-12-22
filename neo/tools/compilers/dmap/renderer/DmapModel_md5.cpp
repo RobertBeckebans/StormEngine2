@@ -103,9 +103,9 @@ void idDmapMD5Mesh::ParseMesh( idLexer& parser, int numJoints, const idJointMat*
 	idList<int>	numWeightsForVertex;
 	int			maxweight;
 	idList<vertexWeight_t> tempWeights;
-	
+
 	parser.ExpectTokenString( "{" );
-	
+
 	//
 	// parse name
 	//
@@ -113,17 +113,17 @@ void idDmapMD5Mesh::ParseMesh( idLexer& parser, int numJoints, const idJointMat*
 	{
 		parser.ReadToken( &name );
 	}
-	
+
 	//
 	// parse shader
 	//
 	parser.ExpectTokenString( "shader" );
-	
+
 	parser.ReadToken( &token );
 	shaderName = token;
-	
+
 	shader = declManager->FindMaterial( shaderName );
-	
+
 	//
 	// parse texture coordinates
 	//
@@ -133,35 +133,35 @@ void idDmapMD5Mesh::ParseMesh( idLexer& parser, int numJoints, const idJointMat*
 	{
 		parser.Error( "Invalid size: %s", token.c_str() );
 	}
-	
+
 	texCoords.SetNum( count );
 	firstWeightForVertex.SetNum( count );
 	numWeightsForVertex.SetNum( count );
-	
+
 	numWeights = 0;
 	maxweight = 0;
 	for( i = 0; i < texCoords.Num(); i++ )
 	{
 		parser.ExpectTokenString( "vert" );
 		parser.ParseInt();
-		
+
 		parser.Parse1DMatrix( 2, texCoords[i].ToFloatPtr() );
-		
+
 		firstWeightForVertex[i] = parser.ParseInt();
 		numWeightsForVertex[i] = parser.ParseInt();
-		
+
 		if( !numWeightsForVertex[i] )
 		{
 			parser.Error( "Vertex without any joint weights." );
 		}
-		
+
 		numWeights += numWeightsForVertex[i];
 		if( numWeightsForVertex[i] + firstWeightForVertex[i] > maxweight )
 		{
 			maxweight = numWeightsForVertex[i] + firstWeightForVertex[i];
 		}
 	}
-	
+
 	//
 	// parse tris
 	//
@@ -171,19 +171,19 @@ void idDmapMD5Mesh::ParseMesh( idLexer& parser, int numJoints, const idJointMat*
 	{
 		parser.Error( "Invalid size: %d", count );
 	}
-	
+
 	tris.SetNum( count * 3 );
 	numTris = count;
 	for( i = 0; i < count; i++ )
 	{
 		parser.ExpectTokenString( "tri" );
 		parser.ParseInt();
-		
+
 		tris[i * 3 + 0] = parser.ParseInt();
 		tris[i * 3 + 1] = parser.ParseInt();
 		tris[i * 3 + 2] = parser.ParseInt();
 	}
-	
+
 	//
 	// parse weights
 	//
@@ -193,36 +193,36 @@ void idDmapMD5Mesh::ParseMesh( idLexer& parser, int numJoints, const idJointMat*
 	{
 		parser.Error( "Invalid size: %d", count );
 	}
-	
+
 	if( maxweight > count )
 	{
 		parser.Warning( "Vertices reference out of range weights in model (%d of %d weights).", maxweight, count );
 	}
-	
+
 	tempWeights.SetNum( count );
-	
+
 	for( i = 0; i < count; i++ )
 	{
 		parser.ExpectTokenString( "weight" );
 		parser.ParseInt();
-		
+
 		jointnum = parser.ParseInt();
 		if( ( jointnum < 0 ) || ( jointnum >= numJoints ) )
 		{
 			parser.Error( "Joint Index out of range(%d): %d", numJoints, jointnum );
 		}
-		
+
 		tempWeights[i].joint = jointnum;
 		tempWeights[i].jointWeight = parser.ParseFloat();
-		
+
 		parser.Parse1DMatrix( 3, tempWeights[i].offset.ToFloatPtr() );
 	}
-	
+
 	// create pre-scaled weights and an index for the vertex/joint lookup
 	scaledWeights = ( idVec4* )Mem_Alloc16( numWeights * sizeof( scaledWeights[0] ), TAG_DMAP );
 	weightIndex = ( int* )Mem_Alloc16( numWeights * 2 * sizeof( weightIndex[0] ), TAG_DMAP );
 	memset( weightIndex, 0, numWeights * 2 * sizeof( weightIndex[0] ) );
-	
+
 	count = 0;
 	for( i = 0; i < texCoords.Num(); i++ )
 	{
@@ -235,13 +235,13 @@ void idDmapMD5Mesh::ParseMesh( idLexer& parser, int numJoints, const idJointMat*
 		}
 		weightIndex[count * 2 - 1] = 1;
 	}
-	
+
 	tempWeights.Clear();
 	numWeightsForVertex.Clear();
 	firstWeightForVertex.Clear();
-	
+
 	parser.ExpectTokenString( "}" );
-	
+
 	// update counters
 	c_numVerts += texCoords.Num();
 	c_numWeights += numWeights;
@@ -250,7 +250,7 @@ void idDmapMD5Mesh::ParseMesh( idLexer& parser, int numJoints, const idJointMat*
 	{
 		c_numWeightJoints += weightIndex[i * 2 + 1];
 	}
-	
+
 	//
 	// build the information that will be common to all animations of this mesh:
 	// silhouette edge connectivity and normal / tangent generation information
@@ -298,13 +298,13 @@ void idDmapMD5Mesh::UpdateSurface( const struct dmapRenderEntity_s* ent, const i
 {
 	int i, base;
 	srfDmapTriangles_t* tri;
-	
+
 	dmap_tr.pc.c_deformedSurfaces++;
 	dmap_tr.pc.c_deformedVerts += deformInfo->numOutputVerts;
 	dmap_tr.pc.c_deformedIndexes += deformInfo->numIndexes;
-	
+
 	surf->shader = shader;
-	
+
 	if( surf->geometry )
 	{
 		// if the number of verts and indexes are the same we can re-use the triangle surface
@@ -323,14 +323,14 @@ void idDmapMD5Mesh::UpdateSurface( const struct dmapRenderEntity_s* ent, const i
 	{
 		surf->geometry = R_AllocStaticTriSurfDmap();
 	}
-	
+
 	tri = surf->geometry;
-	
+
 	// note that some of the data is references, and should not be freed
 	tri->deformedSurface = true;
 	tri->tangentsCalculated = false;
 	tri->facePlanesCalculated = false;
-	
+
 	tri->numIndexes = deformInfo->numIndexes;
 	tri->indexes = deformInfo->indexes;
 	tri->silIndexes = deformInfo->silIndexes;
@@ -342,7 +342,7 @@ void idDmapMD5Mesh::UpdateSurface( const struct dmapRenderEntity_s* ent, const i
 	tri->silEdges = deformInfo->silEdges;
 	tri->dominantTris = deformInfo->dominantTris;
 	tri->numVerts = deformInfo->numOutputVerts;
-	
+
 	if( tri->verts == NULL )
 	{
 		R_AllocStaticTriSurfVertsDmap( tri, tri->numVerts );
@@ -352,7 +352,7 @@ void idDmapMD5Mesh::UpdateSurface( const struct dmapRenderEntity_s* ent, const i
 			tri->verts[i].st = texCoords[i];
 		}
 	}
-	
+
 	if( ent->shaderParms[SHADERPARM_MD5_SKINSCALE] != 0.0f )
 	{
 		TransformScaledVerts( tri->verts, entJoints, ent->shaderParms[SHADERPARM_MD5_SKINSCALE] );
@@ -361,16 +361,16 @@ void idDmapMD5Mesh::UpdateSurface( const struct dmapRenderEntity_s* ent, const i
 	{
 		TransformVerts( tri->verts, entJoints );
 	}
-	
+
 	// replicate the mirror seam vertexes
 	base = deformInfo->numOutputVerts - deformInfo->numMirroredVerts;
 	for( i = 0; i < deformInfo->numMirroredVerts; i++ )
 	{
 		tri->verts[base + i] = tri->verts[deformInfo->mirroredVerts[i]];
 	}
-	
+
 	R_BoundTriSurfDmap( tri );
-	
+
 	// If a surface is going to be have a lighting interaction generated, it will also have to call
 	// R_DeriveTangents() to get normals, tangents, and face planes.  If it only
 	// needs shadows generated, it will only have to generate face planes.  If it only
@@ -391,11 +391,11 @@ idBounds idDmapMD5Mesh::CalcBounds( const idJointMat* entJoints )
 {
 	idBounds	bounds;
 	idDmapDrawVert* verts = ( idDmapDrawVert* )_alloca16( texCoords.Num() * sizeof( idDmapDrawVert ) );
-	
+
 	TransformVerts( verts, entJoints );
-	
+
 	dmapSIMDProcessor->MinMax( bounds[0], bounds[1], verts, texCoords.Num() );
-	
+
 	return bounds;
 }
 
@@ -408,7 +408,7 @@ int idDmapMD5Mesh::NearestJoint( int a, int b, int c ) const
 {
 	int i, bestJoint, vertNum, weightVertNum;
 	float bestWeight;
-	
+
 	// duplicated vertices might not have weights
 	if( a >= 0 && a < texCoords.Num() )
 	{
@@ -427,14 +427,14 @@ int idDmapMD5Mesh::NearestJoint( int a, int b, int c ) const
 		// all vertices are duplicates which shouldn't happen
 		return 0;
 	}
-	
+
 	// find the first weight for this vertex
 	weightVertNum = 0;
 	for( i = 0; weightVertNum < vertNum; i++ )
 	{
 		weightVertNum += weightIndex[i * 2 + 1];
 	}
-	
+
 	// get the joint for the largest weight
 	bestWeight = scaledWeights[i].w;
 	bestJoint = weightIndex[i * 2 + 0] / sizeof( idJointMat );
@@ -494,13 +494,13 @@ void idDmapRenderModelMD5::ParseJoint( idLexer& parser, idMD5Joint* joint, idJoi
 {
 	idToken	token;
 	int		num;
-	
+
 	//
 	// parse name
 	//
 	parser.ReadToken( &token );
 	joint->name = token;
-	
+
 	//
 	// parse parent
 	//
@@ -517,7 +517,7 @@ void idDmapRenderModelMD5::ParseJoint( idLexer& parser, idMD5Joint* joint, idJoi
 		}
 		joint->parent = &joints[num];
 	}
-	
+
 	//
 	// parse default pose
 	//
@@ -556,33 +556,33 @@ void idDmapRenderModelMD5::LoadModel()
 	idJointQuat*	pose;
 	idMD5Joint*	joint;
 	idJointMat* poseMat3;
-	
+
 	if( !purged )
 	{
 		PurgeModel();
 	}
 	purged = false;
-	
+
 	if( !parser.LoadFile( name ) )
 	{
 		MakeDefaultModel();
 		return;
 	}
-	
+
 	parser.ExpectTokenString( MD5_VERSION_STRING );
 	version = parser.ParseInt();
-	
+
 	if( version != MD5_VERSION )
 	{
 		parser.Error( "Invalid version %d.  Should be version %d\n", version, MD5_VERSION );
 	}
-	
+
 	//
 	// skip commandline
 	//
 	parser.ExpectTokenString( "commandline" );
 	parser.ReadToken( &token );
-	
+
 	// parse num joints
 	parser.ExpectTokenString( "numJoints" );
 	num = parser.ParseInt();
@@ -591,7 +591,7 @@ void idDmapRenderModelMD5::LoadModel()
 	defaultPose.SetGranularity( 1 );
 	defaultPose.SetNum( num );
 	poseMat3 = ( idJointMat* )_alloca16( num * sizeof( *poseMat3 ) );
-	
+
 	// parse num meshes
 	parser.ExpectTokenString( "numMeshes" );
 	num = parser.ParseInt();
@@ -601,7 +601,7 @@ void idDmapRenderModelMD5::LoadModel()
 	}
 	meshes.SetGranularity( 1 );
 	meshes.SetNum( num );
-	
+
 	//
 	// parse joints
 	//
@@ -622,18 +622,18 @@ void idDmapRenderModelMD5::LoadModel()
 		}
 	}
 	parser.ExpectTokenString( "}" );
-	
+
 	for( i = 0; i < meshes.Num(); i++ )
 	{
 		parser.ExpectTokenString( "mesh" );
 		meshes[i].ParseMesh( parser, defaultPose.Num(), poseMat3 );
 	}
-	
+
 	//
 	// calculate the bounds of the model
 	//
 	CalculateBounds( poseMat3 );
-	
+
 	// set the timestamp for reloadmodels
 	fileSystem->ReadFile( name, NULL, &timeStamp );
 }
@@ -647,7 +647,7 @@ void idDmapRenderModelMD5::Print() const
 {
 	const idDmapMD5Mesh*	mesh;
 	int			i;
-	
+
 	common->Printf( "%s\n", name.c_str() );
 	common->Printf( "Dynamic model.\n" );
 	common->Printf( "Generated smooth normals.\n" );
@@ -680,19 +680,19 @@ void idDmapRenderModelMD5::List() const
 	const idDmapMD5Mesh*	mesh;
 	int			totalTris = 0;
 	int			totalVerts = 0;
-	
+
 	for( mesh = meshes.Ptr(), i = 0; i < meshes.Num(); i++, mesh++ )
 	{
 		totalTris += mesh->numTris;
 		totalVerts += mesh->NumVerts();
 	}
 	common->Printf( " %4ik %3i %4i %4i %s(MD5)", Memory() / 1024, meshes.Num(), totalVerts, totalTris, Name() );
-	
+
 	if( defaulted )
 	{
 		common->Printf( " (DEFAULTED)" );
 	}
-	
+
 	common->Printf( "\n" );
 }
 
@@ -705,7 +705,7 @@ void idDmapRenderModelMD5::CalculateBounds( const idJointMat* entJoints )
 {
 	int			i;
 	idDmapMD5Mesh*	mesh;
-	
+
 	bounds.Clear();
 	for( mesh = meshes.Ptr(), i = 0; i < meshes.Num(); i++, mesh++ )
 	{
@@ -732,13 +732,13 @@ idBounds idDmapRenderModelMD5::Bounds( const dmapRenderEntity_t* ent ) const
 		common->Error( "idDmapRenderModelMD5::Bounds: called without entity" );
 	}
 #endif
-	
+
 	if( !ent )
 	{
 		// this is the bounds for the reference pose
 		return bounds;
 	}
-	
+
 	return ent->bounds;
 }
 
@@ -757,7 +757,7 @@ void idDmapRenderModelMD5::DrawJoints( const dmapRenderEntity_t* ent, const stru
 	const idJointMat	*joint;
 	const idMD5Joint	*md5Joint;
 	int					parentNum;
-	
+
 	num = ent->numJoints;
 	joint = ent->joints;
 	md5Joint = joints.Ptr();
@@ -767,21 +767,21 @@ void idDmapRenderModelMD5::DrawJoints( const dmapRenderEntity_t* ent, const stru
 			parentNum = md5Joint->parent - joints.Ptr();
 			session->rw->DebugLine(colorWhite, ent->origin + ent->joints[parentNum].ToVec3() * ent->axis, pos);
 		}
-	
+
 		session->rw->DebugLine(colorRed, pos, pos + joint->ToMat3()[0] * 2.0f * ent->axis);
 		session->rw->DebugLine(colorGreen, pos, pos + joint->ToMat3()[1] * 2.0f * ent->axis);
 		session->rw->DebugLine(colorBlue, pos, pos + joint->ToMat3()[2] * 2.0f * ent->axis);
 	}
-	
+
 	idBounds bounds;
-	
+
 	bounds.FromTransformedBounds(ent->bounds, vec3_zero, ent->axis);
 	session->rw->DebugBounds(colorMagenta, bounds, ent->origin);
-	
+
 	if ((r_jointNameScale.GetFloat() != 0.0f) && (bounds.Expand(128.0f).ContainsPoint(view->renderView.vieworg - ent->origin))) {
 		idVec3	offset(0, 0, r_jointNameOffset.GetFloat());
 		float	scale;
-	
+
 		scale = r_jointNameScale.GetFloat();
 		joint = ent->joints;
 		num = ent->numJoints;
@@ -802,19 +802,19 @@ idDmapRenderModel* idDmapRenderModelMD5::InstantiateDynamicModel( const struct d
 	int					i, surfaceNum;
 	idDmapMD5Mesh*			mesh;
 	idDmapRenderModelStatic*	staticModel;
-	
+
 	if( cachedModel && !r_useCachedDynamicModels.GetBool() )
 	{
 		delete cachedModel;
 		cachedModel = NULL;
 	}
-	
+
 	if( purged )
 	{
 		common->DWarning( "model %s instantiated while purged", Name() );
 		LoadModel();
 	}
-	
+
 	if( !ent->joints )
 	{
 		common->Printf( "idDmapRenderModelMD5::InstantiateDynamicModel: NULL joints on renderEntity for '%s'\n", Name() );
@@ -827,9 +827,9 @@ idDmapRenderModel* idDmapRenderModelMD5::InstantiateDynamicModel( const struct d
 		delete cachedModel;
 		return NULL;
 	}
-	
+
 	dmap_tr.pc.c_generateMd5++;
-	
+
 	if( cachedModel )
 	{
 		assert( dynamic_cast<idDmapRenderModelStatic*>( cachedModel ) != NULL );
@@ -841,9 +841,9 @@ idDmapRenderModel* idDmapRenderModelMD5::InstantiateDynamicModel( const struct d
 		staticModel = new idDmapRenderModelStatic;
 		staticModel->InitEmpty( MD5_SnapshotName );
 	}
-	
+
 	staticModel->bounds.Clear();
-	
+
 	if( r_showSkel.GetInteger() )
 	{
 		if( ( view != NULL ) && ( !r_skipSuppress.GetBool() || !ent->suppressSurfaceInViewID || ( ent->suppressSurfaceInViewID != view->renderView.viewID ) ) )
@@ -851,7 +851,7 @@ idDmapRenderModel* idDmapRenderModelMD5::InstantiateDynamicModel( const struct d
 			// only draw the skeleton
 			DrawJoints( ent, view );
 		}
-		
+
 		if( r_showSkel.GetInteger() > 1 )
 		{
 			// turn off the model when showing the skeleton
@@ -859,25 +859,25 @@ idDmapRenderModel* idDmapRenderModelMD5::InstantiateDynamicModel( const struct d
 			return staticModel;
 		}
 	}
-	
+
 	// create all the surfaces
 	for( mesh = meshes.Ptr(), i = 0; i < meshes.Num(); i++, mesh++ )
 	{
 		// avoid deforming the surface if it will be a nodraw due to a skin remapping
 		// FIXME: may have to still deform clipping hulls
 		const idMaterial* shader = mesh->shader;
-		
+
 		shader = R_RemapShaderBySkin( shader, ent->customSkin, ent->customShader );
-		
+
 		if( !shader || ( !shader->IsDrawn() && !shader->SurfaceCastsShadow() ) )
 		{
 			staticModel->DeleteSurfaceWithId( i );
 			mesh->surfaceNum = -1;
 			continue;
 		}
-		
+
 		dmapModelSurface_t* surf;
-		
+
 		if( staticModel->FindSurfaceWithId( i, surfaceNum ) )
 		{
 			mesh->surfaceNum = surfaceNum;
@@ -885,23 +885,23 @@ idDmapRenderModel* idDmapRenderModelMD5::InstantiateDynamicModel( const struct d
 		}
 		else
 		{
-		
+
 			// Remove Overlays before adding new surfaces
 			idDmapRenderModelOverlay::RemoveOverlaySurfacesFromModel( staticModel );
-			
+
 			mesh->surfaceNum = staticModel->NumSurfaces();
 			surf = &staticModel->surfaces.Alloc();
 			surf->geometry = NULL;
 			surf->shader = NULL;
 			surf->id = i;
 		}
-		
+
 		mesh->UpdateSurface( ent, ent->joints, surf );
-		
+
 		staticModel->bounds.AddPoint( surf->geometry->bounds[0] );
 		staticModel->bounds.AddPoint( surf->geometry->bounds[1] );
 	}
-	
+
 	return staticModel;
 }
 
@@ -954,7 +954,7 @@ jointHandle_t idDmapRenderModelMD5::GetJointHandle( const char* name ) const
 {
 	const idMD5Joint* joint;
 	int	i;
-	
+
 	joint = joints.Ptr();
 	for( i = 0; i < joints.Num(); i++, joint++ )
 	{
@@ -963,7 +963,7 @@ jointHandle_t idDmapRenderModelMD5::GetJointHandle( const char* name ) const
 			return ( jointHandle_t )i;
 		}
 	}
-	
+
 	return INVALID_JOINT;
 }
 
@@ -978,7 +978,7 @@ const char* idDmapRenderModelMD5::GetJointName( jointHandle_t handle ) const
 	{
 		return "<invalid joint>";
 	}
-	
+
 	return joints[handle].name;
 }
 
@@ -991,12 +991,12 @@ int idDmapRenderModelMD5::NearestJoint( int surfaceNum, int a, int b, int c ) co
 {
 	int i;
 	const idDmapMD5Mesh* mesh;
-	
+
 	if( surfaceNum > meshes.Num() )
 	{
 		common->Error( "idDmapRenderModelMD5::NearestJoint: surfaceNum > meshes.Num()" );
 	}
-	
+
 	for( mesh = meshes.Ptr(), i = 0; i < meshes.Num(); i++, mesh++ )
 	{
 		if( mesh->surfaceNum == surfaceNum )
@@ -1020,7 +1020,7 @@ void idDmapRenderModelMD5::TouchData()
 {
 	idDmapMD5Mesh*	mesh;
 	int			i;
-	
+
 	for( mesh = meshes.Ptr(), i = 0; i < meshes.Num(); i++, mesh++ )
 	{
 		declManager->FindMaterial( mesh->shader->GetName() );
@@ -1051,22 +1051,22 @@ idDmapRenderModelMD5::Memory
 int	idDmapRenderModelMD5::Memory() const
 {
 	int		total, i;
-	
+
 	assert( 0 );
 	total = sizeof( *this );
 	/*total += joints.MemoryUsed() + defaultPose.MemoryUsed() + meshes.MemoryUsed();
-	
+
 	// count up strings
 	for (i = 0; i < joints.Num(); i++) {
 		total += joints[i].name.DynamicMemoryUsed();
 	}
-	
+
 	// count up meshes
 	for (i = 0; i < meshes.Num(); i++) {
 		const idDmapMD5Mesh *mesh = &meshes[i];
-	
+
 		total += mesh->texCoords.MemoryUsed() + mesh->numWeights * (sizeof(mesh->scaledWeights[0]) + sizeof(mesh->weightIndex[0]) * 2);
-	
+
 		// sum up deform info
 		total += sizeof(mesh->deformInfo);
 		total += R_DeformInfoMemoryUsed(mesh->deformInfo);

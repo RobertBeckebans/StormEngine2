@@ -46,9 +46,9 @@ int FS_WriteFloatString( char* buf, const char* fmt, va_list argPtr )
 	char* str;
 	int index;
 	idStr tmp, format;
-	
+
 	index = 0;
-	
+
 	while( *fmt )
 	{
 		switch( *fmt )
@@ -149,7 +149,7 @@ int FS_WriteFloatString( char* buf, const char* fmt, va_list argPtr )
 				break;
 		}
 	}
-	
+
 	return index;
 	// DG end
 }
@@ -282,15 +282,15 @@ int idFile::Printf( const char* fmt, ... )
 	char buf[MAX_PRINT_MSG];
 	int length;
 	va_list argptr;
-	
+
 	va_start( argptr, fmt );
 	length = idStr::vsnPrintf( buf, MAX_PRINT_MSG - 1, fmt, argptr );
 	va_end( argptr );
-	
+
 	// so notepad formats the lines correctly
 	idStr	work( buf );
 	work.Replace( "\n", "\r\n" );
-	
+
 	return Write( work.c_str(), work.Length() );
 }
 
@@ -303,7 +303,7 @@ int idFile::VPrintf( const char* fmt, va_list args )
 {
 	char buf[MAX_PRINT_MSG];
 	int length;
-	
+
 	length = idStr::vsnPrintf( buf, MAX_PRINT_MSG - 1, fmt, args );
 	return Write( buf, length );
 }
@@ -318,11 +318,11 @@ int idFile::WriteFloatString( const char* fmt, ... )
 	char buf[MAX_PRINT_MSG];
 	int len;
 	va_list argPtr;
-	
+
 	va_start( argPtr, fmt );
 	len = FS_WriteFloatString( buf, fmt, argPtr );
 	va_end( argPtr );
-	
+
 	return Write( buf, len );
 }
 
@@ -428,7 +428,7 @@ int idFile::ReadString( idStr& string )
 {
 	int len;
 	int result = 0;
-	
+
 	ReadInt( len );
 	if( len >= 0 )
 	{
@@ -520,10 +520,12 @@ int idFile::ReadWinding( idWinding& winding )
 	int numPts = 0;
 	ReadInt( numPts );
 	winding.SetNumPoints( numPts );
-	
+
 	for( int i = 0; i < numPts; ++i )
+	{
 		ReadVec5( winding[ i ] );
-		
+	}
+
 	return 1;
 }
 
@@ -718,7 +720,9 @@ int idFile::WriteWinding( const idWinding& winding )
 {
 	WriteInt( winding.GetNumPoints() );
 	for( int i = 0; i < winding.GetNumPoints(); ++i )
+	{
 		WriteVec5( winding[ i ] );
+	}
 	return 1;
 }
 
@@ -754,7 +758,7 @@ idFile_Memory::idFile_Memory()
 	fileSize = 0;
 	allocated = 0;
 	granularity = 16384;
-	
+
 	mode = ( 1 << FS_WRITE );
 	filePtr = NULL;
 	curPtr = NULL;
@@ -772,7 +776,7 @@ idFile_Memory::idFile_Memory( const char* name )
 	fileSize = 0;
 	allocated = 0;
 	granularity = 16384;
-	
+
 	mode = ( 1 << FS_WRITE );
 	filePtr = NULL;
 	curPtr = NULL;
@@ -790,7 +794,7 @@ idFile_Memory::idFile_Memory( const char* name, char* data, int length )
 	fileSize = 0;
 	allocated = length;
 	granularity = 16384;
-	
+
 	mode = ( 1 << FS_WRITE );
 	filePtr = data;
 	curPtr = data;
@@ -808,7 +812,7 @@ idFile_Memory::idFile_Memory( const char* name, const char* data, int length )
 	fileSize = length;
 	allocated = 0;
 	granularity = 16384;
-	
+
 	mode = ( 1 << FS_READ );
 	filePtr = const_cast<char*>( data );
 	curPtr = const_cast<char*>( data );
@@ -857,7 +861,7 @@ int idFile_Memory::Read( void* buffer, int len )
 		common->FatalError( "idFile_Memory::Read: %s not opened in read mode", name.c_str() );
 		return 0;
 	}
-	
+
 	if( curPtr + len > filePtr + fileSize )
 	{
 		len = filePtr + fileSize - curPtr;
@@ -892,7 +896,7 @@ CONSOLE_COMMAND( outputHistogram, "", 0 )
 		int key;
 		histogram.GetIndexKey( i, key );
 		int* value = histogram.GetIndex( i );
-		
+
 		idLib::Printf( "%d\t%d\n", key, *value );
 	}
 }
@@ -909,13 +913,13 @@ int idFile_Memory::Write( const void* buffer, int len )
 		// ~4% falls into this case for some reason...
 		return 0;
 	}
-	
+
 	if( !( mode & ( 1 << FS_WRITE ) ) )
 	{
 		common->FatalError( "idFile_Memory::Write: %s not opened in write mode", name.c_str() );
 		return 0;
 	}
-	
+
 	int alloc = curPtr + len + 1 - filePtr - allocated; // need room for len+1
 	if( alloc > 0 )
 	{
@@ -938,10 +942,10 @@ int idFile_Memory::Write( const void* buffer, int len )
 		}
 		filePtr = newPtr;
 	}
-	
+
 	//memcpy( curPtr, buffer, len );
 	memcpy2( curPtr, buffer, len );
-	
+
 #if 0
 	if( memcpyImpl.GetInteger() == 0 )
 	{
@@ -956,7 +960,7 @@ int idFile_Memory::Write( const void* buffer, int len )
 		memcpy2( curPtr, buffer, len );
 	}
 #endif
-	
+
 #if 0
 	int* value;
 	if( histogram.Get( len, &value ) && value != NULL )
@@ -968,7 +972,7 @@ int idFile_Memory::Write( const void* buffer, int len )
 		histogram.Set( len, 1 );
 	}
 #endif
-	
+
 	curPtr += len;
 	fileSize += len;
 	filePtr[ fileSize ] = 0; // len + 1
@@ -1116,9 +1120,9 @@ idFile_Memory::SetMaxLength
 void idFile_Memory::SetMaxLength( size_t len )
 {
 	size_t oldLength = fileSize;
-	
+
 	SetLength( len );
-	
+
 	maxSize = len;
 	fileSize = oldLength;
 }
@@ -1178,7 +1182,7 @@ void idFile_Memory::SetData( const char* data, int length )
 	fileSize = length;
 	allocated = 0;
 	granularity = 16384;
-	
+
 	mode = ( 1 << FS_READ );
 	filePtr = const_cast<char*>( data );
 	curPtr = const_cast<char*>( data );
@@ -1255,7 +1259,7 @@ int idFile_BitMsg::Read( void* buffer, int len )
 		common->FatalError( "idFile_BitMsg::Read: %s not opened in read mode", name.c_str() );
 		return 0;
 	}
-	
+
 	return msg->ReadData( buffer, len );
 }
 
@@ -1272,7 +1276,7 @@ int idFile_BitMsg::Write( const void* buffer, int len )
 		common->FatalError( "idFile_Memory::Write: %s not opened in write mode", name.c_str() );
 		return 0;
 	}
-	
+
 	msg->WriteData( buffer, len );
 	return len;
 }
@@ -1399,26 +1403,26 @@ int idFile_Permanent::Read( void* buffer, int len )
 	int		read;
 	byte* 	buf;
 	int		tries;
-	
+
 	if( !( mode & ( 1 << FS_READ ) ) )
 	{
 		common->FatalError( "idFile_Permanent::Read: %s not opened in read mode", name.c_str() );
 		return 0;
 	}
-	
+
 	if( !o )
 	{
 		return 0;
 	}
-	
+
 	buf = ( byte* )buffer;
-	
+
 	remaining = len;
 	tries = 0;
 	while( remaining )
 	{
 		block = remaining;
-		
+
 		// RB begin
 #if defined(_WIN32)
 		DWORD bytesRead;
@@ -1431,7 +1435,7 @@ int idFile_Permanent::Read( void* buffer, int len )
 		read = fread( buf, 1, block, o );
 #endif
 		// RB end
-		
+
 		if( read == 0 )
 		{
 			// we might have been trying to read from a CD, which
@@ -1445,12 +1449,12 @@ int idFile_Permanent::Read( void* buffer, int len )
 				return len - remaining;
 			}
 		}
-		
+
 		if( read == -1 )
 		{
 			common->FatalError( "idFile_Permanent::Read: -1 bytes read from %s", name.c_str() );
 		}
-		
+
 		remaining -= read;
 		buf += read;
 	}
@@ -1470,26 +1474,26 @@ int idFile_Permanent::Write( const void* buffer, int len )
 	int		written;
 	byte* 	buf;
 	int		tries;
-	
+
 	if( !( mode & ( 1 << FS_WRITE ) ) )
 	{
 		common->FatalError( "idFile_Permanent::Write: %s not opened in write mode", name.c_str() );
 		return 0;
 	}
-	
+
 	if( !o )
 	{
 		return 0;
 	}
-	
+
 	buf = ( byte* )buffer;
-	
+
 	remaining = len;
 	tries = 0;
 	while( remaining )
 	{
 		block = remaining;
-		
+
 		// RB begin
 #if defined(_WIN32)
 		DWORD bytesWritten;
@@ -1499,7 +1503,7 @@ int idFile_Permanent::Write( const void* buffer, int len )
 		written = fwrite( buf, 1, block, o );
 #endif
 		// RB end
-		
+
 		if( written == 0 )
 		{
 			if( !tries )
@@ -1512,13 +1516,13 @@ int idFile_Permanent::Write( const void* buffer, int len )
 				return 0;
 			}
 		}
-		
+
 		if( written == -1 )
 		{
 			common->Printf( "idFile_Permanent::Write: -1 bytes written to %s\n", name.c_str() );
 			return 0;
 		}
-		
+
 		remaining -= written;
 		buf += written;
 		fileSize += written;
@@ -1626,7 +1630,7 @@ int idFile_Permanent::Seek( long offset, fsOrigin_t origin )
 	return ( retVal == INVALID_SET_FILE_POINTER ) ? -1 : 0;
 #else
 	int _origin;
-	
+
 	switch( origin )
 	{
 		case FS_SEEK_CUR:
@@ -1651,7 +1655,7 @@ int idFile_Permanent::Seek( long offset, fsOrigin_t origin )
 			break;
 		}
 	}
-	
+
 	return fseek( o, offset, _origin );
 #endif
 	// RB end
@@ -1762,7 +1766,7 @@ int idFile_Cached::Seek( long offset, fsOrigin_t origin )
 		internalFilePos = offset;
 		return 0;
 	}
-	
+
 	int retVal = idFile_Permanent::Seek( offset, origin );
 	internalFilePos = idFile_Permanent::Tell();
 	return retVal;
@@ -1894,7 +1898,7 @@ int idFile_InZip::Seek( long offset, fsOrigin_t origin )
 {
 	int res, i;
 	char* buf;
-	
+
 	switch( origin )
 	{
 		case FS_SEEK_END:
@@ -1988,14 +1992,14 @@ int idFile_InnerResource::Read( void* buffer, int len )
 	{
 		return 0;
 	}
-	
+
 	if( internalFilePos + len > length )
 	{
 		len = length - internalFilePos;
 	}
-	
+
 	int read = 0; //fileSystem->ReadFromBGL( resourceFile, (byte*)buffer, offset + internalFilePos, len );
-	
+
 	if( read != len )
 	{
 		if( resourceBuffer != NULL )
@@ -2008,9 +2012,9 @@ int idFile_InnerResource::Read( void* buffer, int len )
 			read = fileSystem->ReadFromBGL( resourceFile, buffer, offset + internalFilePos, len );
 		}
 	}
-	
+
 	internalFilePos += read;
-	
+
 	return read;
 }
 
@@ -2142,9 +2146,9 @@ CONSOLE_COMMAND( testEndianNessWrite, "Tests the read/write compatibility betwee
 		idLib::Printf( "Couldn't open the %s testfile.\n", testEndianNessFilename );
 		return;
 	}
-	
+
 	testEndianNess_t testData;
-	
+
 	file->WriteBig( testData.a );
 	file->WriteBig( testData.b );
 	file->WriteFloat( testData.c );
@@ -2164,12 +2168,12 @@ CONSOLE_COMMAND( testEndianNessRead, "Tests the read/write compatibility between
 		idLib::Printf( "Couldn't find the %s testfile.\n", testEndianNessFilename );
 		return;
 	}
-	
+
 	testEndianNess_t srcData;
 	testEndianNess_t testData;
-	
+
 	memset( &testData, 0, sizeof( testData ) );
-	
+
 	file->ReadBig( testData.a );
 	file->ReadBig( testData.b );
 	file->ReadFloat( testData.c );
@@ -2179,7 +2183,7 @@ CONSOLE_COMMAND( testEndianNessRead, "Tests the read/write compatibility between
 	file->ReadBig( testData.g );
 	file->ReadBig( testData.h );
 	file->Read( testData.i, sizeof( testData.i ) / sizeof( testData.i[0] ) );
-	
+
 	assert( srcData == testData );
 }
 

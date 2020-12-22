@@ -73,20 +73,20 @@ void CDialogSoundGroup::OnOK()
 		lstGroups.GetText( i, str );
 		list.Append( str.GetBuffer( 0 ) );
 	}
-	
+
 	CDialog::OnOK();
 }
 
 BOOL CDialogSoundGroup::OnInitDialog()
 {
 	CDialog::OnInitDialog();
-	
+
 	int count = list.Num();
 	for( int i = 0; i < count; i++ )
 	{
 		lstGroups.AddString( list[i] );
 	}
-	
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }

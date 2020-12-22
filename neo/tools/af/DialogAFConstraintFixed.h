@@ -35,7 +35,7 @@ class DialogAFConstraintFixed : public CDialog
 {
 
 	DECLARE_DYNAMIC( DialogAFConstraintFixed )
-	
+
 public:
 	DialogAFConstraintFixed( CWnd* pParent = NULL ); // standard constructor
 	virtual				~DialogAFConstraintFixed();
@@ -44,25 +44,25 @@ public:
 	void				LoadConstraint( idDeclAF_Constraint* c );
 	void				SaveConstraint( void );
 	void				UpdateFile( void );
-	
+
 	enum { IDD = IDD_DIALOG_AF_CONSTRAINT_FIXED };
-	
+
 protected:
 	virtual void		DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	virtual INT_PTR		OnToolHitTest( CPoint point, TOOLINFO* pTI ) const;
 	afx_msg BOOL		OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult );
-	
+
 	DECLARE_MESSAGE_MAP()
-	
+
 private:
 	idDeclAF* 			file;
 	idDeclAF_Constraint* constraint;
-	
+
 	//{{AFX_DATA(DialogAFConstraintHinge)
 	//}}AFX_DATA
-	
+
 	static toolTip_t	toolTips[];
-	
+
 private:
 	void				InitJointLists( void );
 };

@@ -40,9 +40,9 @@ If you have questions concerning this license or the applicable additional terms
 #include "DialogDeclNew.h"
 
 #ifdef ID_DEBUG_MEMORY
-#undef new
-#undef DEBUG_NEW
-#define DEBUG_NEW new
+	#undef new
+	#undef DEBUG_NEW
+	#define DEBUG_NEW new
 #endif
 
 const int DECLTYPE_SHIFT			= 24;
@@ -136,26 +136,26 @@ void DialogDeclBrowser::AddDeclTypeToTree( declType_t type, const char* root, CP
 	idList<const idDecl*> decls;
 	idPathTreeStack stack;
 	idStr rootStr, declName;
-	
+
 	decls.SetNum( declManager->GetNumDecls( type ) );
 	for( i = 0; i < decls.Num(); i++ )
 	{
 		decls[i] = declManager->DeclByIndex( type, i, false );
 	}
 	decls.Sort( idListDeclSortCompare );
-	
+
 	rootStr = root;
 	rootStr += "/";
-	
+
 	stack.PushRoot( NULL );
-	
+
 	for( i = 0; i < decls.Num(); i++ )
 	{
 		declName = rootStr + decls[i]->GetName();
-		
+
 		declName.BackSlashesToSlashes();
 		declName.Strip( ' ' );
-		
+
 		tree.AddPathToTree( declName, GetIdFromTypeAndIndex( type, decls[i]->Index() ), stack );
 	}
 }
@@ -171,21 +171,21 @@ void DialogDeclBrowser::AddScriptsToTree( CPathTreeCtrl& tree )
 	idPathTreeStack stack;
 	idStr scriptName;
 	idFileList* files;
-	
+
 	files = fileSystem->ListFilesTree( "script", ".script", true );
-	
+
 	stack.PushRoot( NULL );
-	
+
 	for( i = 0; i < files->GetNumFiles(); i++ )
 	{
 		scriptName = files->GetFile( i );
-		
+
 		scriptName.BackSlashesToSlashes();
 		scriptName.StripFileExtension();
-		
+
 		tree.AddPathToTree( scriptName, GetIdFromTypeAndIndex( DECLTYPE_SCRIPT, i ), stack );
 	}
-	
+
 	fileSystem->FreeFileList( files );
 }
 
@@ -200,21 +200,21 @@ void DialogDeclBrowser::AddGUIsToTree( CPathTreeCtrl& tree )
 	idPathTreeStack stack;
 	idStr scriptName;
 	idFileList* files;
-	
+
 	files = fileSystem->ListFilesTree( "guis", ".gui", true );
-	
+
 	stack.PushRoot( NULL );
-	
+
 	for( i = 0; i < files->GetNumFiles(); i++ )
 	{
 		scriptName = files->GetFile( i );
-		
+
 		scriptName.BackSlashesToSlashes();
 		scriptName.StripFileExtension();
-		
+
 		tree.AddPathToTree( scriptName, GetIdFromTypeAndIndex( DECLTYPE_GUI, i ), stack );
 	}
-	
+
 	fileSystem->FreeFileList( files );
 }
 
@@ -226,15 +226,15 @@ DialogDeclBrowser::InitBaseDeclTree
 void DialogDeclBrowser::InitBaseDeclTree( void )
 {
 	int i;
-	
+
 	numListedDecls = 0;
 	baseDeclTree.DeleteAllItems();
-	
+
 	for( i = 0; i < declManager->GetNumDeclTypes(); i++ )
 	{
 		AddDeclTypeToTree( ( declType_t )i, declManager->GetDeclNameFromType( ( declType_t )i ), baseDeclTree );
 	}
-	
+
 	AddScriptsToTree( baseDeclTree );
 	AddGUIsToTree( baseDeclTree );
 }
@@ -248,7 +248,7 @@ void DialogDeclBrowser::GetDeclName( HTREEITEM item, idStr& typeName, idStr& dec
 {
 	HTREEITEM parent;
 	idStr itemName;
-	
+
 	declName.Clear();
 	for( parent = declTree.GetParentItem( item ); parent; parent = declTree.GetParentItem( parent ) )
 	{
@@ -270,23 +270,23 @@ const idDecl* DialogDeclBrowser::GetDeclFromTreeItem( HTREEITEM item ) const
 	int id, index;
 	declType_t type;
 	const idDecl* decl;
-	
+
 	if( declTree.GetChildItem( item ) )
 	{
 		return NULL;
 	}
-	
+
 	id = declTree.GetItemData( item );
 	type = GetTypeFromId( id );
 	index = GetIndexFromId( id );
-	
+
 	if( type < 0 || type >= declManager->GetNumDeclTypes() )
 	{
 		return NULL;
 	}
-	
+
 	decl = declManager->DeclByIndex( type, index, false );
-	
+
 	return decl;
 }
 
@@ -312,18 +312,18 @@ void DialogDeclBrowser::EditSelected( void ) const
 	const idDecl* decl;
 	declType_t type;
 	HTREEITEM item;
-	
+
 	item = declTree.GetSelectedItem();
-	
+
 	if( declTree.GetChildItem( item ) )
 	{
 		return;
 	}
-	
+
 	id = declTree.GetItemData( item );
 	type = GetTypeFromId( id );
 	index = GetIndexFromId( id );
-	
+
 	switch( type )
 	{
 		case DECL_AF:
@@ -398,16 +398,16 @@ bool DialogDeclBrowser::CompareDecl( HTREEITEM item, const char* name ) const
 			return false;
 		}
 	}
-	
+
 	if( findTextString.Length() )
 	{
 		int id, index;
 		declType_t type;
-		
+
 		id = declTree.GetItemData( item );
 		type = GetTypeFromId( id );
 		index = GetIndexFromId( id );
-		
+
 		if( type == DECLTYPE_SCRIPT || type == DECLTYPE_GUI )
 		{
 			// search for the text in the script or gui
@@ -436,7 +436,7 @@ bool DialogDeclBrowser::CompareDecl( HTREEITEM item, const char* name ) const
 			}
 		}
 	}
-	
+
 	return true;
 }
 
@@ -449,29 +449,29 @@ BOOL DialogDeclBrowser::OnInitDialog()
 {
 
 	com_editors |= EDITOR_DECL;
-	
+
 	CDialog::OnInitDialog();
-	
+
 	GetClientRect( initialRect );
-	
+
 	statusBar.CreateEx( SBARS_SIZEGRIP, WS_CHILD | WS_VISIBLE | CBRS_BOTTOM, initialRect, this, AFX_IDW_STATUS_BAR );
-	
+
 	baseDeclTree.Create( 0, initialRect, this, IDC_DECLBROWSER_BASE_TREE );
-	
+
 	InitBaseDeclTree();
-	
+
 	findNameString = "*";
 	findNameEdit.SetWindowText( findNameString );
-	
+
 	findTextString = "";
 	findTextEdit.SetWindowText( findTextString );
-	
+
 	numListedDecls = baseDeclTree.SearchTree( DeclBrowserCompareDecl, this, declTree );
-	
+
 	statusBar.SetWindowText( va( "%d decls listed", numListedDecls ) );
-	
+
 	EnableToolTips( TRUE );
-	
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -490,13 +490,13 @@ void DeclBrowserInit( const idDict* spawnArgs )
 						"Set r_fullscreen to 0 and vid_restart.\n" );
 		return;
 	}
-	
+
 	if( g_DeclDialog == NULL )
 	{
 		InitAfx();
 		g_DeclDialog = new DialogDeclBrowser();
 	}
-	
+
 	if( g_DeclDialog->GetSafeHwnd() == NULL )
 	{
 		g_DeclDialog->Create( IDD_DIALOG_DECLBROWSER );
@@ -506,12 +506,12 @@ void DeclBrowserInit( const idDict* spawnArgs )
 				g_DeclDialog->SetWindowPos( NULL, rct.left, rct.top, 0, 0, SWP_NOSIZE );
 		*/
 	}
-	
+
 	idKeyInput::ClearStates();
-	
+
 	g_DeclDialog->ShowWindow( SW_SHOW );
 	g_DeclDialog->SetFocus();
-	
+
 	if( spawnArgs )
 	{
 	}
@@ -529,7 +529,7 @@ void DeclBrowserRun( void )
 #else
 	MSG* msg = &m_msgCur;
 #endif
-	
+
 	while( ::PeekMessage( msg, NULL, NULL, NULL, PM_NOREMOVE ) )
 	{
 		// pump message
@@ -615,19 +615,19 @@ BOOL DialogDeclBrowser::OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResul
 	// need to handle both ANSI and UNICODE versions of the message
 	TOOLTIPTEXTA* pTTTA = ( TOOLTIPTEXTA* )pNMHDR;
 	TOOLTIPTEXTW* pTTTW = ( TOOLTIPTEXTW* )pNMHDR;
-	
+
 	if( pNMHDR->hwndFrom == declTree.GetSafeHwnd() )
 	{
 		CString toolTip;
 		const idDecl* decl = GetDeclFromTreeItem( ( HTREEITEM ) pNMHDR->idFrom );
-		
+
 		if( !decl )
 		{
 			return FALSE;
 		}
-		
+
 		toolTip = va( "%s, line: %d", decl->GetFileName(), decl->GetLineNum() );
-		
+
 #ifndef _UNICODE
 		if( pNMHDR->code == TTN_NEEDTEXTA )
 		{
@@ -661,7 +661,7 @@ BOOL DialogDeclBrowser::OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResul
 #endif
 		return TRUE;
 	}
-	
+
 	return DefaultOnToolTipNotify( toolTips, id, pNMHDR, pResult );
 }
 
@@ -684,7 +684,7 @@ void DialogDeclBrowser::OnDestroy()
 {
 
 	com_editors &= ~EDITOR_DECL;
-	
+
 	return CDialog::OnDestroy();
 }
 
@@ -716,13 +716,13 @@ DialogDeclBrowser::OnMove
 void DialogDeclBrowser::OnSize( UINT nType, int cx, int cy )
 {
 	CRect clientRect, rect;
-	
+
 	LockWindowUpdate();
-	
+
 	CDialog::OnSize( nType, cx, cy );
-	
+
 	GetClientRect( clientRect );
-	
+
 	if( declTree.GetSafeHwnd() )
 	{
 		rect.left = BORDER_SIZE;
@@ -731,7 +731,7 @@ void DialogDeclBrowser::OnSize( UINT nType, int cx, int cy )
 		rect.bottom = clientRect.Height() - 100;
 		declTree.MoveWindow( rect.left, rect.top, rect.Width(), rect.Height() );
 	}
-	
+
 	if( findNameStatic.GetSafeHwnd() )
 	{
 		rect.left = BORDER_SIZE + 2;
@@ -740,7 +740,7 @@ void DialogDeclBrowser::OnSize( UINT nType, int cx, int cy )
 		rect.bottom = clientRect.Height() - 76 + 2;
 		findNameStatic.MoveWindow( rect.left, rect.top, rect.Width(), rect.Height() );
 	}
-	
+
 	if( findTextStatic.GetSafeHwnd() )
 	{
 		rect.left = BORDER_SIZE + 2;
@@ -749,7 +749,7 @@ void DialogDeclBrowser::OnSize( UINT nType, int cx, int cy )
 		rect.bottom = clientRect.Height() - 54 + 2;
 		findTextStatic.MoveWindow( rect.left, rect.top, rect.Width(), rect.Height() );
 	}
-	
+
 	if( findNameEdit.GetSafeHwnd() )
 	{
 		rect.left = BORDER_SIZE + 80;
@@ -758,7 +758,7 @@ void DialogDeclBrowser::OnSize( UINT nType, int cx, int cy )
 		rect.bottom = clientRect.Height() - 76;
 		findNameEdit.MoveWindow( rect.left, rect.top, rect.Width(), rect.Height() );
 	}
-	
+
 	if( findTextEdit.GetSafeHwnd() )
 	{
 		rect.left = BORDER_SIZE + 80;
@@ -767,7 +767,7 @@ void DialogDeclBrowser::OnSize( UINT nType, int cx, int cy )
 		rect.bottom = clientRect.Height() - 54;
 		findTextEdit.MoveWindow( rect.left, rect.top, rect.Width(), rect.Height() );
 	}
-	
+
 	if( findButton.GetSafeHwnd() )
 	{
 		findButton.GetClientRect( rect );
@@ -779,7 +779,7 @@ void DialogDeclBrowser::OnSize( UINT nType, int cx, int cy )
 		rect.bottom = clientRect.Height() - TOOLBAR_HEIGHT;
 		findButton.MoveWindow( rect.left, rect.top, rect.Width(), rect.Height() );
 	}
-	
+
 	if( editButton.GetSafeHwnd() )
 	{
 		editButton.GetClientRect( rect );
@@ -791,7 +791,7 @@ void DialogDeclBrowser::OnSize( UINT nType, int cx, int cy )
 		rect.bottom = clientRect.Height() - TOOLBAR_HEIGHT;
 		editButton.MoveWindow( rect.left, rect.top, rect.Width(), rect.Height() );
 	}
-	
+
 	if( newButton.GetSafeHwnd() )
 	{
 		newButton.GetClientRect( rect );
@@ -803,7 +803,7 @@ void DialogDeclBrowser::OnSize( UINT nType, int cx, int cy )
 		rect.bottom = clientRect.Height() - TOOLBAR_HEIGHT;
 		newButton.MoveWindow( rect.left, rect.top, rect.Width(), rect.Height() );
 	}
-	
+
 	if( reloadButton.GetSafeHwnd() )
 	{
 		reloadButton.GetClientRect( rect );
@@ -815,7 +815,7 @@ void DialogDeclBrowser::OnSize( UINT nType, int cx, int cy )
 		rect.bottom = clientRect.Height() - TOOLBAR_HEIGHT;
 		reloadButton.MoveWindow( rect.left, rect.top, rect.Width(), rect.Height() );
 	}
-	
+
 	if( cancelButton.GetSafeHwnd() )
 	{
 		cancelButton.GetClientRect( rect );
@@ -827,7 +827,7 @@ void DialogDeclBrowser::OnSize( UINT nType, int cx, int cy )
 		rect.bottom = clientRect.Height() - TOOLBAR_HEIGHT;
 		cancelButton.MoveWindow( rect.left, rect.top, rect.Width(), rect.Height() );
 	}
-	
+
 	if( statusBar.GetSafeHwnd() )
 	{
 		rect.left = clientRect.Width() - 2;
@@ -836,7 +836,7 @@ void DialogDeclBrowser::OnSize( UINT nType, int cx, int cy )
 		rect.bottom = clientRect.Height() - 2;
 		statusBar.MoveWindow( rect.left, rect.top, rect.Width(), rect.Height() );
 	}
-	
+
 	UnlockWindowUpdate();
 }
 
@@ -857,9 +857,9 @@ void DialogDeclBrowser::OnSizing( UINT nSide, LPRECT lpRect )
 		7 = left - bottom
 		8 = right - bottom
 	*/
-	
+
 	CDialog::OnSizing( nSide, lpRect );
-	
+
 	if( ( nSide - 1 ) % 3 == 0 )
 	{
 		if( lpRect->right - lpRect->left < initialRect.Width() )
@@ -898,7 +898,7 @@ DialogDeclBrowser::OnTreeSelChanged
 void DialogDeclBrowser::OnTreeSelChanged( NMHDR* pNMHDR, LRESULT* pResult )
 {
 	LV_KEYDOWN* pLVKeyDow = ( LV_KEYDOWN* )pNMHDR;
-	
+
 	const idDecl* decl = GetSelectedDecl();
 	if( decl )
 	{
@@ -913,7 +913,7 @@ void DialogDeclBrowser::OnTreeSelChanged( NMHDR* pNMHDR, LRESULT* pResult )
 		findNameEdit.SetWindowText( va( "%s/%s*", typeName.c_str(), declName.c_str() ) );
 		statusBar.SetWindowText( va( "%d decls listed", numListedDecls ) );
 	}
-	
+
 	*pResult = 0;
 }
 
@@ -926,7 +926,7 @@ void DialogDeclBrowser::OnTreeDblclk( NMHDR* pNMHDR, LRESULT* pResult )
 {
 	// post a message as if the edit button was clicked to make sure the editor gets focus
 	PostMessage( WM_COMMAND, ( BN_CLICKED << 16 ) | editButton.GetDlgCtrlID(), 0 );
-	
+
 	*pResult = 1;
 }
 
@@ -938,17 +938,17 @@ DialogDeclBrowser::OnBnClickedFind
 void DialogDeclBrowser::OnBnClickedFind()
 {
 	CString windowText;
-	
+
 	findNameEdit.GetWindowText( windowText );
 	findNameString = windowText;
 	findNameString.Strip( ' ' );
-	
+
 	findTextEdit.GetWindowText( windowText );
 	findTextString = windowText;
 	findTextString.Strip( ' ' );
-	
+
 	numListedDecls = baseDeclTree.SearchTree( DeclBrowserCompareDecl, this, declTree );
-	
+
 	statusBar.SetWindowText( va( "%d decls listed", numListedDecls ) );
 }
 
@@ -973,9 +973,9 @@ void DialogDeclBrowser::OnBnClickedNew()
 	idStr typeName, declName;
 	const idDecl* decl;
 	DialogDeclNew newDeclDlg;
-	
+
 	newDeclDlg.SetDeclTree( &baseDeclTree );
-	
+
 	item = declTree.GetSelectedItem();
 	if( item )
 	{
@@ -983,32 +983,32 @@ void DialogDeclBrowser::OnBnClickedNew()
 		newDeclDlg.SetDefaultType( typeName );
 		newDeclDlg.SetDefaultName( declName );
 	}
-	
+
 	decl = GetSelectedDecl();
 	if( decl )
 	{
 		newDeclDlg.SetDefaultFile( decl->GetFileName() );
 	}
-	
+
 	if( newDeclDlg.DoModal() != IDOK )
 	{
 		return;
 	}
-	
+
 	decl = newDeclDlg.GetNewDecl();
-	
+
 	if( decl )
 	{
 		declName = declManager->GetDeclNameFromType( decl->GetType() );
 		declName += "/";
 		declName += decl->GetName();
-		
+
 		int id = GetIdFromTypeAndIndex( decl->GetType(), decl->Index() );
-		
+
 		baseDeclTree.InsertPathIntoTree( declName, id );
 		item = declTree.InsertPathIntoTree( declName, id );
 		declTree.SelectItem( item );
-		
+
 		EditSelected();
 	}
 }
@@ -1022,7 +1022,7 @@ void DialogDeclBrowser::OnBnClickedReload()
 {
 
 	declManager->Reload( false );
-	
+
 	ReloadDeclarations();
 }
 

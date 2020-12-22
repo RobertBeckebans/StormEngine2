@@ -53,7 +53,7 @@ static void R_PerformanceCountersDmap()
 						backEnd.pc.c_shadowIndexes / 3
 					  );
 	}
-	
+
 	if( r_showDynamic.GetBool() )
 	{
 		common->Printf( "callback:%i md5:%i dfrmVerts:%i dfrmTris:%i tangTris:%i guis:%i\n",
@@ -65,13 +65,13 @@ static void R_PerformanceCountersDmap()
 						dmap_tr.pc.c_guiSurfs
 					  );
 	}
-	
+
 	if( r_showCull.GetBool() )
 	{
 		common->Printf( "%i box in %i box out\n",
 						dmap_tr.pc.c_box_cull_in, dmap_tr.pc.c_box_cull_out );
 	}
-	
+
 	if( r_showAddModel.GetBool() )
 	{
 		common->Printf( "callback:%i createInteractions:%i createShadowVolumes:%i\n",
@@ -89,7 +89,7 @@ static void R_PerformanceCountersDmap()
 	{
 		//common->Printf("dmapFrameData: %i (%i)\n", dmapFrameData->frameMemoryAllocated.GetValue(), dmapFrameData->highWaterAllocated);
 	}
-	
+
 	memset( &dmap_tr.pc, 0, sizeof( dmap_tr.pc ) );
 	memset( &backEnd.pc, 0, sizeof( backEnd.pc ) );
 }
@@ -115,13 +115,13 @@ void idDmapRenderSystemLocal::RenderCommandBuffers( const emptyCommand_t* const 
 	{
 		return;
 	}
-	
+
 	// r_skipBackEnd allows the entire time of the back end
 	// to be removed from performance measurements, although
 	// nothing will be drawn to the screen.  If the prints
 	// are going to a file, or r_skipBackEnd is later disabled,
 	// usefull data can be received.
-	
+
 	// r_skipRender is usually more usefull, because it will still
 	// draw 2D graphics
 	if( !r_skipBackEnd.GetBool() )
@@ -142,7 +142,7 @@ void idDmapRenderSystemLocal::RenderCommandBuffers( const emptyCommand_t* const 
 			RB_ExecuteBackEndCommands( cmdHead );
 		}
 	}
-	
+
 	// pass in null for now - we may need to do some map specific hackery in the future
 	resolutionScale.InitForMap( NULL );
 }
@@ -159,12 +159,12 @@ current command chain.
 void* R_GetCommandBufferDmap( int bytes )
 {
 	emptyCommand_t*	cmd;
-	
+
 	cmd = ( emptyCommand_t* )R_FrameAlloc( bytes, FRAME_ALLOC_DRAW_COMMAND );
 	cmd->next = NULL;
 	dmapFrameData->cmdTail->next = &cmd->commandId;
 	dmapFrameData->cmdTail = cmd;
-	
+
 	return ( void* )cmd;
 }
 
@@ -204,7 +204,7 @@ static void R_CheckCvarsDmap()
 		r_brightness.ClearModified();
 		R_SetColorMappings();
 	}
-	
+
 	// filtering
 	if( r_maxAnisotropicFiltering.IsModified() || r_useTrilinearFiltering.IsModified() || r_lodBias.IsModified() )
 	{
@@ -221,7 +221,7 @@ static void R_CheckCvarsDmap()
 			}
 		}
 	}
-	
+
 	extern idCVar r_useSeamlessCubeMap;
 	if( r_useSeamlessCubeMap.IsModified() )
 	{
@@ -238,7 +238,7 @@ static void R_CheckCvarsDmap()
 			}
 		}
 	}
-	
+
 	extern idCVar r_useSRGB;
 	if( r_useSRGB.IsModified() )
 	{
@@ -255,8 +255,8 @@ static void R_CheckCvarsDmap()
 			}
 		}
 	}
-	
-	
+
+
 	if( r_multiSamples.IsModified() )
 	{
 		if( r_multiSamples.GetInteger() > 0 )
@@ -268,7 +268,7 @@ static void R_CheckCvarsDmap()
 			qglDisable( GL_MULTISAMPLE_ARB );
 		}
 	}
-	
+
 	// check for changes to logging state
 	GLimp_EnableLogging( r_logFile.GetInteger() != 0 );
 }
@@ -362,43 +362,43 @@ void idDmapRenderSystemLocal::DrawStretchPic( const idVec4& topLeft, const idVec
 	{
 		return;
 	}
-	
+
 	idDrawVert* verts = guiModel->AllocTris( 4, quadPicIndexes, 6, material, currentGLState, STEREO_DEPTH_TYPE_NONE );
 	if( verts == NULL )
 	{
 		return;
 	}
-	
+
 	ALIGNTYPE16 idDrawVert localVerts[4];
-	
+
 	localVerts[0].Clear();
 	localVerts[0].xyz[0] = topLeft.x;
 	localVerts[0].xyz[1] = topLeft.y;
 	localVerts[0].SetTexCoord( topLeft.z, topLeft.w );
 	localVerts[0].SetNativeOrderColor( currentColorNativeBytesOrder );
 	localVerts[0].ClearColor2();
-	
+
 	localVerts[1].Clear();
 	localVerts[1].xyz[0] = topRight.x;
 	localVerts[1].xyz[1] = topRight.y;
 	localVerts[1].SetTexCoord( topRight.z, topRight.w );
 	localVerts[1].SetNativeOrderColor( currentColorNativeBytesOrder );
 	localVerts[1].ClearColor2();
-	
+
 	localVerts[2].Clear();
 	localVerts[2].xyz[0] = bottomRight.x;
 	localVerts[2].xyz[1] = bottomRight.y;
 	localVerts[2].SetTexCoord( bottomRight.z, bottomRight.w );
 	localVerts[2].SetNativeOrderColor( currentColorNativeBytesOrder );
 	localVerts[2].ClearColor2();
-	
+
 	localVerts[3].Clear();
 	localVerts[3].xyz[0] = bottomLeft.x;
 	localVerts[3].xyz[1] = bottomLeft.y;
 	localVerts[3].SetTexCoord( bottomLeft.z, bottomLeft.w );
 	localVerts[3].SetNativeOrderColor( currentColorNativeBytesOrder );
 	localVerts[3].ClearColor2();
-	
+
 	WriteDrawVerts16( verts, localVerts, 4 );
 }
 
@@ -417,38 +417,38 @@ void idDmapRenderSystemLocal::DrawStretchTri( const idVec2& p1, const idVec2& p2
 	{
 		return;
 	}
-	
+
 	triIndex_t tempIndexes[3] = { 1, 0, 2 };
-	
+
 	idDrawVert* verts = guiModel->AllocTris( 3, tempIndexes, 3, material, currentGLState, STEREO_DEPTH_TYPE_NONE );
 	if( verts == NULL )
 	{
 		return;
 	}
-	
+
 	ALIGNTYPE16 idDrawVert localVerts[3];
-	
+
 	localVerts[0].Clear();
 	localVerts[0].xyz[0] = p1.x;
 	localVerts[0].xyz[1] = p1.y;
 	localVerts[0].SetTexCoord( t1 );
 	localVerts[0].SetNativeOrderColor( currentColorNativeBytesOrder );
 	localVerts[0].ClearColor2();
-	
+
 	localVerts[1].Clear();
 	localVerts[1].xyz[0] = p2.x;
 	localVerts[1].xyz[1] = p2.y;
 	localVerts[1].SetTexCoord( t2 );
 	localVerts[1].SetNativeOrderColor( currentColorNativeBytesOrder );
 	localVerts[1].ClearColor2();
-	
+
 	localVerts[2].Clear();
 	localVerts[2].xyz[0] = p3.x;
 	localVerts[2].xyz[1] = p3.y;
 	localVerts[2].SetTexCoord( t3 );
 	localVerts[2].SetNativeOrderColor( currentColorNativeBytesOrder );
 	localVerts[2].ClearColor2();
-	
+
 	WriteDrawVerts16( verts, localVerts, 3 );
 }
 
@@ -474,26 +474,26 @@ void idDmapRenderSystemLocal::DrawSmallChar( int x, int y, int ch )
 	int row, col;
 	float frow, fcol;
 	float size;
-	
+
 	ch &= 255;
-	
+
 	if( ch == ' ' )
 	{
 		return;
 	}
-	
+
 	if( y < -SMALLCHAR_HEIGHT )
 	{
 		return;
 	}
-	
+
 	row = ch >> 4;
 	col = ch & 15;
-	
+
 	frow = row * 0.0625f;
 	fcol = col * 0.0625f;
 	size = 0.0625f;
-	
+
 	DrawStretchPic( x, y, SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT,
 					fcol, frow,
 					fcol + size, frow + size,
@@ -515,7 +515,7 @@ void idDmapRenderSystemLocal::DrawSmallStringExt( int x, int y, const char* stri
 	idVec4		color;
 	const unsigned char*	s;
 	int			xx;
-	
+
 	// draw the colored text
 	s = ( const unsigned char* )string;
 	xx = x;
@@ -557,26 +557,26 @@ void idDmapRenderSystemLocal::DrawBigChar( int x, int y, int ch )
 	int row, col;
 	float frow, fcol;
 	float size;
-	
+
 	ch &= 255;
-	
+
 	if( ch == ' ' )
 	{
 		return;
 	}
-	
+
 	if( y < -BIGCHAR_HEIGHT )
 	{
 		return;
 	}
-	
+
 	row = ch >> 4;
 	col = ch & 15;
-	
+
 	frow = row * 0.0625f;
 	fcol = col * 0.0625f;
 	size = 0.0625f;
-	
+
 	DrawStretchPic( x, y, BIGCHAR_WIDTH, BIGCHAR_HEIGHT,
 					fcol, frow,
 					fcol + size, frow + size,
@@ -598,7 +598,7 @@ void idDmapRenderSystemLocal::DrawBigStringExt( int x, int y, const char* string
 	idVec4		color;
 	const char*	s;
 	int			xx;
-	
+
 	// draw the colored text
 	s = string;
 	xx = x;
@@ -656,7 +656,7 @@ const emptyCommand_t* idDmapRenderSystemLocal::SwapCommandBuffers(
 {
 
 	SwapCommandBuffers_FinishRendering( frontEndMicroSec, backEndMicroSec, shadowMicroSec, gpuMicroSec );
-	
+
 	return SwapCommandBuffers_FinishCommandBuffers();
 }
 
@@ -672,18 +672,18 @@ void idDmapRenderSystemLocal::SwapCommandBuffers_FinishRendering(
 	uint64* gpuMicroSec )
 {
 	SCOPED_PROFILE_EVENT( "SwapCommandBuffers" );
-	
+
 	if( gpuMicroSec != NULL )
 	{
 		*gpuMicroSec = 0;		// until shown otherwise
 	}
-	
+
 	if( !R_IsInitialized() )
 	{
 		return;
 	}
-	
-	
+
+
 	// After coming back from an autoswap, we won't have anything to render
 	if( dmapFrameData->cmdHead->next != NULL )
 	{
@@ -692,14 +692,14 @@ void idDmapRenderSystemLocal::SwapCommandBuffers_FinishRendering(
 		void GL_BlockingSwapBuffers();
 		GL_BlockingSwapBuffers();
 	}
-	
+
 	// read back the start and end timer queries from the previous frame
 	if( glConfig.timerQueryAvailable )
 	{
 		// RB: 64 bit fixes, changed int64 to GLuint64EXT
 		GLuint64EXT drawingTimeNanoseconds = 0;
 		// RB end
-		
+
 		if( dmap_tr.timerQueryId != 0 )
 		{
 			qglGetQueryObjectui64vEXT( dmap_tr.timerQueryId, GL_QUERY_RESULT, &drawingTimeNanoseconds );
@@ -709,9 +709,9 @@ void idDmapRenderSystemLocal::SwapCommandBuffers_FinishRendering(
 			*gpuMicroSec = drawingTimeNanoseconds / 1000;
 		}
 	}
-	
+
 	//------------------------------
-	
+
 	// save out timing information
 	if( frontEndMicroSec != NULL )
 	{
@@ -725,13 +725,13 @@ void idDmapRenderSystemLocal::SwapCommandBuffers_FinishRendering(
 	{
 		*shadowMicroSec = backEnd.pc.shadowMicroSec;
 	}
-	
+
 	// print any other statistics and clear all of them
 	R_PerformanceCountersDmap();
-	
+
 	// check for dynamic changes that require some initialization
 	R_CheckCvarsDmap();
-	
+
 	// check for errors
 	GL_CheckErrors();
 }
@@ -749,27 +749,27 @@ const emptyCommand_t* idDmapRenderSystemLocal::SwapCommandBuffers_FinishCommandB
 	{
 		return NULL;
 	}
-	
+
 	// close any gui drawing
 	guiModel->EmitFullScreen();
 	guiModel->Clear();
-	
+
 	// unmap the buffer objects so they can be used by the GPU
 	dmapVertexCache.BeginBackEnd();
-	
+
 	// save off this command buffer
 	const emptyCommand_t* commandBufferHead = dmapFrameData->cmdHead;
-	
+
 	// copy the code-used drawsurfs that were
 	// allocated at the start of the buffer memory to the backEnd referenced locations
 	backEnd.unitSquareSurface = dmap_tr.unitSquareSurface_;
 	backEnd.zeroOneCubeSurface = dmap_tr.zeroOneCubeSurface_;
 	backEnd.testImageSurface = dmap_tr.testImageSurface_;
-	
+
 	// use the other buffers next frame, because another CPU
 	// may still be rendering into the current buffers
 	R_ToggleSmpFrame();
-	
+
 	// possibly change the stereo3D mode
 	// PC
 	if (glConfig.nativeScreenWidth == 1280 && glConfig.nativeScreenHeight == 1470)
@@ -780,10 +780,10 @@ const emptyCommand_t* idDmapRenderSystemLocal::SwapCommandBuffers_FinishCommandB
 	{
 		glConfig.stereo3Dmode = GetStereoScopicRenderingMode();
 	}
-	
+
 	// prepare the new command buffer
 	guiModel->BeginFrame();
-	
+
 	//------------------------------
 	// Make sure that geometry used by code is present in the buffer cache.
 	// These use frame buffer cache (not static) because they may be used during
@@ -796,33 +796,33 @@ const emptyCommand_t* idDmapRenderSystemLocal::SwapCommandBuffers_FinishCommandB
 	R_InitDrawSurfFromTri(dmap_tr.unitSquareSurface_, *dmap_tr.unitSquareTriangles);
 	R_InitDrawSurfFromTri(dmap_tr.zeroOneCubeSurface_, *dmap_tr.zeroOneCubeTriangles);
 	R_InitDrawSurfFromTri(dmap_tr.testImageSurface_, *dmap_tr.testImageTriangles);
-	
+
 	// Reset render crop to be the full screen
 	renderCrops[0].x1 = 0;
 	renderCrops[0].y1 = 0;
 	renderCrops[0].x2 = GetWidth() - 1;
 	renderCrops[0].y2 = GetHeight() - 1;
 	currentRenderCrop = 0;
-	
+
 	// this is the ONLY place this is modified
 	frameCount++;
-	
+
 	// just in case we did a common->Error while this
 	// was set
 	guiRecursionLevel = 0;
-	
+
 	// the first rendering will be used for commands like
 	// screenshot, rather than a possible subsequent remote
 	// or mirror render
 	//	primaryWorld = NULL;
-	
+
 	// set the time for shader effects in 2D rendering
 	frameShaderTime = Sys_Milliseconds() * 0.001;
-	
+
 	setBufferCommand_t* cmd2 = (setBufferCommand_t*)R_GetCommandBufferDmap(sizeof(*cmd2));
 	cmd2->commandId = RC_SET_BUFFER;
 	cmd2->buffer = (int)GL_BACK;
-	
+
 	// the old command buffer can now be rendered, while the new one can
 	// be built in parallel
 	return commandBufferHead;
@@ -888,7 +888,7 @@ void idDmapRenderSystemLocal::PerformResolutionScaling( int& newWidth, int& newH
 	float xScale = 1.0f;
 	float yScale = 1.0f;
 	resolutionScale.GetCurrentResolutionScale( xScale, yScale );
-	
+
 	newWidth = idMath::Ftoi( GetWidth() * xScale );
 	newHeight = idMath::Ftoi( GetHeight() * yScale );
 }
@@ -904,36 +904,36 @@ void idDmapRenderSystemLocal::CropRenderSize( int width, int height )
 	{
 		return;
 	}
-	
+
 	// close any gui drawing before changing the size
 	guiModel->EmitFullScreen();
 	guiModel->Clear();
-	
-	
+
+
 	if( width < 1 || height < 1 )
 	{
 		common->Error( "CropRenderSize: bad sizes" );
 	}
-	
+
 	if( common->WriteDemo() )
 	{
 		common->WriteDemo()->WriteInt( DS_RENDER );
 		common->WriteDemo()->WriteInt( DC_CROP_RENDER );
 		common->WriteDemo()->WriteInt( width );
 		common->WriteDemo()->WriteInt( height );
-		
+
 		if( r_showDemo.GetBool() )
 		{
 			common->Printf( "write DC_CROP_RENDER\n" );
 		}
 	}
-	
+
 	idScreenRect& previous = renderCrops[currentRenderCrop];
-	
+
 	currentRenderCrop++;
-	
+
 	idScreenRect& current = renderCrops[currentRenderCrop];
-	
+
 	current.x1 = previous.x1;
 	current.x2 = previous.x1 + width - 1;
 	current.y1 = previous.y2 - height + 1;
@@ -951,23 +951,23 @@ void idDmapRenderSystemLocal::UnCrop()
 	{
 		return;
 	}
-	
+
 	if( currentRenderCrop < 1 )
 	{
 		common->Error( "idDmapRenderSystemLocal::UnCrop: currentRenderCrop < 1" );
 	}
-	
+
 	// close any gui drawing
 	guiModel->EmitFullScreen();
 	guiModel->Clear();
-	
+
 	currentRenderCrop--;
-	
+
 	if( common->WriteDemo() )
 	{
 		common->WriteDemo()->WriteInt( DS_RENDER );
 		common->WriteDemo()->WriteInt( DC_UNCROP_RENDER );
-		
+
 		if( r_showDemo.GetBool() )
 		{
 			common->Printf( "write DC_UNCROP\n" );
@@ -988,13 +988,13 @@ void idDmapRenderSystemLocal::CaptureRenderToImage( const char* imageName, bool 
 	}
 	guiModel->EmitFullScreen();
 	guiModel->Clear();
-	
+
 	if( common->WriteDemo() )
 	{
 		common->WriteDemo()->WriteInt( DS_RENDER );
 		common->WriteDemo()->WriteInt( DC_CAPTURE_RENDER );
 		common->WriteDemo()->WriteHashString( imageName );
-		
+
 		if( r_showDemo.GetBool() )
 		{
 			common->Printf( "write DC_CAPTURE_RENDER: %s\n", imageName );
@@ -1005,9 +1005,9 @@ void idDmapRenderSystemLocal::CaptureRenderToImage( const char* imageName, bool 
 	{
 		image = globalImages->AllocImage( imageName );
 	}
-	
+
 	idScreenRect& rc = renderCrops[currentRenderCrop];
-	
+
 	copyRenderCommand_t* cmd = ( copyRenderCommand_t* )R_GetCommandBufferDmap( sizeof( *cmd ) );
 	cmd->commandId = RC_COPY_RENDER;
 	cmd->x = rc.x1;
@@ -1016,7 +1016,7 @@ void idDmapRenderSystemLocal::CaptureRenderToImage( const char* imageName, bool 
 	cmd->imageHeight = rc.GetHeight();
 	cmd->image = image;
 	cmd->clearColorAfterCopy = clearColorAfterCopy;
-	
+
 	guiModel->Clear();
 }
 
@@ -1031,24 +1031,24 @@ void idDmapRenderSystemLocal::CaptureRenderToFile( const char* fileName, bool fi
 	{
 		return;
 	}
-	
+
 	idScreenRect& rc = renderCrops[currentRenderCrop];
-	
+
 	guiModel->EmitFullScreen();
 	guiModel->Clear();
 	RenderCommandBuffers( dmapFrameData->cmdHead );
-	
+
 	// foresthale 2014-02-20: HDR view rendering - this seems to not be changed anywhere and conflicts with FBO rendering
 	//qglReadBuffer( GL_BACK );
-	
+
 	// include extra space for OpenGL padding to word boundaries
 	int	c = ( rc.GetWidth() + 3 ) * rc.GetHeight();
 	byte* data = ( byte* )R_StaticAlloc( c * 3 );
-	
+
 	qglReadPixels( rc.x1, rc.y1, rc.GetWidth(), rc.GetHeight(), GL_RGB, GL_UNSIGNED_BYTE, data );
-	
+
 	byte* data2 = ( byte* )R_StaticAlloc( c * 4 );
-	
+
 	for( int i = 0; i < c; i++ )
 	{
 		data2[i * 4] = data[i * 3];
@@ -1056,9 +1056,9 @@ void idDmapRenderSystemLocal::CaptureRenderToFile( const char* fileName, bool fi
 		data2[i * 4 + 2] = data[i * 3 + 2];
 		data2[i * 4 + 3] = 0xff;
 	}
-	
+
 	R_WriteTGA( fileName, data2, rc.GetWidth(), rc.GetHeight(), true );
-	
+
 	R_StaticFree( data );
 	R_StaticFree( data2 );
 }
@@ -1103,12 +1103,12 @@ void idDmapRenderSystemLocal::PrintMemInfo( MemInfo_t* mi )
 {
 	// sum up image totals
 	globalImages->PrintMemInfo( mi );
-	
+
 	// sum up model totals
 	dmapRenderModelManager->PrintMemInfo( mi );
-	
+
 	// compute render totals
-	
+
 }
 
 /*

@@ -53,39 +53,39 @@ void idMenuWidget_InfoBox::Update()
 	{
 		return;
 	}
-	
+
 	idSWFScriptObject& root = GetSWFObject()->GetRootObject();
 	if( !BindSprite( root ) || GetSprite() == NULL )
 	{
 		return;
 	}
-	
+
 	idSWFTextInstance* txtHeading = GetSprite()->GetScriptObject()->GetNestedText( "info", "heading", "txtVal" );
 	idSWFTextInstance* txtBody = GetSprite()->GetScriptObject()->GetNestedText( "info", "txtBody" );
-	
+
 	if( txtHeading != NULL )
 	{
 		txtHeading->SetText( heading );
 	}
-	
+
 	if( txtBody != NULL )
 	{
 		txtBody->SetText( info );
 	}
-	
+
 	if( scrollbar != NULL && txtBody != NULL )
 	{
 		txtBody->CalcMaxScroll();
 		scrollbar->Update();
 	}
-	
+
 	idSWFScriptObject* info = GetSprite()->GetScriptObject()->GetNestedObj( "info" );
 	if( info != NULL )
 	{
 		info->Set( "onRollOver", new( TAG_SWF ) WrapWidgetSWFEvent( this, WIDGET_EVENT_ROLL_OVER, 0 ) );
 		info->Set( "onRollOut", new( TAG_SWF ) WrapWidgetSWFEvent( this, WIDGET_EVENT_ROLL_OUT, 0 ) );
 	}
-	
+
 }
 
 /*
@@ -101,13 +101,13 @@ void idMenuWidget_InfoBox::ResetInfoScroll()
 	{
 		return;
 	}
-	
+
 	idSWFTextInstance* txtBody = GetSprite()->GetScriptObject()->GetNestedText( "info", "txtBody" );
 	if( txtBody != NULL )
 	{
 		txtBody->scroll = 0;
 	}
-	
+
 	if( scrollbar != NULL )
 	{
 		scrollbar->Update();
@@ -123,17 +123,17 @@ void idMenuWidget_InfoBox::Scroll( int d )
 {
 
 	idSWFTextInstance* txtBody = GetSprite()->GetScriptObject()->GetNestedText( "info", "txtBody" );
-	
+
 	if( txtBody != NULL && txtBody->scroll + d >= 0 && txtBody->scroll + d <= txtBody->maxscroll )
 	{
 		txtBody->scroll += d;
 	}
-	
+
 	if( scrollbar != NULL )
 	{
 		scrollbar->Update();
 	}
-	
+
 }
 
 /*
@@ -149,7 +149,7 @@ int	idMenuWidget_InfoBox::GetScroll()
 	{
 		return txtBody->scroll;
 	}
-	
+
 	return 0;
 }
 
@@ -166,7 +166,7 @@ int idMenuWidget_InfoBox::GetMaxScroll()
 	{
 		return txtBody->maxscroll;
 	}
-	
+
 	return 0;
 }
 
@@ -179,12 +179,12 @@ void idMenuWidget_InfoBox::SetScroll( int scroll )
 {
 
 	idSWFTextInstance* txtBody = GetSprite()->GetScriptObject()->GetNestedText( "info", "txtBody" );
-	
+
 	if( txtBody != NULL && scroll <= txtBody->maxscroll )
 	{
 		txtBody->scroll = scroll;
 	}
-	
+
 }
 
 /*
@@ -206,7 +206,7 @@ bool idMenuWidget_InfoBox::HandleAction( idWidgetAction& action, const idWidgetE
 {
 
 	const idSWFParmList& parms = action.GetParms();
-	
+
 	if( action.GetType() == WIDGET_ACTION_SCROLL_VERTICAL )
 	{
 		const scrollType_t scrollType = static_cast< scrollType_t >( event.arg );
@@ -216,7 +216,7 @@ bool idMenuWidget_InfoBox::HandleAction( idWidgetAction& action, const idWidgetE
 		}
 		return true;
 	}
-	
+
 	return idMenuWidget::HandleAction( action, event, widget, forceHandled );
 }
 

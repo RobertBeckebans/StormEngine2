@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 #define AFX_ROTATEDLG_H__D4B79152_7A7E_11D1_B541_00AA00A410FC__INCLUDED_
 
 #if _MSC_VER >= 1000
-#pragma once
+	#pragma once
 #endif // _MSC_VER >= 1000
 // RotateDlg.h : header file
 //
@@ -44,7 +44,7 @@ class CRotateDlg : public CDialog
 // Construction
 public:
 	CRotateDlg( CWnd* pParent = NULL ); // standard constructor
-	
+
 // Dialog Data
 	//{{AFX_DATA(CRotateDlg)
 	enum { IDD = IDD_ROTATE };
@@ -55,19 +55,19 @@ public:
 	CString	m_strY;
 	CString	m_strZ;
 	//}}AFX_DATA
-	
-	
+
+
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CRotateDlg)
 protected:
 	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	//}}AFX_VIRTUAL
-	
+
 // Implementation
 protected:
 	void ApplyNoPaint();
-	
+
 	// Generated message map functions
 	//{{AFX_MSG(CRotateDlg)
 	virtual void OnOK();

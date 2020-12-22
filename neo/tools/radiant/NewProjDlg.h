@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 #define AFX_NEWPROJDLG_H__1E2527A2_8447_11D1_B548_00AA00A410FC__INCLUDED_
 
 #if _MSC_VER >= 1000
-#pragma once
+	#pragma once
 #endif // _MSC_VER >= 1000
 // NewProjDlg.h : header file
 //
@@ -44,21 +44,21 @@ class CNewProjDlg : public CDialog
 // Construction
 public:
 	CNewProjDlg( CWnd* pParent = NULL ); // standard constructor
-	
+
 // Dialog Data
 	//{{AFX_DATA(CNewProjDlg)
 	enum { IDD = IDD_DLG_NEWPROJECT };
 	CString	m_strName;
 	//}}AFX_DATA
-	
-	
+
+
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CNewProjDlg)
 protected:
 	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	//}}AFX_VIRTUAL
-	
+
 // Implementation
 protected:
 

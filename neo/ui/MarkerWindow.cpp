@@ -98,7 +98,7 @@ const char* idMarkerWindow::HandleEvent( const sysEvent_t* event, bool* updateVi
 	{
 		return "";
 	}
-	
+
 	int key = event->evValue;
 	if( event->evValue2 && key == K_MOUSE1 )
 	{
@@ -151,7 +151,7 @@ const char* idMarkerWindow::HandleEvent( const sysEvent_t* event, bool* updateVi
 	{
 		return "cmdDemoPauseFrame";
 	}
-	
+
 	return "";
 }
 
@@ -192,7 +192,7 @@ void idMarkerWindow::Draw( int time, float x, float y )
 			}
 		}
 	}
-	
+
 	r.y += 10;
 	if( r.w > 0 && r.Contains( gui->CursorX(), gui->CursorY() ) )
 	{
@@ -204,7 +204,7 @@ void idMarkerWindow::Draw( int time, float x, float y )
 		r.h = 20;
 		dc->DrawText( va( "%.2i:%.2i", currentTime / 60 / 60, ( currentTime / 60 ) % 60 ), 0.25, 0, idDeviceContext::colorWhite, r, false );
 	}
-	
+
 	if( stopTime >= 0 && markerStop )
 	{
 		r = clientRect;
@@ -214,7 +214,7 @@ void idMarkerWindow::Draw( int time, float x, float y )
 		idVec4 color( 1, 1, 1, 0.65f );
 		dc->DrawMaterial( r.x, r.y, 32, 32, markerStop, color );
 	}
-	
+
 }
 
 
@@ -240,7 +240,7 @@ const char* idMarkerWindow::RouteMouseCoords( float xd, float yd )
 			break;
 		}
 	}
-	
+
 	if( i >= c )
 	{
 		if( currentMarker == -1 )
@@ -351,7 +351,7 @@ void idMarkerWindow::Activate( bool activate, idStr& act )
 				fileSystem->CloseFile( file );
 			}
 		}
-		
+
 		if( numStats > 1 && background )
 		{
 			idStr markerPath = statData;

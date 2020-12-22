@@ -61,17 +61,17 @@ void DebuggerClientInit( const char* cmdline )
 	{
 		goto DebuggerClientInitDone;
 	}
-	
+
 	if( !gDebuggerApp.Initialize( win32.hInstance ) )
 	{
 		goto DebuggerClientInitDone;
 	}
-	
+
 	//gDebuggerApp.Run ( );
-	
+
 DebuggerClientInitDone:
 	;
-	
+
 	//common->Quit();
 }
 
@@ -90,13 +90,13 @@ Thread proc for the debugger server
 DWORD CALLBACK DebuggerServerThread( LPVOID param )
 {
 	assert( gDebuggerServer );
-	
+
 	while( !gDebuggerServerQuit )
 	{
 		gDebuggerServer->ProcessMessages( );
 		Sleep( 1 );
 	}
-	
+
 	return 0;
 }
 
@@ -111,18 +111,20 @@ bool DebuggerServerInit( void )
 {
 	// Allocate the new debugger server
 	if( gDebuggerServer == NULL )
+	{
 		gDebuggerServer = new rvDebuggerServer;
-		
+	}
+
 	// Start the debugger server thread
 	if( gDebuggerServerThread == NULL )
 	{
 		gDebuggerServerThread = CreateThread( NULL, 0, DebuggerServerThread, 0, 0, &gDebuggerServerThreadID );
-		
+
 		// Initialize the debugger server
 		if( !gDebuggerServer->Initialize() )
 		{
 			DebuggerServerShutdown();
-			
+
 			delete gDebuggerServer;
 			gDebuggerServer = NULL;
 			return false;
@@ -144,16 +146,16 @@ void DebuggerServerShutdown( void )
 	{
 		// Signal the debugger server to quit
 		gDebuggerServerQuit = true;
-		
+
 		// Wait for the thread to finish
 		WaitForSingleObject( gDebuggerServerThread, INFINITE );
-		
+
 		// Shutdown the server now
 		gDebuggerServer->Shutdown();
-		
+
 		delete gDebuggerServer;
 		gDebuggerServer = NULL;
-		
+
 		// Cleanup the thread handle
 		CloseHandle( gDebuggerServerThread );
 		gDebuggerServerThread = NULL;
@@ -173,7 +175,7 @@ void DebuggerServerCheckBreakpoint( idInterpreter* interpreter, idProgram* progr
 	{
 		return;
 	}
-	
+
 	gDebuggerServer->CheckBreakpoints( interpreter, program, instructionPointer );
 }
 
@@ -195,7 +197,7 @@ void DebuggerServerPrint( const char* text )
 	{
 		return;
 	}
-	
+
 	gDebuggerServer->Print( text );
 }
 

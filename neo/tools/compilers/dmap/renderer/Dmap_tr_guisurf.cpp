@@ -57,7 +57,7 @@ void R_SurfaceToTextureAxisDmap( const srfDmapTriangles_t* tri, idVec3& origin, 
 	float		boundsOrg[2];
 	int			i, j;
 	float		v;
-	
+
 	// find the bounds of the texture
 	bounds[0][0] = bounds[0][1] = 999999;
 	bounds[1][0] = bounds[1][1] = -999999;
@@ -76,26 +76,26 @@ void R_SurfaceToTextureAxisDmap( const srfDmapTriangles_t* tri, idVec3& origin, 
 			}
 		}
 	}
-	
+
 	// use the floor of the midpoint as the origin of the
 	// surface, which will prevent a slight misalignment
 	// from throwing it an entire cycle off
 	boundsOrg[0] = floor( ( bounds[0][0] + bounds[1][0] ) * 0.5 );
 	boundsOrg[1] = floor( ( bounds[0][1] + bounds[1][1] ) * 0.5 );
-	
-	
+
+
 	// determine the world S and T vectors from the first drawSurf triangle
 	a = tri->verts + tri->indexes[0];
 	b = tri->verts + tri->indexes[1];
 	c = tri->verts + tri->indexes[2];
-	
+
 	VectorSubtract( b->xyz, a->xyz, d0 );
 	d0[3] = b->st[0] - a->st[0];
 	d0[4] = b->st[1] - a->st[1];
 	VectorSubtract( c->xyz, a->xyz, d1 );
 	d1[3] = c->st[0] - a->st[0];
 	d1[4] = c->st[1] - a->st[1];
-	
+
 	area = d0[3] * d1[4] - d0[4] * d1[3];
 	if( area == 0.0 )
 	{
@@ -106,21 +106,21 @@ void R_SurfaceToTextureAxisDmap( const srfDmapTriangles_t* tri, idVec3& origin, 
 		return;	// degenerate
 	}
 	inva = 1.0 / area;
-	
+
 	axis[0][0] = ( d0[0] * d1[4] - d0[4] * d1[0] ) * inva;
 	axis[0][1] = ( d0[1] * d1[4] - d0[4] * d1[1] ) * inva;
 	axis[0][2] = ( d0[2] * d1[4] - d0[4] * d1[2] ) * inva;
-	
+
 	axis[1][0] = ( d0[3] * d1[0] - d0[0] * d1[3] ) * inva;
 	axis[1][1] = ( d0[3] * d1[1] - d0[1] * d1[3] ) * inva;
 	axis[1][2] = ( d0[3] * d1[2] - d0[2] * d1[3] ) * inva;
-	
+
 	idPlane plane;
 	plane.FromPoints( a->xyz, b->xyz, c->xyz );
 	axis[2][0] = plane[0];
 	axis[2][1] = plane[1];
 	axis[2][2] = plane[2];
-	
+
 	// take point 0 and project the vectors to the texture origin
 	VectorMA( a->xyz, boundsOrg[0] - a->st[0], axis[0], origin );
 	VectorMA( origin, boundsOrg[1] - a->st[1], axis[1], origin );

@@ -37,9 +37,9 @@ If you have questions concerning this license or the applicable additional terms
 #include "DialogDeclNew.h"
 
 #ifdef ID_DEBUG_MEMORY
-#undef new
-#undef DEBUG_NEW
-#define DEBUG_NEW new
+	#undef new
+	#undef DEBUG_NEW
+	#define DEBUG_NEW new
 #endif
 
 
@@ -104,7 +104,7 @@ DialogDeclNew::InitTypeList
 void DialogDeclNew::InitTypeList( void )
 {
 	int i;
-	
+
 	typeList.ResetContent();
 	for( i = 0; i < declManager->GetNumDeclTypes(); i++ )
 	{
@@ -121,15 +121,15 @@ BOOL DialogDeclNew::OnInitDialog()
 {
 
 	CDialog::OnInitDialog();
-	
+
 	InitTypeList();
-	
+
 	SetSafeComboBoxSelection( &typeList, defaultType.c_str(), -1 );
 	nameEdit.SetWindowText( defaultName.c_str() );
 	fileEdit.SetWindowText( defaultFile.c_str() );
-	
+
 	EnableToolTips( TRUE );
-	
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -199,20 +199,20 @@ void DialogDeclNew::OnBnClickedFile()
 	CString typeName, folder, ext;
 	idStr path;
 	const char* errorTitle = "Error selecting file.";
-	
+
 	if( GetSafeComboBoxSelection( &typeList, typeName, -1 ) == -1 )
 	{
 		MessageBox( "Select a declaration type first.", errorTitle, MB_OK );
 		return;
 	}
-	
+
 	declType_t type = declManager->GetDeclTypeFromName( typeName );
 	if( type >= declManager->GetNumDeclTypes() )
 	{
 		MessageBox( "Unknown declaration type.", errorTitle, MB_OK | MB_ICONERROR );
 		return;
 	}
-	
+
 	switch( type )
 	{
 		case DECL_TABLE:
@@ -256,10 +256,10 @@ void DialogDeclNew::OnBnClickedFile()
 			ext = "(*.decl)|*.decl|(*.*)|*.*||";
 			break;
 	}
-	
+
 	path = fileSystem->RelativePathToOSPath( folder );
 	path += "\\*";
-	
+
 	CFileDialog dlgFile( TRUE, "decl", path, 0, ext, this );
 	if( dlgFile.DoModal() == IDOK )
 	{
@@ -277,48 +277,48 @@ void DialogDeclNew::OnBnClickedOk()
 {
 	CString typeName, declName, fileName;
 	const char* errorTitle = "Error creating declaration.";
-	
+
 	if( !declTree )
 	{
 		MessageBox( "No declaration tree available.", errorTitle, MB_OK | MB_ICONERROR );
 		return;
 	}
-	
+
 	if( GetSafeComboBoxSelection( &typeList, typeName, -1 ) == -1 )
 	{
 		MessageBox( "No declaration type selected.", errorTitle, MB_OK | MB_ICONERROR );
 		return;
 	}
-	
+
 	nameEdit.GetWindowText( declName );
 	if( declName.GetLength() == 0 )
 	{
 		MessageBox( "No declaration name specified.", errorTitle, MB_OK | MB_ICONERROR );
 		return;
 	}
-	
+
 	fileEdit.GetWindowText( fileName );
 	if( fileName.GetLength() == 0 )
 	{
 		MessageBox( "No file name specified.", errorTitle, MB_OK | MB_ICONERROR );
 		return;
 	}
-	
+
 	if( declTree->FindItem( idStr( typeName + "/" + declName ) ) )
 	{
 		MessageBox( "Declaration already exists.", errorTitle, MB_OK | MB_ICONERROR );
 		return;
 	}
-	
+
 	declType_t type = declManager->GetDeclTypeFromName( typeName );
 	if( type >= declManager->GetNumDeclTypes() )
 	{
 		MessageBox( "Unknown declaration type.", errorTitle, MB_OK | MB_ICONERROR );
 		return;
 	}
-	
+
 	newDecl = declManager->CreateNewDecl( type, declName, fileName );
-	
+
 	OnOK();
 }
 

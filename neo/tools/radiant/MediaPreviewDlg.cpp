@@ -96,7 +96,7 @@ END_MESSAGE_MAP()
 BOOL CMediaPreviewDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
-	
+
 	wndPreview.setDrawable( &testDrawable );
 	CRect rct;
 	LONG lSize = sizeof( rct );
@@ -104,11 +104,11 @@ BOOL CMediaPreviewDlg::OnInitDialog()
 	{
 		SetWindowPos( NULL, rct.left, rct.top, rct.Width(), rct.Height(), SWP_SHOWWINDOW );
 	}
-	
+
 	GetClientRect( rct );
 	int h = ( mode == GUIS ) ? ( rct.Width() - 8 ) / 1.333333f : rct.Height() - 8;
 	wndPreview.SetWindowPos( NULL, 4, 4, rct.Width() - 8, h, SWP_SHOWWINDOW );
-	
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -135,7 +135,7 @@ void CMediaPreviewDlg::OnDestroy()
 		GetWindowRect( rct );
 		SaveRegistryInfo( "Radiant::EditPreviewWindow", &rct, sizeof( rct ) );
 	}
-	
+
 	CDialog::OnDestroy();
 }
 

@@ -51,7 +51,7 @@ void DisplayRealTimeString( const char* string, ... )
 	char buf[MAX_STRING_CHARS];
 	static int lastUpdateTime;
 	int time;
-	
+
 	time = Sys_Milliseconds();
 	if( time > lastUpdateTime + OUTPUT_UPDATE_TIME )
 	{
@@ -116,7 +116,7 @@ idBrushSide::Copy
 idBrushSide* idBrushSide::Copy( void ) const
 {
 	idBrushSide* side;
-	
+
 	side = new idBrushSide( plane, planeNum );
 	side->flags = flags;
 	if( winding )
@@ -138,27 +138,27 @@ idBrushSide::Split
 int idBrushSide::Split( const idPlane& splitPlane, idBrushSide** front, idBrushSide** back ) const
 {
 	idWinding* frontWinding, *backWinding;
-	
+
 	assert( winding );
-	
+
 	*front = *back = NULL;
-	
+
 	winding->Split( splitPlane, 0.0f, &frontWinding, &backWinding );
-	
+
 	if( frontWinding )
 	{
 		( *front ) = new idBrushSide( plane, planeNum );
 		( *front )->winding = frontWinding;
 		( *front )->flags = flags;
 	}
-	
+
 	if( backWinding )
 	{
 		( *back ) = new idBrushSide( plane, planeNum );
 		( *back )->winding = backWinding;
 		( *back )->flags = flags;
 	}
-	
+
 	if( frontWinding && backWinding )
 	{
 		return PLANESIDE_CROSS;
@@ -221,19 +221,19 @@ idBrush::RemoveSidesWithoutWinding
 bool idBrush::RemoveSidesWithoutWinding( void )
 {
 	int i;
-	
+
 	for( i = 0; i < sides.Num(); i++ )
 	{
-	
+
 		if( sides[i]->winding )
 		{
 			continue;
 		}
-		
+
 		sides.RemoveIndex( i );
 		i--;
 	}
-	
+
 	return ( sides.Num() >= 4 );
 }
 
@@ -246,19 +246,19 @@ bool idBrush::CreateWindings( void )
 {
 	int i, j;
 	idBrushSide* side;
-	
+
 	bounds.Clear();
 	for( i = 0; i < sides.Num(); i++ )
 	{
 		side = sides[i];
-		
+
 		if( side->winding )
 		{
 			delete side->winding;
 		}
-		
+
 		side->winding = new idWinding( side->plane.Normal(), side->plane.Dist() );
-		
+
 		for( j = 0; j < sides.Num() && side->winding; j++ )
 		{
 			if( i == j )
@@ -268,7 +268,7 @@ bool idBrush::CreateWindings( void )
 			// keep the winding if on the clip plane
 			side->winding = side->winding->Clip( -sides[j]->plane, BRUSH_EPSILON, true );
 		}
-		
+
 		if( side->winding )
 		{
 			for( j = 0; j < side->winding->GetNumPoints(); j++ )
@@ -277,7 +277,7 @@ bool idBrush::CreateWindings( void )
 			}
 		}
 	}
-	
+
 	if( bounds[0][0] > bounds[1][0] )
 	{
 		return false;
@@ -289,9 +289,9 @@ bool idBrush::CreateWindings( void )
 			return false;
 		}
 	}
-	
+
 	windingsValid = true;
-	
+
 	return true;
 }
 
@@ -305,27 +305,27 @@ void idBrush::BoundBrush( const idBrush* original )
 	int i, j;
 	idBrushSide* side;
 	idWinding* w;
-	
+
 	assert( windingsValid );
-	
+
 	bounds.Clear();
 	for( i = 0; i < sides.Num(); i++ )
 	{
 		side = sides[i];
-		
+
 		w = side->winding;
-		
+
 		if( !w )
 		{
 			continue;
 		}
-		
+
 		for( j = 0; j < w->GetNumPoints(); j++ )
 		{
 			bounds.AddPoint( ( *w )[j].ToVec3() );
 		}
 	}
-	
+
 	if( bounds[0][0] > bounds[1][0] )
 	{
 		if( original )
@@ -336,7 +336,7 @@ void idBrush::BoundBrush( const idBrush* original )
 		}
 		common->Error( "idBrush::BoundBrush: brush %d on entity %d without windings", primitiveNum, entityNum );
 	}
-	
+
 	for( i = 0; i < 3; i++ )
 	{
 		if( bounds[0][i] < MIN_WORLD_COORD || bounds[1][i] > MAX_WORLD_COORD )
@@ -360,14 +360,14 @@ idBrush::FromSides
 bool idBrush::FromSides( idList<idBrushSide*>& sideList )
 {
 	int i;
-	
+
 	for( i = 0; i < sideList.Num(); i++ )
 	{
 		sides.Append( sideList[i] );
 	}
-	
+
 	sideList.Clear();
-	
+
 	return CreateWindings();
 }
 
@@ -381,10 +381,10 @@ bool idBrush::FromWinding( const idWinding& w, const idPlane& windingPlane )
 	int i, j, bestAxis;
 	idPlane plane;
 	idVec3 normal, axialNormal;
-	
+
 	sides.Append( new idBrushSide( windingPlane, -1 ) );
 	sides.Append( new idBrushSide( -windingPlane, -1 ) );
-	
+
 	bestAxis = 0;
 	for( i = 1; i < 3; i++ )
 	{
@@ -402,7 +402,7 @@ bool idBrush::FromWinding( const idWinding& w, const idPlane& windingPlane )
 	{
 		axialNormal[bestAxis] = -1.0f;
 	}
-	
+
 	for( i = 0; i < w.GetNumPoints(); i++ )
 	{
 		j = ( i + 1 ) % w.GetNumPoints();
@@ -415,7 +415,7 @@ bool idBrush::FromWinding( const idWinding& w, const idPlane& windingPlane )
 		plane.FitThroughPoint( w[j].ToVec3() );
 		sides.Append( new idBrushSide( plane, -1 ) );
 	}
-	
+
 	if( sides.Num() < 4 )
 	{
 		for( i = 0; i < sides.Num(); i++ )
@@ -425,11 +425,11 @@ bool idBrush::FromWinding( const idWinding& w, const idPlane& windingPlane )
 		sides.Clear();
 		return false;
 	}
-	
+
 	sides[0]->winding = w.Copy();
 	windingsValid = true;
 	BoundBrush();
-	
+
 	return true;
 }
 
@@ -443,7 +443,7 @@ bool idBrush::FromBounds( const idBounds& bounds )
 	int axis, dir;
 	idVec3 normal;
 	idPlane plane;
-	
+
 	for( axis = 0; axis < 3; axis++ )
 	{
 		for( dir = -1; dir <= 1; dir += 2 )
@@ -455,7 +455,7 @@ bool idBrush::FromBounds( const idBounds& bounds )
 			sides.Append( new idBrushSide( plane, -1 ) );
 		}
 	}
-	
+
 	return CreateWindings();
 }
 
@@ -468,7 +468,7 @@ void idBrush::Transform( const idVec3& origin, const idMat3& axis )
 {
 	int i;
 	bool transformed = false;
-	
+
 	if( axis.IsRotated() )
 	{
 		for( i = 0; i < sides.Num(); i++ )
@@ -502,7 +502,7 @@ float idBrush::GetVolume( void ) const
 	idWinding* w;
 	idVec3 corner;
 	float d, area, volume;
-	
+
 	// grab the first valid point as a corner
 	w = NULL;
 	for( i = 0; i < sides.Num(); i++ )
@@ -518,7 +518,7 @@ float idBrush::GetVolume( void ) const
 		return 0.0f;
 	}
 	corner = ( *w )[0].ToVec3();
-	
+
 	// create tetrahedrons to all other sides
 	volume = 0.0f;
 	for( ; i < sides.Num(); i++ )
@@ -532,7 +532,7 @@ float idBrush::GetVolume( void ) const
 		area = w->GetArea();
 		volume += d * area;
 	}
-	
+
 	return ( volume * ( 1.0f / 3.0f ) );
 }
 
@@ -546,14 +546,14 @@ bool idBrush::Subtract( const idBrush* b, idBrushList& list ) const
 	int i;
 	idBrush* front, *back;
 	const idBrush* in;
-	
+
 	list.Clear();
 	in = this;
 	for( i = 0; i < b->sides.Num() && in; i++ )
 	{
-	
+
 		in->Split( b->sides[i]->plane, b->sides[i]->planeNum, &front, &back );
-		
+
 		if( in != this )
 		{
 			delete in;
@@ -570,7 +570,7 @@ bool idBrush::Subtract( const idBrush* b, idBrushList& list ) const
 		list.Free();
 		return false;
 	}
-	
+
 	delete in;
 	return true;
 }
@@ -586,7 +586,7 @@ bool idBrush::TryMerge( const idBrush* brush, const idPlaneSet& planeList )
 	const idBrush* brushes[2];
 	const idWinding* w;
 	const idPlane* plane;
-	
+
 	// brush bounds should overlap
 	for( i = 0; i < 3; i++ )
 	{
@@ -599,7 +599,7 @@ bool idBrush::TryMerge( const idBrush* brush, const idPlaneSet& planeList )
 			return false;
 		}
 	}
-	
+
 	// the brushes should share an opposite plane
 	seperatingPlane = -1;
 	for( i = 0; i < GetNumSides(); i++ )
@@ -622,41 +622,41 @@ bool idBrush::TryMerge( const idBrush* brush, const idPlaneSet& planeList )
 	{
 		return false;
 	}
-	
+
 	brushes[0] = this;
 	brushes[1] = brush;
-	
+
 	for( i = 0; i < 2; i++ )
 	{
-	
+
 		j = !i;
-		
+
 		for( k = 0; k < brushes[i]->GetNumSides(); k++ )
 		{
-		
+
 			// if the brush side plane is the seprating plane
 			if( !( ( brushes[i]->GetSide( k )->GetPlaneNum() ^ seperatingPlane ) >> 1 ) )
 			{
 				continue;
 			}
-			
+
 			plane = &brushes[i]->GetSide( k )->GetPlane();
-			
+
 			// all the non seperating brush sides of the other brush should be at the back or on the plane
 			for( l = 0; l < brushes[j]->GetNumSides(); l++ )
 			{
-			
+
 				w = brushes[j]->GetSide( l )->GetWinding();
 				if( !w )
 				{
 					continue;
 				}
-				
+
 				if( !( ( brushes[j]->GetSide( l )->GetPlaneNum() ^ seperatingPlane ) >> 1 ) )
 				{
 					continue;
 				}
-				
+
 				for( m = 0; m < w->GetNumPoints(); m++ )
 				{
 					if( plane->Distance( ( *w )[m].ToVec3() ) > 0.1f )
@@ -667,7 +667,7 @@ bool idBrush::TryMerge( const idBrush* brush, const idPlaneSet& planeList )
 			}
 		}
 	}
-	
+
 	// add any sides from the other brush to this brush
 	for( i = 0; i < brush->GetNumSides(); i++ )
 	{
@@ -685,7 +685,7 @@ bool idBrush::TryMerge( const idBrush* brush, const idPlaneSet& planeList )
 		}
 		sides.Append( brush->GetSide( i )->Copy() );
 	}
-	
+
 	// remove any side from this brush that is the opposite of a side of the other brush
 	for( i = 0; i < GetNumSides(); i++ )
 	{
@@ -704,12 +704,12 @@ bool idBrush::TryMerge( const idBrush* brush, const idPlaneSet& planeList )
 			continue;
 		}
 	}
-	
+
 	contents |= brush->contents;
-	
+
 	CreateWindings();
 	BoundBrush();
-	
+
 	return true;
 }
 
@@ -724,9 +724,9 @@ int idBrush::Split( const idPlane& plane, int planeNum, idBrush** front, idBrush
 	idBrushSide* side, *frontSide, *backSide;
 	float dist, maxBack, maxFront, *maxBackWinding, *maxFrontWinding;
 	idWinding* w, *mid;
-	
+
 	assert( windingsValid );
-	
+
 	if( front )
 	{
 		*front = NULL;
@@ -735,7 +735,7 @@ int idBrush::Split( const idPlane& plane, int planeNum, idBrush** front, idBrush
 	{
 		*back = NULL;
 	}
-	
+
 	res = bounds.PlaneSide( plane, -BRUSH_EPSILON );
 	if( res == PLANESIDE_FRONT )
 	{
@@ -753,28 +753,28 @@ int idBrush::Split( const idPlane& plane, int planeNum, idBrush** front, idBrush
 		}
 		return res;
 	}
-	
+
 	maxBackWinding = ( float* ) _alloca16( sides.Num() * sizeof( float ) );
 	maxFrontWinding = ( float* ) _alloca16( sides.Num() * sizeof( float ) );
-	
+
 	maxFront = maxBack = 0.0f;
 	for( i = 0; i < sides.Num(); i++ )
 	{
 		side = sides[i];
-		
+
 		w = side->winding;
-		
+
 		if( !w )
 		{
 			continue;
 		}
-		
+
 		maxBackWinding[i] = 10.0f;
 		maxFrontWinding[i] = -10.0f;
-		
+
 		for( j = 0; j < w->GetNumPoints(); j++ )
 		{
-		
+
 			dist = plane.Distance( ( *w )[j].ToVec3() );
 			if( dist > maxFrontWinding[i] )
 			{
@@ -785,7 +785,7 @@ int idBrush::Split( const idPlane& plane, int planeNum, idBrush** front, idBrush
 				maxBackWinding[i] = dist;
 			}
 		}
-		
+
 		if( maxFrontWinding[i] > maxFront )
 		{
 			maxFront = maxFrontWinding[i];
@@ -795,7 +795,7 @@ int idBrush::Split( const idPlane& plane, int planeNum, idBrush** front, idBrush
 			maxBack = maxBackWinding[i];
 		}
 	}
-	
+
 	if( maxFront < BRUSH_EPSILON )
 	{
 		if( back )
@@ -804,7 +804,7 @@ int idBrush::Split( const idPlane& plane, int planeNum, idBrush** front, idBrush
 		}
 		return PLANESIDE_BACK;
 	}
-	
+
 	if( maxBack > -BRUSH_EPSILON )
 	{
 		if( front )
@@ -813,14 +813,14 @@ int idBrush::Split( const idPlane& plane, int planeNum, idBrush** front, idBrush
 		}
 		return PLANESIDE_FRONT;
 	}
-	
+
 	mid = new idWinding( plane.Normal(), plane.Dist() );
-	
+
 	for( i = 0; i < sides.Num() && mid; i++ )
 	{
 		mid = mid->Clip( -sides[i]->plane, BRUSH_EPSILON, false );
 	}
-	
+
 	if( mid )
 	{
 		if( mid->IsTiny() )
@@ -839,7 +839,7 @@ int idBrush::Split( const idPlane& plane, int planeNum, idBrush** front, idBrush
 			mid = NULL;
 		}
 	}
-	
+
 	if( !mid )
 	{
 		if( maxFront > - maxBack )
@@ -859,13 +859,13 @@ int idBrush::Split( const idPlane& plane, int planeNum, idBrush** front, idBrush
 			return PLANESIDE_BACK;
 		}
 	}
-	
+
 	if( !front && !back )
 	{
 		delete mid;
 		return PLANESIDE_CROSS;
 	}
-	
+
 	*front = new idBrush();
 	( *front )->SetContents( contents );
 	( *front )->SetEntityNum( entityNum );
@@ -874,16 +874,16 @@ int idBrush::Split( const idPlane& plane, int planeNum, idBrush** front, idBrush
 	( *back )->SetContents( contents );
 	( *back )->SetEntityNum( entityNum );
 	( *back )->SetPrimitiveNum( primitiveNum );
-	
+
 	for( i = 0; i < sides.Num(); i++ )
 	{
 		side = sides[i];
-		
+
 		if( !side->winding )
 		{
 			continue;
 		}
-		
+
 		// if completely at the front
 		if( maxBackWinding[i] >= BRUSH_EPSILON )
 		{
@@ -924,21 +924,21 @@ int idBrush::Split( const idPlane& plane, int planeNum, idBrush** front, idBrush
 			}
 		}
 	}
-	
+
 	side = new idBrushSide( -plane, planeNum ^ 1 );
 	side->winding = mid->Reverse();
 	side->flags |= SFL_SPLIT;
 	( *front )->sides.Append( side );
 	( *front )->windingsValid = true;
 	( *front )->BoundBrush( this );
-	
+
 	side = new idBrushSide( plane, planeNum );
 	side->winding = mid;
 	side->flags |= SFL_SPLIT;
 	( *back )->sides.Append( side );
 	( *back )->windingsValid = true;
 	( *back )->BoundBrush( this );
-	
+
 	return PLANESIDE_CROSS;
 }
 
@@ -957,17 +957,17 @@ void idBrush::AddBevelsForAxialBox( void )
 	idVec3 normal, vec;
 	idWinding* w, *w2;
 	float d, minBack;
-	
+
 	assert( windingsValid );
-	
+
 	// add the axial planes
 	order = 0;
 	for( axis = 0; axis < 3; axis++ )
 	{
-	
+
 		for( dir = -1; dir <= 1; dir += 2, order++ )
 		{
-		
+
 			// see if the plane is already present
 			for( i = 0; i < sides.Num(); i++ )
 			{
@@ -986,7 +986,7 @@ void idBrush::AddBevelsForAxialBox( void )
 					}
 				}
 			}
-			
+
 			if( i >= sides.Num() )
 			{
 				normal = vec3_origin;
@@ -999,13 +999,13 @@ void idBrush::AddBevelsForAxialBox( void )
 			}
 		}
 	}
-	
+
 	// if the brush is pure axial we're done
 	if( sides.Num() == 6 )
 	{
 		return;
 	}
-	
+
 	// test the non-axial plane edges
 	for( i = 0; i < sides.Num(); i++ )
 	{
@@ -1015,7 +1015,7 @@ void idBrush::AddBevelsForAxialBox( void )
 		{
 			continue;
 		}
-		
+
 		for( j = 0; j < w->GetNumPoints(); j++ )
 		{
 			k = ( j + 1 ) % w->GetNumPoints();
@@ -1035,14 +1035,14 @@ void idBrush::AddBevelsForAxialBox( void )
 			{
 				continue;	// only test non-axial edges
 			}
-			
+
 			// try the six possible slanted axials from this edge
 			for( axis = 0; axis < 3; axis++ )
 			{
-			
+
 				for( dir = -1; dir <= 1; dir += 2 )
 				{
-				
+
 					// construct a plane
 					normal = vec3_origin;
 					normal[axis] = dir;
@@ -1053,18 +1053,18 @@ void idBrush::AddBevelsForAxialBox( void )
 					}
 					plane.SetNormal( normal );
 					plane.FitThroughPoint( ( *w )[j].ToVec3() );
-					
+
 					// if all the points on all the sides are
 					// behind this plane, it is a proper edge bevel
 					for( k = 0; k < sides.Num(); k++ )
 					{
-					
+
 						// if this plane has allready been used, skip it
 						if( plane.Compare( sides[k]->plane, 0.001f, 0.1f ) )
 						{
 							break;
 						}
-						
+
 						w2 = sides[k]->winding;
 						if( !w2 )
 						{
@@ -1094,12 +1094,12 @@ void idBrush::AddBevelsForAxialBox( void )
 							break;
 						}
 					}
-					
+
 					if( k < sides.Num() )
 					{
 						continue;	// wasn't part of the outer hull
 					}
-					
+
 					// add this plane
 					newSide = new idBrushSide( plane, -1 );
 					newSide->SetFlag( SFL_BEVEL );
@@ -1120,13 +1120,13 @@ void idBrush::ExpandForAxialBox( const idBounds& bounds )
 	int i, j;
 	idBrushSide* side;
 	idVec3 v;
-	
+
 	AddBevelsForAxialBox();
-	
+
 	for( i = 0; i < sides.Num(); i++ )
 	{
 		side = sides[i];
-		
+
 		for( j = 0; j < 3; j++ )
 		{
 			if( side->plane.Normal()[j] > 0.0f )
@@ -1138,15 +1138,15 @@ void idBrush::ExpandForAxialBox( const idBounds& bounds )
 				v[j] = bounds[1][j];
 			}
 		}
-		
+
 		side->plane.SetDist( side->plane.Dist() + v * -side->plane.Normal() );
 	}
-	
+
 	if( !CreateWindings() )
 	{
 		common->Error( "idBrush::ExpandForAxialBox: brush %d on entity %d imploded", primitiveNum, entityNum );
 	}
-	
+
 	/*
 	// after expansion at least all non bevel sides should have a winding
 	for ( i = 0; i < sides.Num(); i++ ) {
@@ -1169,7 +1169,7 @@ idBrush* idBrush::Copy( void ) const
 {
 	int i;
 	idBrush* b;
-	
+
 	b = new idBrush();
 	b->entityNum = entityNum;
 	b->primitiveNum = primitiveNum;
@@ -1219,7 +1219,7 @@ idBounds idBrushList::GetBounds( void ) const
 {
 	idBounds bounds;
 	idBrush* b;
-	
+
 	bounds.Clear();
 	for( b = Head(); b; b = b->Next() )
 	{
@@ -1257,7 +1257,7 @@ idBrushList::AddToTail
 void idBrushList::AddToTail( idBrushList& list )
 {
 	idBrush* brush, *next;
-	
+
 	for( brush = list.head; brush; brush = next )
 	{
 		next = brush->next;
@@ -1303,7 +1303,7 @@ idBrushList::AddToFront
 void idBrushList::AddToFront( idBrushList& list )
 {
 	idBrush* brush, *next;
-	
+
 	for( brush = list.head; brush; brush = next )
 	{
 		next = brush->next;
@@ -1328,7 +1328,7 @@ idBrushList::Remove
 void idBrushList::Remove( idBrush* brush )
 {
 	idBrush*	b, *last;
-	
+
 	last = NULL;
 	for( b = head; b; b = b->next )
 	{
@@ -1362,7 +1362,7 @@ idBrushList::Delete
 void idBrushList::Delete( idBrush* brush )
 {
 	idBrush*	b, *last;
-	
+
 	last = NULL;
 	for( b = head; b; b = b->next )
 	{
@@ -1398,9 +1398,9 @@ idBrushList* idBrushList::Copy( void ) const
 {
 	idBrush* brush;
 	idBrushList* list;
-	
+
 	list = new idBrushList;
-	
+
 	for( brush = head; brush; brush = brush->next )
 	{
 		list->AddToTail( brush->Copy() );
@@ -1416,7 +1416,7 @@ idBrushList::Free
 void idBrushList::Free( void )
 {
 	idBrush* brush, *next;
-	
+
 	for( brush = head; brush; brush = next )
 	{
 		next = brush->next;
@@ -1434,10 +1434,10 @@ idBrushList::Split
 void idBrushList::Split( const idPlane& plane, int planeNum, idBrushList& frontList, idBrushList& backList, bool useBrushSavedPlaneSide )
 {
 	idBrush* b, *front, *back;
-	
+
 	frontList.Clear();
 	backList.Clear();
-	
+
 	if( !useBrushSavedPlaneSide )
 	{
 		for( b = head; b; b = b->next )
@@ -1454,7 +1454,7 @@ void idBrushList::Split( const idPlane& plane, int planeNum, idBrushList& frontL
 		}
 		return;
 	}
-	
+
 	for( b = head; b; b = b->next )
 	{
 		if( b->savedPlaneSide & BRUSH_PLANESIDE_BOTH )
@@ -1491,22 +1491,22 @@ void idBrushList::Chop( bool ( *ChopAllowed )( idBrush* b1, idBrush* b2 ) )
 	idBrushList sub1, sub2, keep;
 	int i, j, c1, c2;
 	idPlaneSet planeList;
-	
+
 #ifdef OUTPUT_CHOP_STATS
 	common->Printf( "[Brush CSG]\n" );
 	common->Printf( "%6d original brushes\n", this->Num() );
 #endif
-	
+
 	CreatePlaneList( planeList );
-	
+
 	for( b1 = this->Head(); b1; b1 = this->Head() )
 	{
-	
+
 		for( b2 = b1->next; b2; b2 = next )
 		{
-		
+
 			next = b2->next;
-			
+
 			for( i = 0; i < 3; i++ )
 			{
 				if( b1->bounds[0][i] >= b2->bounds[1][i] )
@@ -1522,7 +1522,7 @@ void idBrushList::Chop( bool ( *ChopAllowed )( idBrush* b1, idBrush* b2 ) )
 			{
 				continue;
 			}
-			
+
 			for( i = 0; i < b1->GetNumSides(); i++ )
 			{
 				for( j = 0; j < b2->GetNumSides(); j++ )
@@ -1542,13 +1542,13 @@ void idBrushList::Chop( bool ( *ChopAllowed )( idBrush* b1, idBrush* b2 ) )
 			{
 				continue;
 			}
-			
+
 			sub1.Clear();
 			sub2.Clear();
-			
+
 			c1 = 999999;
 			c2 = 999999;
-			
+
 			// if b2 may chop up b1
 			if( !ChopAllowed || ChopAllowed( b2,  b1 ) )
 			{
@@ -1565,7 +1565,7 @@ void idBrushList::Chop( bool ( *ChopAllowed )( idBrush* b1, idBrush* b2 ) )
 				}
 				c1 = sub1.Num();
 			}
-			
+
 			// if b1 may chop up b2
 			if( !ChopAllowed || ChopAllowed( b1,  b2 ) )
 			{
@@ -1583,12 +1583,12 @@ void idBrushList::Chop( bool ( *ChopAllowed )( idBrush* b1, idBrush* b2 ) )
 				}
 				c2 = sub2.Num();
 			}
-			
+
 			if( sub1.IsEmpty() && sub2.IsEmpty() )
 			{
 				continue;
 			}
-			
+
 			// don't allow too much fragmentation
 			if( c1 > 2 && c2 > 2 )
 			{
@@ -1596,7 +1596,7 @@ void idBrushList::Chop( bool ( *ChopAllowed )( idBrush* b1, idBrush* b2 ) )
 				sub2.Free();
 				continue;
 			}
-			
+
 			if( c1 < c2 )
 			{
 				sub2.Free();
@@ -1612,7 +1612,7 @@ void idBrushList::Chop( bool ( *ChopAllowed )( idBrush* b1, idBrush* b2 ) )
 				continue;
 			}
 		}
-		
+
 		if( !b2 )
 		{
 			// b1 is no longer intersecting anything, so keep it
@@ -1623,9 +1623,9 @@ void idBrushList::Chop( bool ( *ChopAllowed )( idBrush* b1, idBrush* b2 ) )
 #endif
 		}
 	}
-	
+
 	*this = keep;
-	
+
 #ifdef OUTPUT_CHOP_STATS
 	common->Printf( "\r%6d output brushes\n", Num() );
 #endif
@@ -1642,30 +1642,30 @@ void idBrushList::Merge( bool ( *MergeAllowed )( idBrush* b1, idBrush* b2 ) )
 	idPlaneSet planeList;
 	idBrush* b1, *b2, *nextb2;
 	int numMerges;
-	
+
 	common->Printf( "[Brush Merge]\n" );
 	common->Printf( "%6d original brushes\n", Num() );
-	
+
 	CreatePlaneList( planeList );
-	
+
 	numMerges = 0;
 	for( b1 = Head(); b1; b1 = b1->next )
 	{
-	
+
 		for( b2 = Head(); b2; b2 = nextb2 )
 		{
 			nextb2 = b2->Next();
-			
+
 			if( b2 == b1 )
 			{
 				continue;
 			}
-			
+
 			if( MergeAllowed && !MergeAllowed( b1, b2 ) )
 			{
 				continue;
 			}
-			
+
 			if( b1->TryMerge( b2, planeList ) )
 			{
 				Delete( b2 );
@@ -1674,7 +1674,7 @@ void idBrushList::Merge( bool ( *MergeAllowed )( idBrush* b1, idBrush* b2 ) )
 			}
 		}
 	}
-	
+
 	common->Printf( "\r%6d brushes merged\n", numMerges );
 }
 
@@ -1688,7 +1688,7 @@ void idBrushList::SetFlagOnFacingBrushSides( const idPlane& plane, int flag )
 	int i;
 	idBrush* b;
 	const idWinding* w;
-	
+
 	for( b = head; b; b = b->next )
 	{
 		if( idMath::Fabs( b->GetBounds().PlaneDistance( plane ) ) > 0.1f )
@@ -1724,7 +1724,7 @@ void idBrushList::CreatePlaneList( idPlaneSet& planeList ) const
 	int i;
 	idBrush* b;
 	idBrushSide* side;
-	
+
 	planeList.Resize( 512, 128 );
 	for( b = Head(); b; b = b->Next() )
 	{
@@ -1744,7 +1744,7 @@ idBrushList::CreatePlaneList
 void idBrushList::WriteBrushMap( const idStr& fileName, const idStr& ext ) const
 {
 	idBrushMap* map;
-	
+
 	map = new idBrushMap( fileName, ext );
 	map->WriteBrushList( *this );
 	delete map;
@@ -1765,27 +1765,27 @@ idBrushMap::idBrushMap
 idBrushMap::idBrushMap( const idStr& fileName, const idStr& ext )
 {
 	idStr qpath;
-	
+
 	qpath = fileName;
 	qpath.StripFileExtension();
 	qpath += ext;
 	qpath.SetFileExtension( "map" );
-	
+
 	common->Printf( "writing %s...\n", qpath.c_str() );
-	
+
 	fp = fileSystem->OpenFileWrite( qpath, "fs_basepath" );
 	if( !fp )
 	{
 		common->Error( "Couldn't open %s\n", qpath.c_str() );
 		return;
 	}
-	
+
 	texture = "textures/washroom/btile01";
-	
+
 	fp->WriteFloatString( "Version %1.2f\n", ( float ) CURRENT_MAP_VERSION );
 	fp->WriteFloatString( "{\n" );
 	fp->WriteFloatString( "\"classname\" \"worldspawn\"\n" );
-	
+
 	brushCount = 0;
 }
 
@@ -1813,20 +1813,20 @@ void idBrushMap::WriteBrush( const idBrush* brush )
 {
 	int i;
 	idBrushSide* side;
-	
+
 	if( !fp )
 	{
 		return;
 	}
-	
+
 	fp->WriteFloatString( "// primitive %d\n{\nbrushDef3\n{\n", brushCount++ );
-	
+
 	for( i = 0; i < brush->GetNumSides(); i++ )
 	{
 		side = brush->GetSide( i );
 		fp->WriteFloatString( " ( %f %f %f %f ) ", side->GetPlane()[0], side->GetPlane()[1], side->GetPlane()[2], -side->GetPlane().Dist() );
 		fp->WriteFloatString( "( ( 0.031250 0 0 ) ( 0 0.031250 0 ) ) %s 0 0 0\n", texture.c_str() );
-		
+
 	}
 	fp->WriteFloatString( "}\n}\n" );
 }
@@ -1839,12 +1839,12 @@ idBrushMap::WriteBrushList
 void idBrushMap::WriteBrushList( const idBrushList& brushList )
 {
 	idBrush* b;
-	
+
 	if( !fp )
 	{
 		return;
 	}
-	
+
 	for( b = brushList.Head(); b; b = b->Next() )
 	{
 		WriteBrush( b );

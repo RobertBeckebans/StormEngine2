@@ -49,7 +49,7 @@ void CreateResourceIDs_f( const idCmdArgs& args )
 	idStrList strings;
 	idStrList controls;
 	idStrList commands;
-	
+
 	if( args.Argc() > 1 )
 	{
 		path = args.Argv( 1 );
@@ -61,23 +61,23 @@ void CreateResourceIDs_f( const idCmdArgs& args )
 		path.StripFilename();
 		path.BackSlashesToSlashes();
 	}
-	
+
 	common->Printf( "%s\n", path.c_str() );
 	Sys_ListFiles( path, "_resource.h", resourceFiles );
-	
+
 	for( i = 0; i < resourceFiles.Num(); i++ )
 	{
-	
+
 		fileName = path + "/" + resourceFiles[i];
-		
+
 		common->Printf( "creating IDs for %s...\n", fileName.c_str() );
-		
+
 		if( !src.LoadFile( fileName, true ) )
 		{
 			common->Warning( "couldn't load %s", fileName.c_str() );
 			continue;
 		}
-		
+
 		dialogs.Clear();
 		resources.Clear();
 		bitmaps.Clear();
@@ -85,7 +85,7 @@ void CreateResourceIDs_f( const idCmdArgs& args )
 		strings.Clear();
 		controls.Clear();
 		commands.Clear();
-		
+
 		while( src.ReadToken( &token ) )
 		{
 			if( token == "#" )
@@ -98,12 +98,12 @@ void CreateResourceIDs_f( const idCmdArgs& args )
 				else if( token == "define" )
 				{
 					src.ExpectTokenType( TT_NAME, 0, &token );
-					
+
 					if( token.Icmpn( "_APS_", 5 ) == 0 )
 					{
 						continue;
 					}
-					
+
 					if( token.Icmpn( "IDD_", 4 ) == 0 )
 					{
 						dialogs.AddUnique( token );
@@ -136,28 +136,28 @@ void CreateResourceIDs_f( const idCmdArgs& args )
 				}
 			}
 		}
-		
+
 		src.FreeSource();
-		
+
 		idFile* f;
 		int curResource, curControl, curCommand;
-		
+
 		curResource = i ? i * 1000 : 100;
 		curCommand = 20000 + i * 1000;
 		curControl = i * 1000 + 200;
-		
+
 		f = fileSystem->OpenExplicitFileWrite( fileName );
 		if( !f )
 		{
 			common->Warning( "couldn't write %s", fileName.c_str() );
 			continue;
 		}
-		
+
 		f->WriteFloatString(	"//{{NO_DEPENDENCIES}}\n"
 								"// Microsoft Visual C++ generated include file.\n"
 								"// Used by .rc\n"
 								"//\n\n" );
-								
+
 		for( j = 0; j < dialogs.Num(); j++ )
 		{
 			f->WriteFloatString( "#define %-40s %d\n", dialogs[j].c_str(), curResource++ );
@@ -178,19 +178,19 @@ void CreateResourceIDs_f( const idCmdArgs& args )
 		{
 			f->WriteFloatString( "#define %-40s %d\n", strings[j].c_str(), curResource++ );
 		}
-		
+
 		f->WriteFloatString( "\n" );
-		
+
 		for( j = 0; j < controls.Num(); j++ )
 		{
 			f->WriteFloatString( "#define %-40s %d\n", controls[j].c_str(), curControl++ );
 		}
-		
+
 		f->WriteFloatString( "\n" );
-		
+
 		for( j = 0; j < commands.Num(); j++ )
 		{
-		
+
 			// NOTE: special hack for Radiant
 			if( commands[j].Cmp( "ID_ENTITY_START" ) == 0 )
 			{
@@ -202,11 +202,11 @@ void CreateResourceIDs_f( const idCmdArgs& args )
 				f->WriteFloatString( "#define %-40s %d\n", commands[j].c_str(), 45000 );
 				continue;
 			}
-			
+
 			f->WriteFloatString( "#define %-40s %d\n", commands[j].c_str(), curCommand++ );
 		}
-		
-		
+
+
 		f->WriteFloatString(	"\n// Next default values for new objects\n"
 								"// \n"
 								"#ifdef APSTUDIO_INVOKED\n"
@@ -218,7 +218,7 @@ void CreateResourceIDs_f( const idCmdArgs& args )
 								"#define _APS_NEXT_SYMED_VALUE           %d\n"
 								"#endif\n"
 								"#endif\n", curResource, curCommand, curControl, curResource );
-								
+
 		fileSystem->CloseFile( f );
 	}
 }

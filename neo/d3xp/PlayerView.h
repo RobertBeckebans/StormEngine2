@@ -70,15 +70,15 @@ class Warp_t
 public:
 	int						id;
 	bool					active;
-	
+
 	int						startTime;
 	float					initialRadius;
-	
+
 	idVec3					worldOrigin;
 	idVec2					screenOrigin;
-	
+
 	int						durationMsec;
-	
+
 	idList<WarpPolygon_t, TAG_IDLIB_LIST_PLAYER>	polys;
 };
 
@@ -107,21 +107,21 @@ class FxFader
 		FX_STATE_RAMPDOWN,
 		FX_STATE_ON
 	};
-	
+
 	int						time;
 	int						state;
 	float					alpha;
 	int						msec;
-	
+
 public:
 	FxFader();
-	
+
 	// primary functions
 	bool					SetTriggerState( bool active );
-	
+
 	virtual void			Save( idSaveGame* savefile );
 	virtual void			Restore( idRestoreGame* savefile );
-	
+
 	// fader functions
 	void					SetFadeTime( int t )
 	{
@@ -131,7 +131,7 @@ public:
 	{
 		return msec;
 	};
-	
+
 	// misc functions
 	float					GetAlpha()
 	{
@@ -151,14 +151,14 @@ protected:
 	idStr					name;
 	FxFader					fader;
 	FullscreenFXManager*		fxman;
-	
+
 public:
 	FullscreenFX()
 	{
 		fxman = NULL;
 	};
 	virtual					~FullscreenFX()							{ };
-	
+
 	virtual void			Initialize()							= 0;
 	virtual bool			Active()								= 0;
 	virtual void			HighQuality()							= 0;
@@ -168,7 +168,7 @@ public:
 	{
 		return false;
 	};
-	
+
 	void					SetName( idStr n )
 	{
 		name = n;
@@ -177,12 +177,12 @@ public:
 	{
 		return name;
 	};
-	
+
 	void					SetFXManager( FullscreenFXManager* fx )
 	{
 		fxman = fx;
 	};
-	
+
 	bool					SetTriggerState( bool state )
 	{
 		return fader.SetTriggerState( state );
@@ -195,7 +195,7 @@ public:
 	{
 		return fader.GetAlpha();
 	};
-	
+
 	virtual void			Save( idSaveGame* savefile );
 	virtual void			Restore( idRestoreGame* savefile );
 };
@@ -211,9 +211,9 @@ class FullscreenFX_Helltime : public FullscreenFX
 	const idMaterial* 		captureMaterials[3];
 	const idMaterial* 		drawMaterial;
 	bool					clearAccumBuffer;
-	
+
 	int						DetermineLevel();
-	
+
 public:
 	virtual void			Initialize();
 	virtual bool			Active();
@@ -223,7 +223,7 @@ public:
 	{
 		return true;
 	};
-	
+
 	virtual void			Restore( idRestoreGame* savefile );
 };
 
@@ -238,9 +238,9 @@ class FullscreenFX_Multiplayer : public FullscreenFX
 	const idMaterial* 		captureMaterial;
 	const idMaterial* 		drawMaterial;
 	bool					clearAccumBuffer;
-	
+
 	int						DetermineLevel();
-	
+
 public:
 	virtual void			Initialize();
 	virtual bool			Active();
@@ -250,7 +250,7 @@ public:
 	{
 		return true;
 	};
-	
+
 	virtual void			Restore( idRestoreGame* savefile );
 };
 
@@ -264,20 +264,20 @@ class FullscreenFX_Warp : public FullscreenFX
 	const idMaterial*		material;
 	bool					grabberEnabled;
 	int						startWarpTime;
-	
+
 	void					DrawWarp( WarpPolygon_t wp, float interp );
-	
+
 public:
 	virtual void			Initialize();
 	virtual bool			Active();
 	virtual void			HighQuality();
-	
+
 	void					EnableGrabber( bool active )
 	{
 		grabberEnabled = active;
 		startWarpTime = gameLocal.slow.time;
 	};
-	
+
 	virtual void			Save( idSaveGame* savefile );
 	virtual void			Restore( idRestoreGame* savefile );
 };
@@ -292,7 +292,7 @@ FullscreenFX_Underwater
 class FullscreenFX_Underwater : public FullscreenFX
 {
 	const idMaterial*		material;
-	
+
 public:
 	virtual void			Initialize();
 	virtual bool			Active();
@@ -309,7 +309,7 @@ FullscreenFX_EnviroSuit
 class FullscreenFX_EnviroSuit : public FullscreenFX
 {
 	const idMaterial*		material;
-	
+
 public:
 	virtual void			Initialize();
 	virtual bool			Active();
@@ -324,7 +324,7 @@ FullscreenFX_DoubleVision
 class FullscreenFX_DoubleVision : public FullscreenFX
 {
 	const idMaterial*		material;
-	
+
 public:
 	virtual void			Initialize();
 	virtual bool			Active();
@@ -354,15 +354,15 @@ class FullscreenFX_Bloom : public FullscreenFX
 {
 	const idMaterial*		drawMaterial;
 	const idMaterial*		initMaterial;
-	
+
 	float					currentIntensity;
 	float					targetIntensity;
-	
+
 public:
 	virtual void			Initialize();
 	virtual bool			Active();
 	virtual void			HighQuality();
-	
+
 	virtual void			Save( idSaveGame* savefile );
 	virtual void			Restore( idRestoreGame* savefile );
 };
@@ -377,20 +377,20 @@ FullscreenFXManager
 class FullscreenFXManager
 {
 	idList<FullscreenFX*, TAG_FX>	fx;
-	
+
 	idPlayerView* 			playerView;
 	const idMaterial*		blendBackMaterial;
-	
+
 	void					CreateFX( idStr name, idStr fxtype, int fade );
 public:
 	FullscreenFXManager();
 	virtual					~FullscreenFXManager();
-	
+
 	void					Initialize( idPlayerView* pv );
-	
+
 	void					Process( const renderView_t* view );
 	void					Blendback( float alpha );
-	
+
 	idPlayerView*			GetPlayerView()
 	{
 		return playerView;
@@ -399,7 +399,7 @@ public:
 	{
 		return gameLocal.GetLocalPlayer();
 	};
-	
+
 	int						GetNum()
 	{
 		return fx.Num();
@@ -409,7 +409,7 @@ public:
 		return fx[index];
 	};
 	FullscreenFX*			FindFX( idStr name );
-	
+
 	void					Save( idSaveGame* savefile );
 	void					Restore( idRestoreGame* savefile );
 };
@@ -420,55 +420,55 @@ class idPlayerView
 public:
 	idPlayerView();
 	~idPlayerView();
-	
+
 	void				Save( idSaveGame* savefile ) const;
 	void				Restore( idRestoreGame* savefile );
-	
+
 	void				SetPlayerEntity( class idPlayer* playerEnt );
-	
+
 	void				ClearEffects();
-	
+
 	void				DamageImpulse( idVec3 localKickDir, const idDict* damageDef );
-	
+
 	void				WeaponFireFeedback( const idDict* weaponDef );
-	
+
 	idAngles			AngleOffset() const;			// returns the current kick angle
-	
+
 	idMat3				ShakeAxis() const;			// returns the current shake angle
-	
+
 	void				CalculateShake();
-	
+
 	// this may involve rendering to a texture and displaying
 	// that with a warp model or in double vision mode
 	void				RenderPlayerView( idMenuHandler_HUD* hudManager );
 	void				EmitStereoEyeView( const int eye, idMenuHandler_HUD* hudManager );
-	
+
 	void				Fade( idVec4 color, int time );
-	
+
 	void				Flash( idVec4 color, int time );
-	
+
 	// temp for view testing
 	void				EnableBFGVision( bool b )
 	{
 		bfgVision = b;
 	};
-	
+
 private:
 	void				SingleView( const renderView_t* view, idMenuHandler_HUD* hudManager );
 	void				ScreenFade();
-	
+
 	screenBlob_t* 		GetScreenBlob();
-	
+
 	screenBlob_t		screenBlobs[MAX_SCREEN_BLOBS];
-	
+
 public:
 	int					dvFinishTime;		// double vision will be stopped at this time
-	
+
 	int					kickFinishTime;		// view kick will be stopped at this time
 	idAngles			kickAngles;
-	
+
 	bool				bfgVision;			//
-	
+
 	const idMaterial* 	tunnelMaterial;		// health tunnel vision
 	const idMaterial* 	armorMaterial;		// armor damage view effect
 	const idMaterial* 	berserkMaterial;	// berserk effect
@@ -476,20 +476,20 @@ public:
 	const idMaterial* 	bloodSprayMaterial; // blood spray
 	const idMaterial* 	bfgMaterial;		// when targeted with BFG
 	float				lastDamageTime;		// accentuate the tunnel effect for a while
-	
+
 	idVec4				fadeColor;			// fade color
 	idVec4				fadeToColor;		// color to fade to
 	idVec4				fadeFromColor;		// color to fade from
 	float				fadeRate;			// fade rate
 	int					fadeTime;			// fade time
-	
+
 	idAngles			shakeAng;			// from the sound sources
-	
+
 	idPlayer* 			player;
 	renderView_t		view;
-	
+
 	FullscreenFXManager*	fxManager;
-	
+
 public:
 	int					AddWarp( idVec3 worldOrigin, float centerx, float centery, float initialRadius, float durationMsec );
 	void				FreeWarp( int id );

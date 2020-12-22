@@ -42,12 +42,12 @@ should we try and snap values very close to 0.5, 0.25, 0.125, etc ?
 	do we write out normals, or just a "smooth shade" flag ?
 		resolved : normals.  otherwise adjacent facet shaded surfaces get their
 		vertexes merged, and they would have to be split apart before drawing
-		
+
 		do we save out "wings" for shadow silhouette info ?
-		
-		
+
+
 #endif
-		
+
 			static	idFile*	procFile;
 
 #define	AREANUM_DIFFERENT	-2
@@ -65,30 +65,30 @@ AREANUM_DIFFERENT if not the same.
 int	PruneNodes_r( node_t* node )
 {
 	int		a1, a2;
-	
+
 	if( node->planenum == PLANENUM_LEAF )
 	{
 		return node->area;
 	}
-	
+
 	a1 = PruneNodes_r( node->children[0] );
 	a2 = PruneNodes_r( node->children[1] );
-	
+
 	if( a1 != a2 || a1 == AREANUM_DIFFERENT )
 	{
 		return AREANUM_DIFFERENT;
 	}
-	
+
 	// free all the nodes below this point
 	FreeTreePortals_r( node->children[0] );
 	FreeTreePortals_r( node->children[1] );
 	FreeTree_r( node->children[0] );
 	FreeTree_r( node->children[1] );
-	
+
 	// change this node to a leaf
 	node->planenum = PLANENUM_LEAF;
 	node->area = a1;
-	
+
 	return a1;
 }
 
@@ -107,14 +107,14 @@ static void WriteFloat( idFile* f, float v )
 void Write1DMatrix( idFile* f, int x, float* m )
 {
 	int		i;
-	
+
 	f->WriteFloatString( "( " );
-	
+
 	for( i = 0; i < x; i++ )
 	{
 		WriteFloat( f, m[i] );
 	}
-	
+
 	f->WriteFloatString( ") " );
 }
 
@@ -122,9 +122,9 @@ static int CountUniqueShaders( optimizeGroup_t* groups )
 {
 	optimizeGroup_t*		a, *b;
 	int					count;
-	
+
 	count = 0;
-	
+
 	for( a = groups ; a ; a = a->nextGroup )
 	{
 		if( !a->triList )  	// ignore groups with no tris
@@ -152,7 +152,7 @@ static int CountUniqueShaders( optimizeGroup_t* groups )
 			count++;
 		}
 	}
-	
+
 	return count;
 }
 
@@ -188,20 +188,20 @@ static bool MatchVert( const idDmapDrawVert* a, const idDmapDrawVert* b )
 	{
 		return false;
 	}
-	
+
 	// if the normal is 0 (smoothed normals), consider it a match
 	if( a->normal[0] == 0 && a->normal[1] == 0 && a->normal[2] == 0
 			&& b->normal[0] == 0 && b->normal[1] == 0 && b->normal[2] == 0 )
 	{
 		return true;
 	}
-	
+
 	// otherwise do a dot-product cosine check
 	if( DotProduct( a->normal, b->normal ) < COSINE_EPSILON )
 	{
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -220,25 +220,25 @@ srfDmapTriangles_t*	ShareMapTriVerts( const mapTri_t* tris )
 	int			numVerts;
 	int			numIndexes;
 	srfDmapTriangles_t*	uTri;
-	
+
 	// unique the vertexes
 	count = CountTriList( tris );
-	
+
 	uTri = R_AllocStaticTriSurfDmap();
 	R_AllocStaticTriSurfVertsDmap( uTri, count * 3 );
 	R_AllocStaticTriSurfIndexesDmap( uTri, count * 3 );
-	
+
 	numVerts = 0;
 	numIndexes = 0;
-	
+
 	for( step = tris ; step ; step = step->next )
 	{
 		for( i = 0 ; i < 3 ; i++ )
 		{
 			const idDmapDrawVert*	dv;
-			
+
 			dv = &step->v[i];
-			
+
 			// search for a match
 			for( j = 0 ; j < numVerts ; j++ )
 			{
@@ -258,14 +258,14 @@ srfDmapTriangles_t*	ShareMapTriVerts( const mapTri_t* tris )
 				uTri->verts[j].st[0] = dv->st[0];
 				uTri->verts[j].st[1] = dv->st[1];
 			}
-			
+
 			uTri->indexes[numIndexes++] = j;
 		}
 	}
-	
+
 	uTri->numVerts = numVerts;
 	uTri->numIndexes = numIndexes;
-	
+
 	return uTri;
 }
 
@@ -277,7 +277,7 @@ CleanupUTriangles
 static void CleanupUTriangles( srfDmapTriangles_t* tri )
 {
 	// perform cleanup operations
-	
+
 	R_RangeCheckIndexesDmap( tri );
 	R_CreateSilIndexesDmap( tri );
 //	R_RemoveDuplicatedTriangles( tri );	// this may remove valid overlapped transparent triangles
@@ -298,20 +298,20 @@ static void WriteUTriangles( const srfDmapTriangles_t* uTris )
 {
 	int			col;
 	int			i;
-	
+
 	// emit this chain
 	procFile->WriteFloatString( "/* numVerts = */ %i /* numIndexes = */ %i\n",
 								uTris->numVerts, uTris->numIndexes );
-								
+
 	// verts
 	col = 0;
 	for( i = 0 ; i < uTris->numVerts ; i++ )
 	{
 		float	vec[8];
 		const idDmapDrawVert* dv;
-		
+
 		dv = &uTris->verts[i];
-		
+
 		vec[0] = dv->xyz[0];
 		vec[1] = dv->xyz[1];
 		vec[2] = dv->xyz[2];
@@ -321,7 +321,7 @@ static void WriteUTriangles( const srfDmapTriangles_t* uTris )
 		vec[6] = dv->normal[1];
 		vec[7] = dv->normal[2];
 		Write1DMatrix( procFile, 8, vec );
-		
+
 		if( ++col == 3 )
 		{
 			col = 0;
@@ -332,13 +332,13 @@ static void WriteUTriangles( const srfDmapTriangles_t* uTris )
 	{
 		procFile->WriteFloatString( "\n" );
 	}
-	
+
 	// indexes
 	col = 0;
 	for( i = 0 ; i < uTris->numIndexes ; i++ )
 	{
 		procFile->WriteFloatString( "%i ", uTris->indexes[i] );
-		
+
 		if( ++col == 18 )
 		{
 			col = 0;
@@ -363,17 +363,17 @@ static void WriteShadowTriangles( const srfDmapTriangles_t* tri )
 {
 	int			col;
 	int			i;
-	
+
 	// emit this chain
 	procFile->WriteFloatString( "/* numVerts = */ %i /* noCaps = */ %i /* noFrontCaps = */ %i /* numIndexes = */ %i /* planeBits = */ %i\n",
 								tri->numVerts, tri->numShadowIndexesNoCaps, tri->numShadowIndexesNoFrontCaps, tri->numIndexes, tri->shadowCapPlaneBits );
-								
+
 	// verts
 	col = 0;
 	for( i = 0 ; i < tri->numVerts ; i++ )
 	{
 		Write1DMatrix( procFile, 3,  &tri->shadowVertexes[i].xyz[0] );
-		
+
 		if( ++col == 5 )
 		{
 			col = 0;
@@ -384,13 +384,13 @@ static void WriteShadowTriangles( const srfDmapTriangles_t* tri )
 	{
 		procFile->WriteFloatString( "\n" );
 	}
-	
+
 	// indexes
 	col = 0;
 	for( i = 0 ; i < tri->numIndexes ; i++ )
 	{
 		procFile->WriteFloatString( "%i ", tri->indexes[i] );
-		
+
 		if( ++col == 18 )
 		{
 			col = 0;
@@ -448,16 +448,16 @@ static void WriteOutputSurfaces( int entityNum, int areaNum )
 		mapTri_t*	triList;
 		mapLight_t*	light;
 	} interactionTris_t;
-	
+
 	interactionTris_t*	interactions, *checkInter; //, *nextInter;
-	
-	
+
+
 	area = &dmapGlobals.uEntities[entityNum].areas[areaNum];
 	entity = dmapGlobals.uEntities[entityNum].mapEntity;
-	
+
 	numSurfaces = CountUniqueShaders( area->groups );
-	
-	
+
+
 	if( entityNum == 0 )
 	{
 		procFile->WriteFloatString( "model { /* name = */ \"_area%i\" /* numSurfaces = */ %i\n\n",
@@ -466,7 +466,7 @@ static void WriteOutputSurfaces( int entityNum, int areaNum )
 	else
 	{
 		const char* name;
-		
+
 		entity->epairs.GetString( "name", "", &name );
 		if( !name[0] )
 		{
@@ -475,7 +475,7 @@ static void WriteOutputSurfaces( int entityNum, int areaNum )
 		procFile->WriteFloatString( "model { /* name = */ \"%s\" /* numSurfaces = */ %i\n\n",
 									name, numSurfaces );
 	}
-	
+
 	surfaceNum = 0;
 	for( group = area->groups ; group ; group = group->nextGroup )
 	{
@@ -483,18 +483,18 @@ static void WriteOutputSurfaces( int entityNum, int areaNum )
 		{
 			continue;
 		}
-		
+
 		// combine all groups compatible with this one
 		// usually several optimizeGroup_t can be combined into a single
 		// surface, even though they couldn't be merged together to save
 		// vertexes because they had different planes, texture coordinates, or lights.
 		// Different mergeGroups will stay in separate surfaces.
 		ambient = NULL;
-		
+
 		// each light that illuminates any of the groups in the surface will
 		// get its own list of indexes out of the original surface
 		interactions = NULL;
-		
+
 		for( groupStep = group ; groupStep ; groupStep = groupStep->nextGroup )
 		{
 			if( groupStep->surfaceEmited )
@@ -505,12 +505,12 @@ static void WriteOutputSurfaces( int entityNum, int areaNum )
 			{
 				continue;
 			}
-			
+
 			// copy it out to the ambient list
 			copy = CopyTriList( groupStep->triList );
 			ambient = MergeTriLists( ambient, copy );
 			groupStep->surfaceEmited = true;
-			
+
 			// duplicate it into an interaction for each groupLight
 			for( i = 0 ; i < groupStep->numGroupLights ; i++ )
 			{
@@ -533,31 +533,31 @@ static void WriteOutputSurfaces( int entityNum, int areaNum )
 				checkInter->triList = MergeTriLists( checkInter->triList, copy );
 			}
 		}
-		
+
 		if( !ambient )
 		{
 			continue;
 		}
-		
+
 		if( surfaceNum >= numSurfaces )
 		{
 			common->Error( "WriteOutputSurfaces: surfaceNum >= numSurfaces" );
 		}
-		
+
 		procFile->WriteFloatString( "/* surface %i */ { ", surfaceNum );
 		surfaceNum++;
 		procFile->WriteFloatString( "\"%s\" ", ambient->material->GetName() );
-		
+
 		uTri = ShareMapTriVerts( ambient );
 		FreeTriList( ambient );
-		
+
 		CleanupUTriangles( uTri );
 		WriteUTriangles( uTri );
 		R_FreeStaticTriSurfDmap( uTri );
-		
+
 		procFile->WriteFloatString( "}\n\n" );
 	}
-	
+
 	procFile->WriteFloatString( "}\n\n" );
 }
 
@@ -572,7 +572,7 @@ static void WriteNode_r( node_t* node )
 	int		child[2];
 	int		i;
 	idPlane*	plane;
-	
+
 	if( node->planenum == PLANENUM_LEAF )
 	{
 		// we shouldn't get here unless the entire world
@@ -580,7 +580,7 @@ static void WriteNode_r( node_t* node )
 		procFile->WriteFloatString( "/* node 0 */ ( 0 0 0 0 ) -1 -1\n" );
 		return;
 	}
-	
+
 	for( i = 0 ; i < 2 ; i++ )
 	{
 		if( node->children[i]->planenum == PLANENUM_LEAF )
@@ -592,13 +592,13 @@ static void WriteNode_r( node_t* node )
 			child[i] = node->children[i]->nodeNumber;
 		}
 	}
-	
+
 	plane = &dmapGlobals.mapPlanes[node->planenum];
-	
+
 	procFile->WriteFloatString( "/* node %i */ ", node->nodeNumber );
 	Write1DMatrix( procFile, 4, plane->ToFloatPtr() );
 	procFile->WriteFloatString( "%i %i\n", child[0], child[1] );
-	
+
 	if( child[0] > 0 )
 	{
 		WriteNode_r( node->children[0] );
@@ -619,7 +619,7 @@ static int NumberNodes_r( node_t* node, int nextNumber )
 	nextNumber++;
 	nextNumber = NumberNodes_r( node->children[0], nextNumber );
 	nextNumber = NumberNodes_r( node->children[1], nextNumber );
-	
+
 	return nextNumber;
 }
 
@@ -631,19 +631,19 @@ WriteOutputNodes
 static void WriteOutputNodes( node_t* node )
 {
 	int		numNodes;
-	
+
 	// prune unneeded nodes and count
 	PruneNodes_r( node );
 	numNodes = NumberNodes_r( node, 0 );
-	
+
 	// output
 	procFile->WriteFloatString( "nodes { /* numNodes = */ %i\n\n", numNodes );
 	procFile->WriteFloatString( "/* node format is: ( planeVector ) positiveChild negativeChild */\n" );
 	procFile->WriteFloatString( "/* a child number of 0 is an opaque, solid area */\n" );
 	procFile->WriteFloatString( "/* negative child numbers are areas: (-1-child) */\n" );
-	
+
 	WriteNode_r( node );
-	
+
 	procFile->WriteFloatString( "}\n\n" );
 }
 
@@ -657,7 +657,7 @@ static void WriteOutputPortals( uEntity_t* e )
 	int			i, j;
 	interAreaPortal_t*	iap;
 	idWinding*			w;
-	
+
 	procFile->WriteFloatString( "interAreaPortals { /* numAreas = */ %i /* numIAP = */ %i\n\n",
 								e->numAreas, numInterAreaPortals );
 	procFile->WriteFloatString( "/* interAreaPortal format is: numPoints positiveSideArea negativeSideArea ( point) ... */\n" );
@@ -672,7 +672,7 @@ static void WriteOutputPortals( uEntity_t* e )
 		}
 		procFile->WriteFloatString( "\n" );
 	}
-	
+
 	procFile->WriteFloatString( "}\n\n" );
 }
 
@@ -686,9 +686,9 @@ static void WriteOutputEntity( int entityNum )
 {
 	int		i;
 	uEntity_t* e;
-	
+
 	e = &dmapGlobals.uEntities[entityNum];
-	
+
 	if( entityNum != 0 )
 	{
 		// entities may have enclosed, empty areas that we don't need to write out
@@ -697,18 +697,18 @@ static void WriteOutputEntity( int entityNum )
 			e->numAreas = 1;
 		}
 	}
-	
+
 	for( i = 0 ; i < e->numAreas ; i++ )
 	{
 		WriteOutputSurfaces( entityNum, i );
 	}
-	
+
 	// we will completely skip the portals and nodes if it is a single area
 	if( entityNum == 0 && e->numAreas > 1 )
 	{
 		// output the area portals
 		WriteOutputPortals( e );
-		
+
 		// output the nodes
 		WriteOutputNodes( e->tree->headnode );
 	}
@@ -725,12 +725,12 @@ void WriteOutputFile( void )
 	int				i;
 	uEntity_t*		entity;
 	idStr			qpath;
-	
+
 	// write the file
 	common->Printf( "----- WriteOutputFile -----\n" );
-	
+
 	sprintf( qpath, "%s." PROC_FILE_EXT, dmapGlobals.mapFileBase );
-	
+
 	common->Printf( "writing %s\n", qpath.c_str() );
 	// _D3XP used fs_cdpath
 	// WARNING CHange this to fs_basepath after debugging
@@ -739,22 +739,22 @@ void WriteOutputFile( void )
 	{
 		common->Error( "Error opening %s", qpath.c_str() );
 	}
-	
+
 	procFile->WriteFloatString( "%s\n\n", PROC_FILE_ID );
-	
+
 	// write the entity models and information, writing entities first
 	for( i = dmapGlobals.num_entities - 1 ; i >= 0 ; i-- )
 	{
 		entity = &dmapGlobals.uEntities[i];
-		
+
 		if( !entity->primitives )
 		{
 			continue;
 		}
-		
+
 		WriteOutputEntity( i );
 	}
-	
+
 	// write the shadow volumes
 	for( i = 0 ; i < dmapGlobals.mapLights.Num() ; i++ )
 	{
@@ -763,14 +763,14 @@ void WriteOutputFile( void )
 		{
 			continue;
 		}
-		
+
 		procFile->WriteFloatString( "shadowModel { /* name = */ \"_prelight_%s\"\n\n", light->name );
 		WriteShadowTriangles( light->shadowTris );
 		procFile->WriteFloatString( "}\n\n" );
-		
+
 		R_FreeStaticTriSurfDmap( light->shadowTris );
 		light->shadowTris = NULL;
 	}
-	
+
 	fileSystem->CloseFile( procFile );
 }

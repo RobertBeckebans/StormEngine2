@@ -53,30 +53,30 @@ template<>
 ID_INLINE void idStrList::Sort( cmp_t* compare )
 {
 	int i;
-	
+
 	if( !num )
 	{
 		return;
 	}
-	
+
 	idList<idStr>		other;
 	idList<idStrPtr>	pointerList;
-	
+
 	pointerList.SetNum( num );
 	for( i = 0; i < num; i++ )
 	{
 		pointerList[ i ] = &( *this )[ i ];
 	}
-	
+
 	pointerList.Sort();
-	
+
 	other.SetNum( num );
 	other.SetGranularity( granularity );
 	for( i = 0; i < other.Num(); i++ )
 	{
 		other[ i ] = *pointerList[ i ];
 	}
-	
+
 	this->Swap( other );
 }
 
@@ -132,13 +132,13 @@ ID_INLINE size_t idStrList::Size() const
 {
 	size_t s;
 	int i;
-	
+
 	s = sizeof( *this );
 	for( i = 0; i < Num(); i++ )
 	{
 		s += ( *this )[ i ].Size();
 	}
-	
+
 	return s;
 }
 
@@ -174,30 +174,30 @@ Sorts the list of path strings alphabetically and makes sure folders come first.
 ID_INLINE void idStrListSortPaths( idStrList& list )
 {
 	int i;
-	
+
 	if( !list.Num() )
 	{
 		return;
 	}
-	
+
 	idList<idStr>		other;
 	idList<idStrPtr>	pointerList;
-	
+
 	pointerList.SetNum( list.Num() );
 	for( i = 0; i < list.Num(); i++ )
 	{
 		pointerList[ i ] = &list[ i ];
 	}
-	
+
 	pointerList.Sort( idListSortComparePaths<idStrPtr> );
-	
+
 	other.SetNum( list.Num() );
 	other.SetGranularity( list.GetGranularity() );
 	for( i = 0; i < other.Num(); i++ )
 	{
 		other[ i ] = *pointerList[ i ];
 	}
-	
+
 	list.Swap( other );
 }
 

@@ -56,14 +56,14 @@ public:
 	// RB: 64 bit fix, changed int to intptr_t
 	intptr_t	value;
 	// RB end
-	
+
 	idEventArg& operator=( const idEventArg& other )
 	{
 		type = other.type;
 		value = other.value;
 		return *this;
 	}
-	
+
 	idEventArg()
 	{
 		type = D_EVENT_INTEGER;
@@ -233,25 +233,25 @@ class idClass
 {
 public:
 	ABSTRACT_PROTOTYPE( idClass );
-	
+
 	void* 						operator new( size_t );
 	void						operator delete( void* );
-	
+
 	idClass();
 	virtual						~idClass();
-	
+
 	void						Spawn();
 	void						CallSpawn();
 	bool						IsType( const idTypeInfo& c ) const;
 	const char* 				GetClassname() const;
 	const char* 				GetSuperclass() const;
 	void						FindUninitializedMemory();
-	
+
 	void						Save( idSaveGame* savefile ) const {};
 	void						Restore( idRestoreGame* savefile ) {};
-	
+
 	bool						RespondsTo( const idEventDef& ev ) const;
-	
+
 	bool						PostEventMS( const idEventDef* ev, int time );
 	bool						PostEventMS( const idEventDef* ev, int time, idEventArg arg1 );
 	bool						PostEventMS( const idEventDef* ev, int time, idEventArg arg1, idEventArg arg2 );
@@ -261,7 +261,7 @@ public:
 	bool						PostEventMS( const idEventDef* ev, int time, idEventArg arg1, idEventArg arg2, idEventArg arg3, idEventArg arg4, idEventArg arg5, idEventArg arg6 );
 	bool						PostEventMS( const idEventDef* ev, int time, idEventArg arg1, idEventArg arg2, idEventArg arg3, idEventArg arg4, idEventArg arg5, idEventArg arg6, idEventArg arg7 );
 	bool						PostEventMS( const idEventDef* ev, int time, idEventArg arg1, idEventArg arg2, idEventArg arg3, idEventArg arg4, idEventArg arg5, idEventArg arg6, idEventArg arg7, idEventArg arg8 );
-	
+
 	bool						PostEventSec( const idEventDef* ev, float time );
 	bool						PostEventSec( const idEventDef* ev, float time, idEventArg arg1 );
 	bool						PostEventSec( const idEventDef* ev, float time, idEventArg arg1, idEventArg arg2 );
@@ -271,7 +271,7 @@ public:
 	bool						PostEventSec( const idEventDef* ev, float time, idEventArg arg1, idEventArg arg2, idEventArg arg3, idEventArg arg4, idEventArg arg5, idEventArg arg6 );
 	bool						PostEventSec( const idEventDef* ev, float time, idEventArg arg1, idEventArg arg2, idEventArg arg3, idEventArg arg4, idEventArg arg5, idEventArg arg6, idEventArg arg7 );
 	bool						PostEventSec( const idEventDef* ev, float time, idEventArg arg1, idEventArg arg2, idEventArg arg3, idEventArg arg4, idEventArg arg5, idEventArg arg6, idEventArg arg7, idEventArg arg8 );
-	
+
 	bool						ProcessEvent( const idEventDef* ev );
 	bool						ProcessEvent( const idEventDef* ev, idEventArg arg1 );
 	bool						ProcessEvent( const idEventDef* ev, idEventArg arg1, idEventArg arg2 );
@@ -281,16 +281,16 @@ public:
 	bool						ProcessEvent( const idEventDef* ev, idEventArg arg1, idEventArg arg2, idEventArg arg3, idEventArg arg4, idEventArg arg5, idEventArg arg6 );
 	bool						ProcessEvent( const idEventDef* ev, idEventArg arg1, idEventArg arg2, idEventArg arg3, idEventArg arg4, idEventArg arg5, idEventArg arg6, idEventArg arg7 );
 	bool						ProcessEvent( const idEventDef* ev, idEventArg arg1, idEventArg arg2, idEventArg arg3, idEventArg arg4, idEventArg arg5, idEventArg arg6, idEventArg arg7, idEventArg arg8 );
-	
+
 	bool						ProcessEventWithStringArgs( const idEventDef* ev, const idList<idEventArg>* eventArgs );
-	
+
 	// RB: 64 bit fix, changed int to intptr_t
 	bool						ProcessEventArgPtr( const idEventDef* ev, intptr_t* data );
 	// RB end
 	void						CancelEvents( const idEventDef* ev );
-	
+
 	virtual void				Remove();
-	
+
 	// Static functions
 	static void					Init();
 	static void					Shutdown();
@@ -310,16 +310,16 @@ public:
 		return typeNumBits;
 	}
 	static idTypeInfo* 			GetType( int num );
-	
+
 	void						Event_Remove();
-	
+
 	idLinkList<idClass>			removeNode;		// for being linked into RemovedEntities list
 private:
 	classSpawnFunc_t			CallSpawnFunc( idTypeInfo* cls );
-	
+
 	bool						PostEventArgs( const idEventDef* ev, int time, int numargs, ... );
 	bool						ProcessEventArgs( const idEventDef* ev, int numargs, ... );
-	
+
 	static bool					initialized;
 	static idList<idTypeInfo*, TAG_IDCLASS>	types;
 	static idList<idTypeInfo*, TAG_IDCLASS>	typenums;
@@ -343,7 +343,7 @@ public:
 	void	( idClass::*Spawn )();
 	void	( idClass::*Save )( idSaveGame* savefile ) const;
 	void	( idClass::*Restore )( idRestoreGame* savefile );
-	
+
 	idEventFunc<idClass>* 		eventCallbacks;
 	eventCallback_t* 			eventMap;
 	idTypeInfo* 				super;
@@ -351,17 +351,17 @@ public:
 	bool						freeEventMap;
 	int							typeNum;
 	int							lastChild;
-	
+
 	idHierarchy<idTypeInfo>		node;
-	
+
 	idTypeInfo( const char* classname, const char* superclass,
 				idEventFunc<idClass>* eventCallbacks, idClass * ( *CreateInstance )(), void ( idClass::*Spawn )(),
 				void ( idClass::*Save )( idSaveGame* savefile ) const, void	( idClass::*Restore )( idRestoreGame* savefile ) );
 	~idTypeInfo();
-	
+
 	void						Init();
 	void						Shutdown();
-	
+
 	bool						IsType( const idTypeInfo& superclass ) const;
 	bool						RespondsTo( const idEventDef& ev ) const;
 };
@@ -392,7 +392,7 @@ ID_INLINE bool idTypeInfo::RespondsTo( const idEventDef& ev ) const
 		// we don't respond to this event
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -407,7 +407,7 @@ passed in idTypeInfo.
 ID_INLINE bool idClass::IsType( const idTypeInfo& superclass ) const
 {
 	idTypeInfo* subclass;
-	
+
 	subclass = GetType();
 	return subclass->IsType( superclass );
 }
@@ -420,7 +420,7 @@ idClass::RespondsTo
 ID_INLINE bool idClass::RespondsTo( const idEventDef& ev ) const
 {
 	const idTypeInfo* c;
-	
+
 	assert( idEvent::initialized );
 	c = GetType();
 	return c->RespondsTo( ev );

@@ -51,14 +51,14 @@ public:
 #endif
 	float			operator[]( const int index ) const;
 	float& 			operator[]( const int index );
-	
+
 	void			Clear( void );
-	
+
 	void			Lerp( const idDmapDrawVert& a, const idDmapDrawVert& b, const float f );
 	void			LerpAll( const idDmapDrawVert& a, const idDmapDrawVert& b, const float f );
-	
+
 	void			Normalize( void );
-	
+
 	void			SetColor( dword color );
 	dword			GetColor( void ) const;
 };

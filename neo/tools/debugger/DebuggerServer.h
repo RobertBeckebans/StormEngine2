@@ -31,15 +31,15 @@ If you have questions concerning this license or the applicable additional terms
 #define DEBUGGERSERVER_H_
 
 #ifndef DEBUGGERMESSAGES_H_
-#include "DebuggerMessages.h"
+	#include "DebuggerMessages.h"
 #endif
 
 #ifndef DEBUGGERBREAKPOINT_H_
-#include "DebuggerBreakpoint.h"
+	#include "DebuggerBreakpoint.h"
 #endif
 
 #ifndef __GAME_LOCAL_H__
-#include "../../d3xp/Game.h"
+	#include "../../d3xp/Game.h"
 #endif
 
 class idInterpreter;
@@ -52,21 +52,21 @@ class rvDebuggerServer
 public:
 	rvDebuggerServer( );
 	~rvDebuggerServer( );
-	
+
 	bool		Initialize( void );
 	void		Shutdown( void );
-	
+
 	bool		ProcessMessages( void );
-	
+
 	bool		IsConnected( void );
 	bool		IsSuspended( void );
-	
+
 	void		CheckBreakpoints( idInterpreter* interpreter, idProgram* program, int instructionPointer );
-	
+
 	void		Print( const char* text );
-	
+
 	void		OSPathToRelativePath( const char* osPath, idStr& qpath );
-	
+
 protected:
 
 	// protected member variables
@@ -77,7 +77,7 @@ protected:
 	CRITICAL_SECTION				mCriticalSection;
 	HANDLE							mGameThread;
 	bool							mInitialized;
-	
+
 	bool							mBreak;
 	bool							mBreakNext;
 	bool							mBreakStepOver;
@@ -88,20 +88,20 @@ protected:
 	idProgram*						mBreakProgram;
 	int								mBreakInstructionPointer;
 	idInterpreter*					mBreakInterpreter;
-	
+
 	idStr							mLastStatementFile;
 	int								mLastStatementLine;
-	
+
 	int								mLastThreadSyncTime;
 private:
 
 	void		ClearBreakpoints( void );
-	
+
 	void		Break( idInterpreter* interpreter, idProgram* program, int instructionPointer );
 	void		Resume( void );
-	
+
 	void		SendMessage( EDebuggerMessage dbmsg );
-	
+
 	// Message handlers
 	void		HandleAddBreakpoint( msg_t& msg );
 	void		HandleRemoveBreakpoint( msg_t& msg );
@@ -111,7 +111,7 @@ private:
 	void		HandleInspectThreads( msg_t& msg );
 	void		HandleCheckPort( msg_t& msg );
 	void		HandlePortInUse( msg_t& msg );
-	
+
 	// MSG helper routines
 	void		MSG_WriteCallstackFunc( msg_t& msg, const prstack_t* stack );
 };

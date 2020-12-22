@@ -80,7 +80,7 @@ public:
 	{
 		x = y = w = h = 0.0;
 	};
-	
+
 	void ClipAgainst( idRectangle r, bool sizeOnly )
 	{
 		if( !sizeOnly )
@@ -105,9 +105,9 @@ public:
 			h = ( r.y + r.h ) - y;
 		}
 	}
-	
-	
-	
+
+
+
 	void Rotate( float a, idRectangle& out )
 	{
 		idVec3 p1, p2, p3, p4, p5;
@@ -134,7 +134,7 @@ public:
 		out.w = ( p2 - p1 ).Length();
 		out.h = ( p4 - p1 ).Length();
 	}
-	
+
 	idRectangle& operator+=( const idRectangle& a );
 	idRectangle& operator-=( const idRectangle& a );
 	idRectangle& operator/=( const idRectangle& a );
@@ -145,7 +145,7 @@ public:
 	float& 	operator[]( const int index );
 	char* String() const;
 	const idVec4& ToVec4() const;
-	
+
 };
 
 ID_INLINE const idVec4& idRectangle::ToVec4() const
@@ -160,7 +160,7 @@ ID_INLINE idRectangle& idRectangle::operator+=( const idRectangle& a )
 	y += a.y;
 	w += a.w;
 	h += a.h;
-	
+
 	return *this;
 }
 
@@ -170,7 +170,7 @@ ID_INLINE idRectangle& idRectangle::operator/=( const idRectangle& a )
 	y /= a.y;
 	w /= a.w;
 	h /= a.h;
-	
+
 	return *this;
 }
 
@@ -181,7 +181,7 @@ ID_INLINE idRectangle& idRectangle::operator/=( const float a )
 	y *= inva;
 	w *= inva;
 	h *= inva;
-	
+
 	return *this;
 }
 
@@ -191,7 +191,7 @@ ID_INLINE idRectangle& idRectangle::operator-=( const idRectangle& a )
 	y -= a.y;
 	w -= a.w;
 	h -= a.h;
-	
+
 	return *this;
 }
 
@@ -201,7 +201,7 @@ ID_INLINE idRectangle& idRectangle::operator*=( const float a )
 	y *= a;
 	w *= a;
 	h *= a;
-	
+
 	return *this;
 }
 
@@ -229,12 +229,12 @@ class idRegion
 {
 public:
 	idRegion() { };
-	
+
 	void Empty()
 	{
 		rects.Clear();
 	}
-	
+
 	bool Contains( float xt, float yt )
 	{
 		int c = rects.Num();
@@ -247,17 +247,17 @@ public:
 		}
 		return false;
 	}
-	
+
 	void AddRect( float x, float y, float w, float h )
 	{
 		rects.Append( idRectangle( x, y, w, h ) );
 	}
-	
+
 	int GetRectCount()
 	{
 		return rects.Num();
 	}
-	
+
 	idRectangle* GetRect( int index )
 	{
 		if( index >= 0 && index < rects.Num() )
@@ -266,7 +266,7 @@ public:
 		}
 		return NULL;
 	}
-	
+
 protected:
 
 	idList<idRectangle, TAG_OLD_UI> rects;

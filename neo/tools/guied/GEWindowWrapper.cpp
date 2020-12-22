@@ -44,7 +44,7 @@ If you have questions concerning this license or the applicable additional terms
 rvGEWindowWrapper::rvGEWindowWrapper( idWindow* window, EWindowType type )
 {
 	assert( window );
-	
+
 	mWindow = window;
 	mFlippedHorz = false;
 	mFlippedVert = false;
@@ -55,7 +55,7 @@ rvGEWindowWrapper::rvGEWindowWrapper( idWindow* window, EWindowType type )
 	mExpanded = false;
 	mOldVisible = false;
 	mMoveable = true;
-	
+
 	if( dynamic_cast< idEditWindow*>( window ) )
 	{
 		mType = WT_EDIT;
@@ -80,7 +80,7 @@ rvGEWindowWrapper::rvGEWindowWrapper( idWindow* window, EWindowType type )
 	{
 		mType = WT_NORMAL;
 	}
-	
+
 	// Attach the wrapper to the window by adding a defined variable
 	// with the wrappers pointer stuffed into an integer
 	idWinInt* var = new idWinInt();
@@ -89,7 +89,7 @@ rvGEWindowWrapper::rvGEWindowWrapper( idWindow* window, EWindowType type )
 	var->SetEval( false );
 	var->SetName( "guied_wrapper" );
 	mWindow->AddDefinedVar( var );
-	
+
 	SetStateKey( "name", mWindow->GetName(), false );
 }
 
@@ -119,30 +119,30 @@ void rvGEWindowWrapper::UpdateRect( void )
 {
 	idVec4 rect;
 	idWinRectangle* winrect;
-	
+
 	winrect = dynamic_cast< idWinRectangle*>( mWindow->GetWinVarByName( "rect" ) );
 	assert( winrect );
 	rect = winrect->ToVec4();
-	
+
 	mFlippedHorz = false;
 	mFlippedVert = false;
-	
+
 	if( rect[2] < 0 )
 	{
 		mFlippedHorz = true;
 		rect[2] *= -1;
 	}
-	
+
 	if( rect[3] < 0 )
 	{
 		mFlippedVert = true;
 		rect[3] *= -1;
 	}
-	
+
 	mClientRect = rect;
-	
+
 	CalcScreenRect();
-	
+
 	const char* rstr = mState.GetString( "rect", "0,0,0,0" );
 	mMoveable = !IsExpression( rstr );
 }
@@ -158,32 +158,32 @@ the parent windows and adding their offsets
 void rvGEWindowWrapper::CalcScreenRect( void )
 {
 	idWindow* parent;
-	
+
 	mScreenRect = mClientRect;
-	
+
 	if( NULL != ( parent = mWindow->GetParent() ) )
 	{
 		rvGEWindowWrapper* wrapper = GetWrapper( parent );
 		assert( wrapper );
-		
+
 		mScreenRect[0] += wrapper->GetScreenRect()[0];
 		mScreenRect[1] += wrapper->GetScreenRect()[1];
 	}
-	
+
 	// Since our screen rectangle has changed we need to tell all our our children to update
 	// their screen rectangles as well.
 	int i;
 	int count;
 	rvGEWindowWrapper* pwrapper;
-	
+
 	pwrapper = rvGEWindowWrapper::GetWrapper( mWindow );
-	
+
 	for( count = pwrapper->GetChildCount(), i = 0; i < count; i ++ )
 	{
 		rvGEWindowWrapper* wrapper;
-		
+
 		wrapper = rvGEWindowWrapper::GetWrapper( pwrapper->GetChild( i ) );
-		
+
 		// Usually we assert if there is no wrapper but since this method is called
 		// when the wrappers are being attached to the windows there may be no wrappers
 		// for any of the children.
@@ -191,7 +191,7 @@ void rvGEWindowWrapper::CalcScreenRect( void )
 		{
 			continue;
 		}
-		
+
 		wrapper->CalcScreenRect();
 	}
 }
@@ -206,14 +206,14 @@ Sets the wrapper's rectangle and the attached windows rectangle as well
 void rvGEWindowWrapper::SetRect( idRectangle& rect )
 {
 	const char* s;
-	
+
 	mClientRect = rect;
 	CalcScreenRect();
-	
+
 	s = va( "%d,%d,%d,%d", ( int )( rect.x + 0.5f ), ( int )( rect.y + 0.5f ), ( int )( ( rect.w + 0.5f ) * ( mFlippedHorz ? -1 : 1 ) ), ( int )( ( rect.h + 0.5f ) * ( mFlippedVert ? -1 : 1 ) ) );
-	
+
 	mState.Set( "rect", s );
-	
+
 	UpdateWindowState();
 }
 
@@ -227,7 +227,7 @@ Sets the wrappers hidden state
 void rvGEWindowWrapper::SetHidden( bool h )
 {
 	mHidden = h;
-	
+
 	UpdateWindowState();
 }
 
@@ -242,7 +242,7 @@ not the window is visible
 void rvGEWindowWrapper::SetDeleted( bool del )
 {
 	mDeleted = del;
-	
+
 	UpdateWindowState();
 }
 
@@ -257,10 +257,10 @@ void rvGEWindowWrapper::SetState( const idDict& dict )
 {
 	mState.Clear();
 	mState.Copy( dict );
-	
+
 	// Push the window state to the window itself
 	UpdateWindowState();
-	
+
 	// Update the internal rectangle since it may have changed in the state
 	UpdateRect();
 }
@@ -275,11 +275,11 @@ Sets the given state key and updates the
 void rvGEWindowWrapper::SetStateKey( const char* key, const char* value, bool update )
 {
 	mState.Set( key, value );
-	
+
 	if( update )
 	{
 		UpdateWindowState();
-		
+
 		// Make sure the rectangle gets updated if its changing
 		if( !idStr::Icmp( key, "rect" ) )
 		{
@@ -301,7 +301,7 @@ void rvGEWindowWrapper::DeleteStateKey( const char* key )
 	{
 		return;
 	}
-	
+
 	mState.Delete( key );
 }
 
@@ -318,7 +318,7 @@ void rvGEWindowWrapper::UpdateWindowState( void )
 	idStr realVisible;
 	bool tempVisible;
 	//	int	  i;
-	
+
 	realVisible = mState.GetString( "visible", "1" );
 	tempVisible = atoi( realVisible ) ? true : false;
 	if( tempVisible != mOldVisible )
@@ -326,14 +326,14 @@ void rvGEWindowWrapper::UpdateWindowState( void )
 		mHidden = !tempVisible;
 		mOldVisible = tempVisible;
 	}
-	
+
 	tempVisible = !mDeleted && !mHidden;
-	
+
 	// Temporarily change the visible state so we can hide/unhide the window
 	mState.Set( "visible", tempVisible ? "1" : "0" );
-	
+
 	mWindow->UpdateFromDictionary( mState );
-	
+
 	// Put the visible state back to the real value
 	mState.Set( "visible", realVisible );
 }
@@ -350,44 +350,44 @@ idWindow* rvGEWindowWrapper::WindowFromPoint( float x, float y, bool visibleOnly
 	int count;
 	int i;
 	rvGEWindowWrapper* pwrapper;
-	
+
 	// If the window isnt visible then skip it
 	if( visibleOnly && ( mHidden || mDeleted ) )
 	{
 		return NULL;
 	}
-	
+
 	// Now check our children next
 	pwrapper = GetWrapper( mWindow );
 	count = pwrapper->GetChildCount();
-	
+
 	for( i = count - 1; i >= 0; i -- )
 	{
 		rvGEWindowWrapper* wrapper;
 		idWindow* child;
-		
+
 		child = pwrapper->GetChild( i );
 		assert( child );
-		
+
 		wrapper = rvGEWindowWrapper::GetWrapper( child );
 		if( !wrapper )
 		{
 			continue;
 		}
-		
+
 		if( child = wrapper->WindowFromPoint( x, y ) )
 		{
 			return child;
 		}
 	}
-	
+
 	// We have to check this last because a child could be out outside of the parents
 	// rectangle and we still want it selectable.
 	if( !mScreenRect.Contains( x, y ) )
 	{
 		return NULL;
 	}
-	
+
 	return mWindow;
 }
 
@@ -432,7 +432,7 @@ rvGEWindowWrapper::EWindowType rvGEWindowWrapper::StringToWindowType( const char
 	{
 		return WT_HTML;
 	}
-	
+
 	return WT_UNKNOWN;
 }
 
@@ -449,7 +449,7 @@ const char* rvGEWindowWrapper::WindowTypeToString( EWindowType type )
 	{
 		"Unknown", "windowDef", "editDef", "htmlDef", "choiceDef", "sliderDef", "bindDef", "listDef", "renderDef"
 	};
-	
+
 	return typeNames[( int ) type];
 }
 
@@ -466,7 +466,7 @@ int rvGEWindowWrapper::GetChildCount( void )
 	{
 		return 0;
 	}
-	
+
 	return mWindow->GetChildCount();
 }
 
@@ -482,12 +482,12 @@ bool rvGEWindowWrapper::EnumChildren( PFNENUMCHILDRENPROC proc, void* data )
 {
 	int count;
 	int i;
-	
+
 	if( !CanHaveChildren() )
 	{
 		return false;
 	}
-	
+
 	for( count = GetChildCount(), i = 0; i < count; i ++ )
 	{
 		if( !proc( rvGEWindowWrapper::GetWrapper( GetChild( i ) ), data ) )
@@ -495,7 +495,7 @@ bool rvGEWindowWrapper::EnumChildren( PFNENUMCHILDRENPROC proc, void* data )
 			return false;
 		}
 	}
-	
+
 	return true;
 }
 
@@ -512,7 +512,7 @@ bool rvGEWindowWrapper::CanHaveChildren( void )
 	{
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -527,10 +527,10 @@ int rvGEWindowWrapper::GetDepth( void )
 {
 	idWindow* parent;
 	int depth;
-	
+
 	for( depth = 0, parent = mWindow->GetParent(); parent; parent = parent->GetParent(), depth++ )
 		;
-		
+
 	return depth;
 }
 
@@ -544,7 +544,7 @@ Expand the window in the navigator and all of its parents too
 bool rvGEWindowWrapper::Expand( void )
 {
 	bool result;
-	
+
 	if( mWindow->GetParent() )
 	{
 		result = rvGEWindowWrapper::GetWrapper( mWindow->GetParent() )->Expand();
@@ -553,14 +553,14 @@ bool rvGEWindowWrapper::Expand( void )
 	{
 		result = false;
 	}
-	
+
 	if( mExpanded || !CanHaveChildren() || !GetChildCount() )
 	{
 		return result;
 	}
-	
+
 	mExpanded = true;
-	
+
 	return true;
 }
 
@@ -574,7 +574,7 @@ Returns the depth of the wrapped window
 bool rvGEWindowWrapper::Collapse( void )
 {
 	bool result;
-	
+
 	if( mWindow->GetParent() )
 	{
 		result = rvGEWindowWrapper::GetWrapper( mWindow->GetParent() )->Expand();
@@ -583,14 +583,14 @@ bool rvGEWindowWrapper::Collapse( void )
 	{
 		result = false;
 	}
-	
+
 	if( !mExpanded )
 	{
 		return result;
 	}
-	
+
 	mExpanded = false;
-	
+
 	return true;
 }
 
@@ -622,11 +622,11 @@ bool rvGEWindowWrapper::VerfiyStateKey( const char* name, const char* value, idS
 	idStr old;
 	bool failed;
 	idParser src( value, strlen( value ), "", LEXFL_NOSTRINGCONCAT | LEXFL_ALLOWMULTICHARLITERALS | LEXFL_ALLOWBACKSLASHSTRINGCONCAT );
-	
+
 	// Save the current value
 	old = mState.GetString( name );
 	failed = false;
-	
+
 	// Try to parse in the value
 	try
 	{
@@ -643,7 +643,7 @@ bool rvGEWindowWrapper::VerfiyStateKey( const char* name, const char* value, idS
 	{
 		failed = true;
 	}
-	
+
 	// Restore the old value
 	idParser src2( old, old.Length(), "", LEXFL_NOFATALERRORS | LEXFL_NOSTRINGCONCAT | LEXFL_ALLOWMULTICHARLITERALS | LEXFL_ALLOWBACKSLASHSTRINGCONCAT );
 	if( !mWindow->ParseInternalVar( name, &src2 ) )
@@ -652,25 +652,25 @@ bool rvGEWindowWrapper::VerfiyStateKey( const char* name, const char* value, idS
 		{
 		}
 	}
-	
+
 	// Check to see if the old value matches the new value
 	idStr before;
 	idStr after;
-	
+
 	before = value;
 	before.StripTrailingWhitespace();
 	src.GetStringFromMarker( after );
 	after.StripTrailingWhitespace();
-	
+
 	if( result )
 	{
 		*result = after;
 	}
-	
+
 	if( failed || before.Cmp( after ) )
 	{
 		return false;
 	}
-	
+
 	return true;
 }

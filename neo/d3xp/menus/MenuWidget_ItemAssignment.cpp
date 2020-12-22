@@ -38,7 +38,7 @@ void idMenuWidget_ItemAssignment::SetIcon( int index, const idMaterial* icon )
 	{
 		return;
 	}
-	
+
 	images[ index ] = icon;
 }
 
@@ -67,21 +67,21 @@ void idMenuWidget_ItemAssignment::Update()
 	{
 		return;
 	}
-	
+
 	idSWFScriptObject& root = GetSWFObject()->GetRootObject();
-	
+
 	if( !BindSprite( root ) )
 	{
 		return;
 	}
-	
+
 	idSWFSpriteInstance* dpad = GetSprite()->GetScriptObject()->GetNestedSprite( "dpad" );
-	
+
 	if( dpad != NULL )
 	{
 		dpad->StopFrame( slotIndex + 2 );
 	}
-	
+
 	for( int i = 0; i < NUM_QUICK_SLOTS; ++i )
 	{
 		idSWFSpriteInstance* item = GetSprite()->GetScriptObject()->GetNestedSprite( va( "item%d", i ) );
@@ -96,7 +96,7 @@ void idMenuWidget_ItemAssignment::Update()
 				item->StopFrame( 1 );
 			}
 		}
-		
+
 		idSWFSpriteInstance* itemIcon = GetSprite()->GetScriptObject()->GetNestedSprite( va( "item%d", i ), "img" );
 		if( itemIcon != NULL )
 		{
@@ -110,7 +110,7 @@ void idMenuWidget_ItemAssignment::Update()
 				itemIcon->SetVisible( false );
 			}
 		}
-		
+
 		itemIcon = GetSprite()->GetScriptObject()->GetNestedSprite( va( "item%d", i ), "imgTop" );
 		if( itemIcon != NULL )
 		{

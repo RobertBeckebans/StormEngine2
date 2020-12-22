@@ -55,16 +55,16 @@ void idMenuScreen_Cinematic::ShowScreen( const mainMenuTransition_t transitionTy
 	{
 		menuGUI = menuData->GetGUI();
 	}
-	
+
 	if( menuGUI == NULL )
 	{
 		return;
 	}
-	
+
 	idSWFScriptObject& root = menuGUI->GetRootObject();
-	
+
 	cinematicHint = root.GetNestedSprite( "_bottomCenter", "cinematicHint" );
-	
+
 }
 
 /*
@@ -90,7 +90,7 @@ void idMenuScreen_Cinematic::Update()
 	{
 		return;
 	}
-	
+
 	idMenuScreen::Update();
 }
 

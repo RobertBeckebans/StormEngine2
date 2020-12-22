@@ -69,7 +69,7 @@ void CTearoffContainerWindow::OnNcLButtonDblClk( UINT nHitTest, CPoint point )
 	{
 		m_DockManager->DockWindow( m_DialogID , true );
 	}
-	
+
 	CWnd::OnNcLButtonDblClk( nHitTest, point );
 }
 
@@ -78,13 +78,13 @@ void CTearoffContainerWindow::SetDialog( CWnd* dlg , int ID )
 {
 	m_DialogID = ID;
 	m_ContainedDialog = dlg;
-	
+
 	CRect rect;
 	CPoint point( -10 , -10 );
 	m_ContainedDialog->GetWindowRect( rect );
-	
+
 	rect.OffsetRect( point );	//move the window slightly so you can tell it's been popped up
-	
+
 	//stupid hack to get the window resize itself properly
 	rect.DeflateRect( 0, 0, 0, 1 );
 	MoveWindow( rect );
@@ -112,7 +112,7 @@ BOOL CTearoffContainerWindow:: PreTranslateMessage( MSG* pMsg )
 	{
 		/*		CRect rect;
 				GetWindowRect ( rect );
-		
+
 				rect.DeflateRect( 0,0,0,rect.Height() - GetSystemMetrics(SM_CYSMSIZE));
 				if ( m_DockManager->RectWithinDockManager ( rect ))
 				{
@@ -120,7 +120,7 @@ BOOL CTearoffContainerWindow:: PreTranslateMessage( MSG* pMsg )
 				}
 		*/
 	}
-	
+
 	return CWnd::PreTranslateMessage( pMsg );
 }
 void CTearoffContainerWindow::OnSize( UINT nType, int cx, int cy )
@@ -129,14 +129,14 @@ void CTearoffContainerWindow::OnSize( UINT nType, int cx, int cy )
 	{
 		m_ContainedDialog->MoveWindow( 0, 0, cx, cy );
 	}
-	
+
 	CWnd::OnSize( nType, cx, cy );
 }
 
 void CTearoffContainerWindow::OnDestroy()
 {
 	CWnd::OnDestroy();
-	
+
 	// TODO: Add your message handler code here
 }
 

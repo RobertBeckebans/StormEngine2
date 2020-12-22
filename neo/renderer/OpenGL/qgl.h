@@ -35,17 +35,17 @@ If you have questions concerning this license or the applicable additional terms
 
 
 #ifndef APIENTRY
-#define APIENTRY
+	#define APIENTRY
 #endif
 #ifndef WINAPI
-#define WINAPI
+	#define WINAPI
 #endif
 
 // only use local glext.h if we are not using the system one already
 // http://oss.sgi.com/projects/ogl-sample/ABI/
 #ifndef GL_GLEXT_VERSION
 
-#include "glext.h"
+	#include "glext.h"
 
 #endif
 

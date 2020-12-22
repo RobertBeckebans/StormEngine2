@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 #define __DIALOGNAME_H__
 
 #if _MSC_VER > 1000
-#pragma once
+	#pragma once
 #endif // _MSC_VER > 1000
 // NameDlg.h : header file
 //
@@ -45,21 +45,21 @@ class DialogName : public CDialog
 // Construction
 public:
 	DialogName( const char* pName, CWnd* pParent = NULL ); // standard constructor
-	
+
 // Dialog Data
 	//{{AFX_DATA(DialogName)
 	enum { IDD = IDD_NEWNAME };
 	CString	m_strName;
 	//}}AFX_DATA
-	
-	
+
+
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(DialogName)
 protected:
 	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	//}}AFX_VIRTUAL
-	
+
 // Implementation
 protected:
 

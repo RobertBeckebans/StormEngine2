@@ -85,7 +85,7 @@ void CopyBuffer( byte* dst, const byte* src, int numBytes )
 {
 	assert_16_byte_aligned( dst );
 	assert_16_byte_aligned( src );
-	
+
 	int i = 0;
 	for( ; i + 128 <= numBytes; i += 128 )
 	{
@@ -163,22 +163,22 @@ bool idVertexBuffer::AllocBufferObject( const void* data, int allocSize )
 {
 	assert( apiObject == NULL );
 	assert_16_byte_aligned( data );
-	
+
 	if( allocSize <= 0 )
 	{
 		idLib::Error( "idVertexBuffer::AllocBufferObject: allocSize = %i", allocSize );
 	}
-	
+
 	size = allocSize;
-	
+
 	bool allocationFailed = false;
-	
+
 	int numBytes = GetAllocedSize();
-	
-	
+
+
 	// clear out any previous error
 	qglGetError();
-	
+
 	GLuint bufferObject = 0xFFFF;
 	qglGenBuffersARB( 1, & bufferObject );
 	if( bufferObject == 0xFFFF )
@@ -186,30 +186,30 @@ bool idVertexBuffer::AllocBufferObject( const void* data, int allocSize )
 		idLib::FatalError( "idVertexBuffer::AllocBufferObject: failed" );
 	}
 	qglBindBufferARB( GL_ARRAY_BUFFER_ARB, bufferObject );
-	
+
 	// these are rewritten every frame
 	qglBufferDataARB( GL_ARRAY_BUFFER_ARB, numBytes, NULL, bufferUsage );
 	apiObject = reinterpret_cast< void* >( bufferObject );
-	
+
 	GLenum err = qglGetError();
 	if( err == GL_OUT_OF_MEMORY )
 	{
 		idLib::Warning( "idVertexBuffer::AllocBufferObject: allocation failed" );
 		allocationFailed = true;
 	}
-	
-	
+
+
 	if( r_showBuffers.GetBool() )
 	{
 		idLib::Printf( "vertex buffer alloc %p, api %p (%i bytes)\n", this, GetAPIObject(), GetSize() );
 	}
-	
+
 	// copy the data
 	if( data != NULL )
 	{
 		Update( data, allocSize );
 	}
-	
+
 	return !allocationFailed;
 }
 
@@ -224,32 +224,34 @@ void idVertexBuffer::FreeBufferObject()
 	{
 		UnmapBuffer();
 	}
-	
+
 	// if this is a sub-allocation inside a larger buffer, don't actually free anything.
 	if( OwnsBuffer() == false )
 	{
 		ClearWithoutFreeing();
 		return;
 	}
-	
+
 	if( apiObject == NULL )
 	{
 		return;
 	}
-	
+
 	// foresthale 2014-05-29: check R_IsInitialized() before getting the bool value, because GetBool crashes when exiting radiant with certain settings
 	if( R_IsInitialized() && r_showBuffers.GetBool() )
 	{
 		idLib::Printf( "vertex buffer free %p, api %p (%i bytes)\n", this, GetAPIObject(), GetSize() );
 	}
-	
+
 	// RB: 64 bit fixes, changed GLuint to GLintptrARB
 	GLintptrARB bufferObject = reinterpret_cast< GLintptrARB >( apiObject );
 	// foresthale 2014-05-28: we have to check if OpenGL was already shut down as this gets called from doexit()
 	if( R_IsInitialized() )
+	{
 		qglDeleteBuffersARB( 1, ( const unsigned int* ) & bufferObject );
+	}
 	// RB end
-	
+
 	ClearWithoutFreeing();
 }
 
@@ -264,7 +266,7 @@ void idVertexBuffer::Reference( const idVertexBuffer& other )
 	//assert( other.IsMapped() == false );	// this happens when building idTriangles while at the same time setting up idDrawVerts
 	assert( other.GetAPIObject() != NULL );
 	assert( other.GetSize() > 0 );
-	
+
 	FreeBufferObject();
 	size = other.GetSize();						// this strips the MAPPED_FLAG
 	offsetInOtherBuffer = other.GetOffset();	// this strips the OWNS_BUFFER_FLAG
@@ -285,7 +287,7 @@ void idVertexBuffer::Reference( const idVertexBuffer& other, int refOffset, int 
 	assert( refOffset >= 0 );
 	assert( refSize >= 0 );
 	assert( refOffset + refSize <= other.GetSize() );
-	
+
 	FreeBufferObject();
 	size = refSize;
 	offsetInOtherBuffer = other.GetOffset() + refOffset;
@@ -304,18 +306,18 @@ void idVertexBuffer::Update( const void* data, int updateSize ) const
 	assert( IsMapped() == false );
 	assert_16_byte_aligned( data );
 	assert( ( GetOffset() & 15 ) == 0 );
-	
+
 	if( updateSize > size )
 	{
 		idLib::FatalError( "idVertexBuffer::Update: size overrun, %i > %i\n", updateSize, GetSize() );
 	}
-	
+
 	int numBytes = ( updateSize + 15 ) & ~15;
-	
+
 	// RB: 64 bit fixes, changed GLuint to GLintptrARB
 	GLintptrARB bufferObject = reinterpret_cast< GLintptrARB >( apiObject );
 	// RB end
-	
+
 	qglBindBufferARB( GL_ARRAY_BUFFER_ARB, bufferObject );
 	qglBufferSubDataARB( GL_ARRAY_BUFFER_ARB, GetOffset(), ( GLsizeiptrARB )numBytes, data );
 	/*
@@ -334,13 +336,13 @@ void* idVertexBuffer::MapBuffer( bufferMapType_t mapType ) const
 {
 	assert( apiObject != NULL );
 	assert( IsMapped() == false );
-	
+
 	void* buffer = NULL;
-	
+
 	// RB: 64 bit fixes, changed GLuint to GLintptrARB
 	GLintptrARB bufferObject = reinterpret_cast< GLintptrARB >( apiObject );
 	// RB end
-	
+
 	qglBindBufferARB( GL_ARRAY_BUFFER_ARB, bufferObject );
 	if( mapType == BM_READ )
 	{
@@ -365,9 +367,9 @@ void* idVertexBuffer::MapBuffer( bufferMapType_t mapType ) const
 	{
 		assert( false );
 	}
-	
+
 	SetMapped();
-	
+
 	if( buffer == NULL )
 	{
 		idLib::FatalError( "idVertexBuffer::MapBuffer: failed" );
@@ -384,17 +386,17 @@ void idVertexBuffer::UnmapBuffer() const
 {
 	assert( apiObject != NULL );
 	assert( IsMapped() );
-	
+
 	// RB: 64 bit fixes, changed GLuint to GLintptrARB
 	GLintptrARB bufferObject = reinterpret_cast< GLintptrARB >( apiObject );
 	// RB end
-	
+
 	qglBindBufferARB( GL_ARRAY_BUFFER_ARB, bufferObject );
 	if( !qglUnmapBufferARB( GL_ARRAY_BUFFER_ARB ) )
 	{
 		idLib::Printf( "idVertexBuffer::UnmapBuffer failed\n" );
 	}
-	
+
 	SetUnmapped();
 }
 
@@ -450,22 +452,22 @@ bool idIndexBuffer::AllocBufferObject( const void* data, int allocSize )
 {
 	assert( apiObject == NULL );
 	assert_16_byte_aligned( data );
-	
+
 	if( allocSize <= 0 )
 	{
 		idLib::Error( "idIndexBuffer::AllocBufferObject: allocSize = %i", allocSize );
 	}
-	
+
 	size = allocSize;
-	
+
 	bool allocationFailed = false;
-	
+
 	int numBytes = GetAllocedSize();
-	
-	
+
+
 	// clear out any previous error
 	qglGetError();
-	
+
 	GLuint bufferObject = 0xFFFF;
 	qglGenBuffersARB( 1, & bufferObject );
 	if( bufferObject == 0xFFFF )
@@ -474,30 +476,30 @@ bool idIndexBuffer::AllocBufferObject( const void* data, int allocSize )
 		idLib::FatalError( "idIndexBuffer::AllocBufferObject: failed - GL_Error %d", error );
 	}
 	qglBindBufferARB( GL_ELEMENT_ARRAY_BUFFER_ARB, bufferObject );
-	
+
 	// these are rewritten every frame
 	qglBufferDataARB( GL_ELEMENT_ARRAY_BUFFER_ARB, numBytes, NULL, bufferUsage );
 	apiObject = reinterpret_cast< void* >( bufferObject );
-	
+
 	GLenum err = qglGetError();
 	if( err == GL_OUT_OF_MEMORY )
 	{
 		idLib::Warning( "idIndexBuffer:AllocBufferObject: allocation failed" );
 		allocationFailed = true;
 	}
-	
-	
+
+
 	if( r_showBuffers.GetBool() )
 	{
 		idLib::Printf( "index buffer alloc %p, api %p (%i bytes)\n", this, GetAPIObject(), GetSize() );
 	}
-	
+
 	// copy the data
 	if( data != NULL )
 	{
 		Update( data, allocSize );
 	}
-	
+
 	return !allocationFailed;
 }
 
@@ -512,32 +514,34 @@ void idIndexBuffer::FreeBufferObject()
 	{
 		UnmapBuffer();
 	}
-	
+
 	// if this is a sub-allocation inside a larger buffer, don't actually free anything.
 	if( OwnsBuffer() == false )
 	{
 		ClearWithoutFreeing();
 		return;
 	}
-	
+
 	if( apiObject == NULL )
 	{
 		return;
 	}
-	
+
 	// foresthale 2014-05-29: check R_IsInitialized() before getting the bool value, because GetBool crashes when exiting radiant with certain settings
 	if( R_IsInitialized() && r_showBuffers.GetBool() )
 	{
 		idLib::Printf( "index buffer free %p, api %p (%i bytes)\n", this, GetAPIObject(), GetSize() );
 	}
-	
+
 	// RB: 64 bit fixes, changed GLuint to GLintptrARB
 	GLintptrARB bufferObject = reinterpret_cast< GLintptrARB >( apiObject );
 	// foresthale 2014-05-28: we have to check if OpenGL was already shut down as this gets called from doexit()
 	if( R_IsInitialized() )
+	{
 		qglDeleteBuffersARB( 1, ( const unsigned int* )& bufferObject );
+	}
 	// RB end
-	
+
 	ClearWithoutFreeing();
 }
 
@@ -552,7 +556,7 @@ void idIndexBuffer::Reference( const idIndexBuffer& other )
 	//assert( other.IsMapped() == false );	// this happens when building idTriangles while at the same time setting up triIndex_t
 	assert( other.GetAPIObject() != NULL );
 	assert( other.GetSize() > 0 );
-	
+
 	FreeBufferObject();
 	size = other.GetSize();						// this strips the MAPPED_FLAG
 	offsetInOtherBuffer = other.GetOffset();	// this strips the OWNS_BUFFER_FLAG
@@ -573,7 +577,7 @@ void idIndexBuffer::Reference( const idIndexBuffer& other, int refOffset, int re
 	assert( refOffset >= 0 );
 	assert( refSize >= 0 );
 	assert( refOffset + refSize <= other.GetSize() );
-	
+
 	FreeBufferObject();
 	size = refSize;
 	offsetInOtherBuffer = other.GetOffset() + refOffset;
@@ -593,18 +597,18 @@ void idIndexBuffer::Update( const void* data, int updateSize ) const
 	assert( IsMapped() == false );
 	assert_16_byte_aligned( data );
 	assert( ( GetOffset() & 15 ) == 0 );
-	
+
 	if( updateSize > size )
 	{
 		idLib::FatalError( "idIndexBuffer::Update: size overrun, %i > %i\n", updateSize, GetSize() );
 	}
-	
+
 	int numBytes = ( updateSize + 15 ) & ~15;
-	
+
 	// RB: 64 bit fixes, changed GLuint to GLintptrARB
 	GLintptrARB bufferObject = reinterpret_cast< GLintptrARB >( apiObject );
 	// RB end
-	
+
 	qglBindBufferARB( GL_ELEMENT_ARRAY_BUFFER_ARB, bufferObject );
 	qglBufferSubDataARB( GL_ELEMENT_ARRAY_BUFFER_ARB, GetOffset(), ( GLsizeiptrARB )numBytes, data );
 	/*
@@ -624,13 +628,13 @@ void* idIndexBuffer::MapBuffer( bufferMapType_t mapType ) const
 
 	assert( apiObject != NULL );
 	assert( IsMapped() == false );
-	
+
 	void* buffer = NULL;
-	
+
 	// RB: 64 bit fixes, changed GLuint to GLintptrARB
 	GLintptrARB bufferObject = reinterpret_cast< GLintptrARB >( apiObject );
 	// RB end
-	
+
 	qglBindBufferARB( GL_ELEMENT_ARRAY_BUFFER_ARB, bufferObject );
 	if( mapType == BM_READ )
 	{
@@ -655,9 +659,9 @@ void* idIndexBuffer::MapBuffer( bufferMapType_t mapType ) const
 	{
 		assert( false );
 	}
-	
+
 	SetMapped();
-	
+
 	if( buffer == NULL )
 	{
 		idLib::FatalError( "idIndexBuffer::MapBuffer: failed" );
@@ -674,17 +678,17 @@ void idIndexBuffer::UnmapBuffer() const
 {
 	assert( apiObject != NULL );
 	assert( IsMapped() );
-	
+
 	// RB: 64 bit fixes, changed GLuint to GLintptrARB
 	GLintptrARB bufferObject = reinterpret_cast< GLintptrARB >( apiObject );
 	// RB end
-	
+
 	qglBindBufferARB( GL_ELEMENT_ARRAY_BUFFER_ARB, bufferObject );
 	if( !qglUnmapBufferARB( GL_ELEMENT_ARRAY_BUFFER_ARB ) )
 	{
 		idLib::Printf( "idIndexBuffer::UnmapBuffer failed\n" );
 	}
-	
+
 	SetUnmapped();
 }
 
@@ -740,36 +744,36 @@ bool idJointBuffer::AllocBufferObject( const float* joints, int numAllocJoints )
 {
 	assert( apiObject == NULL );
 	assert_16_byte_aligned( joints );
-	
+
 	if( numAllocJoints <= 0 )
 	{
 		idLib::Error( "idJointBuffer::AllocBufferObject: joints = %i", numAllocJoints );
 	}
-	
+
 	numJoints = numAllocJoints;
-	
+
 	bool allocationFailed = false;
-	
+
 	const int numBytes = GetAllocedSize();
-	
+
 	GLuint buffer = 0;
 	qglGenBuffersARB( 1, &buffer );
 	qglBindBufferARB( GL_UNIFORM_BUFFER, buffer );
 	qglBufferDataARB( GL_UNIFORM_BUFFER, numBytes, NULL, GL_STREAM_DRAW_ARB );
 	qglBindBufferARB( GL_UNIFORM_BUFFER, 0 );
 	apiObject = reinterpret_cast< void* >( buffer );
-	
+
 	if( r_showBuffers.GetBool() )
 	{
 		idLib::Printf( "joint buffer alloc %p, api %p (%i joints)\n", this, GetAPIObject(), GetNumJoints() );
 	}
-	
+
 	// copy the data
 	if( joints != NULL )
 	{
 		Update( joints, numAllocJoints );
 	}
-	
+
 	return !allocationFailed;
 }
 
@@ -784,28 +788,28 @@ void idJointBuffer::FreeBufferObject()
 	{
 		UnmapBuffer();
 	}
-	
+
 	// if this is a sub-allocation inside a larger buffer, don't actually free anything.
 	if( OwnsBuffer() == false )
 	{
 		ClearWithoutFreeing();
 		return;
 	}
-	
+
 	if( apiObject == NULL )
 	{
 		return;
 	}
-	
+
 	// foresthale 2014-05-29: check R_IsInitialized() before getting the bool value, because GetBool crashes when exiting radiant with certain settings
 	if( R_IsInitialized() && r_showBuffers.GetBool() )
 	{
 		idLib::Printf( "joint buffer free %p, api %p (%i joints)\n", this, GetAPIObject(), GetNumJoints() );
 	}
-	
+
 	// RB: 64 bit fixes, changed GLuint to GLintptrARB
 	GLintptrARB buffer = reinterpret_cast< GLintptrARB >( apiObject );
-	
+
 	// foresthale 2014-05-28: we have to check if OpenGL was already shut down as this gets called from doexit()
 	if( R_IsInitialized() )
 	{
@@ -813,7 +817,7 @@ void idJointBuffer::FreeBufferObject()
 		qglDeleteBuffersARB( 1, ( const GLuint* )& buffer );
 	}
 	// RB end
-	
+
 	ClearWithoutFreeing();
 }
 
@@ -828,7 +832,7 @@ void idJointBuffer::Reference( const idJointBuffer& other )
 	assert( other.IsMapped() == false );
 	assert( other.GetAPIObject() != NULL );
 	assert( other.GetNumJoints() > 0 );
-	
+
 	FreeBufferObject();
 	numJoints = other.GetNumJoints();			// this strips the MAPPED_FLAG
 	offsetInOtherBuffer = other.GetOffset();	// this strips the OWNS_BUFFER_FLAG
@@ -850,7 +854,7 @@ void idJointBuffer::Reference( const idJointBuffer& other, int jointRefOffset, i
 	assert( numRefJoints >= 0 );
 	assert( jointRefOffset + numRefJoints * sizeof( idJointMat ) <= other.GetNumJoints() * sizeof( idJointMat ) );
 	assert_16_byte_aligned( numRefJoints * 3 * 4 * sizeof( float ) );
-	
+
 	FreeBufferObject();
 	numJoints = numRefJoints;
 	offsetInOtherBuffer = other.GetOffset() + jointRefOffset;
@@ -869,18 +873,18 @@ void idJointBuffer::Update( const float* joints, int numUpdateJoints ) const
 	assert( IsMapped() == false );
 	assert_16_byte_aligned( joints );
 	assert( ( GetOffset() & 15 ) == 0 );
-	
+
 	if( numUpdateJoints > numJoints )
 	{
 		idLib::FatalError( "idJointBuffer::Update: size overrun, %i > %i\n", numUpdateJoints, numJoints );
 	}
-	
+
 	const int numBytes = numUpdateJoints * 3 * 4 * sizeof( float );
-	
+
 	// RB: 64 bit fixes, changed GLuint to GLintptrARB
 	qglBindBufferARB( GL_UNIFORM_BUFFER, reinterpret_cast< GLintptrARB >( apiObject ) );
 	// RB end
-	
+
 	qglBufferSubDataARB( GL_UNIFORM_BUFFER, GetOffset(), ( GLsizeiptrARB )numBytes, joints );
 }
 
@@ -894,15 +898,15 @@ float* idJointBuffer::MapBuffer( bufferMapType_t mapType ) const
 	assert( IsMapped() == false );
 	assert( mapType == BM_WRITE );
 	assert( apiObject != NULL );
-	
+
 	int numBytes = GetAllocedSize();
-	
+
 	void* buffer = NULL;
-	
+
 	// RB: 64 bit fixes, changed GLuint to GLintptrARB
 	qglBindBufferARB( GL_UNIFORM_BUFFER, reinterpret_cast< GLintptrARB >( apiObject ) );
 	// RB end
-	
+
 	numBytes = numBytes;
 	assert( GetOffset() == 0 );
 	//buffer = qglMapBufferARB( GL_UNIFORM_BUFFER, GL_WRITE_ONLY_ARB );
@@ -911,9 +915,9 @@ float* idJointBuffer::MapBuffer( bufferMapType_t mapType ) const
 	{
 		buffer = ( byte* )buffer + GetOffset();
 	}
-	
+
 	SetMapped();
-	
+
 	if( buffer == NULL )
 	{
 		idLib::FatalError( "idJointBuffer::MapBuffer: failed" );
@@ -930,16 +934,16 @@ void idJointBuffer::UnmapBuffer() const
 {
 	assert( apiObject != NULL );
 	assert( IsMapped() );
-	
+
 	// RB: 64 bit fixes, changed GLuint to GLintptrARB
 	qglBindBufferARB( GL_UNIFORM_BUFFER, reinterpret_cast< GLintptrARB >( apiObject ) );
 	// RB end
-	
+
 	if( !qglUnmapBufferARB( GL_UNIFORM_BUFFER ) )
 	{
 		idLib::Printf( "idJointBuffer::UnmapBuffer failed\n" );
 	}
-	
+
 	SetUnmapped();
 }
 
@@ -964,7 +968,7 @@ void idJointBuffer::Swap( idJointBuffer& other )
 {
 	// Make sure the ownership of the buffer is not transferred to an unintended place.
 	assert( other.OwnsBuffer() == OwnsBuffer() );
-	
+
 	SwapValues( other.numJoints, numJoints );
 	SwapValues( other.offsetInOtherBuffer, offsetInOtherBuffer );
 	SwapValues( other.apiObject, apiObject );

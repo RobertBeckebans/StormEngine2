@@ -69,19 +69,21 @@ void MaterialPropTreeView::SetPropertyListType( int listType, int stageNum )
 
 	currentListType = listType;
 	currentStage = stageNum;
-	
+
 	m_Tree.DeleteAllItems();
-	
+
 	//idList<MaterialProp_t*>* propList = NULL;
 	MaterialDefList* propList = MaterialDefManager::GetMaterialDefs( currentListType );
 	currentPropDefs = propList;
-	
+
 	if( !propList )
+	{
 		return;
-		
+	}
+
 	CPropTreeItem* pCurrentGroup = NULL;
 	CPropTreeItem* pCurrentNode = NULL;
-	
+
 	for( int i = 0; i < propList->Num(); i++ )
 	{
 		switch( ( *propList )[i]->type )
@@ -90,9 +92,11 @@ void MaterialPropTreeView::SetPropertyListType( int listType, int stageNum )
 			{
 				pCurrentGroup = m_Tree.InsertItem( new CPropTreeItem() );
 				pCurrentNode = pCurrentGroup;
-				
+
 				if( !registry.GetBool( va( "Expand%d%s", currentListType, ( *propList )[i]->displayName.c_str() ) ) )
+				{
 					pCurrentGroup->Expand();
+				}
 			}
 			break;
 			case MaterialDef::MATERIAL_DEF_TYPE_BOOL:
@@ -107,11 +111,11 @@ void MaterialPropTreeView::SetPropertyListType( int listType, int stageNum )
 			{
 				//pCurrentNode = m_Tree.InsertItem(new CPropTreeItemEdit(), pCurrentGroup);
 				pCurrentNode = m_Tree.InsertItem( new CPropTreeItemFileEdit(), pCurrentGroup );
-				
+
 			}
 			break;
 		}
-		
+
 		if( pCurrentNode )
 		{
 			( *propList )[i]->SetViewData( PROP_TREE_VIEW, pCurrentNode->GetCtrlID() );
@@ -119,7 +123,7 @@ void MaterialPropTreeView::SetPropertyListType( int listType, int stageNum )
 			pCurrentNode->SetInfoText( ( *propList )[i]->displayInfo );
 		}
 	}
-	
+
 	RefreshProperties();
 }
 
@@ -164,14 +168,14 @@ void MaterialPropTreeView::OnPropertyChangeNotification( NMHDR* nmhdr, LRESULT* 
 
 	NMPROPTREE*	nmProp = ( NMPROPTREE* )nmhdr;
 	CPropTreeItem*	item = nmProp->pItem;
-	
+
 	internalChange = true;
-	
+
 	MaterialDef* propItem = FindDefForTreeID( item->GetCtrlID() );
 	if( propItem )
 	{
 		MaterialDoc* materialDoc = materialDocManager->GetCurrentMaterialDoc();
-		
+
 		switch( propItem->type )
 		{
 			case MaterialDef::MATERIAL_DEF_TYPE_BOOL:
@@ -188,9 +192,9 @@ void MaterialPropTreeView::OnPropertyChangeNotification( NMHDR* nmhdr, LRESULT* 
 			break;
 		}
 	}
-	
+
 	internalChange = false;
-	
+
 	*lresult = 0;
 }
 
@@ -202,11 +206,11 @@ void MaterialPropTreeView::OnPropertyItemExpanding( NMHDR* nmhdr, LRESULT* lresu
 
 	NMPROPTREE*	nmProp = ( NMPROPTREE* )nmhdr;
 	CPropTreeItem*	item = nmProp->pItem;
-	
+
 	//The item isn't toggled till after this returns so use the opposite of the current state.
 	registry.SetBool( va( "Expand%d%s", currentListType, item->GetLabelText() ), item->IsExpanded() ? true : false );
 	registry.Save();
-	
+
 	*lresult = 0;
 }
 
@@ -221,9 +225,11 @@ MaterialDef* MaterialPropTreeView::FindDefForTreeID( UINT treeID )
 	for( int i = 0; i < c; i++ )
 	{
 		if( ( *currentPropDefs )[i]->GetViewData( PROP_TREE_VIEW ) == treeID )
+		{
 			return ( *currentPropDefs )[i];
+		}
 	}
-	
+
 	return NULL;
 }
 
@@ -234,12 +240,14 @@ void MaterialPropTreeView::RefreshProperties()
 {
 
 	MaterialDefList* propList = MaterialDefManager::GetMaterialDefs( currentListType );
-	
+
 	if( !propList )
+	{
 		return;
-		
+	}
+
 	MaterialDoc* materialDoc = materialDocManager->GetCurrentMaterialDoc();
-	
+
 	for( int i = 0; i < propList->Num(); i++ )
 	{
 		switch( ( *propList )[i]->type )
@@ -260,7 +268,7 @@ void MaterialPropTreeView::RefreshProperties()
 			break;
 		}
 	}
-	
+
 	Invalidate();
 }
 

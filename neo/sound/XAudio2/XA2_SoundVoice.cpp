@@ -124,7 +124,7 @@ void idSoundVoice_XAudio2::Create( const idSoundSample* leadinSample_, const idS
 	}
 	leadinSample = ( idSoundSample_XAudio2* )leadinSample_;
 	loopingSample = ( idSoundSample_XAudio2* )loopingSample_;
-	
+
 	if( pSourceVoice != NULL && CompatibleFormat( leadinSample ) )
 	{
 		sampleRate = leadinSample->format.basic.samplesPerSec;
@@ -135,7 +135,7 @@ void idSoundVoice_XAudio2::Create( const idSoundSample* leadinSample_, const idS
 		formatTag = leadinSample->format.basic.formatTag;
 		numChannels = leadinSample->format.basic.numChannels;
 		sampleRate = leadinSample->format.basic.samplesPerSec;
-		
+
 		soundSystemLocal.hardware.pXAudio2->CreateSourceVoice( &pSourceVoice, ( const WAVEFORMATEX* )&leadinSample->format, XAUDIO2_VOICE_USEFILTER, 4.0f, &streamContext );
 		if( pSourceVoice == NULL )
 		{
@@ -190,7 +190,7 @@ void idSoundVoice_XAudio2::Start( int offsetMS, int ssFlags )
 	{
 		idLib::Printf( "%dms: %p starting %s @ %dms\n", Sys_Milliseconds(), pSourceVoice, leadinSample ? leadinSample->GetName() : "<null>", offsetMS );
 	}
-	
+
 	if( !leadinSample )
 	{
 		return;
@@ -199,35 +199,35 @@ void idSoundVoice_XAudio2::Start( int offsetMS, int ssFlags )
 	{
 		return;
 	}
-	
+
 	if( leadinSample->IsDefault() )
 	{
 		idLib::Warning( "Starting defaulted sound sample %s", leadinSample->GetName() );
 	}
-	
+
 	bool flicker = ( ssFlags & SSF_NO_FLICKER ) == 0;
-	
+
 	if( flicker != hasVUMeter )
 	{
 		hasVUMeter = flicker;
-		
+
 		if( flicker )
 		{
 			IUnknown* vuMeter = NULL;
 			if( XAudio2CreateVolumeMeter( &vuMeter, 0 ) == S_OK )
 			{
-			
+
 				XAUDIO2_EFFECT_DESCRIPTOR descriptor;
 				descriptor.InitialState = true;
 				descriptor.OutputChannels = leadinSample->NumChannels();
 				descriptor.pEffect = vuMeter;
-				
+
 				XAUDIO2_EFFECT_CHAIN chain;
 				chain.EffectCount = 1;
 				chain.pEffectDescriptors = &descriptor;
-				
+
 				pSourceVoice->SetEffectChain( &chain );
-				
+
 				vuMeter->Release();
 			}
 		}
@@ -236,14 +236,14 @@ void idSoundVoice_XAudio2::Start( int offsetMS, int ssFlags )
 			pSourceVoice->SetEffectChain( NULL );
 		}
 	}
-	
+
 	assert( offsetMS >= 0 );
 	int offsetSamples = MsecToSamples( offsetMS, leadinSample->SampleRate() );
 	if( loopingSample == NULL && offsetSamples >= leadinSample->playLength )
 	{
 		return;
 	}
-	
+
 	RestartAt( offsetSamples );
 	Update();
 	UnPause();
@@ -257,7 +257,7 @@ idSoundVoice_XAudio2::RestartAt
 int idSoundVoice_XAudio2::RestartAt( int offsetSamples )
 {
 	offsetSamples &= ~127;
-	
+
 	idSoundSample_XAudio2* sample = leadinSample;
 	if( offsetSamples >= leadinSample->playLength )
 	{
@@ -271,7 +271,7 @@ int idSoundVoice_XAudio2::RestartAt( int offsetSamples )
 			return 0;
 		}
 	}
-	
+
 	int previousNumSamples = 0;
 	for( int i = 0; i < sample->buffers.Num(); i++ )
 	{
@@ -281,7 +281,7 @@ int idSoundVoice_XAudio2::RestartAt( int offsetSamples )
 		}
 		previousNumSamples = sample->buffers[i].numSamples;
 	}
-	
+
 	return 0;
 }
 
@@ -303,11 +303,11 @@ int idSoundVoice_XAudio2::SubmitBuffer( idSoundSample_XAudio2* sample, int buffe
 		idLib::Warning( "No free buffer contexts!" );
 		return 0;
 	}
-	
+
 	bufferContext->voice = this;
 	bufferContext->sample = sample;
 	bufferContext->bufferNumber = bufferNumber;
-	
+
 	XAUDIO2_BUFFER buffer = { 0 };
 	if( offset > 0 )
 	{
@@ -327,7 +327,7 @@ int idSoundVoice_XAudio2::SubmitBuffer( idSoundSample_XAudio2* sample, int buffe
 		buffer.Flags = XAUDIO2_END_OF_STREAM;
 	}
 	pSourceVoice->SubmitSourceBuffer( &buffer );
-	
+
 	return buffer.AudioBytes;
 }
 
@@ -342,27 +342,27 @@ bool idSoundVoice_XAudio2::Update()
 	{
 		return false;
 	}
-	
+
 	XAUDIO2_VOICE_STATE state;
 	pSourceVoice->GetState( &state );
-	
+
 	const int srcChannels = leadinSample->NumChannels();
-	
+
 	float pLevelMatrix[ MAX_CHANNELS_PER_VOICE * MAX_CHANNELS_PER_VOICE ] = { 0 };
 	CalculateSurround( srcChannels, pLevelMatrix, 1.0f );
-	
+
 	if( s_skipHardwareSets.GetBool() )
 	{
 		return true;
 	}
-	
+
 	pSourceVoice->SetOutputMatrix( soundSystemLocal.hardware.pMasterVoice, srcChannels, dstChannels, pLevelMatrix, OPERATION_SET );
-	
+
 	assert( idMath::Fabs( gain ) <= XAUDIO2_MAX_VOLUME_LEVEL );
 	pSourceVoice->SetVolume( gain, OPERATION_SET );
-	
+
 	SetSampleRate( sampleRate, OPERATION_SET );
-	
+
 	// we don't do this any longer because we pause and unpause explicitly when the soundworld is paused or unpaused
 	// UnPause();
 	return true;
@@ -468,36 +468,36 @@ float idSoundVoice_XAudio2::GetAmplitude()
 	{
 		return 1.0f;
 	}
-	
+
 	float peakLevels[ MAX_CHANNELS_PER_VOICE ];
 	float rmsLevels[ MAX_CHANNELS_PER_VOICE ];
-	
+
 	XAUDIO2FX_VOLUMEMETER_LEVELS levels;
 	levels.ChannelCount = leadinSample->NumChannels();
 	levels.pPeakLevels = peakLevels;
 	levels.pRMSLevels = rmsLevels;
-	
+
 	if( levels.ChannelCount > MAX_CHANNELS_PER_VOICE )
 	{
 		levels.ChannelCount = MAX_CHANNELS_PER_VOICE;
 	}
-	
+
 	if( pSourceVoice->GetEffectParameters( 0, &levels, sizeof( levels ) ) != S_OK )
 	{
 		return 0.0f;
 	}
-	
+
 	if( levels.ChannelCount == 1 )
 	{
 		return rmsLevels[0];
 	}
-	
+
 	float rms = 0.0f;
 	for( uint32 i = 0; i < levels.ChannelCount; i++ )
 	{
 		rms += rmsLevels[i];
 	}
-	
+
 	return rms / ( float )levels.ChannelCount;
 }
 
@@ -512,9 +512,9 @@ void idSoundVoice_XAudio2::SetSampleRate( uint32 newSampleRate, uint32 operation
 	{
 		return;
 	}
-	
+
 	sampleRate = newSampleRate;
-	
+
 	XAUDIO2_FILTER_PARAMETERS filter;
 	filter.Type = LowPassFilter;
 	filter.OneOverQ = 1.0f;			// [0.0f, XAUDIO2_MAX_FILTER_ONEOVERQ]
@@ -529,13 +529,13 @@ void idSoundVoice_XAudio2::SetSampleRate( uint32 newSampleRate, uint32 operation
 	}
 	assert( filter.Frequency >= 0.0f && filter.Frequency <= XAUDIO2_MAX_FILTER_FREQUENCY );
 	filter.Frequency = idMath::ClampFloat( 0.0f, XAUDIO2_MAX_FILTER_FREQUENCY, filter.Frequency );
-	
+
 	pSourceVoice->SetFilterParameters( &filter, operationSet );
-	
+
 	float freqRatio = pitch * ( float )sampleRate / ( float )sourceVoiceRate;
 	assert( freqRatio >= XAUDIO2_MIN_FREQ_RATIO && freqRatio <= XAUDIO2_MAX_FREQ_RATIO );
 	freqRatio = idMath::ClampFloat( XAUDIO2_MIN_FREQ_RATIO, XAUDIO2_MAX_FREQ_RATIO, freqRatio );
-	
+
 	// if the value specified for maxFreqRatio is too high for the specified format, the call to CreateSourceVoice will fail
 	if( numChannels == 1 )
 	{
@@ -556,7 +556,7 @@ idSoundVoice_XAudio2::OnBufferStart
 void idSoundVoice_XAudio2::OnBufferStart( idSoundSample_XAudio2* sample, int bufferNumber )
 {
 	SetSampleRate( sample->SampleRate(), XAUDIO2_COMMIT_NOW );
-	
+
 	idSoundSample_XAudio2* nextSample = sample;
 	int nextBuffer = bufferNumber + 1;
 	if( nextBuffer == sample->buffers.Num() )
@@ -571,6 +571,6 @@ void idSoundVoice_XAudio2::OnBufferStart( idSoundSample_XAudio2* sample, int buf
 		}
 		nextBuffer = 0;
 	}
-	
+
 	SubmitBuffer( nextSample, nextBuffer, 0 );
 }

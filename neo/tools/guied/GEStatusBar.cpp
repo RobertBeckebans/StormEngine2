@@ -50,14 +50,14 @@ Creates a new status bar
 bool rvGEStatusBar::Create( HWND parent, UINT id, bool visible )
 {
 	mWnd = CreateStatusWindow( WS_CHILD | WS_VISIBLE | WS_BORDER, "", parent, id );
-	
+
 	if( !mWnd )
 	{
 		return false;
 	}
-	
+
 	Show( visible );
-	
+
 	return true;
 }
 
@@ -71,7 +71,7 @@ Resizes the status bar and updates the content
 void rvGEStatusBar::Resize( int width, int height )
 {
 	SendMessage( mWnd, WM_SIZE, 0, MAKELONG( width, height ) );
-	
+
 	Update( );
 }
 
@@ -88,13 +88,13 @@ void rvGEStatusBar::Update( void )
 	SIZE	zoomSize;
 	SIZE	trisSize;
 	int		parts[5];
-	
+
 	GetWindowRect( mWnd, &rStatus );
-	
+
 	if( mSimple )
 	{
 		parts[0] = -1;
-		
+
 		SendMessage( mWnd, SB_SETPARTS, 1, ( LONG )parts );
 		SendMessage( mWnd, SB_SETTEXT, 1, ( LPARAM ) "" );
 	}
@@ -102,13 +102,13 @@ void rvGEStatusBar::Update( void )
 	{
 		zoomSize.cx = 85;
 		trisSize.cx = 65;
-		
+
 		parts[0] = ( rStatus.right - rStatus.left ) - zoomSize.cx - trisSize.cx - 40;
 		parts[1] = parts[0] + trisSize.cx;
 		parts[2] = parts[1] + zoomSize.cx;
 		parts[3] = parts[2] + 40;
 		parts[4] = -1;
-		
+
 		SendMessage( mWnd, SB_SETPARTS, 5, ( LONG )parts );
 		SendMessage( mWnd, SB_SETTEXT, 0, ( LPARAM ) "" );
 		SendMessage( mWnd, SB_SETTEXT, 1, ( LPARAM ) va( " Tris: %d", mTriangles ) );

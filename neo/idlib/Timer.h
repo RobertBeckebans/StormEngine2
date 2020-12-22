@@ -45,16 +45,16 @@ public:
 		TS_STARTED,
 		TS_STOPPED
 	};
-	
+
 	idTimer();
 	idTimer( double clockTicks );
 	~idTimer();
-	
+
 	idTimer			operator+( const idTimer& t ) const;
 	idTimer			operator-( const idTimer& t ) const;
 	idTimer& 		operator+=( const idTimer& t );
 	idTimer& 		operator-=( const idTimer& t );
-	
+
 	void			Start();
 	void			Stop();
 	void			Clear();
@@ -69,7 +69,7 @@ private:
 	TimerState		state;
 	double			start;
 	double			clockTicks;
-	
+
 	void			InitBaseClockTicks() const;
 };
 
@@ -228,14 +228,14 @@ class idTimerReport
 public:
 	idTimerReport();
 	~idTimerReport();
-	
+
 	void			SetReportName( const char* name );
 	int				AddReport( const char* name );
 	void			Clear();
 	void			Reset();
 	void			PrintReport();
 	void			AddTime( const char* name, idTimer* time );
-	
+
 private:
 	idList<idTimer*>timers;
 	idStrList		names;

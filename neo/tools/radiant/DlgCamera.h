@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 #define AFX_DLGCAMERA_H__59C12359_E3EB_4081_9F28_01793D75CF20__INCLUDED_
 
 #if _MSC_VER > 1000
-#pragma once
+	#pragma once
 #endif // _MSC_VER > 1000
 // DlgCamera.h : header file
 //
@@ -47,7 +47,7 @@ class CDlgCamera : public CDialog
 public:
 	CDlgCamera( CWnd* pParent = NULL ); // standard constructor
 	void setupFromCamera();
-	
+
 // Dialog Data
 	//{{AFX_DATA(CDlgCamera)
 	enum { IDD = IDD_DLG_CAMERA };
@@ -62,15 +62,15 @@ public:
 	CString	m_strType;
 	int		m_editPoints;
 	//}}AFX_DATA
-	
-	
+
+
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CDlgCamera)
 protected:
 	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	//}}AFX_VIRTUAL
-	
+
 // Implementation
 protected:
 	// Generated message map functions

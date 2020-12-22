@@ -43,15 +43,15 @@ void GL_SelectTexture( int unit )
 	{
 		return;
 	}
-	
+
 	if( unit < 0 || unit >= glConfig.maxTextureImageUnits )
 	{
 		common->Warning( "GL_SelectTexture: unit = %i", unit );
 		return;
 	}
-	
+
 	RENDERLOG_PRINTF( "GL_SelectTexture( %i );\n", unit );
-	
+
 	backEnd.glState.currenttmu = unit;
 }
 
@@ -69,7 +69,7 @@ void GL_Cull( int cullType )
 	{
 		return;
 	}
-	
+
 	if( cullType == CT_TWO_SIDED )
 	{
 		qglDisable( GL_CULL_FACE );
@@ -80,7 +80,7 @@ void GL_Cull( int cullType )
 		{
 			qglEnable( GL_CULL_FACE );
 		}
-		
+
 		if( cullType == CT_BACK_SIDED )
 		{
 			if( backEnd.viewDef->isMirror )
@@ -104,7 +104,7 @@ void GL_Cull( int cullType )
 			}
 		}
 	}
-	
+
 	backEnd.glState.faceCulling = cullType;
 }
 
@@ -154,7 +154,7 @@ void GL_DepthBoundsTest( const float zmin, const float zmax )
 	{
 		return;
 	}
-	
+
 	if( zmin == 0.0f && zmax == 0.0f )
 	{
 		qglDisable( GL_DEPTH_BOUNDS_TEST_EXT );
@@ -269,20 +269,20 @@ may touch, including the editor.
 void GL_SetDefaultState()
 {
 	RENDERLOG_PRINTF( "--- GL_SetDefaultState ---\n" );
-	
+
 	// foresthale 2014-02-23: switch to system framebuffer before we set default state as the qglDrawBuffer(GL_BACK) and qglReadBuffer(GL_BACK) would just cause errors
 	globalFramebuffers->BindSystemFramebuffer();
-	
+
 	qglClearDepth( 1.0f );
-	
+
 	// make sure our GL state vector is set correctly
 	memset( &backEnd.glState, 0, sizeof( backEnd.glState ) );
 	GL_State( 0, true );
-	
+
 	// These are changed by GL_Cull
 	qglCullFace( GL_FRONT_AND_BACK );
 	qglEnable( GL_CULL_FACE );
-	
+
 	// These are changed by GL_State
 	qglColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
 	qglBlendFunc( GL_ONE, GL_ZERO );
@@ -292,7 +292,7 @@ void GL_SetDefaultState()
 	qglDisable( GL_POLYGON_OFFSET_FILL );
 	qglDisable( GL_POLYGON_OFFSET_LINE );
 	qglPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-	
+
 	// These should never be changed
 	// DG: deprecated in opengl 3.2 and not needed because we don't do fixed function pipeline
 	// qglShadeModel( GL_SMOOTH );
@@ -302,7 +302,7 @@ void GL_SetDefaultState()
 	qglEnable( GL_SCISSOR_TEST );
 	qglDrawBuffer( GL_BACK );
 	qglReadBuffer( GL_BACK );
-	
+
 	if( r_useScissor.GetBool() )
 	{
 		qglScissor( 0, 0, renderSystem->GetWidth(), renderSystem->GetHeight() );
@@ -319,7 +319,7 @@ This routine is responsible for setting the most commonly changed state
 void GL_State( uint64 stateBits, bool forceGlState )
 {
 	uint64 diff = stateBits ^ backEnd.glState.glStateBits;
-	
+
 	if( !r_useStateCaching.GetBool() || forceGlState )
 	{
 		// make sure everything is set all the time, so we
@@ -330,7 +330,7 @@ void GL_State( uint64 stateBits, bool forceGlState )
 	{
 		return;
 	}
-	
+
 	//
 	// check depthFunc bits
 	//
@@ -352,7 +352,7 @@ void GL_State( uint64 stateBits, bool forceGlState )
 				break;
 		}
 	}
-	
+
 	//
 	// check blend bits
 	//
@@ -360,7 +360,7 @@ void GL_State( uint64 stateBits, bool forceGlState )
 	{
 		GLenum srcFactor = GL_ONE;
 		GLenum dstFactor = GL_ZERO;
-		
+
 		switch( stateBits & GLS_SRCBLEND_BITS )
 		{
 			case GLS_SRCBLEND_ZERO:
@@ -391,7 +391,7 @@ void GL_State( uint64 stateBits, bool forceGlState )
 				assert( !"GL_State: invalid src blend state bits\n" );
 				break;
 		}
-		
+
 		switch( stateBits & GLS_DSTBLEND_BITS )
 		{
 			case GLS_DSTBLEND_ZERO:
@@ -422,7 +422,7 @@ void GL_State( uint64 stateBits, bool forceGlState )
 				assert( !"GL_State: invalid dst blend state bits\n" );
 				break;
 		}
-		
+
 		// Only actually update GL's blend func if blending is enabled.
 		if( srcFactor == GL_ONE && dstFactor == GL_ZERO )
 		{
@@ -434,7 +434,7 @@ void GL_State( uint64 stateBits, bool forceGlState )
 			qglBlendFunc( srcFactor, dstFactor );
 		}
 	}
-	
+
 	//
 	// check depthmask
 	//
@@ -449,7 +449,7 @@ void GL_State( uint64 stateBits, bool forceGlState )
 			qglDepthMask( GL_TRUE );
 		}
 	}
-	
+
 	//
 	// check colormask
 	//
@@ -461,7 +461,7 @@ void GL_State( uint64 stateBits, bool forceGlState )
 		GLboolean a = ( stateBits & GLS_ALPHAMASK ) ? GL_FALSE : GL_TRUE;
 		qglColorMask( r, g, b, a );
 	}
-	
+
 	//
 	// fill/line mode
 	//
@@ -476,7 +476,7 @@ void GL_State( uint64 stateBits, bool forceGlState )
 			qglPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 		}
 	}
-	
+
 	//
 	// polygon offset
 	//
@@ -494,7 +494,7 @@ void GL_State( uint64 stateBits, bool forceGlState )
 			qglDisable( GL_POLYGON_OFFSET_LINE );
 		}
 	}
-	
+
 #if !defined( USE_CORE_PROFILE )
 	//
 	// alpha test
@@ -504,7 +504,7 @@ void GL_State( uint64 stateBits, bool forceGlState )
 		if( ( stateBits & GLS_ALPHATEST_FUNC_BITS ) != 0 )
 		{
 			qglEnable( GL_ALPHA_TEST );
-			
+
 			GLenum func = GL_ALWAYS;
 			switch( stateBits & GLS_ALPHATEST_FUNC_BITS )
 			{
@@ -529,7 +529,7 @@ void GL_State( uint64 stateBits, bool forceGlState )
 		}
 	}
 #endif
-	
+
 	//
 	// stencil
 	//
@@ -549,7 +549,7 @@ void GL_State( uint64 stateBits, bool forceGlState )
 		GLuint ref = GLuint( ( stateBits & GLS_STENCIL_FUNC_REF_BITS ) >> GLS_STENCIL_FUNC_REF_SHIFT );
 		GLuint mask = GLuint( ( stateBits & GLS_STENCIL_FUNC_MASK_BITS ) >> GLS_STENCIL_FUNC_MASK_SHIFT );
 		GLenum func = 0;
-		
+
 		switch( stateBits & GLS_STENCIL_FUNC_BITS )
 		{
 			case GLS_STENCIL_FUNC_NEVER:
@@ -584,7 +584,7 @@ void GL_State( uint64 stateBits, bool forceGlState )
 		GLenum sFail = 0;
 		GLenum zFail = 0;
 		GLenum pass = 0;
-		
+
 		switch( stateBits & GLS_STENCIL_OP_FAIL_BITS )
 		{
 			case GLS_STENCIL_OP_FAIL_KEEP:
@@ -668,7 +668,7 @@ void GL_State( uint64 stateBits, bool forceGlState )
 		}
 		qglStencilOp( sFail, zFail, pass );
 	}
-	
+
 	backEnd.glState.glStateBits = stateBits;
 }
 

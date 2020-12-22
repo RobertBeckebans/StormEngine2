@@ -50,16 +50,16 @@ typedef struct
 typedef struct
 {
 	int						timeValue;
-	
+
 	int						numVertexes;
 	int						numTVertexes;
 	int						numCVertexes;
 	int						numFaces;
 	int						numTVFaces;
 	int						numCVFaces;
-	
+
 	idVec3					transform[4];			// applied to normals
-	
+
 	bool					colorsParsed;
 	bool					normalsParsed;
 	idVec3* 				vertexes;
@@ -80,9 +80,9 @@ typedef struct
 {
 	char					name[128];
 	int						materialRef;
-	
+
 	aseMesh_t				mesh;
-	
+
 	// frames are only present with animations
 	idList<aseMesh_t*, TAG_MODEL>		frames;			// aseMesh_t
 } aseObject_t;

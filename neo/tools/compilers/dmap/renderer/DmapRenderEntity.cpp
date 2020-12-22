@@ -36,7 +36,7 @@ idDmapRenderEntityLocal::idDmapRenderEntityLocal()
 {
 	memset( &parms, 0, sizeof( parms ) );
 	memset( modelMatrix, 0, sizeof( modelMatrix ) );
-	
+
 	world = NULL;
 	index = 0;
 	lastModifiedFrameNum = 0;
@@ -94,7 +94,7 @@ idDmapRenderLightLocal::idDmapRenderLightLocal()
 	memset( lightProject, 0, sizeof( lightProject ) );
 	memset( frustum, 0, sizeof( frustum ) );
 	memset( frustumWindings, 0, sizeof( frustumWindings ) );
-	
+
 	lightHasMoved = false;
 	world = NULL;
 	index = 0;

@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 #define GEZORDERMODIFIER_H_
 
 #ifndef GEMODIFIER_H_
-#include "GEModifier.h"
+	#include "GEModifier.h"
 #endif
 
 class rvGEZOrderModifier : public rvGEModifier
@@ -45,13 +45,13 @@ public:
 		ZO_FRONT,
 		ZO_BACK,
 	};
-	
+
 	rvGEZOrderModifier( const char* name, idWindow* window, EZOrderChange change );
-	
+
 	virtual bool		Apply( void );
 	virtual bool		Undo( void );
 	virtual bool		IsValid( void );
-	
+
 protected:
 
 	idWindow*	mBefore;

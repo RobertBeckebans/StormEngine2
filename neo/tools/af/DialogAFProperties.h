@@ -35,18 +35,18 @@ class DialogAFProperties : public CDialog
 {
 
 	DECLARE_DYNAMIC( DialogAFProperties )
-	
+
 public:
 	DialogAFProperties( CWnd* pParent = NULL );   // standard constructor
 	virtual				~DialogAFProperties();
 	void				LoadFile( idDeclAF* af );
 	void				SaveFile( void );
-	
+
 	DialogAFBody* 		bodyDlg;
 	DialogAFConstraint* constraintDlg;
-	
+
 	enum				{ IDD = IDD_DIALOG_AF_PROPERTIES };
-	
+
 protected:
 	virtual void		DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
 	virtual INT_PTR		OnToolHitTest( CPoint point, TOOLINFO* pTI ) const;
@@ -77,12 +77,12 @@ protected:
 	afx_msg void		OnEnChangeEditMaximummovetime();
 	afx_msg void		OnEnChangeEditLineartolerance();
 	afx_msg void		OnEnChangeEditAngulartolerance();
-	
+
 	DECLARE_MESSAGE_MAP()
-	
+
 private:
 	idDeclAF* 			file;
-	
+
 	//{{AFX_DATA(DialogAFProperties)
 	CEdit				m_editModel;
 	CEdit				m_editSkin;
@@ -104,9 +104,9 @@ private:
 	float				m_linearTolerance;
 	float				m_angularTolerance;
 	//}}AFX_DATA
-	
+
 	static toolTip_t	toolTips[];
-	
+
 private:
 	void				UpdateFile( void );
 	void				ClearFile( void );

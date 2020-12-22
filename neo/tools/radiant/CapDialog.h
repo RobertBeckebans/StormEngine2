@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 #define AFX_CAPDIALOG_H__10637162_2BD2_11D2_B030_00AA00A410FC__INCLUDED_
 
 #if _MSC_VER >= 1000
-#pragma once
+	#pragma once
 #endif // _MSC_VER >= 1000
 // CapDialog.h : header file
 //
@@ -45,7 +45,7 @@ class CCapDialog : public CDialog
 public:
 	static enum {BEVEL = 0, ENDCAP, IBEVEL, IENDCAP};
 	CCapDialog( CWnd* pParent = NULL ); // standard constructor
-	
+
 	int getCapType()
 	{
 		return m_nCap;
@@ -55,15 +55,15 @@ public:
 	enum { IDD = IDD_DIALOG_CAP };
 	int		m_nCap;
 	//}}AFX_DATA
-	
-	
+
+
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CCapDialog)
 protected:
 	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	//}}AFX_VIRTUAL
-	
+
 // Implementation
 protected:
 

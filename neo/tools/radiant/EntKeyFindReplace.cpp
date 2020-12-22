@@ -47,11 +47,11 @@ If you have questions concerning this license or the applicable additional terms
 
 // foresthale 2014-05-29: let's not use the MFC DEBUG_NEW when we have our own...
 #ifdef ID_DEBUG_NEW_MFC
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+	#ifdef _DEBUG
+		#define new DEBUG_NEW
+		#undef THIS_FILE
+		static char THIS_FILE[] = __FILE__;
+	#endif
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
@@ -72,7 +72,7 @@ CEntKeyFindReplace::CEntKeyFindReplace(	CString* p_strFindKey,
 	m_pStrReplaceValue	= p_strReplaceValue;
 	m_pbWholeStringMatchOnly = p_bWholeStringMatchOnly;
 	m_pbSelectAllMatchingEnts = p_bSelectAllMatchingEnts;
-	
+
 	//{{AFX_DATA_INIT(CEntKeyFindReplace)
 	m_strFindKey	  = *m_pStrFindKey;
 	m_strFindValue	  = *m_pStrFindValue;
@@ -147,7 +147,7 @@ void CEntKeyFindReplace::OnFind()
 	// quick check, if no key value is specified then there's not much to do...
 	//
 	UpdateData( DIALOG_TO_DATA );
-	
+
 	if( m_strFindKey.IsEmpty() && m_strFindValue.IsEmpty() )
 	{
 		ErrorBox( "Empty FIND fields!" );
@@ -173,7 +173,7 @@ void CEntKeyFindReplace::OnFind()
 void CEntKeyFindReplace::CopyFields()
 {
 	UpdateData( DIALOG_TO_DATA );
-	
+
 	*m_pStrFindKey		= m_strFindKey;
 	*m_pStrFindValue	= m_strFindValue;
 	*m_pStrReplaceKey	= m_strReplaceKey;
@@ -186,18 +186,18 @@ void CEntKeyFindReplace::CopyFields()
 void CEntKeyFindReplace::OnKeycopy()
 {
 	UpdateData( DIALOG_TO_DATA );
-	
+
 	m_strReplaceKey = m_strFindKey;
-	
+
 	UpdateData( DATA_TO_DIALOG );
 }
 
 void CEntKeyFindReplace::OnValuecopy()
 {
 	UpdateData( DIALOG_TO_DATA );
-	
+
 	m_strReplaceValue = m_strFindValue;
-	
+
 	UpdateData( DATA_TO_DIALOG );
 }
 

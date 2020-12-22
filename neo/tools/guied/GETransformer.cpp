@@ -56,7 +56,7 @@ bool rvGETransformer::Create( HWND parent, bool visible )
 	wndClass.lpszMenuName  = NULL;
 	wndClass.hInstance     = win32.hInstance;
 	RegisterClassEx( &wndClass );
-	
+
 	mWnd = CreateWindowEx( WS_EX_TOOLWINDOW,
 						   "GUIEDITOR_TRANSFORMER_CLASS",
 						   "Transformer",
@@ -66,17 +66,17 @@ bool rvGETransformer::Create( HWND parent, bool visible )
 						   NULL,
 						   win32.hInstance,
 						   this );
-						   
+
 	if( !mWnd )
 	{
 		return false;
 	}
-	
+
 	if( !gApp.GetOptions().GetWindowPlacement( "transformer", mWnd ) )
 	{
 		RECT rParent;
 		RECT rTrans;
-		
+
 		GetWindowRect( parent, &rParent );
 		GetWindowRect( mWnd, &rTrans );
 		SetWindowPos( mWnd, NULL,
@@ -85,25 +85,25 @@ bool rvGETransformer::Create( HWND parent, bool visible )
 					  0, 0,
 					  SWP_NOZORDER | SWP_NOSIZE );
 	}
-	
+
 	Show( visible );
-	
+
 	return true;
 }
 
 LRESULT CALLBACK rvGETransformer::WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
 	rvGETransformer* trans = ( rvGETransformer* ) GetWindowLongPtr( hWnd, GWLP_USERDATA );
-	
+
 	switch( msg )
 	{
 		case WM_NCACTIVATE:
 			return gApp.ToolWindowActivate( hWnd, msg, wParam, lParam );
-			
+
 		case WM_ACTIVATE:
 			common->ActivateTool( LOWORD( wParam ) != WA_INACTIVE );
 			break;
-			
+
 		case WM_DESTROY:
 			gApp.GetOptions().SetWindowPlacement( "transformer", hWnd );
 			break;
@@ -112,47 +112,47 @@ LRESULT CALLBACK rvGETransformer::WndProc( HWND hWnd, UINT msg, WPARAM wParam, L
 			break;
 		case WM_ERASEBKGND:
 			return TRUE;
-			
+
 		case WM_CREATE:
 		{
 			LPCREATESTRUCT	cs;
-			
+
 			// Attach the class to the window first
 			cs = ( LPCREATESTRUCT ) lParam;
 			trans = ( rvGETransformer* ) cs->lpCreateParams;
 			SetWindowLongPtr( hWnd, GWLP_USERDATA, ( LONG_PTR )trans );
-			
+
 			trans->mWnd = hWnd;
 			trans->mDlg = CreateDialogParam( gApp.GetInstance(), MAKEINTRESOURCE( IDD_GUIED_TRANSFORMER ),
 											 hWnd, DlgProc, ( LPARAM )trans );
-											 
+
 			RECT rDlg;
 			RECT rWindow;
 			RECT rClient;
-			
+
 			GetWindowRect( trans->mWnd, &rWindow );
 			GetClientRect( trans->mWnd, &rClient );
 			GetWindowRect( trans->mDlg, &rDlg );
-			
+
 			SetWindowPos( trans->mWnd, NULL, 0, 0,
 						  ( rWindow.right - rWindow.left ) - ( rClient.right - rClient.left ) + ( rDlg.right - rDlg.left ),
 						  ( rWindow.bottom - rWindow.top ) - ( rClient.bottom - rClient.top ) + ( rDlg.bottom - rDlg.top ),
 						  SWP_NOZORDER );
-						  
+
 			ShowWindow( trans->mDlg, SW_SHOW );
 			UpdateWindow( trans->mDlg );
-			
+
 			break;
 		}
 	}
-	
+
 	return DefWindowProc( hWnd, msg, wParam, lParam );
 }
 
 INT_PTR CALLBACK rvGETransformer::DlgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
 	rvGETransformer* trans = ( rvGETransformer* ) GetWindowLongPtr( hWnd, GWLP_USERDATA );
-	
+
 	switch( msg )
 	{
 		case WM_DESTROY:
@@ -162,7 +162,7 @@ INT_PTR CALLBACK rvGETransformer::DlgProc( HWND hWnd, UINT msg, WPARAM wParam, L
 			}
 			gTransDlg = NULL;
 			break;
-			
+
 		case WM_INITDIALOG:
 			trans = ( rvGETransformer* ) lParam;
 			trans->mDlg = hWnd;
@@ -174,7 +174,7 @@ INT_PTR CALLBACK rvGETransformer::DlgProc( HWND hWnd, UINT msg, WPARAM wParam, L
 			gTransDlg = hWnd;
 			gTransHook = SetWindowsHookEx( WH_GETMESSAGE, GetMsgProc, NULL, GetCurrentThreadId() );
 			break;
-			
+
 		case WM_COMMAND:
 			if( LOWORD( wParam ) == IDOK )
 			{
@@ -186,10 +186,10 @@ INT_PTR CALLBACK rvGETransformer::DlgProc( HWND hWnd, UINT msg, WPARAM wParam, L
 				int  value;
 				GetWindowText( GetDlgItem( hWnd, LOWORD( wParam ) ), temp, 64 );
 				value = atoi( temp );
-				
+
 				idRectangle rect = trans->mWorkspace->GetSelectionMgr().GetRect( );
 				trans->mWorkspace->WindowToWorkspace( rect );
-				
+
 				// The transformer coords are relative to the botto most selected window's parent so
 				// adjust the rect accordingly
 				if( trans->mRelative )
@@ -198,9 +198,9 @@ INT_PTR CALLBACK rvGETransformer::DlgProc( HWND hWnd, UINT msg, WPARAM wParam, L
 					rect.x -= screenRect.x;
 					rect.y -= screenRect.y;
 				}
-				
+
 				bool bLockAspect = trans->GetLockAspect();
-				
+
 				switch( LOWORD( wParam ) )
 				{
 					case IDC_GUIED_ITEMRECTX:
@@ -209,14 +209,14 @@ INT_PTR CALLBACK rvGETransformer::DlgProc( HWND hWnd, UINT msg, WPARAM wParam, L
 							trans->mWorkspace->AddModifierMove( "Transform Move", value - rect[0], 0, false );
 						}
 						break;
-						
+
 					case IDC_GUIED_ITEMRECTY:
 						if( value - rect[1] )
 						{
 							trans->mWorkspace->AddModifierMove( "Transform Move", 0, value - rect[1], false );
 						}
 						break;
-						
+
 					case IDC_GUIED_ITEMRECTW:
 						if( value - rect[2] )
 						{
@@ -230,7 +230,7 @@ INT_PTR CALLBACK rvGETransformer::DlgProc( HWND hWnd, UINT msg, WPARAM wParam, L
 							}
 						}
 						break;
-						
+
 					case IDC_GUIED_ITEMRECTH:
 						if( value - rect[3] )
 						{
@@ -248,19 +248,19 @@ INT_PTR CALLBACK rvGETransformer::DlgProc( HWND hWnd, UINT msg, WPARAM wParam, L
 			}
 			break;
 	}
-	
+
 	return FALSE;
 }
 
 bool rvGETransformer::GetLockAspect( void )
 {
 	UINT retVal = IsDlgButtonChecked( mDlg, IDC_GUIED_LOCK_ASPECT );
-	
+
 	if( retVal == BST_CHECKED )
 	{
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -288,7 +288,7 @@ Sets a new workspace for the transformer window
 void rvGETransformer::SetWorkspace( rvGEWorkspace* workspace )
 {
 	mWorkspace = workspace;
-	
+
 	Update( );
 }
 
@@ -303,18 +303,18 @@ the rectangle coordinates
 void rvGETransformer::Update( void )
 {
 	bool state = false;
-	
+
 	mRelative = NULL;
-	
+
 	if( mWorkspace && mWorkspace->GetSelectionMgr( ).Num( ) )
 	{
 		state = true;
 		mRelative = mWorkspace->GetSelectionMgr().GetBottomMost( );
 		mRelative = mRelative->GetParent( );
-		
+
 		idRectangle rect = mWorkspace->GetSelectionMgr( ).GetRect( );
 		mWorkspace->WindowToWorkspace( rect );
-		
+
 		// Make the rectangle relative to the given parent
 		if( mRelative )
 		{
@@ -322,13 +322,13 @@ void rvGETransformer::Update( void )
 			rect.x -= screenRect.x;
 			rect.y -= screenRect.y;
 		}
-		
+
 		SetWindowText( GetDlgItem( mDlg, IDC_GUIED_ITEMRECTX ), va( "%d", ( int )rect[0] ) );
 		SetWindowText( GetDlgItem( mDlg, IDC_GUIED_ITEMRECTY ), va( "%d", ( int )rect[1] ) );
 		SetWindowText( GetDlgItem( mDlg, IDC_GUIED_ITEMRECTW ), va( "%d", ( int )rect[2] ) );
 		SetWindowText( GetDlgItem( mDlg, IDC_GUIED_ITEMRECTH ), va( "%d", ( int )rect[3] ) );
 	}
-	
+
 	if( !state )
 	{
 		SetWindowText( GetDlgItem( mDlg, IDC_GUIED_ITEMRECTX ), "" );
@@ -336,7 +336,7 @@ void rvGETransformer::Update( void )
 		SetWindowText( GetDlgItem( mDlg, IDC_GUIED_ITEMRECTW ), "" );
 		SetWindowText( GetDlgItem( mDlg, IDC_GUIED_ITEMRECTH ), "" );
 	}
-	
+
 	EnableWindow( GetDlgItem( mDlg, IDC_GUIED_ITEMRECTX ), state );
 	EnableWindow( GetDlgItem( mDlg, IDC_GUIED_ITEMRECTY ), state );
 	EnableWindow( GetDlgItem( mDlg, IDC_GUIED_ITEMRECTW ), state );
@@ -354,7 +354,7 @@ Ensures normal dialog functions work in the transformer dialog
 LRESULT FAR PASCAL rvGETransformer::GetMsgProc( int nCode, WPARAM wParam, LPARAM lParam )
 {
 	LPMSG lpMsg = ( LPMSG ) lParam;
-	
+
 	if( nCode >= 0 && PM_REMOVE == wParam )
 	{
 		// Don't translate non-input events.
@@ -372,6 +372,6 @@ LRESULT FAR PASCAL rvGETransformer::GetMsgProc( int nCode, WPARAM wParam, LPARAM
 			}
 		}
 	}
-	
+
 	return CallNextHookEx( gTransHook, nCode, wParam, lParam );
 }

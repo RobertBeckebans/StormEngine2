@@ -33,7 +33,7 @@ If you have questions concerning this license or the applicable additional terms
 typedef struct
 {
 	int		width, height;
-	
+
 	idVec3	origin;			// at center of window
 	float	scale;
 } z_t;

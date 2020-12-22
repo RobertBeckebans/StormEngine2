@@ -33,26 +33,26 @@ If you have questions concerning this license or the applicable additional terms
 
 #ifdef _WIN32
 
-// don't define ID_ALLOW_TOOLS when we don't want tool code in the executable.
-#if !defined( ID_DEDICATED ) && defined(USE_MFC_TOOLS)
+	// don't define ID_ALLOW_TOOLS when we don't want tool code in the executable.
+	#if !defined( ID_DEDICATED ) && defined(USE_MFC_TOOLS)
 
-#define	ID_ALLOW_TOOLS
+		#define	ID_ALLOW_TOOLS
 
-#ifdef _MSC_VER
-#pragma warning( disable: 4005 )  /* macro redefinition */
-#endif
-#include <afxwin.h>
-#include <afxcmn.h>
-#include <afxdlgs.h>
-#include <afxext.h>
+		#ifdef _MSC_VER
+			#pragma warning( disable: 4005 )  /* macro redefinition */
+		#endif
+		#include <afxwin.h>
+		#include <afxcmn.h>
+		#include <afxdlgs.h>
+		#include <afxext.h>
 
-#ifdef _MSC_VER
-#pragma warning( default: 4005 )  /* macro redefinition */
-#endif
-#define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS	// prevent auto literal to string conversion
-#include "../tools/comafx/StdAfx.h"
+		#ifdef _MSC_VER
+			#pragma warning( default: 4005 )  /* macro redefinition */
+		#endif
+		#define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS	// prevent auto literal to string conversion
+		#include "../tools/comafx/StdAfx.h"
 
-#endif // ID_DEDICATED
+	#endif // ID_DEDICATED
 
 #endif /* _WIN32 */
 
@@ -162,28 +162,28 @@ const int MAX_EXPRESSION_REGISTERS = 4096;
 
 #ifndef _D3SDK
 
-#ifdef GAME_DLL
+	#ifdef GAME_DLL
 
-#include "../d3xp/Game_local.h"
+		#include "../d3xp/Game_local.h"
 
-#else
+	#else
 
-#include "../framework/DemoChecksum.h"
+		#include "../framework/DemoChecksum.h"
 
-// framework
-#include "../framework/Compressor.h"
-#include "../framework/EventLoop.h"
-#include "../framework/KeyInput.h"
-#include "../framework/EditField.h"
-#include "../framework/DebugGraph.h"
-#include "../framework/Console.h"
-#include "../framework/DemoFile.h"
-#include "../framework/Common_dialog.h"
+		// framework
+		#include "../framework/Compressor.h"
+		#include "../framework/EventLoop.h"
+		#include "../framework/KeyInput.h"
+		#include "../framework/EditField.h"
+		#include "../framework/DebugGraph.h"
+		#include "../framework/Console.h"
+		#include "../framework/DemoFile.h"
+		#include "../framework/Common_dialog.h"
 
-// Compilers for map, model, video etc. processing.
-#include "../tools/compilers/compiler_public.h"
+		// Compilers for map, model, video etc. processing.
+		#include "../tools/compilers/compiler_public.h"
 
-#endif /* !GAME_DLL */
+	#endif /* !GAME_DLL */
 
 #endif /* !_D3SDK */
 

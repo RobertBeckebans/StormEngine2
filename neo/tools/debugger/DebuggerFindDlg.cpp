@@ -58,7 +58,7 @@ bool rvDebuggerFindDlg::DoModal( rvDebuggerWindow* parent )
 	{
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -72,20 +72,20 @@ Dialog Procedure for the find dialog
 INT_PTR CALLBACK rvDebuggerFindDlg::DlgProc( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam )
 {
 	rvDebuggerFindDlg* dlg = ( rvDebuggerFindDlg* ) GetWindowLongPtr( wnd, GWLP_USERDATA );
-	
+
 	switch( msg )
 	{
 		case WM_CLOSE:
 			EndDialog( wnd, 0 );
 			break;
-			
+
 		case WM_INITDIALOG:
 			dlg = ( rvDebuggerFindDlg* ) lparam;
 			SetWindowLongPtr( wnd, GWLP_USERDATA, ( LONG_PTR )dlg );
 			dlg->mWnd = wnd;
 			SetWindowText( GetDlgItem( dlg->mWnd, IDC_DBG_FIND ), dlg->mFindText );
 			return TRUE;
-			
+
 		case WM_COMMAND:
 			switch( LOWORD( wparam ) )
 			{
@@ -95,13 +95,13 @@ INT_PTR CALLBACK rvDebuggerFindDlg::DlgProc( HWND wnd, UINT msg, WPARAM wparam, 
 					EndDialog( wnd, 1 );
 					break;
 				}
-				
+
 				case IDCANCEL:
 					EndDialog( wnd, 0 );
 					break;
 			}
 			break;
 	}
-	
+
 	return FALSE;
 }

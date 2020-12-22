@@ -81,25 +81,25 @@ void MaterialDefManager::InitializeMaterialDefLists()
 
 	char*	buffer;
 	int length = fileSystem->ReadFile( MATERIAL_DEF_FILE, ( void** )&buffer );
-	
+
 	if( length == -1 )
 	{
 		common->Error( "Couldn't load material editor definition: %s", MATERIAL_DEF_FILE );
 		return;
 	}
-	
+
 	idLexer src;
 	if( !src.LoadMemory( buffer, length, MATERIAL_DEF_FILE ) )
 	{
 		common->Error( "Couldn't parse %s", MATERIAL_DEF_FILE );
 		fileSystem->FreeFile( buffer );
 	}
-	
-	
+
+
 	InitializeMaterialDefList( &src, "materialprops", &materialDefs[MATERIAL_DEF_MATERIAL] );
 	InitializeMaterialDefList( &src, "stageprops", &materialDefs[MATERIAL_DEF_STAGE] );
 	InitializeMaterialDefList( &src, "specialmapstageprops", &materialDefs[MATERIAL_DEF_SPECIAL_STAGE] );
-	
+
 	fileSystem->FreeFile( buffer );
 }
 
@@ -113,11 +113,11 @@ void MaterialDefManager::InitializeMaterialDefList( idLexer* src, const char* ty
 {
 
 	idToken token;
-	
+
 	src->Reset();
 	src->SkipUntilString( typeName );
 	src->SkipUntilString( "{" );
-	
+
 	while( 1 )
 	{
 		if( !src->ExpectAnyToken( &token ) )
@@ -125,14 +125,14 @@ void MaterialDefManager::InitializeMaterialDefList( idLexer* src, const char* ty
 			//Todo: Add some error checking here
 			return;
 		}
-		
+
 		if( token == "}" )
 		{
 			break;
 		}
-		
+
 		MaterialDef* newProp = new MaterialDef();
-		
+
 		if( !token.Icmp( "TYPE_GROUP" ) )
 		{
 			newProp->type = MaterialDef::MATERIAL_DEF_TYPE_GROUP;
@@ -153,37 +153,37 @@ void MaterialDefManager::InitializeMaterialDefList( idLexer* src, const char* ty
 		{
 			newProp->type = MaterialDef::MATERIAL_DEF_TYPE_INT;
 		}
-		
+
 		//Skip the ,
 		src->ReadToken( &token );
-		
+
 		//Read Dict Name
 		src->ReadToken( &token );
 		newProp->dictName = token;
-		
+
 		//Skip the ,
 		src->ReadToken( &token );
-		
+
 		//Read Display Name
 		src->ReadToken( &token );
 		newProp->displayName = token;
-		
+
 		//Skip the ,
 		src->ReadToken( &token );
-		
+
 		//Read Display Info
 		src->ReadToken( &token );
 		newProp->displayInfo = token;
-		
+
 		//Type Specific Data
 		if( newProp->type == MaterialDef::MATERIAL_DEF_TYPE_STRING )
 		{
-		
+
 			newProp->quotes = false;
-			
+
 			//Skip the ,
 			src->ReadToken( &token );
-			
+
 			//Read validate flag
 			src->ReadToken( &token );
 			if( token == "1" )
@@ -191,9 +191,9 @@ void MaterialDefManager::InitializeMaterialDefList( idLexer* src, const char* ty
 				newProp->quotes = true;
 			}
 		}
-		
+
 		src->SkipRestOfLine();
-		
+
 		list->Append( newProp );
 	}
 }

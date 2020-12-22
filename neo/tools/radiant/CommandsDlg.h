@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 #define AFX_COMMANDSDLG_H__C80F6E42_8531_11D1_B548_00AA00A410FC__INCLUDED_
 
 #if _MSC_VER >= 1000
-#pragma once
+	#pragma once
 #endif // _MSC_VER >= 1000
 // CommandsDlg.h : header file
 //
@@ -44,21 +44,21 @@ class CCommandsDlg : public CDialog
 // Construction
 public:
 	CCommandsDlg( CWnd* pParent = NULL ); // standard constructor
-	
+
 // Dialog Data
 	//{{AFX_DATA(CCommandsDlg)
 	enum { IDD = IDD_DLG_COMMANDLIST };
 	CListBox	m_lstCommands;
 	//}}AFX_DATA
-	
-	
+
+
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CCommandsDlg)
 protected:
 	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	//}}AFX_VIRTUAL
-	
+
 // Implementation
 protected:
 

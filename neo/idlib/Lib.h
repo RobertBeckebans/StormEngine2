@@ -50,17 +50,17 @@ class idLib
 private:
 	static bool					mainThreadInitialized;
 	static ID_TLS				isMainThread;
-	
+
 public:
 	static class idSys* 		sys;
 	static class idCommon* 		common;
 	static class idCVarSystem* 	cvarSystem;
 	static class idFileSystem* 	fileSystem;
 	static int					frameNumber;
-	
+
 	static void					Init();
 	static void					ShutDown();
-	
+
 	// wrapper to idCommon functions
 	static void					Printf( const char* fmt, ... );
 	static void					PrintfIf( const bool test, const char* fmt, ... );
@@ -68,7 +68,7 @@ public:
 	NO_RETURN static void		FatalError( const char* fmt, ... );
 	static void					Warning( const char* fmt, ... );
 	static void					WarningIf( const bool test, const char* fmt, ... );
-	
+
 	// the extra check for mainThreadInitialized is necessary for this to be accurate
 	// when called by startup code that happens before idLib::Init
 	static bool					IsMainThread()
@@ -93,11 +93,11 @@ class idVec3;
 class idVec4;
 
 #ifndef NULL
-#define NULL					((void *)0)
+	#define NULL					((void *)0)
 #endif
 
 #ifndef BIT
-#define BIT( num )				( 1ULL << ( num ) )
+	#define BIT( num )				( 1ULL << ( num ) )
 #endif
 
 #define	MAX_STRING_CHARS		1024		// max length of a string
@@ -162,18 +162,18 @@ class idException
 {
 public:
 	static const int MAX_ERROR_LEN = 2048;
-	
+
 	idException( const char* text = "" )
 	{
 		strncpy( error, text, MAX_ERROR_LEN );
 	}
-	
+
 	// this really, really should be a const function, but it's referenced too many places to change right now
 	const char* 	GetError()
 	{
 		return error;
 	}
-	
+
 protected:
 	// if GetError() were correctly const this would be named GetError(), too
 	char* 		GetErrorBuffer()
@@ -184,7 +184,7 @@ protected:
 	{
 		return MAX_ERROR_LEN;
 	}
-	
+
 private:
 	friend class idFatalException;
 	static char error[MAX_ERROR_LEN];
@@ -199,18 +199,18 @@ class idFatalException
 {
 public:
 	static const int MAX_ERROR_LEN = 2048;
-	
+
 	idFatalException( const char* text = "" )
 	{
 		strncpy( idException::error, text, MAX_ERROR_LEN );
 	}
-	
+
 	// this really, really should be a const function, but it's referenced too many places to change right now
 	const char* 	GetError()
 	{
 		return idException::error;
 	}
-	
+
 protected:
 	// if GetError() were correctly const this would be named GetError(), too
 	char* 		GetErrorBuffer()

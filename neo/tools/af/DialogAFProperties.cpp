@@ -143,9 +143,9 @@ DialogAFProperties::LoadFile
 void DialogAFProperties::LoadFile( idDeclAF* af )
 {
 	idStr str;
-	
+
 	file = af;
-	
+
 	if( !file )
 	{
 		ClearFile();
@@ -183,7 +183,7 @@ DialogAFProperties::SetFile
 void DialogAFProperties::SaveFile( void )
 {
 	CString str;
-	
+
 	if( !file )
 	{
 		return;
@@ -212,7 +212,7 @@ void DialogAFProperties::SaveFile( void )
 	file->maxMoveTime = m_maxMoveTime;
 	file->noMoveTranslation = m_linearTolerance;
 	file->noMoveRotation = m_angularTolerance;
-	
+
 	AFDialogSetFileModified();
 }
 

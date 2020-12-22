@@ -35,15 +35,15 @@ class CTabsDlg;
 class CTearoffContainerWindow : public CWnd
 {
 	DECLARE_DYNAMIC( CTearoffContainerWindow )
-	
+
 public:
 	CTearoffContainerWindow();
 	virtual ~CTearoffContainerWindow();
-	
+
 	CWnd* m_ContainedDialog;		//dialog that is being docked/undocked
 	int m_DialogID;					//identifier for this dialog
 	CTabsDlg* m_DockManager;		//the dialog that contains m_ContainedDialog  when docked
-	
+
 protected:
 	DECLARE_MESSAGE_MAP()
 	bool m_DragPreviewActive;

@@ -117,12 +117,12 @@ int Q_filelength( FILE* f )
 {
 	int		pos;
 	int		end;
-	
+
 	pos = ftell( f );
 	fseek( f, 0, SEEK_END );
 	end = ftell( f );
 	fseek( f, pos, SEEK_SET );
-	
+
 	return end;
 }
 
@@ -136,14 +136,14 @@ int LoadFile( const char* filename, void** bufferptr )
 	FILE*	f;
 	int    length;
 	void*    buffer;
-	
+
 	*bufferptr = NULL;
-	
+
 	if( filename == NULL || strlen( filename ) == 0 )
 	{
 		return -1;
 	}
-	
+
 	f = fopen( filename, "rb" );
 	if( !f )
 	{
@@ -157,7 +157,7 @@ int LoadFile( const char* filename, void** bufferptr )
 		Error( "File read failure" );
 	}
 	fclose( f );
-	
+
 	*bufferptr = buffer;
 	return length;
 }
@@ -175,14 +175,16 @@ void DefaultExtension( char* path, char* extension )
 	// (extension should include the .)
 	//
 	src = path + strlen( path ) - 1;
-	
+
 	while( *src != PATHSEPERATOR && src != path )
 	{
 		if( *src == '.' )
-			return;                 // it has an extension
+		{
+			return;    // it has an extension
+		}
 		src--;
 	}
-	
+
 	strcat( path, extension );
 }
 
@@ -194,9 +196,11 @@ DefaultPath
 void DefaultPath( char* path, char* basepath )
 {
 	char    temp[128];
-	
+
 	if( path[0] == PATHSEPERATOR )
-		return;                   // absolute path location
+	{
+		return;    // absolute path location
+	}
 	strcpy( temp, path );
 	strcpy( path, basepath );
 	strcat( path, temp );
@@ -210,7 +214,7 @@ StripFilename
 void StripFilename( char* path )
 {
 	int             length;
-	
+
 	length = strlen( path ) - 1;
 	while( length > 0 && path[length] != PATHSEPERATOR )
 	{
@@ -227,13 +231,15 @@ StripExtension
 void StripExtension( char* path )
 {
 	int             length;
-	
+
 	length = strlen( path ) - 1;
 	while( length > 0 && path[length] != '.' )
 	{
 		length--;
 		if( path[length] == '/' )
-			return;		// no extension
+		{
+			return;    // no extension
+		}
 	}
 	if( length )
 	{

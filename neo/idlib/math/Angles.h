@@ -54,14 +54,14 @@ public:
 	float			pitch;
 	float			yaw;
 	float			roll;
-	
+
 	idAngles();
 	idAngles( float pitch, float yaw, float roll );
 	explicit idAngles( const idVec3& v );
-	
+
 	void 			Set( float pitch, float yaw, float roll );
 	idAngles& 		Zero();
-	
+
 	float			operator[]( int index ) const;
 	float& 			operator[]( int index );
 	idAngles		operator-() const;			// negate angles, in general not the inverse rotation
@@ -74,21 +74,21 @@ public:
 	idAngles& 		operator*=( const float a );
 	idAngles		operator/( const float a ) const;
 	idAngles& 		operator/=( const float a );
-	
+
 	friend idAngles	operator*( const float a, const idAngles& b );
-	
+
 	bool			Compare( const idAngles& a ) const;							// exact compare, no epsilon
 	bool			Compare( const idAngles& a, const float epsilon ) const;	// compare with epsilon
 	bool			operator==(	const idAngles& a ) const;						// exact compare, no epsilon
 	bool			operator!=(	const idAngles& a ) const;						// exact compare, no epsilon
-	
+
 	idAngles& 		Normalize360();	// normalizes 'this'
 	idAngles& 		Normalize180();	// normalizes 'this'
-	
+
 	void			Clamp( const idAngles& min, const idAngles& max );
-	
+
 	int				GetDimension() const;
-	
+
 	void			ToVectors( idVec3* forward, idVec3* right = NULL, idVec3* up = NULL ) const;
 	idVec3			ToForward() const;
 	idQuat			ToQuat() const;
@@ -100,10 +100,10 @@ public:
 	const float* 	ToFloatPtr() const;
 	float* 			ToFloatPtr();
 	const char* 	ToString( int precision = 2 ) const;
-	
+
 	idVec3 			ToRight( void ) const;	// ########### SR
 	idVec3 			ToUp( void ) const;		// ########### SR
-	
+
 };
 
 extern idAngles ang_zero;
@@ -174,7 +174,7 @@ ID_INLINE idAngles& idAngles::operator+=( const idAngles& a )
 	pitch	+= a.pitch;
 	yaw		+= a.yaw;
 	roll	+= a.roll;
-	
+
 	return *this;
 }
 
@@ -188,7 +188,7 @@ ID_INLINE idAngles& idAngles::operator-=( const idAngles& a )
 	pitch	-= a.pitch;
 	yaw		-= a.yaw;
 	roll	-= a.roll;
-	
+
 	return *this;
 }
 
@@ -236,17 +236,17 @@ ID_INLINE bool idAngles::Compare( const idAngles& a, const float epsilon ) const
 	{
 		return false;
 	}
-	
+
 	if( idMath::Fabs( yaw - a.yaw ) > epsilon )
 	{
 		return false;
 	}
-	
+
 	if( idMath::Fabs( roll - a.roll ) > epsilon )
 	{
 		return false;
 	}
-	
+
 	return true;
 }
 

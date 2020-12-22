@@ -93,7 +93,7 @@ BOOL CPropTreeView::Create( LPCTSTR lpszClassName, LPCTSTR lpszWindowName,
 	{
 		return FALSE;
 	}
-	
+
 	return TRUE;
 }
 // CPropTreeView message handlers
@@ -101,29 +101,33 @@ BOOL CPropTreeView::Create( LPCTSTR lpszClassName, LPCTSTR lpszWindowName,
 int CPropTreeView::OnCreate( LPCREATESTRUCT lpCreateStruct )
 {
 	if( CView::OnCreate( lpCreateStruct ) == -1 )
+	{
 		return -1;
-		
+	}
+
 	DWORD dwStyle;
 	CRect rc;
-	
+
 	// PTS_NOTIFY - CPropTree will send notification messages to the parent window
 	dwStyle = WS_CHILD | WS_VISIBLE | PTS_NOTIFY;
-	
+
 	// Init the control's size to cover the entire client area
 	GetClientRect( rc );
-	
+
 	// Create CPropTree control
 	m_Tree.Create( dwStyle, rc, this, IDC_PROPERTYTREE );
-	
+
 	return 0;
 }
 
 void CPropTreeView::OnSize( UINT nType, int cx, int cy )
 {
 	CView::OnSize( nType, cx, cy );
-	
+
 	if( ::IsWindow( m_Tree.GetSafeHwnd() ) )
+	{
 		m_Tree.SetWindowPos( NULL, -1, -1, cx, cy, SWP_NOMOVE | SWP_NOZORDER );
+	}
 }
 
 

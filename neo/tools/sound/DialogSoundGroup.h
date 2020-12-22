@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 #define AFX_DIALOGSOUNDGROUP_H__3503E935_1F86_4484_903F_021CBDAB7729__INCLUDED_
 
 #if _MSC_VER > 1000
-#pragma once
+	#pragma once
 #endif // _MSC_VER > 1000
 // DialogSoundGroup.h : header file
 //
@@ -45,21 +45,21 @@ class CDialogSoundGroup : public CDialog
 public:
 	idStrList list;
 	CDialogSoundGroup( CWnd* pParent = NULL ); // standard constructor
-	
+
 // Dialog Data
 	//{{AFX_DATA(CDialogSoundGroup)
 	enum { IDD = IDD_DIALOG_SOUNDGROUP };
 	CListBox	lstGroups;
 	//}}AFX_DATA
-	
-	
+
+
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CDialogSoundGroup)
 protected:
 	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	//}}AFX_VIRTUAL
-	
+
 // Implementation
 protected:
 

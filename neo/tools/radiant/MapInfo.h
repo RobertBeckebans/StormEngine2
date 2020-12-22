@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 #define AFX_MAPINFO_H__C241B9A2_819F_11D1_B548_00AA00A410FC__INCLUDED_
 
 #if _MSC_VER >= 1000
-#pragma once
+	#pragma once
 #endif // _MSC_VER >= 1000
 // MapInfo.h : header file
 //
@@ -44,7 +44,7 @@ class CMapInfo : public CDialog
 // Construction
 public:
 	CMapInfo( CWnd* pParent = NULL ); // standard constructor
-	
+
 // Dialog Data
 	//{{AFX_DATA(CMapInfo)
 	enum { IDD = IDD_DLG_MAPINFO };
@@ -53,15 +53,15 @@ public:
 	int		m_nTotalBrushes;
 	int		m_nTotalEntities;
 	//}}AFX_DATA
-	
-	
+
+
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CMapInfo)
 protected:
 	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	//}}AFX_VIRTUAL
-	
+
 // Implementation
 protected:
 

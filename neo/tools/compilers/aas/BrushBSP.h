@@ -54,7 +54,7 @@ class idBrushBSPPortal
 
 	friend class idBrushBSP;
 	friend class idBrushBSPNode;
-	
+
 public:
 	idBrushBSPPortal( void );
 	~idBrushBSPPortal( void );
@@ -98,7 +98,7 @@ public:
 	{
 		return nodes[side];
 	}
-	
+
 private:
 	idPlane					plane;			// portal plane
 	int						planeNum;		// number of plane this portal is on
@@ -124,7 +124,7 @@ class idBrushBSPNode
 
 	friend class idBrushBSP;
 	friend class idBrushBSPPortal;
-	
+
 public:
 	idBrushBSPNode( void );
 	~idBrushBSPNode( void );
@@ -185,8 +185,8 @@ public:
 	int						PlaneSide( const idPlane& plane, float epsilon = ON_EPSILON ) const;
 	// split the leaf node with a plane
 	bool					Split( const idPlane& splitPlane, int splitPlaneNum );
-	
-	
+
+
 private:
 	idPlane					plane;			// split plane if this is not a leaf node
 	idBrush* 				volume;			// node volume
@@ -244,7 +244,7 @@ public:
 	{
 		return root;
 	}
-	
+
 	const int BSP_GRID_SIZE;
 private:
 	idBrushBSPNode* 		root;
@@ -264,10 +264,10 @@ private:
 	idVec3					leakOrigin;
 	int						brushMapContents;
 	idBrushMap* 			brushMap;
-	
+
 	bool	( *BrushChopAllowed )( idBrush* b1, idBrush* b2 );
 	bool	( *BrushMergeAllowed )( idBrush* b1, idBrush* b2 );
-	
+
 private:
 	void					RemoveMultipleLeafNodeReferences_r( idBrushBSPNode* node );
 	void					Free_r( idBrushBSPNode* node );

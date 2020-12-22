@@ -88,14 +88,14 @@ class idPhysics : public idClass
 
 public:
 	ABSTRACT_PROTOTYPE( idPhysics );
-	
+
 	virtual						~idPhysics();
 	static int					SnapTimeToPhysicsFrame( int t );
-	
+
 	// Must not be virtual
 	void						Save( idSaveGame* savefile ) const;
 	void						Restore( idRestoreGame* savefile );
-	
+
 public:	// common physics interface
 	// set pointer to entity using physics
 	virtual void				SetSelf( idEntity* e ) = 0;
@@ -142,7 +142,7 @@ public:	// common physics interface
 	// set the position and orientation in master space or world space if no master set
 	virtual void				SetOrigin( const idVec3& newOrigin, int id = -1 ) = 0;
 	virtual void				SetAxis( const idMat3& newAxis, int id = -1 ) = 0;
-	
+
 	// translate or rotate the physics object in world space
 	virtual void				Translate( const idVec3& translation, int id = -1 ) = 0;
 	virtual void				Rotate( const idRotation& rotation, int id = -1 ) = 0;

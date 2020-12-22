@@ -27,6 +27,7 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+
 #pragma hdrstop
 #include "precompiled.h"
 
@@ -36,6 +37,8 @@ If you have questions concerning this license or the applicable additional terms
 idCVar r_enableDebugRenderTools( "r_enableDebugRenderTools", "1", CVAR_RENDERER | CVAR_BOOL, "Enable the various r_show* series of debug tools" );
 idCVar r_showCenterOfProjection( "r_showCenterOfProjection", "0", CVAR_RENDERER | CVAR_BOOL, "Draw a cross to show the center of projection" );
 idCVar r_showLines( "r_showLines", "0", CVAR_RENDERER | CVAR_INTEGER, "1 = draw alternate horizontal lines, 2 = draw alternate vertical lines" );
+
+
 
 #define MAX_DEBUG_LINES			16384
 
@@ -114,17 +117,17 @@ void RB_DrawBounds( const idBounds& bounds )
 	qglVertex3f( bounds[1][0], bounds[1][1], bounds[1][2] );
 	qglVertex3f( bounds[1][0], bounds[0][1], bounds[1][2] );
 	qglEnd();
-	
+
 	qglBegin( GL_LINES );
 	qglVertex3f( bounds[0][0], bounds[0][1], bounds[0][2] );
 	qglVertex3f( bounds[0][0], bounds[0][1], bounds[1][2] );
-	
+
 	qglVertex3f( bounds[0][0], bounds[1][1], bounds[0][2] );
 	qglVertex3f( bounds[0][0], bounds[1][1], bounds[1][2] );
-	
+
 	qglVertex3f( bounds[1][0], bounds[0][1], bounds[0][2] );
 	qglVertex3f( bounds[1][0], bounds[0][1], bounds[1][2] );
-	
+
 	qglVertex3f( bounds[1][0], bounds[1][1], bounds[0][2] );
 	qglVertex3f( bounds[1][0], bounds[1][1], bounds[1][2] );
 	qglEnd();
@@ -146,11 +149,15 @@ static void RB_SimpleSurfaceSetup( const drawSurf_t* drawSurf )
 		// foresthale 2014-05-02: don't use a shader for tools
 		//renderProgManager.CommitUniforms();
 		if( !r_showNvidiaHack.GetBool() )
+		{
 			backEnd.currentSpace = drawSurf->space;
+		}
 		else
+		{
 			renderProgManager.CommitUniforms();
+		}
 	}
-	
+
 	// change the scissor if needed
 	if( !backEnd.currentScissor.Equals( drawSurf->scissorRect ) && r_useScissor.GetBool() )
 	{
@@ -172,12 +179,16 @@ static void RB_SimpleWorldSetup()
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.BindShader_Color();
 	if( !r_showNvidiaHack.GetBool() )
+	{
 		renderProgManager.Unbind();
+	}
 	else
+	{
 		renderProgManager.BindShader_Color();
-		
+	}
+
 	backEnd.currentSpace = &backEnd.viewDef->worldSpace;
-	
+
 	qglMatrixMode( GL_PROJECTION );
 	qglLoadMatrixf( backEnd.viewDef->projectionMatrix );
 	qglMatrixMode( GL_MODELVIEW );
@@ -186,8 +197,10 @@ static void RB_SimpleWorldSetup()
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.CommitUniforms();
 	if( !r_showNvidiaHack.GetBool() )
+	{
 		renderProgManager.CommitUniforms();
-		
+	}
+
 	GL_Scissor( backEnd.viewDef->viewport.x1 + backEnd.viewDef->scissor.x1,
 				backEnd.viewDef->viewport.y1 + backEnd.viewDef->scissor.y1,
 				backEnd.viewDef->scissor.x2 + 1 - backEnd.viewDef->scissor.x1,
@@ -248,19 +261,19 @@ void RB_ScanStencilBuffer()
 	int		counts[256];
 	int		i;
 	byte*	stencilReadback;
-	
+
 	memset( counts, 0, sizeof( counts ) );
-	
+
 	stencilReadback = ( byte* )R_StaticAlloc( renderSystem->GetWidth() * renderSystem->GetHeight(), TAG_RENDER_TOOLS );
 	qglReadPixels( 0, 0, renderSystem->GetWidth(), renderSystem->GetHeight(), GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, stencilReadback );
-	
+
 	for( i = 0; i < renderSystem->GetWidth() * renderSystem->GetHeight(); i++ )
 	{
 		counts[ stencilReadback[i] ]++;
 	}
-	
+
 	R_StaticFree( stencilReadback );
-	
+
 	// print some stats (not supposed to do from back end in SMP...)
 	common->Printf( "stencil values:\n" );
 	for( i = 0; i < 255; i++ )
@@ -285,19 +298,19 @@ static void RB_CountStencilBuffer()
 	int		count;
 	int		i;
 	byte*	stencilReadback;
-	
-	
+
+
 	stencilReadback = ( byte* )R_StaticAlloc( renderSystem->GetWidth() * renderSystem->GetHeight(), TAG_RENDER_TOOLS );
 	qglReadPixels( 0, 0, renderSystem->GetWidth(), renderSystem->GetHeight(), GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, stencilReadback );
-	
+
 	count = 0;
 	for( i = 0; i < renderSystem->GetWidth() * renderSystem->GetHeight(); i++ )
 	{
 		count += stencilReadback[i];
 	}
-	
+
 	R_StaticFree( stencilReadback );
-	
+
 	// print some stats (not supposed to do from back end in SMP...)
 	common->Printf( "overdraw: %5.1f\n", ( float )count / ( renderSystem->GetWidth() * renderSystem->GetHeight() ) );
 }
@@ -325,13 +338,13 @@ static void R_ColorByStencilBuffer()
 		{1, 1, 0},
 		{1, 1, 1},
 	};
-	
+
 	RB_SimpleWorldSetup();
-	
+
 	// clear color buffer to white (>6 passes)
 	GL_Clear( true, false, false, 0, 1.0f, 1.0f, 1.0f, 1.0f );
 	// GL_Clear( true, false, false, 0, 0.5f, 0.0f, 0.5f, 1.0f );
-	
+
 	// now draw color for each stencil value
 	qglStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
 	for( i = 0; i < 6; i++ )
@@ -341,7 +354,7 @@ static void R_ColorByStencilBuffer()
 		qglStencilFunc( GL_EQUAL, i, 255 );
 		RB_PolygonClear();
 	}
-	
+
 	qglStencilFunc( GL_ALWAYS, 0, 255 );
 }
 
@@ -360,21 +373,21 @@ void RB_ShowOverdraw()
 	const drawSurf_t* 	surf;
 	int					numDrawSurfs;
 	viewLight_t* 		vLight;
-	
+
 	if( r_showOverDraw.GetInteger() == 0 )
 	{
 		return;
 	}
-	
+
 	material = declManager->FindMaterial( "textures/common/overdrawtest", false );
 	if( material == NULL )
 	{
 		return;
 	}
-	
+
 	drawSurfs = backEnd.viewDef->drawSurfs;
 	numDrawSurfs = backEnd.viewDef->numDrawSurfs;
-	
+
 	int interactions = 0;
 	for( vLight = backEnd.viewDef->viewLights; vLight; vLight = vLight->next )
 	{
@@ -387,10 +400,10 @@ void RB_ShowOverdraw()
 			interactions++;
 		}
 	}
-	
+
 	// FIXME: can't frame alloc from the renderer back-end
 	drawSurf_t** newDrawSurfs = ( drawSurf_t** )R_FrameAlloc( numDrawSurfs + interactions * sizeof( newDrawSurfs[0] ), FRAME_ALLOC_DRAW_SURFACE_POINTER );
-	
+
 	for( i = 0; i < numDrawSurfs; i++ )
 	{
 		surf = drawSurfs[i];
@@ -400,7 +413,7 @@ void RB_ShowOverdraw()
 		}
 		newDrawSurfs[i] = const_cast<drawSurf_t*>( surf );
 	}
-	
+
 	for( vLight = backEnd.viewDef->viewLights; vLight; vLight = vLight->next )
 	{
 		for( surf = vLight->localInteractions; surf; surf = surf->nextOnLight )
@@ -416,7 +429,7 @@ void RB_ShowOverdraw()
 		vLight->localInteractions = NULL;
 		vLight->globalInteractions = NULL;
 	}
-	
+
 	switch( r_showOverDraw.GetInteger() )
 	{
 		case 1: // geometry overdraw
@@ -447,15 +460,15 @@ static void RB_ShowIntensity()
 {
 	byte*	colorReadback;
 	int		i, j, c;
-	
+
 	if( !r_showIntensity.GetBool() )
 	{
 		return;
 	}
-	
+
 	colorReadback = ( byte* )R_StaticAlloc( renderSystem->GetWidth() * renderSystem->GetHeight() * 4, TAG_RENDER_TOOLS );
 	qglReadPixels( 0, 0, renderSystem->GetWidth(), renderSystem->GetHeight(), GL_RGBA, GL_UNSIGNED_BYTE, colorReadback );
-	
+
 	c = renderSystem->GetWidth() * renderSystem->GetHeight() * 4;
 	for( i = 0; i < c; i += 4 )
 	{
@@ -481,9 +494,9 @@ static void RB_ShowIntensity()
 			colorReadback[i + 2] = 2 * ( j - 128 );
 		}
 	}
-	
+
 	renderProgManager.Unbind();
-	
+
 	// draw it back to the screen
 	qglLoadIdentity();
 	qglMatrixMode( GL_PROJECTION );
@@ -496,9 +509,9 @@ static void RB_ShowIntensity()
 	GL_Color( 1, 1, 1 );
 	globalImages->BindNull();
 	qglMatrixMode( GL_MODELVIEW );
-	
+
 	qglDrawPixels( renderSystem->GetWidth(), renderSystem->GetHeight(), GL_RGBA , GL_UNSIGNED_BYTE, colorReadback );
-	
+
 	R_StaticFree( colorReadback );
 }
 
@@ -513,14 +526,14 @@ Draw the depth buffer as colors
 static void RB_ShowDepthBuffer()
 {
 	void*	depthReadback;
-	
+
 	if( !r_showDepth.GetBool() )
 	{
 		return;
 	}
-	
+
 	renderProgManager.Unbind();
-	
+
 	qglPushMatrix();
 	qglLoadIdentity();
 	qglMatrixMode( GL_PROJECTION );
@@ -531,16 +544,16 @@ static void RB_ShowDepthBuffer()
 	qglPopMatrix();
 	qglMatrixMode( GL_MODELVIEW );
 	qglPopMatrix();
-	
+
 	GL_State( GLS_DEPTHFUNC_ALWAYS );
 	GL_Color( 1, 1, 1 );
 	globalImages->BindNull();
-	
+
 	depthReadback = R_StaticAlloc( renderSystem->GetWidth() * renderSystem->GetHeight() * 4, TAG_RENDER_TOOLS );
 	memset( depthReadback, 0, renderSystem->GetWidth() * renderSystem->GetHeight() * 4 );
-	
+
 	qglReadPixels( 0, 0, renderSystem->GetWidth(), renderSystem->GetHeight(), GL_DEPTH_COMPONENT , GL_FLOAT, depthReadback );
-	
+
 #if 0
 	for( int i = 0; i < renderSystem->GetWidth() * renderSystem->GetHeight(); i++ )
 	{
@@ -550,7 +563,7 @@ static void RB_ShowDepthBuffer()
 		( ( byte* )depthReadback )[i * 4 + 3] = 1;
 	}
 #endif
-	
+
 	qglDrawPixels( renderSystem->GetWidth(), renderSystem->GetHeight(), GL_RGBA , GL_UNSIGNED_BYTE, depthReadback );
 	R_StaticFree( depthReadback );
 }
@@ -568,16 +581,16 @@ static void RB_ShowLightCount()
 	int		i;
 	const drawSurf_t*	surf;
 	const viewLight_t*	vLight;
-	
+
 	if( !r_showLightCount.GetBool() )
 	{
 		return;
 	}
-	
+
 	RB_SimpleWorldSetup();
-	
+
 	GL_Clear( false, false, true, 0, 0.0f, 0.0f, 0.0f, 0.0f );
-	
+
 	// optionally count everything through walls
 	if( r_showLightCount.GetInteger() >= 2 )
 	{
@@ -587,9 +600,9 @@ static void RB_ShowLightCount()
 	{
 		GL_State( GLS_DEPTHFUNC_EQUAL | GLS_STENCIL_OP_FAIL_KEEP | GLS_STENCIL_OP_ZFAIL_KEEP | GLS_STENCIL_OP_PASS_INCR );
 	}
-	
+
 	globalImages->defaultImage->Bind();
-	
+
 	for( vLight = backEnd.viewDef->viewLights; vLight; vLight = vLight->next )
 	{
 		for( i = 0; i < 2; i++ )
@@ -601,10 +614,10 @@ static void RB_ShowLightCount()
 			}
 		}
 	}
-	
+
 	// display the results
 	R_ColorByStencilBuffer();
-	
+
 	if( r_showLightCount.GetInteger() > 2 )
 	{
 		RB_CountStencilBuffer();
@@ -637,15 +650,15 @@ RB_EnterWeaponDepthHack
 static void RB_EnterWeaponDepthHack()
 {
 	float	matrix[16];
-	
+
 	memcpy( matrix, backEnd.viewDef->projectionMatrix, sizeof( matrix ) );
-	
+
 	const float modelDepthHack = 0.25f;
 	matrix[2] *= modelDepthHack;
 	matrix[6] *= modelDepthHack;
 	matrix[10] *= modelDepthHack;
 	matrix[14] *= modelDepthHack;
-	
+
 	qglMatrixMode( GL_PROJECTION );
 	qglLoadMatrixf( matrix );
 	qglMatrixMode( GL_MODELVIEW );
@@ -659,11 +672,11 @@ RB_EnterModelDepthHack
 static void RB_EnterModelDepthHack( float depth )
 {
 	float matrix[16];
-	
+
 	memcpy( matrix, backEnd.viewDef->projectionMatrix, sizeof( matrix ) );
-	
+
 	matrix[14] -= depth;
-	
+
 	qglMatrixMode( GL_PROJECTION );
 	qglLoadMatrixf( matrix );
 	qglMatrixMode( GL_MODELVIEW );
@@ -706,7 +719,7 @@ be updated after the triangle function completes.
 static void RB_RenderDrawSurfListWithFunction( drawSurf_t** drawSurfs, int numDrawSurfs, void ( *triFunc_ )( const drawSurf_t* ) )
 {
 	backEnd.currentSpace = NULL;
-	
+
 	for( int i = 0 ; i < numDrawSurfs ; i++ )
 	{
 		const drawSurf_t* drawSurf = drawSurfs[i];
@@ -722,32 +735,32 @@ static void RB_RenderDrawSurfListWithFunction( drawSurf_t** drawSurfs, int numDr
 			{
 				RB_SetWeaponDepthHack();
 			}
-			
+
 			if( drawSurf->space->modelDepthHack != 0.0f )
 			{
 				RB_SetModelDepthHack( drawSurf->space->modelDepthHack );
 			}
-			
+
 			// change the matrix if needed
 			if( drawSurf->space != backEnd.currentSpace )
 			{
 				backEnd.currentSpace = drawSurf->space;
-				
+
 				RB_LoadMatrixWithBypass( drawSurf->space->modelViewMatrix );
 				RB_SetMVP( drawSurf->space->mvp );
 			}
-			
+
 			if( drawSurf->space->weaponDepthHack )
 			{
 				RB_EnterWeaponDepthHack();
 			}
-			
+
 			if( drawSurf->space->modelDepthHack != 0.0f )
 			{
 				RB_EnterModelDepthHack( drawSurf->space->modelDepthHack );
 			}
 		}
-		
+
 		// change the scissor if needed
 		if( r_useScissor.GetBool() && !backEnd.currentScissor.Equals( drawSurf->scissorRect ) )
 		{
@@ -757,15 +770,15 @@ static void RB_RenderDrawSurfListWithFunction( drawSurf_t** drawSurfs, int numDr
 						backEnd.currentScissor.x2 + 1 - backEnd.currentScissor.x1,
 						backEnd.currentScissor.y2 + 1 - backEnd.currentScissor.y1 );
 		}
-		
+
 		// render it
 		triFunc_( drawSurf );
-		
+
 		if( drawSurf->space != NULL && ( drawSurf->space->weaponDepthHack || drawSurf->space->modelDepthHack != 0.0f ) )
 		{
 			RB_LeaveDepthHack();
 		}
-		
+
 		backEnd.currentSpace = drawSurf->space;
 	}
 }
@@ -785,30 +798,30 @@ static void RB_ShowSilhouette()
 	int		i;
 	const drawSurf_t*	surf;
 	const viewLight_t*	vLight;
-	
+
 	if( !r_showSilhouette.GetBool() )
 	{
 		return;
 	}
-	
+
 	//
 	// clear all triangle edges to black
 	//
 	globalImages->BindNull();
 	qglDisable( GL_TEXTURE_2D );
-	
+
 	GL_Color( 0, 0, 0 );
-	
+
 	GL_State( GLS_DEPTHFUNC_ALWAYS | GLS_POLYMODE_LINE );
-	
+
 	GL_Cull( CT_TWO_SIDED );
-	
+
 	// foresthale 2014-05-02: we do need to set the render program for this call
 	renderProgManager.BindShader_Color();
 	RB_RenderDrawSurfListWithFunction( backEnd.viewDef->drawSurfs, backEnd.viewDef->numDrawSurfs,
 									   RB_DrawElementsWithCounters );
-									   
-									   
+
+
 	//
 	// now blend in edges that cast silhouettes
 	//
@@ -825,9 +838,9 @@ static void RB_ShowSilhouette()
 		renderProgManager.BindShader_Color();
 		GL_Color( 0.5, 0, 0 );
 	}
-	
+
 	GL_State( GLS_SRCBLEND_ONE | GLS_DSTBLEND_ONE );
-	
+
 	for( vLight = backEnd.viewDef->viewLights; vLight; vLight = vLight->next )
 	{
 		for( i = 0; i < 2; i++ )
@@ -836,30 +849,33 @@ static void RB_ShowSilhouette()
 						; surf; surf = ( drawSurf_t* )surf->nextOnLight )
 			{
 				RB_SimpleSurfaceSetup( surf );
-				
+
 				const srfTriangles_t* tri = surf->frontEndGeo;
-				if( !tri ) continue;
-				
+				if( !tri )
+				{
+					continue;
+				}
+
 				idVertexBuffer vertexBuffer;
 				if( !vertexCache.GetVertexBuffer( tri->shadowCache, &vertexBuffer ) )
 				{
 					continue;
 				}
-				
+
 				// RB: 64 bit fixes, changed GLuint to GLintptrARB
 				qglBindBufferARB( GL_ARRAY_BUFFER_ARB, ( GLintptrARB )vertexBuffer.GetAPIObject() );
 				GLintptrARB vertOffset = vertexBuffer.GetOffset();
 				// RB end
-				
+
 				qglVertexPointer( 3, GL_FLOAT, sizeof( idShadowVert ), ( void* )vertOffset );
 				qglBegin( GL_LINES );
-				
+
 				for( int j = 0; j < tri->numIndexes; j += 3 )
 				{
 					int		i1 = tri->indexes[j + 0];
 					int		i2 = tri->indexes[j + 1];
 					int		i3 = tri->indexes[j + 2];
-					
+
 					if( ( i1 & 1 ) + ( i2 & 1 ) + ( i3 & 1 ) == 1 )
 					{
 						if( ( i1 & 1 ) + ( i2 & 1 ) == 0 )
@@ -875,11 +891,11 @@ static void RB_ShowSilhouette()
 					}
 				}
 				qglEnd();
-				
+
 			}
 		}
 	}
-	
+
 	GL_State( GLS_DEFAULT );
 	GL_Color( 1, 1, 1 );
 	GL_Cull( CT_FRONT_SIDED );
@@ -897,16 +913,16 @@ static void RB_ShowTris( drawSurf_t** drawSurfs, int numDrawSurfs )
 
 	modelTrace_t mt;
 	idVec3 end;
-	
+
 	if( r_showTris.GetInteger() == 0 )
 	{
 		return;
 	}
-	
+
 	float color[4] = { 1, 1, 1, 1 };
-	
+
 	GL_PolygonOffset( -1.0f, -2.0f );
-	
+
 	switch( r_showTris.GetInteger() )
 	{
 		case 1: // only draw visible ones
@@ -921,17 +937,17 @@ static void RB_ShowTris( drawSurf_t** drawSurfs, int numDrawSurfs )
 			color[3] = 0.4f;
 			break;
 	}
-	
+
 	if( r_showTris.GetInteger() == 3 )
 	{
 		GL_Cull( CT_TWO_SIDED );
 	}
-	
+
 	GL_Color( color );
 	renderProgManager.BindShader_Color();
-	
+
 	RB_RenderDrawSurfListWithFunction( drawSurfs, numDrawSurfs, RB_DrawElementsWithCounters );
-	
+
 	if( r_showTris.GetInteger() == 3 )
 	{
 		GL_Cull( CT_FRONT_SIDED );
@@ -957,19 +973,19 @@ void idRenderSystemLocal::OnFrame()
 	// Do tracing at a safe time to avoid threading issues.
 	modelTrace_t mt;
 	idVec3 start, end;
-	
+
 	surfTraced = false;
-	
+
 	if( !r_showSurfaceInfo.GetBool() )
 	{
 		return;
 	}
-	
+
 	if( tr.primaryView == NULL )
 	{
 		return;
 	}
-	
+
 	// start far enough away that we don't hit the player model
 	start = tr.primaryView->renderView.vieworg + tr.primaryView->renderView.viewaxis[0] * 32;
 	end = start + tr.primaryView->renderView.viewaxis[0] * 1000.0f;
@@ -977,7 +993,7 @@ void idRenderSystemLocal::OnFrame()
 	{
 		return;
 	}
-	
+
 	surfPoint = mt.point;
 	surfModelName = mt.entity->hModel->Name();
 	surfMatName = mt.material->GetName();
@@ -991,35 +1007,35 @@ static void RB_ShowSurfaceInfo( drawSurf_t** drawSurfs, int numDrawSurfs )
 	{
 		return;
 	}
-	
+
 	// globalImages->BindNull();
 	// qglDisable( GL_TEXTURE_2D );
-	
+
 	RB_SimpleWorldSetup();
-	
+
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.BindShader_TextureVertexColor();
 	GL_SelectTexture( 0 );
 	globalImages->whiteImage->Bind();
-	
+
 	RB_SetVertexColorParms( SVC_MODULATE );
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.CommitUniforms();
-	
+
 	GL_Color( 1, 1, 1 );
-	
+
 	static float scale = -1;
 	static float bias = -2;
-	
+
 	GL_PolygonOffset( scale, bias );
 	GL_State( GLS_DEPTHFUNC_ALWAYS | GLS_POLYMODE_LINE | GLS_POLYGON_OFFSET );
-	
+
 	// idVec3	trans[3];
 	// float	matrix[16];
-	
+
 	// transform the object verts into global space
 	// R_AxisToModelMatrix( mt.entity->axis, mt.entity->origin, matrix );
-	
+
 	tr.primaryWorld->DrawText( surfModelName, surfPoint + tr.primaryView->renderView.viewaxis[2] * 12,
 							   0.35f, colorRed, tr.primaryView->renderView.viewaxis );
 	tr.primaryWorld->DrawText( surfMatName, surfPoint,
@@ -1044,8 +1060,11 @@ static void RB_ShowViewEntitys( viewEntity_t* vModels )
 		common->Printf( "view entities: " );
 		for( const viewEntity_t* vModel = vModels; vModel; vModel = vModel->next )
 		{
-			if( !vModel->entityDef ) continue;
-			
+			if( !vModel->entityDef )
+			{
+				continue;
+			}
+
 			if( vModel->entityDef->IsDirectlyVisible() )
 			{
 				common->Printf( "<%i> ", vModel->entityDef->index );
@@ -1057,36 +1076,38 @@ static void RB_ShowViewEntitys( viewEntity_t* vModels )
 		}
 		common->Printf( "\n" );
 	}
-	
+
 	globalImages->BindNull();
-	
+
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.BindShader_Color();
 	renderProgManager.Unbind();
-	
+
 	GL_Color( 1, 1, 1 );
 	GL_State( GLS_DEPTHFUNC_ALWAYS | GLS_POLYMODE_LINE );
 	GL_Cull( CT_TWO_SIDED );
-	
+
 	for( const viewEntity_t* vModel = vModels; vModel; vModel = vModel->next )
 	{
 		idBounds	b;
-		
+
 		qglLoadMatrixf( vModel->modelViewMatrix );
 		RB_SetMVP( vModel->mvp );
 		// foresthale 2014-05-02: don't use a shader for tools
 		//renderProgManager.CommitUniforms();
 		if( r_showNvidiaHack.GetBool() )
+		{
 			renderProgManager.CommitUniforms();
-			
+		}
+
 		const idRenderEntityLocal* edef = vModel->entityDef;
 		if( !edef )
 		{
 			continue;
 		}
-		
-		
-		
+
+
+
 		// draw the model bounds in white if directly visible,
 		// or, blue if it is only-for-sahdow
 		idVec4	color;
@@ -1101,25 +1122,29 @@ static void RB_ShowViewEntitys( viewEntity_t* vModels )
 		// foresthale 2014-05-02: don't use a shader for tools
 		//GL_Color( color[0], color[1], color[2] );
 		if( !r_showNvidiaHack.GetBool() )
+		{
 			qglColor3f( color[0], color[1], color[2] );
+		}
 		else
+		{
 			GL_Color( color[0], color[1], color[2] );
-			
+		}
+
 		RB_DrawBounds( edef->localReferenceBounds );
-		
+
 		// transform the upper bounds corner into global space
 		if( r_showViewEntitys.GetInteger() >= 2 )
 		{
 			idVec3 corner;
 			R_LocalPointToGlobal( vModel->modelMatrix, edef->localReferenceBounds[1], corner );
-			
+
 			tr.primaryWorld->DrawText(
 				va( "%i:%s", edef->index, edef->parms.hModel->Name() ),
 				corner,
 				0.25f, color,
 				tr.primaryView->renderView.viewaxis );
 		}
-		
+
 		// draw the actual bounds in yellow if different
 		if( r_showViewEntitys.GetInteger() >= 3 )
 		{
@@ -1152,20 +1177,20 @@ static void RB_ShowTexturePolarity( drawSurf_t** drawSurfs, int numDrawSurfs )
 	int		i, j;
 	drawSurf_t*	drawSurf;
 	const srfTriangles_t*	tri;
-	
+
 	if( !r_showTexturePolarity.GetBool() )
 	{
 		return;
 	}
 	globalImages->BindNull();
-	
+
 	GL_State( GLS_SRCBLEND_SRC_ALPHA | GLS_DSTBLEND_ONE_MINUS_SRC_ALPHA );
-	
+
 	RB_SimpleWorldSetup();
 	//renderProgManager.BindShader_Color(); // foresthale 2014-05-02: don't use a shader for tools
-	
+
 	GL_Color( 1, 1, 1 );
-	
+
 	for( i = 0; i < numDrawSurfs; i++ )
 	{
 		drawSurf = drawSurfs[i];
@@ -1174,32 +1199,32 @@ static void RB_ShowTexturePolarity( drawSurf_t** drawSurfs, int numDrawSurfs )
 		{
 			continue;
 		}
-		
+
 		RB_SimpleSurfaceSetup( drawSurf );
-		
+
 		qglBegin( GL_TRIANGLES );
 		for( j = 0; j < tri->numIndexes; j += 3 )
 		{
 			idDrawVert*	a, *b, *c;
 			float		d0[5], d1[5];
 			float		area;
-			
+
 			a = tri->verts + tri->indexes[j];
 			b = tri->verts + tri->indexes[j + 1];
 			c = tri->verts + tri->indexes[j + 2];
-			
+
 			const idVec2 aST = a->GetTexCoord();
 			const idVec2 bST = b->GetTexCoord();
 			const idVec2 cST = c->GetTexCoord();
-			
+
 			d0[3] = bST[0] - aST[0];
 			d0[4] = bST[1] - aST[1];
-			
+
 			d1[3] = cST[0] - aST[0];
 			d1[4] = cST[1] - aST[1];
-			
+
 			area = d0[3] * d1[4] - d0[4] * d1[3];
-			
+
 			// foresthale 2014-05-02: don't use a shader for tools
 			if( idMath::Fabs( area ) < 0.0001 )
 			{
@@ -1222,7 +1247,7 @@ static void RB_ShowTexturePolarity( drawSurf_t** drawSurfs, int numDrawSurfs )
 		}
 		qglEnd();
 	}
-	
+
 	GL_State( GLS_DEFAULT );
 }
 
@@ -1238,45 +1263,45 @@ static void RB_ShowUnsmoothedTangents( drawSurf_t** drawSurfs, int numDrawSurfs 
 	int		i, j;
 	drawSurf_t*	drawSurf;
 	const srfTriangles_t*	tri;
-	
+
 	if( !r_showUnsmoothedTangents.GetBool() )
 	{
 		return;
 	}
 	globalImages->BindNull();
-	
+
 	GL_State( GLS_SRCBLEND_SRC_ALPHA | GLS_DSTBLEND_ONE_MINUS_SRC_ALPHA );
-	
+
 	GL_Color( 0, 1, 0, 0.5 );
-	
+
 	for( i = 0; i < numDrawSurfs; i++ )
 	{
 		drawSurf = drawSurfs[i];
-		
+
 		if( !drawSurf->material->UseUnsmoothedTangents() )
 		{
 			continue;
 		}
-		
+
 		RB_SimpleSurfaceSetup( drawSurf );
-		
+
 		tri = drawSurf->frontEndGeo;
 		qglBegin( GL_TRIANGLES );
 		for( j = 0; j < tri->numIndexes; j += 3 )
 		{
 			idDrawVert*	a, *b, *c;
-			
+
 			a = tri->verts + tri->indexes[j];
 			b = tri->verts + tri->indexes[j + 1];
 			c = tri->verts + tri->indexes[j + 2];
-			
+
 			qglVertex3fv( a->xyz.ToFloatPtr() );
 			qglVertex3fv( b->xyz.ToFloatPtr() );
 			qglVertex3fv( c->xyz.ToFloatPtr() );
 		}
 		qglEnd();
 	}
-	
+
 	GL_State( GLS_DEFAULT );
 }
 
@@ -1295,25 +1320,25 @@ static void RB_ShowTangentSpace( drawSurf_t** drawSurfs, int numDrawSurfs )
 	int		i, j;
 	drawSurf_t*	drawSurf;
 	const srfTriangles_t*	tri;
-	
+
 	if( !r_showTangentSpace.GetInteger() )
 	{
 		return;
 	}
 	globalImages->BindNull();
-	
+
 	GL_State( GLS_SRCBLEND_SRC_ALPHA | GLS_DSTBLEND_ONE_MINUS_SRC_ALPHA );
-	
+
 	RB_SimpleWorldSetup();
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.BindShader_Color();
-	
+
 	for( i = 0; i < numDrawSurfs; i++ )
 	{
 		drawSurf = drawSurfs[i];
-		
+
 		RB_SimpleSurfaceSetup( drawSurf );
-		
+
 		tri = drawSurf->frontEndGeo;
 		if( !tri || !tri->verts )
 		{
@@ -1323,9 +1348,9 @@ static void RB_ShowTangentSpace( drawSurf_t** drawSurfs, int numDrawSurfs )
 		for( j = 0; j < tri->numIndexes; j++ )
 		{
 			const idDrawVert* v;
-			
+
 			v = &tri->verts[tri->indexes[j]];
-			
+
 			// foresthale 2014-05-02: don't use a shader for tools
 			if( r_showTangentSpace.GetInteger() == 1 )
 			{
@@ -1355,7 +1380,7 @@ static void RB_ShowTangentSpace( drawSurf_t** drawSurfs, int numDrawSurfs )
 		}
 		qglEnd();
 	}
-	
+
 	GL_State( GLS_DEFAULT );
 }
 
@@ -1371,25 +1396,25 @@ static void RB_ShowVertexColor( drawSurf_t** drawSurfs, int numDrawSurfs )
 	int		i, j;
 	drawSurf_t*	drawSurf;
 	const srfTriangles_t*	tri;
-	
+
 	if( !r_showVertexColor.GetBool() )
 	{
 		return;
 	}
 	globalImages->BindNull();
-	
+
 	RB_SimpleWorldSetup();
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.BindShader_Color();
-	
+
 	GL_State( GLS_DEPTHFUNC_LESS );
-	
+
 	for( i = 0; i < numDrawSurfs; i++ )
 	{
 		drawSurf = drawSurfs[i];
-		
+
 		RB_SimpleSurfaceSetup( drawSurf );
-		
+
 		tri = drawSurf->frontEndGeo;
 		if( !tri || !tri->verts )
 		{
@@ -1399,14 +1424,14 @@ static void RB_ShowVertexColor( drawSurf_t** drawSurfs, int numDrawSurfs )
 		for( j = 0; j < tri->numIndexes; j++ )
 		{
 			const idDrawVert* v;
-			
+
 			v = &tri->verts[tri->indexes[j]];
 			qglColor4ubv( v->color );
 			qglVertex3fv( v->xyz.ToFloatPtr() );
 		}
 		qglEnd();
 	}
-	
+
 	GL_State( GLS_DEFAULT );
 }
 
@@ -1426,18 +1451,18 @@ static void RB_ShowNormals( drawSurf_t** drawSurfs, int numDrawSurfs )
 	float		size;
 	bool		showNumbers;
 	idVec3		pos;
-	
+
 	if( r_showNormals.GetFloat() == 0.0f )
 	{
 		return;
 	}
-	
+
 	globalImages->BindNull();
-	
+
 	RB_SimpleWorldSetup();
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.BindShader_Color();
-	
+
 	if( !r_debugLineDepthTest.GetBool() )
 	{
 		GL_State( GLS_POLYMODE_LINE | GLS_DEPTHFUNC_ALWAYS );
@@ -1446,7 +1471,7 @@ static void RB_ShowNormals( drawSurf_t** drawSurfs, int numDrawSurfs )
 	{
 		GL_State( GLS_POLYMODE_LINE );
 	}
-	
+
 	size = r_showNormals.GetFloat();
 	if( size < 0.0f )
 	{
@@ -1457,19 +1482,19 @@ static void RB_ShowNormals( drawSurf_t** drawSurfs, int numDrawSurfs )
 	{
 		showNumbers = false;
 	}
-	
+
 	for( i = 0; i < numDrawSurfs; i++ )
 	{
 		drawSurf = drawSurfs[i];
-		
+
 		RB_SimpleSurfaceSetup( drawSurf );
-		
+
 		tri = drawSurf->frontEndGeo;
 		if( !tri || !tri->verts )
 		{
 			continue;
 		}
-		
+
 		qglBegin( GL_LINES );
 		for( j = 0; j < tri->numVerts; j++ )
 		{
@@ -1482,13 +1507,13 @@ static void RB_ShowNormals( drawSurf_t** drawSurfs, int numDrawSurfs )
 			qglVertex3fv( tri->verts[j].xyz.ToFloatPtr() );
 			VectorMA( tri->verts[j].xyz, size, normal, end );
 			qglVertex3fv( end.ToFloatPtr() );
-			
+
 			//GL_Color( 1, 0, 0 );
 			qglColor3f( 1, 0, 0 );
 			qglVertex3fv( tri->verts[j].xyz.ToFloatPtr() );
 			VectorMA( tri->verts[j].xyz, size, tangent, end );
 			qglVertex3fv( end.ToFloatPtr() );
-			
+
 			//GL_Color( 0, 1, 0 );
 			qglColor3f( 0, 1, 0 );
 			qglVertex3fv( tri->verts[j].xyz.ToFloatPtr() );
@@ -1497,7 +1522,7 @@ static void RB_ShowNormals( drawSurf_t** drawSurfs, int numDrawSurfs )
 		}
 		qglEnd();
 	}
-	
+
 	if( showNumbers )
 	{
 		RB_SimpleWorldSetup();
@@ -1509,7 +1534,7 @@ static void RB_ShowNormals( drawSurf_t** drawSurfs, int numDrawSurfs )
 			{
 				continue;
 			}
-			
+
 			for( j = 0; j < tri->numVerts; j++ )
 			{
 				const idVec3 normal = tri->verts[j].GetNormal();
@@ -1517,7 +1542,7 @@ static void RB_ShowNormals( drawSurf_t** drawSurfs, int numDrawSurfs )
 				R_LocalPointToGlobal( drawSurf->space->modelMatrix, tri->verts[j].xyz + tangent + normal * 0.2f, pos );
 				RB_DrawText( va( "%d", j ), pos, 0.01f, colorWhite, backEnd.viewDef->renderView.viewaxis, 1 );
 			}
-			
+
 			for( j = 0; j < tri->numIndexes; j += 3 )
 			{
 				const idVec3 normal = tri->verts[ tri->indexes[ j + 0 ] ].GetNormal();
@@ -1543,19 +1568,19 @@ static void RB_AltShowNormals( drawSurf_t** drawSurfs, int numDrawSurfs )
 	{
 		return;
 	}
-	
+
 	globalImages->BindNull();
-	
+
 	GL_State( GLS_DEPTHFUNC_ALWAYS );
-	
+
 	for( int i = 0; i < numDrawSurfs; i++ )
 	{
 		drawSurf_t* drawSurf = drawSurfs[i];
-		
+
 		RB_SimpleSurfaceSetup( drawSurf );
-		
+
 		const srfTriangles_t* tri = drawSurf->geo;
-		
+
 		qglBegin( GL_LINES );
 		for( int j = 0; j < tri->numIndexes; j += 3 )
 		{
@@ -1565,36 +1590,36 @@ static void RB_AltShowNormals( drawSurf_t** drawSurfs, int numDrawSurfs )
 				&tri->verts[tri->indexes[j + 1]],
 				&tri->verts[tri->indexes[j + 2]]
 			}
-			
+
 			const idPlane plane( v[0]->xyz, v[1]->xyz, v[2]->xyz );
-			
+
 			// make the midpoint slightly above the triangle
 			const idVec3 mid = ( v[0]->xyz + v[1]->xyz + v[2]->xyz ) * ( 1.0f / 3.0f ) + 0.1f * plane.Normal();
-			
+
 			for( int k = 0; k < 3; k++ )
 			{
 				const idVec3 pos = ( mid + v[k]->xyz * 3.0f ) * 0.25f;
 				idVec3 end;
-				
+
 				// foresthale 2014-05-02: don't use a shader for tools
 				//GL_Color( 0, 0, 1 );
 				qglColor3f( 0, 0, 1 );
 				qglVertex3fv( pos.ToFloatPtr() );
 				VectorMA( pos, r_showNormals.GetFloat(), v[k]->normal, end );
 				qglVertex3fv( end.ToFloatPtr() );
-				
+
 				//GL_Color( 1, 0, 0 );
 				qglColor3f( 1, 0, 0 );
 				qglVertex3fv( pos.ToFloatPtr() );
 				VectorMA( pos, r_showNormals.GetFloat(), v[k]->tangents[0], end );
 				qglVertex3fv( end.ToFloatPtr() );
-				
+
 				//GL_Color( 0, 1, 0 );
 				qglColor3f( 0, 1, 0 );
 				qglVertex3fv( pos.ToFloatPtr() );
 				VectorMA( pos, r_showNormals.GetFloat(), v[k]->tangents[1], end );
 				qglVertex3fv( end.ToFloatPtr() );
-				
+
 				//GL_Color( 1, 1, 1 );
 				qglColor3f( 1, 1, 1 );
 				qglVertex3fv( pos.ToFloatPtr() );
@@ -1620,98 +1645,98 @@ static void RB_ShowTextureVectors( drawSurf_t** drawSurfs, int numDrawSurfs )
 	{
 		return;
 	}
-	
+
 	GL_State( GLS_DEPTHFUNC_LESS );
-	
+
 	globalImages->BindNull();
-	
+
 	RB_SimpleWorldSetup();
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.BindShader_Color();
-	
+
 	for( int i = 0; i < numDrawSurfs; i++ )
 	{
 		drawSurf_t* drawSurf = drawSurfs[i];
-		
+
 		const srfTriangles_t* tri = drawSurf->frontEndGeo;
-		
+
 		if( !tri || tri->verts == NULL )
 		{
 			continue;
 		}
-		
+
 		RB_SimpleSurfaceSetup( drawSurf );
-		
+
 		// draw non-shared edges in yellow
 		qglBegin( GL_LINES );
-		
+
 		for( int j = 0; j < tri->numIndexes; j += 3 )
 		{
 			float d0[5], d1[5];
 			idVec3 temp;
 			idVec3 tangents[2];
-			
+
 			const idDrawVert* a = &tri->verts[tri->indexes[j + 0]];
 			const idDrawVert* b = &tri->verts[tri->indexes[j + 1]];
 			const idDrawVert* c = &tri->verts[tri->indexes[j + 2]];
-			
+
 			const idPlane plane( a->xyz, b->xyz, c->xyz );
-			
+
 			// make the midpoint slightly above the triangle
 			const idVec3 mid = ( a->xyz + b->xyz + c->xyz ) * ( 1.0f / 3.0f ) + 0.1f * plane.Normal();
-			
+
 			// calculate the texture vectors
 			const idVec2 aST = a->GetTexCoord();
 			const idVec2 bST = b->GetTexCoord();
 			const idVec2 cST = c->GetTexCoord();
-			
+
 			d0[0] = b->xyz[0] - a->xyz[0];
 			d0[1] = b->xyz[1] - a->xyz[1];
 			d0[2] = b->xyz[2] - a->xyz[2];
 			d0[3] = bST[0] - aST[0];
 			d0[4] = bST[1] - aST[1];
-			
+
 			d1[0] = c->xyz[0] - a->xyz[0];
 			d1[1] = c->xyz[1] - a->xyz[1];
 			d1[2] = c->xyz[2] - a->xyz[2];
 			d1[3] = cST[0] - aST[0];
 			d1[4] = cST[1] - aST[1];
-			
+
 			const float area = d0[3] * d1[4] - d0[4] * d1[3];
 			if( area == 0 )
 			{
 				continue;
 			}
 			const float inva = 1.0f / area;
-			
+
 			temp[0] = ( d0[0] * d1[4] - d0[4] * d1[0] ) * inva;
 			temp[1] = ( d0[1] * d1[4] - d0[4] * d1[1] ) * inva;
 			temp[2] = ( d0[2] * d1[4] - d0[4] * d1[2] ) * inva;
 			temp.Normalize();
 			tangents[0] = temp;
-			
+
 			temp[0] = ( d0[3] * d1[0] - d0[0] * d1[3] ) * inva;
 			temp[1] = ( d0[3] * d1[1] - d0[1] * d1[3] ) * inva;
 			temp[2] = ( d0[3] * d1[2] - d0[2] * d1[3] ) * inva;
 			temp.Normalize();
 			tangents[1] = temp;
-			
+
 			// draw the tangents
 			tangents[0] = mid + tangents[0] * r_showTextureVectors.GetFloat();
 			tangents[1] = mid + tangents[1] * r_showTextureVectors.GetFloat();
-			
+
 			// foresthale 2014-05-02: don't use a shader for tools
 			//GL_Color( 1, 0, 0 );
 			qglColor3f( 1, 0, 0 );
 			qglVertex3fv( mid.ToFloatPtr() );
 			qglVertex3fv( tangents[0].ToFloatPtr() );
-			
+
 			//GL_Color( 0, 1, 0 );
 			qglColor3f( 0, 1, 0 );
 			qglVertex3fv( mid.ToFloatPtr() );
 			qglVertex3fv( tangents[1].ToFloatPtr() );
 		}
-		
+
 		qglEnd();
 	}
 }
@@ -1728,29 +1753,29 @@ static void RB_ShowDominantTris( drawSurf_t** drawSurfs, int numDrawSurfs )
 	int			i, j;
 	drawSurf_t*	drawSurf;
 	const srfTriangles_t*	tri;
-	
+
 	if( !r_showDominantTri.GetBool() )
 	{
 		return;
 	}
-	
+
 	GL_State( GLS_DEPTHFUNC_LESS );
-	
+
 	GL_PolygonOffset( -1, -2 );
 	qglEnable( GL_POLYGON_OFFSET_LINE );
-	
+
 	globalImages->BindNull();
-	
+
 	RB_SimpleWorldSetup();
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.BindShader_Color();
-	
+
 	for( i = 0; i < numDrawSurfs; i++ )
 	{
 		drawSurf = drawSurfs[i];
-		
+
 		tri = drawSurf->frontEndGeo;
-		
+
 		if( !tri || !tri->verts )
 		{
 			continue;
@@ -1760,29 +1785,29 @@ static void RB_ShowDominantTris( drawSurf_t** drawSurfs, int numDrawSurfs )
 			continue;
 		}
 		RB_SimpleSurfaceSetup( drawSurf );
-		
+
 		// foresthale 2014-05-02: don't use a shader for tools
 		//GL_Color( 1, 1, 0 );
 		qglColor3f( 1, 1, 0 );
 		qglBegin( GL_LINES );
-		
+
 		for( j = 0; j < tri->numVerts; j++ )
 		{
 			const idDrawVert* a, *b, *c;
 			idVec3		mid;
-			
+
 			// find the midpoint of the dominant tri
-			
+
 			a = &tri->verts[j];
 			b = &tri->verts[tri->dominantTris[j].v2];
 			c = &tri->verts[tri->dominantTris[j].v3];
-			
+
 			mid = ( a->xyz + b->xyz + c->xyz ) * ( 1.0f / 3.0f );
-			
+
 			qglVertex3fv( mid.ToFloatPtr() );
 			qglVertex3fv( a->xyz.ToFloatPtr() );
 		}
-		
+
 		qglEnd();
 	}
 	qglDisable( GL_POLYGON_OFFSET_LINE );
@@ -1802,41 +1827,44 @@ static void RB_ShowEdges( drawSurf_t** drawSurfs, int numDrawSurfs )
 	const srfTriangles_t*	tri;
 	const silEdge_t*			edge;
 	int			danglePlane;
-	
+
 	if( !r_showEdges.GetBool() )
 	{
 		return;
 	}
-	
+
 	globalImages->BindNull();
-	
+
 	GL_State( GLS_DEPTHFUNC_ALWAYS );
-	
+
 	RB_SimpleWorldSetup();
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.BindShader_Color();
-	
+
 	for( i = 0; i < numDrawSurfs; i++ )
 	{
 		drawSurf = drawSurfs[i];
-		
+
 		tri = drawSurf->frontEndGeo;
-		if( !tri ) continue;
-		
+		if( !tri )
+		{
+			continue;
+		}
+
 		idDrawVert* ac = ( idDrawVert* )tri->verts;
 		if( !ac )
 		{
 			continue;
 		}
-		
+
 		RB_SimpleSurfaceSetup( drawSurf );
-		
+
 		// draw non-shared edges in yellow
 		// foresthale 2014-05-02: don't use a shader for tools
 		//GL_Color( 1, 1, 0 );
 		qglColor3f( 1, 1, 0 );
 		qglBegin( GL_LINES );
-		
+
 		for( j = 0; j < tri->numIndexes; j += 3 )
 		{
 			for( k = 0; k < 3; k++ )
@@ -1845,7 +1873,7 @@ static void RB_ShowEdges( drawSurf_t** drawSurfs, int numDrawSurfs )
 				l = ( k == 2 ) ? 0 : k + 1;
 				i1 = tri->indexes[j + k];
 				i2 = tri->indexes[j + l];
-				
+
 				// if these are used backwards, the edge is shared
 				for( m = 0; m < tri->numIndexes; m += 3 )
 				{
@@ -1862,43 +1890,43 @@ static void RB_ShowEdges( drawSurf_t** drawSurfs, int numDrawSurfs )
 						break;
 					}
 				}
-				
+
 				// if we didn't find a backwards listing, draw it in yellow
 				if( m == tri->numIndexes )
 				{
 					qglVertex3fv( ac[ i1 ].xyz.ToFloatPtr() );
 					qglVertex3fv( ac[ i2 ].xyz.ToFloatPtr() );
 				}
-				
+
 			}
 		}
-		
+
 		qglEnd();
-		
+
 		// draw dangling sil edges in red
 		if( !tri->silEdges )
 		{
 			continue;
 		}
-		
+
 		// the plane number after all real planes
 		// is the dangling edge
 		danglePlane = tri->numIndexes / 3;
-		
+
 		// foresthale 2014-05-02: don't use a shader for tools
 		//GL_Color( 1, 0, 0 );
 		qglColor3f( 1, 0, 0 );
-		
+
 		qglBegin( GL_LINES );
 		for( j = 0; j < tri->numSilEdges; j++ )
 		{
 			edge = tri->silEdges + j;
-			
+
 			if( edge->p1 != danglePlane && edge->p2 != danglePlane )
 			{
 				continue;
 			}
-			
+
 			qglVertex3fv( ac[ edge->v1 ].xyz.ToFloatPtr() );
 			qglVertex3fv( ac[ edge->v2 ].xyz.ToFloatPtr() );
 		}
@@ -1922,26 +1950,26 @@ static void RB_ShowLights()
 	{
 		return;
 	}
-	
+
 	GL_State( GLS_DEFAULT );
-	
+
 	// we use the 'vLight->invProjectMVPMatrix'
 	qglMatrixMode( GL_PROJECTION );
 	qglLoadIdentity();
-	
+
 	globalImages->BindNull();
-	
+
 	renderProgManager.BindShader_Color();
-	
+
 	GL_Cull( CT_TWO_SIDED );
-	
+
 	common->Printf( "volumes: " );	// FIXME: not in back end!
-	
+
 	int count = 0;
 	for( viewLight_t* vLight = backEnd.viewDef->viewLights; vLight != NULL; vLight = vLight->next )
 	{
 		count++;
-		
+
 		// depth buffered planes
 		if( r_showLights.GetInteger() >= 2 )
 		{
@@ -1952,7 +1980,7 @@ static void RB_ShowLights()
 			RB_SetMVP( invProjectMVPMatrix );
 			RB_DrawElementsWithCounters( &backEnd.zeroOneCubeSurface );
 		}
-		
+
 		// non-hidden lines
 		if( r_showLights.GetInteger() >= 3 )
 		{
@@ -1963,12 +1991,12 @@ static void RB_ShowLights()
 			RB_SetMVP( invProjectMVPMatrix );
 			RB_DrawElementsWithCounters( &backEnd.zeroOneCubeSurface );
 		}
-		
+
 		common->Printf( "%i ", vLight->lightDef->index );
 	}
-	
+
 	common->Printf( " = %i total\n", count );
-	
+
 	// set back the default projection matrix
 	qglMatrixMode( GL_PROJECTION );
 	qglLoadMatrixf( backEnd.viewDef->projectionMatrix );
@@ -1989,18 +2017,22 @@ static void RB_ShowPortals()
 	{
 		return;
 	}
-	
+
 	// all portals are expressed in world coordinates
 	RB_SimpleWorldSetup();
-	
+
 	globalImages->BindNull();
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.BindShader_Color();
 	if( !r_showNvidiaHack.GetBool() )
+	{
 		GL_State( GLS_DEPTHFUNC_ALWAYS );
+	}
 	else
+	{
 		renderProgManager.BindShader_Color();
-		
+	}
+
 	( ( idRenderWorldLocal* )backEnd.viewDef->renderWorld )->ShowPortals();
 }
 
@@ -2012,7 +2044,7 @@ RB_ClearDebugText
 void RB_ClearDebugText( int time )
 {
 	rb_nextDebugTextTime = time;
-	
+
 	if( !time )
 	{
 		// free up our strings
@@ -2033,10 +2065,10 @@ static void clearDebugText()
 	int			i;
 	int			num;
 	debugText_t*	text;
-	
+
 	int time = rb_nextDebugTextTime;
 	rb_debugTextTime = time;
-	
+
 	// copy any text that still needs to be drawn
 	num	= 0;
 	text = rb_debugText;
@@ -2062,7 +2094,7 @@ RB_AddDebugText
 void RB_AddDebugText( const char* text, const idVec3& origin, float scale, const idVec4& color, const idMat3& viewAxis, const int align, const int lifetime, const bool depthTest )
 {
 	debugText_t* debugText;
-	
+
 	if( rb_numDebugText < MAX_DEBUG_TEXT )
 	{
 		debugText = &rb_debugText[ rb_numDebugText++ ];
@@ -2088,7 +2120,7 @@ float RB_DrawTextLength( const char* text, float scale, int len )
 {
 	int i, num, index, charIndex;
 	float spacing, textLen = 0.0f;
-	
+
 	if( text && *text )
 	{
 		if( !len )
@@ -2105,7 +2137,7 @@ float RB_DrawTextLength( const char* text, float scale, int len )
 			num = simplex[charIndex][0] * 2;
 			spacing = simplex[charIndex][1];
 			index = 2;
-			
+
 			while( index - 2 < num )
 			{
 				if( simplex[charIndex][index] < 0 )
@@ -2140,20 +2172,20 @@ static void RB_DrawText( const char* text, const idVec3& origin, float scale, co
 	//renderProgManager.BindShader_TextureVertexColor();
 	GL_SelectTexture( 0 );
 	globalImages->whiteImage->Bind();
-	
+
 	RB_SetVertexColorParms( SVC_MODULATE );
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.CommitUniforms();
-	
+
 	int i, j, len, num, index, charIndex, line;
 	float textLen = 1.0f, spacing = 1.0f;
 	idVec3 org, p1, p2;
-	
+
 	if( text && *text )
 	{
 		qglBegin( GL_LINES );
 		qglColor3fv( color.ToFloatPtr() );
-		
+
 		if( text[0] == '\n' )
 		{
 			line = 1;
@@ -2162,11 +2194,11 @@ static void RB_DrawText( const char* text, const idVec3& origin, float scale, co
 		{
 			line = 0;
 		}
-		
+
 		len = strlen( text );
 		for( i = 0; i < len; i++ )
 		{
-		
+
 			if( i == 0 || text[i] == '\n' )
 			{
 				org = origin - viewAxis[2] * ( line * 36.0f * scale );
@@ -2193,7 +2225,7 @@ static void RB_DrawText( const char* text, const idVec3& origin, float scale, co
 				}
 				line++;
 			}
-			
+
 			charIndex = text[i] - 32;
 			if( charIndex < 0 || charIndex > NUM_SIMPLEX_CHARS )
 			{
@@ -2202,7 +2234,7 @@ static void RB_DrawText( const char* text, const idVec3& origin, float scale, co
 			num = simplex[charIndex][0] * 2;
 			spacing = simplex[charIndex][1];
 			index = 2;
-			
+
 			while( index - 2 < num )
 			{
 				if( simplex[charIndex][index] < 0 )
@@ -2218,13 +2250,13 @@ static void RB_DrawText( const char* text, const idVec3& origin, float scale, co
 					continue;
 				}
 				p2 = org + scale * simplex[charIndex][index] * -viewAxis[1] + scale * simplex[charIndex][index + 1] * viewAxis[2];
-				
+
 				qglVertex3fv( p1.ToFloatPtr() );
 				qglVertex3fv( p2.ToFloatPtr() );
 			}
 			org -= viewAxis[1] * ( spacing * scale );
 		}
-		
+
 		qglEnd();
 	}
 }
@@ -2239,24 +2271,24 @@ void RB_ShowDebugText()
 	int			i;
 	int			width;
 	debugText_t*	text;
-	
+
 	if( !rb_numDebugText )
 	{
 		return;
 	}
-	
+
 	// all lines are expressed in world coordinates
 	RB_SimpleWorldSetup();
-	
+
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.BindShader_TextureVertexColor();
 	GL_SelectTexture( 0 );
 	globalImages->whiteImage->Bind();
-	
+
 	RB_SetVertexColorParms( SVC_MODULATE );
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.CommitUniforms();
-	
+
 	width = r_debugLineWidth.GetInteger();
 	if( width < 1 )
 	{
@@ -2266,11 +2298,11 @@ void RB_ShowDebugText()
 	{
 		width = 10;
 	}
-	
+
 	// draw lines
 	qglLineWidth( width );
-	
-	
+
+
 	if( !r_debugLineDepthTest.GetBool() )
 	{
 		GL_State( GLS_POLYMODE_LINE | GLS_DEPTHFUNC_ALWAYS );
@@ -2279,7 +2311,7 @@ void RB_ShowDebugText()
 	{
 		GL_State( GLS_POLYMODE_LINE );
 	}
-	
+
 	text = rb_debugText;
 	for( i = 0; i < rb_numDebugText; i++, text++ )
 	{
@@ -2288,12 +2320,12 @@ void RB_ShowDebugText()
 			RB_DrawText( text->text, text->origin, text->scale, text->color, text->viewAxis, text->align );
 		}
 	}
-	
+
 	if( !r_debugLineDepthTest.GetBool() )
 	{
 		GL_State( GLS_POLYMODE_LINE );
 	}
-	
+
 	text = rb_debugText;
 	for( i = 0; i < rb_numDebugText; i++, text++ )
 	{
@@ -2302,9 +2334,9 @@ void RB_ShowDebugText()
 			RB_DrawText( text->text, text->origin, text->scale, text->color, text->viewAxis, text->align );
 		}
 	}
-	
+
 	qglLineWidth( 1 );
-	
+
 	clearDebugText();
 }
 
@@ -2316,7 +2348,10 @@ RB_ClearDebugLines
 void RB_ClearDebugLines( int time )
 {
 	rb_nextDebugLineTime = time;
-	if( !time ) rb_numDebugLines = 0;
+	if( !time )
+	{
+		rb_numDebugLines = 0;
+	}
 }
 
 static void clearDebugLines()
@@ -2324,9 +2359,9 @@ static void clearDebugLines()
 	int			i;
 	int			num;
 	debugLine_t*	line;
-	
+
 	rb_debugLineTime = rb_nextDebugLineTime;
-	
+
 	// copy any lines that still need to be drawn
 	num	= 0;
 	line = rb_debugLines;
@@ -2352,7 +2387,7 @@ RB_AddDebugLine
 void RB_AddDebugLine( const idVec4& color, const idVec3& start, const idVec3& end, const int lifeTime, const bool depthTest )
 {
 	debugLine_t* line;
-	
+
 	if( rb_numDebugLines < MAX_DEBUG_LINES )
 	{
 		line = &rb_debugLines[ rb_numDebugLines++ ];
@@ -2374,30 +2409,36 @@ void RB_ShowDebugLines()
 	int			i;
 	int			width;
 	debugLine_t*	line;
-	
+
 	if( !rb_numDebugLines )
 	{
 		return;
 	}
-	
+
 	// all lines are expressed in world coordinates
 	RB_SimpleWorldSetup();
-	
+
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.BindShader_TextureVertexColor();
 	if( !r_showNvidiaHack.GetBool() )
+	{
 		GL_SelectTexture( 0 );
+	}
 	else
+	{
 		renderProgManager.BindShader_TextureVertexColor();
-		
+	}
+
 	globalImages->whiteImage->Bind();
-	
+
 	RB_SetVertexColorParms( SVC_MODULATE );
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.CommitUniforms();
 	if( r_showNvidiaHack.GetBool() )
+	{
 		renderProgManager.CommitUniforms();
-		
+	}
+
 	width = r_debugLineWidth.GetInteger();
 	if( width < 1 )
 	{
@@ -2407,10 +2448,10 @@ void RB_ShowDebugLines()
 	{
 		width = 10;
 	}
-	
+
 	// draw lines
 	qglLineWidth( width );
-	
+
 	if( !r_debugLineDepthTest.GetBool() )
 	{
 		GL_State( GLS_POLYMODE_LINE | GLS_DEPTHFUNC_ALWAYS );
@@ -2419,9 +2460,9 @@ void RB_ShowDebugLines()
 	{
 		GL_State( GLS_POLYMODE_LINE );
 	}
-	
+
 	qglBegin( GL_LINES );
-	
+
 	line = rb_debugLines;
 	for( i = 0; i < rb_numDebugLines; i++, line++ )
 	{
@@ -2433,14 +2474,14 @@ void RB_ShowDebugLines()
 		}
 	}
 	qglEnd();
-	
+
 	if( !r_debugLineDepthTest.GetBool() )
 	{
 		GL_State( GLS_POLYMODE_LINE );
 	}
-	
+
 	qglBegin( GL_LINES );
-	
+
 	line = rb_debugLines;
 	for( i = 0; i < rb_numDebugLines; i++, line++ )
 	{
@@ -2451,12 +2492,12 @@ void RB_ShowDebugLines()
 			qglVertex3fv( line->end.ToFloatPtr() );
 		}
 	}
-	
+
 	qglEnd();
-	
+
 	qglLineWidth( 1 );
 	GL_State( GLS_DEFAULT );
-	
+
 	clearDebugLines();
 }
 
@@ -2468,7 +2509,7 @@ RB_ClearDebugPolygons
 void RB_ClearDebugPolygons( int time )
 {
 	rb_nextDebugPolygonTime = time;
-	
+
 	if( !time )
 	{
 		rb_numDebugPolygons = 0;
@@ -2481,13 +2522,13 @@ static void clearDebugPolygons()
 	int				i;
 	int				num;
 	debugPolygon_t*	poly;
-	
+
 	int time = rb_nextDebugPolygonTime;
 	rb_debugPolygonTime = time;
-	
+
 	// copy any polygons that still need to be drawn
 	num	= 0;
-	
+
 	poly = rb_debugPolygons;
 	for( i = 0; i < rb_numDebugPolygons; i++, poly++ )
 	{
@@ -2511,7 +2552,7 @@ RB_AddDebugPolygon
 void RB_AddDebugPolygon( const idVec4& color, const idWinding& winding, const int lifeTime, const bool depthTest )
 {
 	debugPolygon_t* poly;
-	
+
 	if( rb_numDebugPolygons < MAX_DEBUG_POLYGONS )
 	{
 		poly = &rb_debugPolygons[ rb_numDebugPolygons++ ];
@@ -2531,26 +2572,26 @@ void RB_ShowDebugPolygons()
 {
 	int				i, j;
 	debugPolygon_t*	poly;
-	
+
 	if( !rb_numDebugPolygons )
 	{
 		return;
 	}
-	
+
 	// all lines are expressed in world coordinates
 	RB_SimpleWorldSetup();
-	
+
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.BindShader_TextureVertexColor();
 	GL_SelectTexture( 0 );
 	globalImages->whiteImage->Bind();
-	
+
 	RB_SetVertexColorParms( SVC_MODULATE );
 	// foresthale 2014-05-02: don't use a shader for tools
 	//renderProgManager.CommitUniforms();
-	
+
 	qglDisable( GL_TEXTURE_2D );
-	
+
 	if( r_debugPolygonFilled.GetBool() )
 	{
 		GL_State( GLS_POLYGON_OFFSET | GLS_SRCBLEND_SRC_ALPHA | GLS_DSTBLEND_ONE_MINUS_SRC_ALPHA | GLS_DEPTHMASK );
@@ -2561,27 +2602,27 @@ void RB_ShowDebugPolygons()
 		GL_State( GLS_POLYGON_OFFSET | GLS_POLYMODE_LINE );
 		GL_PolygonOffset( -1, -2 );
 	}
-	
+
 	poly = rb_debugPolygons;
 	for( i = 0; i < rb_numDebugPolygons; i++, poly++ )
 	{
 //		if ( !poly->depthTest ) {
 
 		qglColor4fv( poly->rgb.ToFloatPtr() );
-		
+
 		qglBegin( GL_POLYGON );
-		
+
 		for( j = 0; j < poly->winding.GetNumPoints(); j++ )
 		{
 			qglVertex3fv( poly->winding[j].ToFloatPtr() );
 		}
-		
+
 		qglEnd();
 //		}
 	}
-	
+
 	GL_State( GLS_DEFAULT );
-	
+
 	if( r_debugPolygonFilled.GetBool() )
 	{
 		qglDisable( GL_POLYGON_OFFSET_FILL );
@@ -2590,9 +2631,9 @@ void RB_ShowDebugPolygons()
 	{
 		qglDisable( GL_POLYGON_OFFSET_LINE );
 	}
-	
+
 	GL_State( GLS_DEFAULT );
-	
+
 	clearDebugPolygons();
 }
 
@@ -2607,7 +2648,7 @@ void RB_ShowCenterOfProjection()
 	{
 		return;
 	}
-	
+
 	const int w = backEnd.viewDef->scissor.GetWidth();
 	const int h = backEnd.viewDef->scissor.GetHeight();
 	qglClearColor( 1, 0, 0, 1 );
@@ -2624,7 +2665,7 @@ void RB_ShowCenterOfProjection()
 	qglClear( GL_COLOR_BUFFER_BIT );
 	qglScissor( 0, h * f - 1 , w, 3 );
 	qglClear( GL_COLOR_BUFFER_BIT );
-	
+
 	qglScissor( 0, 0, w, h );
 }
 
@@ -2641,7 +2682,7 @@ void RB_ShowLines()
 	{
 		return;
 	}
-	
+
 	glEnable( GL_SCISSOR_TEST );
 	if( backEnd.viewDef->renderView.viewEyeBuffer == 0 )
 	{
@@ -2655,7 +2696,7 @@ void RB_ShowLines()
 	{
 		glClearColor( 0, 0, 1, 1 );
 	}
-	
+
 	const int start = ( r_showLines.GetInteger() > 2 );	// 1,3 = horizontal, 2,4 = vertical
 	if( r_showLines.GetInteger() == 1 || r_showLines.GetInteger() == 3 )
 	{
@@ -2692,20 +2733,20 @@ void RB_TestGamma()
 	int		c, comp;
 	int		v, dither;
 	int		mask, y;
-	
+
 	if( r_testGamma.GetInteger() <= 0 )
 	{
 		return;
 	}
-	
+
 	v = r_testGamma.GetInteger();
 	if( v <= 1 || v >= 196 )
 	{
 		v = 128;
 	}
-	
+
 	memset( image, 0, sizeof( image ) );
-	
+
 	for( mask = 0; mask < 8; mask++ )
 	{
 		y = mask * BAR_HEIGHT;
@@ -2747,7 +2788,7 @@ void RB_TestGamma()
 			}
 		}
 	}
-	
+
 	// draw geometrically increasing steps in the bottom row
 	y = 0 * BAR_HEIGHT;
 	float	scale = 1;
@@ -2773,9 +2814,9 @@ void RB_TestGamma()
 			}
 		}
 	}
-	
+
 	qglLoadIdentity();
-	
+
 	qglMatrixMode( GL_PROJECTION );
 	GL_State( GLS_DEPTHFUNC_ALWAYS );
 	GL_Color( 1, 1, 1 );
@@ -2799,12 +2840,12 @@ RB_TestGammaBias
 static void RB_TestGammaBias()
 {
 	byte	image[G_HEIGHT][G_WIDTH][4];
-	
+
 	if( r_testGammaBias.GetInteger() <= 0 )
 	{
 		return;
 	}
-	
+
 	int y = 0;
 	for( int bias = -40; bias < 40; bias += 10, y += BAR_HEIGHT )
 	{
@@ -2832,7 +2873,7 @@ static void RB_TestGammaBias()
 			}
 		}
 	}
-	
+
 	qglLoadIdentity();
 	qglMatrixMode( GL_PROJECTION );
 	GL_State( GLS_DEPTHFUNC_ALWAYS );
@@ -2862,17 +2903,17 @@ void RB_TestImage()
 	idImage* imageCb = NULL;
 	int		max;
 	float	w, h;
-	
+
 	image = tr.testImage;
 	if( !image )
 	{
 		return;
 	}
-	
+
 	if( tr.testVideo )
 	{
 		cinData_t	cin;
-		
+
 		cin = tr.testVideo->ImageForTime( backEnd.viewDef->renderView.time[1] - tr.testVideoStartTime );
 		if( cin.imageY != NULL )
 		{
@@ -2891,31 +2932,31 @@ void RB_TestImage()
 	else
 	{
 		max = image->GetUploadWidth() > image->GetUploadHeight() ? image->GetUploadWidth() : image->GetUploadHeight();
-		
+
 		w = 0.25 * image->GetUploadWidth() / max;
 		h = 0.25 * image->GetUploadHeight() / max;
-		
+
 		w *= ( float )renderSystem->GetHeight() / renderSystem->GetWidth();
 	}
-	
+
 	// Set State
 	GL_State( GLS_DEPTHFUNC_ALWAYS | GLS_SRCBLEND_ONE | GLS_DSTBLEND_ZERO );
-	
+
 	// Set Parms
 	float texS[4] = { 1.0f, 0.0f, 0.0f, 0.0f };
 	float texT[4] = { 0.0f, 1.0f, 0.0f, 0.0f };
 	renderProgManager.SetRenderParm( RENDERPARM_TEXTUREMATRIX_S, texS );
 	renderProgManager.SetRenderParm( RENDERPARM_TEXTUREMATRIX_T, texT );
-	
+
 	float texGenEnabled[4] = { 0, 0, 0, 0 };
 	renderProgManager.SetRenderParm( RENDERPARM_TEXGEN_0_ENABLED, texGenEnabled );
-	
+
 	// not really necessary but just for clarity
 	const float screenWidth = 1.0f;
 	const float screenHeight = 1.0f;
 	const float halfScreenWidth = screenWidth * 0.5f;
 	const float halfScreenHeight = screenHeight * 0.5f;
-	
+
 	float scale[16] = { 0 };
 	scale[0] = w; // scale
 	scale[5] = h; // scale
@@ -2923,7 +2964,7 @@ void RB_TestImage()
 	scale[13] = halfScreenHeight - ( halfScreenHeight * h ); // translate
 	scale[10] = 1.0f;
 	scale[15] = 1.0f;
-	
+
 	float ortho[16] = { 0 };
 	ortho[0] = 2.0f / screenWidth;
 	ortho[5] = -2.0f / screenHeight;
@@ -2932,10 +2973,10 @@ void RB_TestImage()
 	ortho[13] = 1.0f;
 	ortho[14] = -1.0f;
 	ortho[15] = 1.0f;
-	
+
 	float finalOrtho[16];
 	R_MatrixMultiply( scale, ortho, finalOrtho );
-	
+
 	float projMatrixTranspose[16];
 	R_MatrixTranspose( finalOrtho, projMatrixTranspose );
 	renderProgManager.SetRenderParms( RENDERPARM_MVPMATRIX_X, projMatrixTranspose, 4 );
@@ -2943,10 +2984,10 @@ void RB_TestImage()
 	qglLoadMatrixf( finalOrtho );
 	qglMatrixMode( GL_MODELVIEW );
 	qglLoadIdentity();
-	
+
 	// Set Color
 	GL_Color( 1, 1, 1, 1 );
-	
+
 	// Bind the Texture
 	if( ( imageCr != NULL ) && ( imageCb != NULL ) )
 	{
@@ -2965,7 +3006,7 @@ void RB_TestImage()
 		// Set Shader
 		renderProgManager.BindShader_Texture();
 	}
-	
+
 	// Draw!
 	RB_DrawElementsWithCounters( &backEnd.testImageSurface );
 }
@@ -2979,62 +3020,62 @@ void RB_DrawExpandedTriangles( const srfTriangles_t* tri, const float radius, co
 {
 	int i, j, k;
 	idVec3 dir[6], normal, point;
-	
+
 	for( i = 0; i < tri->numIndexes; i += 3 )
 	{
-	
+
 		idVec3 p[3] = { tri->verts[ tri->indexes[ i + 0 ] ].xyz, tri->verts[ tri->indexes[ i + 1 ] ].xyz, tri->verts[ tri->indexes[ i + 2 ] ].xyz };
-		
+
 		dir[0] = p[0] - p[1];
 		dir[1] = p[1] - p[2];
 		dir[2] = p[2] - p[0];
-		
+
 		normal = dir[0].Cross( dir[1] );
-		
+
 		if( normal * p[0] < normal * vieworg )
 		{
 			continue;
 		}
-		
+
 		dir[0] = normal.Cross( dir[0] );
 		dir[1] = normal.Cross( dir[1] );
 		dir[2] = normal.Cross( dir[2] );
-		
+
 		dir[0].Normalize();
 		dir[1].Normalize();
 		dir[2].Normalize();
-		
+
 		qglBegin( GL_LINE_LOOP );
-		
+
 		for( j = 0; j < 3; j++ )
 		{
 			k = ( j + 1 ) % 3;
-			
+
 			dir[4] = ( dir[j] + dir[k] ) * 0.5f;
 			dir[4].Normalize();
-			
+
 			dir[3] = ( dir[j] + dir[4] ) * 0.5f;
 			dir[3].Normalize();
-			
+
 			dir[5] = ( dir[4] + dir[k] ) * 0.5f;
 			dir[5].Normalize();
-			
+
 			point = p[k] + dir[j] * radius;
 			qglVertex3f( point[0], point[1], point[2] );
-			
+
 			point = p[k] + dir[3] * radius;
 			qglVertex3f( point[0], point[1], point[2] );
-			
+
 			point = p[k] + dir[4] * radius;
 			qglVertex3f( point[0], point[1], point[2] );
-			
+
 			point = p[k] + dir[5] * radius;
 			qglVertex3f( point[0], point[1], point[2] );
-			
+
 			point = p[k] + dir[k] * radius;
 			qglVertex3f( point[0], point[1], point[2] );
 		}
-		
+
 		qglEnd();
 	}
 }
@@ -3057,12 +3098,12 @@ void RB_ShowTrace( drawSurf_t** drawSurfs, int numDrawSurfs )
 	idVec3					localStart, localEnd;
 	localTrace_t			hit;
 	float					radius;
-	
+
 	if( r_showTrace.GetInteger() == 0 )
 	{
 		return;
 	}
-	
+
 	if( r_showTrace.GetInteger() == 2 )
 	{
 		radius = 5.0f;
@@ -3071,59 +3112,59 @@ void RB_ShowTrace( drawSurf_t** drawSurfs, int numDrawSurfs )
 	{
 		radius = 0.0f;
 	}
-	
+
 	// determine the points of the trace
 	start = backEnd.viewDef->renderView.vieworg;
 	end = start + 4000 * backEnd.viewDef->renderView.viewaxis[0];
-	
+
 	// check and draw the surfaces
 	globalImages->whiteImage->Bind();
-	
+
 	RB_SimpleWorldSetup();
-	
+
 	// find how many are ambient
 	for( i = 0; i < numDrawSurfs; i++ )
 	{
 		surf = drawSurfs[i];
 		tri = surf->frontEndGeo;
-		
+
 		if( tri == NULL || tri->verts == NULL )
 		{
 			continue;
 		}
-		
+
 		// transform the points into local space
 		R_GlobalPointToLocal( surf->space->modelMatrix, start, localStart );
 		R_GlobalPointToLocal( surf->space->modelMatrix, end, localEnd );
-		
+
 		// check the bounding box
 		if( !tri->bounds.Expand( radius ).LineIntersection( localStart, localEnd ) )
 		{
 			continue;
 		}
-		
+
 		RB_SimpleSurfaceSetup( surf );
 		// qglLoadMatrixf( surf->space->modelViewMatrix );
-		
+
 		// highlight the surface
 		GL_State( GLS_SRCBLEND_SRC_ALPHA | GLS_DSTBLEND_ONE_MINUS_SRC_ALPHA );
-		
+
 		GL_Color( 1, 0, 0, 0.25 );
 		RB_DrawElementsWithCounters( surf );
-		
+
 		// draw the bounding box
 		GL_State( GLS_DEPTHFUNC_ALWAYS );
-		
+
 		GL_Color( 1, 1, 1, 1 );
 		RB_DrawBounds( tri->bounds );
-		
+
 		if( radius != 0.0f )
 		{
 			// draw the expanded triangles
 			GL_Color( 0.5f, 0.5f, 1.0f, 1.0f );
 			RB_DrawExpandedTriangles( tri, radius, localStart );
 		}
-		
+
 		// check the exact surfaces
 		hit = R_LocalTrace( localStart, localEnd, radius, tri );
 		if( hit.fraction < 1.0 )
@@ -3142,7 +3183,9 @@ RB_RenderDebugTools
 void RB_RenderDebugTools( drawSurf_t** drawSurfs, int numDrawSurfs )
 {
 	if( r_enableDebugRenderTools.GetBool() == false )
+	{
 		return;
+	}
 	// don't do much if this was a 2D rendering
 	if( !backEnd.viewDef->viewEntitys )
 	{
@@ -3150,12 +3193,12 @@ void RB_RenderDebugTools( drawSurf_t** drawSurfs, int numDrawSurfs )
 		RB_ShowLines();
 		return;
 	}
-	
+
 	renderLog.OpenMainBlock( MRB_DRAW_DEBUG_TOOLS );
 	RENDERLOG_PRINTF( "---------- RB_RenderDebugTools ----------\n" );
-	
+
 	GL_State( GLS_DEFAULT );
-	
+
 	GL_Scissor( backEnd.viewDef->viewport.x1 + backEnd.viewDef->scissor.x1,
 				backEnd.viewDef->viewport.y1 + backEnd.viewDef->scissor.y1,
 				backEnd.viewDef->scissor.x2 + 1 - backEnd.viewDef->scissor.x1,
@@ -3163,7 +3206,7 @@ void RB_RenderDebugTools( drawSurf_t** drawSurfs, int numDrawSurfs )
 	backEnd.currentScissor = backEnd.viewDef->scissor;
 	// foresthale 2014-05-02: hack to make most of these work (also changed several uses of GL_Color to be qglColor)
 	renderProgManager.Unbind();
-	
+
 	RB_ShowLightCount();
 	RB_ShowTexturePolarity( drawSurfs, numDrawSurfs );
 	RB_ShowTangentSpace( drawSurfs, numDrawSurfs );
@@ -3196,7 +3239,7 @@ void RB_RenderDebugTools( drawSurf_t** drawSurfs, int numDrawSurfs )
 	RB_ShowDebugText();
 	RB_ShowDebugPolygons();
 	RB_ShowTrace( drawSurfs, numDrawSurfs );
-	
+
 	renderLog.CloseMainBlock();
 }
 
@@ -3233,13 +3276,13 @@ void RB_SetGL2D( void )
 	qglOrtho( 0, 640, 480, 0, 0, 1 );		// always assume 640x480 virtual coordinates
 	qglMatrixMode( GL_MODELVIEW );
 	qglLoadIdentity();
-	
+
 	GL_State( GLS_DEPTHFUNC_ALWAYS |
 			  GLS_SRCBLEND_SRC_ALPHA |
 			  GLS_DSTBLEND_ONE_MINUS_SRC_ALPHA );
-			  
+
 	GL_Cull( CT_TWO_SIDED );
-	
+
 	qglDisable( GL_DEPTH_TEST );
 	qglDisable( GL_STENCIL_TEST );
 }

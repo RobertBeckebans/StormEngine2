@@ -74,16 +74,16 @@ void idMenuWidget::Cleanup()
 		assert( observers[j]->refCount > 0 );
 		observers[ j ]->Release();
 	}
-	
+
 	observers.Clear();
-	
+
 	// free all children
 	for( int i = 0; i < children.Num(); ++i )
 	{
 		assert( children[i]->refCount > 0 );
 		children[ i ]->Release();
 	}
-	
+
 	children.Clear();
 }
 
@@ -98,13 +98,13 @@ void idMenuWidget::AddChild( idMenuWidget* widget )
 	{
 		return;	// attempt to add a widget that was already in the list
 	}
-	
+
 	if( widget->GetParent() != NULL )
 	{
 		// take out of previous parent
 		widget->GetParent()->RemoveChild( widget );
 	}
-	
+
 	widget->AddRef();
 	widget->SetParent( this );
 	children.Append( widget );
@@ -120,13 +120,13 @@ void idMenuWidget::RemoveAllChildren()
 
 	for( int i = 0; i < children.Num(); ++ i )
 	{
-	
+
 		assert( children[ i ]->GetParent() == this );
-		
+
 		children[ i ]->SetParent( NULL );
 		children[ i ]->Release();
 	}
-	
+
 	children.Clear();
 }
 
@@ -138,7 +138,7 @@ idMenuWidget::RemoveChild
 void idMenuWidget::RemoveChild( idMenuWidget* widget )
 {
 	assert( widget->GetParent() == this );
-	
+
 	children.Remove( widget );
 	widget->SetParent( NULL );
 	widget->Release();
@@ -180,7 +180,7 @@ innermost widget, while *this* widget is the outermost widget.
 void idMenuWidget::ReceiveEvent( const idWidgetEvent& event )
 {
 	idStaticList< idMenuWidget*, 16 > focusChain;
-	
+
 	int focusRunawayCounter = focusChain.Max();
 	idMenuWidget* focusedWidget = this;
 	while( focusedWidget != NULL && --focusRunawayCounter != 0 )
@@ -188,14 +188,14 @@ void idMenuWidget::ReceiveEvent( const idWidgetEvent& event )
 		focusChain.Append( focusedWidget );
 		focusedWidget = focusedWidget->GetFocus();
 	}
-	
+
 	// If hitting this then more than likely you have a self-referential chain.  If that's not
 	// the case, then you may need to increase the size of the focusChain list.
 	assert( focusRunawayCounter != 0 );
 	for( int focusIndex = focusChain.Num() - 1; focusIndex >= 0; --focusIndex )
 	{
 		idMenuWidget* const focusedWidget = focusChain[ focusIndex ];
-		
+
 		if( focusedWidget->ExecuteEvent( event ) )
 		{
 			break;	// this widget has handled the event, so stop propagation
@@ -216,7 +216,7 @@ This should only be used in very specific circumstances!  Most events should go 
 bool idMenuWidget::ExecuteEvent( const idWidgetEvent& event )
 {
 	idList< idWidgetAction, TAG_IDLIB_LIST_MENU >* const actions = GetEventActions( event.type );
-	
+
 	if( actions != NULL )
 	{
 		for( int actionIndex = 0; actionIndex < actions->Num(); ++actionIndex )
@@ -224,9 +224,9 @@ bool idMenuWidget::ExecuteEvent( const idWidgetEvent& event )
 			HandleAction( ( *actions )[ actionIndex ], event, this );
 		}
 	}
-	
+
 	SendEventToObservers( event );
-	
+
 	return actions != NULL && actions->Num() > 0;
 }
 
@@ -258,7 +258,7 @@ void idMenuWidget::RegisterEventObserver( idMenuWidget* observer )
 	{
 		return;
 	}
-	
+
 	observer->AddRef();
 	observers.Append( observer );
 }
@@ -330,17 +330,17 @@ idSWF* idMenuWidget::GetSWFObject()
 	{
 		return swfObj;
 	}
-	
+
 	if( parent != NULL )
 	{
 		return parent->GetSWFObject();
 	}
-	
+
 	if( menuData != NULL )
 	{
 		return menuData->GetGUI();
 	}
-	
+
 	return NULL;
 }
 
@@ -355,7 +355,7 @@ idMenuHandler* idMenuWidget::GetMenuData()
 	{
 		return parent->GetMenuData();
 	}
-	
+
 	return menuData;
 }
 
@@ -393,12 +393,12 @@ void idMenuWidget::Show()
 	{
 		return;
 	}
-	
+
 	if( !BindSprite( GetSWFObject()->GetRootObject() ) )
 	{
 		return;
 	}
-	
+
 	GetSprite()->SetVisible( true );
 	int currentFrame = GetSprite()->GetCurrentFrame();
 	int findFrame = GetSprite()->FindFrame( "rollOn" );
@@ -407,7 +407,7 @@ void idMenuWidget::Show()
 	{
 		return;
 	}
-	
+
 	GetSprite()->PlayFrame( findFrame );
 }
 
@@ -422,19 +422,19 @@ void idMenuWidget::Hide()
 	{
 		return;
 	}
-	
+
 	if( !BindSprite( GetSWFObject()->GetRootObject() ) )
 	{
 		return;
 	}
-	
+
 	int currentFrame = GetSprite()->GetCurrentFrame();
 	int findFrame = GetSprite()->FindFrame( "rollOff" );
 	if( currentFrame >= findFrame || currentFrame == 1 )
 	{
 		return;
 	}
-	
+
 	GetSprite()->PlayFrame( findFrame );
 }
 
@@ -461,13 +461,13 @@ void idMenuWidget::SetFocusIndex( const int index, bool skipSound )
 	{
 		return;
 	}
-	
+
 	const int oldIndex = focusIndex;
-	
+
 	assert( index >= 0 && index < GetChildren().Num() ); //&& oldIndex >= 0 && oldIndex < GetChildren().Num() );
-	
+
 	focusIndex = index;
-	
+
 	if( oldIndex != focusIndex && !skipSound )
 	{
 		if( menuData != NULL )
@@ -475,17 +475,17 @@ void idMenuWidget::SetFocusIndex( const int index, bool skipSound )
 			menuData->PlaySound( GUI_SOUND_FOCUS );
 		}
 	}
-	
+
 	idSWFParmList parms;
 	parms.Append( oldIndex );
 	parms.Append( index );
-	
+
 	// need to mark the widget as having lost focus
 	if( oldIndex != index && oldIndex >= 0 && oldIndex < GetChildren().Num() && GetChildByIndex( oldIndex ).GetState() != WIDGET_STATE_HIDDEN )
 	{
 		GetChildByIndex( oldIndex ).ReceiveEvent( idWidgetEvent( WIDGET_EVENT_FOCUS_OFF, 0, NULL, parms ) );
 	}
-	
+
 	//assert( GetChildByIndex( index ).GetState() != WIDGET_STATE_HIDDEN );
 	GetChildByIndex( index ).ReceiveEvent( idWidgetEvent( WIDGET_EVENT_FOCUS_ON, 0, NULL, parms ) );
 }
@@ -545,10 +545,10 @@ void idMenuWidget::SetState( const widgetState_t state )
 				}
 			}
 		}
-		
+
 		Update();
 	}
-	
+
 	widgetState = state;
 }
 
@@ -567,19 +567,19 @@ bool idMenuWidget::HandleAction( idWidgetAction& action, const idWidgetEvent& ev
 	}
 	else
 	{
-	
+
 		if( forceHandled )
 		{
 			return false;
 		}
-		
+
 		idMenuHandler* data = GetMenuData();
 		if( data != NULL )
 		{
 			return data->HandleAction( action, event, widget, false );
 		}
 	}
-	
+
 	return handled;
 }
 

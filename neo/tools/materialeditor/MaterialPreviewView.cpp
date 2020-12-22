@@ -78,33 +78,35 @@ void MaterialPreviewView::Dump( CDumpContext& dc ) const
 int MaterialPreviewView::OnCreate( LPCREATESTRUCT lpCreateStruct )
 {
 	if( CView::OnCreate( lpCreateStruct ) == -1 )
+	{
 		return -1;
-		
+	}
+
 	DWORD dwStyle;
 	CRect rc;
-	
+
 	dwStyle = WS_CHILD | WS_VISIBLE;
-	
+
 	// Init the control's size to cover the entire client area
 	GetClientRect( rc );
-	
+
 	// Initialize the rendered window and material
 	renderWindow.Create( NULL, "renderWindow", dwStyle, rc, this, 1010 );
-	
+
 	renderWindow.setDrawable( &renderedView );
 	renderWindow.SetWindowPos( NULL, 0, 0, rc.Width(), rc.Height(), SWP_SHOWWINDOW );
-	
+
 	return 0;
 }
 
 void MaterialPreviewView::OnSize( UINT nType, int cx, int cy )
 {
 	CRect rc;
-	
+
 	CView::OnSize( nType, cx, cy );
-	
+
 	GetClientRect( rc );
-	
+
 	renderWindow.SetWindowPos( NULL, 0, 0, rc.Width(), rc.Height(), SWP_SHOWWINDOW );
 	renderWindow.Invalidate();
 	renderWindow.RedrawWindow();
@@ -114,10 +116,10 @@ void MaterialPreviewView::MV_OnMaterialSelectionChange( MaterialDoc* pMaterial )
 {
 	if( pMaterial && pMaterial->renderMaterial )
 	{
-	
+
 		currentMaterial = pMaterial->renderMaterial->GetName();
 		renderedView.setMedia( currentMaterial );
-		
+
 		renderWindow.Invalidate();
 		renderWindow.RedrawWindow();
 	}
@@ -202,18 +204,18 @@ idGLDrawableView::idGLDrawableView()
 {
 	material = NULL;
 	modelDefHandle = -1;
-	
+
 	objectId = 0;
 	showLights = true;
 	realTime = 16;
-	
+
 	viewOrigin.Set( 0.f, 0.f, 0.f );
 	viewRotation.Set( 0.f, 0.f, 0.f );
 	viewDistance = -196.f;
-	
+
 	world = NULL;
 	worldModel = NULL;
-	
+
 	ResetView();
 }
 
@@ -226,31 +228,31 @@ idGLDrawableView::~idGLDrawableView()
 void idGLDrawableView::ResetView( void )
 {
 	idDict			spawnArgs;
-	
+
 	InitWorld();
-	
+
 	memset( &worldEntity, 0, sizeof( worldEntity ) );
 	spawnArgs.Clear();
 	spawnArgs.Set( "classname", "func_static" );
 	spawnArgs.Set( "name", spawnArgs.GetString( "model" ) );
 	spawnArgs.Set( "origin", "0 0 0" );
-	
+
 	gameEdit->ParseSpawnArgsToRenderEntity( &spawnArgs, &worldEntity );
-	
+
 	// load a model and set the current material as its customshader
 	worldModel = renderModelManager->FindModel( "models/materialeditor/cube128.ase" );
 	worldEntity.hModel = worldModel;
-	
+
 	// current material
 	worldEntity.customShader = material;
-	
+
 	// current rotation
 	worldEntity.axis = mat3_identity;
-	
+
 	// set global shader parms
 	memset( globalParms, 0, sizeof( globalParms ) );
 	globalParms[0] = globalParms[1] = globalParms[2] = globalParms[3] = 1.f;
-	
+
 	worldEntity.shaderParms[0] = 1.f;
 	worldEntity.shaderParms[1] = 1.f;
 	worldEntity.shaderParms[2] = 1.f;
@@ -269,10 +271,10 @@ void idGLDrawableView::InitWorld()
 	{
 		worldModel = renderModelManager->AllocModel();
 	}
-	
+
 	world->InitFromMap( NULL );
 	worldModel->InitEmpty( "GLWorldModel" );
-	
+
 	viewLights.Clear();
 }
 
@@ -291,10 +293,10 @@ void idGLDrawableView::mouseMove( float x, float y )
 {
 	bool doZoom;
 	float sensitivity = 0.5f;
-	
+
 	if( handleMove )
 	{
-	
+
 		// Left mouse button rotates and zooms the view
 		if( button == MK_LBUTTON )
 		{
@@ -311,7 +313,7 @@ void idGLDrawableView::mouseMove( float x, float y )
 			{
 				float xo = 0.f;
 				float yo = 0.f;
-				
+
 				if( x != pressX )
 				{
 					xo = ( x - pressX );
@@ -322,13 +324,13 @@ void idGLDrawableView::mouseMove( float x, float y )
 					yo = ( y - pressY );
 					pressY = y;
 				}
-				
+
 				viewRotation.yaw += -( xo * sensitivity );
 				viewRotation.pitch += ( yo * sensitivity );
-				
+
 				viewRotation.pitch = idMath::ClampFloat( -89.9f, 89.9f, viewRotation.pitch );
 			}
-			
+
 			// Right mouse button moves lights in the view plane
 		}
 		else if( button == MK_RBUTTON )
@@ -337,10 +339,10 @@ void idGLDrawableView::mouseMove( float x, float y )
 			float	lightMovement = 0;
 			idVec3	lightForward, lightRight, lightUp;
 			idVec3	lightMove;
-			
+
 			lightMove.Zero();
 			viewRotation.ToVectors( &lightForward, &lightRight, &lightUp );
-			
+
 			doZoom = Sys_KeyDown( VK_MENU );
 			if( doZoom )
 			{
@@ -348,7 +350,7 @@ void idGLDrawableView::mouseMove( float x, float y )
 				{
 					lightMovement = -( y - pressY ) * sensitivity;
 					pressY = y;
-					
+
 					lightMovement = idMath::ClampFloat( -32.f, 32.f, lightMovement );
 					lightMove = lightForward * lightMovement;
 				}
@@ -359,7 +361,7 @@ void idGLDrawableView::mouseMove( float x, float y )
 				{
 					lightMovement = ( x - pressX ) * sensitivity;
 					pressX = x;
-					
+
 					lightMovement = idMath::ClampFloat( -32.f, 32.f, lightMovement );
 					lightMove = lightRight * lightMovement;
 				}
@@ -367,37 +369,37 @@ void idGLDrawableView::mouseMove( float x, float y )
 				{
 					lightMovement = -( y - pressY ) * sensitivity;
 					pressY = y;
-					
+
 					lightMovement = idMath::ClampFloat( -32.f, 32.f, lightMovement );
 					lightMove += lightUp * lightMovement;
 				}
 			}
-			
+
 			// Go through the lights and move the ones that are set to allow movement
 			for( i = 0; i < viewLights.Num(); i++ )
 			{
 				lightInfo_t*	vLight = &viewLights[i];
-				
+
 				if( vLight->allowMove )
 				{
 					vLight->origin += lightMove;
 				}
 			}
-			
+
 			// Middle mouse button moves object up and down
 		}
 		else if( button == MK_MBUTTON )
 		{
 			float yo = 0.f;
-			
+
 			if( y != pressY )
 			{
 				yo = ( y - pressY );
 				pressY = y;
 			}
-			
+
 			viewOrigin.z -= yo;
-			
+
 			UpdateModel();
 		}
 	}
@@ -409,9 +411,9 @@ void idGLDrawableView::addLight( void )
 	idStr			str;
 	lightInfo_t		viewLight;
 	idDict			spawnArgs;
-	
+
 	lightId = viewLights.Num();
-	
+
 	spawnArgs.Set( "classname", "light" );
 	spawnArgs.Set( "name", va( "light_%d", lightId ) );
 	spawnArgs.Set( "origin", va( "-128 0 %d", ( lightId * 16 ) ) );
@@ -420,7 +422,7 @@ void idGLDrawableView::addLight( void )
 	sprintf( str, "%f %f %f", 1.f, 1.f, 1.f );
 	spawnArgs.Set( "_color", str );
 	gameEdit->ParseSpawnArgsToRenderLight( &spawnArgs, &viewLight.renderLight );
-	
+
 	viewLight.lightDefHandle = world->AddLightDef( &viewLight.renderLight );
 	viewLight.origin = viewLight.renderLight.origin;
 	viewLight.shader = declManager->FindMaterial( "lights/defaultPointLight", false );
@@ -429,7 +431,7 @@ void idGLDrawableView::addLight( void )
 	viewLight.color.z = viewLight.renderLight.shaderParms[ SHADERPARM_BLUE ];
 	viewLight.radius = 300.f;
 	viewLight.allowMove = true;
-	
+
 	// Add light to the list
 	viewLights.Append( viewLight );
 }
@@ -439,7 +441,7 @@ void idGLDrawableView::deleteLight( const int lightId )
 	if( lightId < viewLights.Num() )
 	{
 		world->FreeLightDef( viewLights[lightId].lightDefHandle );
-		
+
 		viewLights.RemoveIndex( lightId );
 	}
 }
@@ -448,12 +450,12 @@ void idGLDrawableView::UpdateCamera( renderView_t* refdef )
 {
 	idVec3		pos, dir;
 	idAngles	angs;
-	
+
 	// Set the camera origin
 	pos = viewRotation.ToForward();
 	pos *= viewDistance;
 	refdef->vieworg = pos;
-	
+
 	// Set the view to point back at the origin
 	dir = vec3_origin - pos;
 	angs = dir.ToAngles();
@@ -497,38 +499,38 @@ void idGLDrawableView::UpdateModel( void )
 			worldModel = renderModelManager->FindModel( "models/materialeditor/cube128.ase" );
 			break;
 	};
-	
+
 	worldEntity.hModel = worldModel;
-	
+
 	// current material
 	worldEntity.customShader = material;
 	// current rotation
 	worldEntity.origin = viewOrigin;
-	
+
 	worldEntity.axis = mat3_identity;
-	
+
 	world->UpdateEntityDef( modelDefHandle, &worldEntity );
 }
 
 void idGLDrawableView::UpdateLights( void )
 {
 	int i;
-	
+
 	for( i = 0; i < viewLights.Num(); i++ )
 	{
 		lightInfo_t*	vLight = &viewLights[i];
-		
+
 		vLight->renderLight.shader = vLight->shader;
-		
+
 		vLight->renderLight.shaderParms[ SHADERPARM_RED ] = vLight->color.x;
 		vLight->renderLight.shaderParms[ SHADERPARM_GREEN ] = vLight->color.y;
 		vLight->renderLight.shaderParms[ SHADERPARM_BLUE ] = vLight->color.z;
-		
+
 		vLight->renderLight.lightRadius[0] = vLight->renderLight.lightRadius[1] =
 				vLight->renderLight.lightRadius[2] = vLight->radius;
-				
+
 		vLight->renderLight.origin = vLight->origin;
-		
+
 		world->UpdateLightDef( vLight->lightDefHandle, &vLight->renderLight );
 	}
 }
@@ -536,17 +538,17 @@ void idGLDrawableView::UpdateLights( void )
 void idGLDrawableView::drawLights( renderView_t* refdef )
 {
 	int i;
-	
+
 	for( i = 0; i < viewLights.Num(); i++ )
 	{
 		lightInfo_t*	vLight = &viewLights[i];
-		
+
 		idVec4 lColor;
 		lColor.x = vLight->color.x;
 		lColor.y = vLight->color.y;
 		lColor.z = vLight->color.z;
 		lColor.w = 1.f;
-		
+
 		idSphere sphere( vLight->renderLight.origin, 4 );
 #if 1 //FIX_RADIANT
 		// foresthale 2014-05-10: changed session->rw to common->RW()
@@ -562,7 +564,7 @@ void idGLDrawableView::draw( int x, int y, int w, int h )
 	int i;
 	renderView_t	refdef;
 	const idMaterial*		mat = material;
-	
+
 	if( mat )
 	{
 		qglViewport( x, y, w, h );
@@ -570,41 +572,41 @@ void idGLDrawableView::draw( int x, int y, int w, int h )
 		qglMatrixMode( GL_PROJECTION );
 		qglClearColor( 0.1f, 0.1f, 0.1f, 0.0f );
 		qglClear( GL_COLOR_BUFFER_BIT );
-		
+
 		UpdateLights();
-		
+
 		// render it
 #if 1 //FIX_RADIANT
 		// foresthale 2014-05-19: cleaned up editor begin/end rendering code
 		int originalNativeWidth, originalNativeHeight;
 		tr.Editor_BeginView( x + w, y + h, originalNativeWidth, originalNativeHeight );
-		
+
 		memset( &refdef, 0, sizeof( refdef ) );
-		
+
 		UpdateCamera( &refdef );
-		
+
 		// Copy global shaderparms to view
 		for( i = 0; i < MAX_GLOBAL_SHADER_PARMS; i++ )
 		{
 			refdef.shaderParms[ i ] = globalParms[ i ];
 		}
-		
+
 		refdef.width = SCREEN_WIDTH;
 		refdef.height = SCREEN_HEIGHT;
 		refdef.fov_x = 90;
 		refdef.fov_y = 2 * atan( ( float )h / w ) * idMath::M_RAD2DEG;
-		
+
 		refdef.time[0] = refdef.time[1] = eventLoop->Milliseconds();
-		
+
 		world->RenderScene( &refdef );
-		
+
 		if( showLights )
 		{
 			drawLights( &refdef );
 		}
-		
+
 		tr.Editor_EndView( originalNativeWidth, originalNativeHeight );
-		
+
 		world->DebugClearLines( refdef.time[0] );
 #endif
 		qglMatrixMode( GL_MODELVIEW );
@@ -619,7 +621,7 @@ void idGLDrawableView::draw( int x, int y, int w, int h )
 void idGLDrawableView::setMedia( const char* name )
 {
 	float	ratio = 1;
-	
+
 	if( name && *name )
 	{
 		material = declManager->FindMaterial( name );
@@ -628,17 +630,17 @@ void idGLDrawableView::setMedia( const char* name )
 	{
 		material = NULL;
 	}
-	
+
 	if( material->GetNumStages() == 0 )
 	{
 		material = declManager->FindMaterial( "_default" );
 	}
-	
+
 	if( material->GetStage( 0 )->texture.image )
 	{
 		ratio = ( float )( ( float )material->GetImageWidth() / ( float )material->GetImageHeight() );
 	}
-	
+
 	if( objectId == -1 )
 	{
 		// Don't change a custom model
@@ -663,7 +665,7 @@ void idGLDrawableView::setMedia( const char* name )
 	{
 		objectId = 4;
 	}
-	
+
 	UpdateModel();
 }
 
@@ -673,9 +675,9 @@ void idGLDrawableView::setLocalParm( int parmNum, float value )
 	{
 		return;
 	}
-	
+
 	worldEntity.shaderParms[ parmNum ] = value;
-	
+
 	UpdateModel();
 }
 
@@ -685,7 +687,7 @@ void idGLDrawableView::setGlobalParm( int parmNum, float value )
 	{
 		return;
 	}
-	
+
 	globalParms[ parmNum ] = value;
 }
 
@@ -729,7 +731,7 @@ void idGLDrawableView::setLightAllowMove( const int lightId, const bool move )
 void idGLDrawableView::setObject( int Id )
 {
 	objectId = Id;
-	
+
 	UpdateModel();
 }
 
@@ -744,9 +746,9 @@ void idGLDrawableView::setCustomModel( const idStr modelName )
 	{
 		objectId = 0;
 	}
-	
+
 	customModelName = modelName;
-	
+
 	UpdateModel();
 }
 

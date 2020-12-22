@@ -43,9 +43,9 @@ If you have questions concerning this license or the applicable additional terms
 #include "DialogAFConstraintSpring.h"
 
 #ifdef ID_DEBUG_MEMORY
-#undef new
-#undef DEBUG_NEW
-#define DEBUG_NEW new
+	#undef new
+	#undef DEBUG_NEW
+	#define DEBUG_NEW new
 #endif
 
 
@@ -159,7 +159,7 @@ DialogAFConstraint::InitConstraintList
 void DialogAFConstraint::InitConstraintList( void )
 {
 	CString str;
-	
+
 	m_comboConstraintList.ResetContent();
 	if( !file )
 	{
@@ -186,19 +186,19 @@ void DialogAFConstraint::InitConstraintTypeDlg( void )
 {
 	CString str;
 	RECT rect;
-	
+
 	if( !file || !constraint )
 	{
 		return;
 	}
-	
+
 	UpdateData( TRUE );
-	
+
 	if( constraintDlg )
 	{
 		constraintDlg->ShowWindow( SW_HIDE );
 	}
-	
+
 	GetSafeComboBoxSelection( &m_comboConstraintType, str, -1 );
 	switch( StringToConstraintType( str ) )
 	{
@@ -227,7 +227,7 @@ void DialogAFConstraint::InitConstraintTypeDlg( void )
 			constraintDlg = springDlg;
 			break;
 	}
-	
+
 	if( constraintDlg )
 	{
 		constraintDlg->ShowWindow( SW_SHOW );
@@ -273,7 +273,7 @@ void DialogAFConstraint::InitNewRenameDeleteButtons( void )
 	{
 		GetDlgItem( IDC_BUTTON_NEWCONSTRAINT )->EnableWindow( false );
 	}
-	
+
 	if( file && m_comboConstraintList.GetCount() >= 1 )
 	{
 		GetDlgItem( IDC_BUTTON_RENAMECONSTRAINT )->EnableWindow( true );
@@ -323,7 +323,7 @@ DialogAFConstraint::LoadConstraint
 void DialogAFConstraint::LoadConstraint( const char* name )
 {
 	int i, s1, s2;
-	
+
 	if( !file )
 	{
 		return;
@@ -340,22 +340,22 @@ void DialogAFConstraint::LoadConstraint( const char* name )
 		return;
 	}
 	constraint = file->constraints[i];
-	
+
 	// load the constraint type from the current idDeclAF_Constraint
 	SetSafeComboBoxSelection( &m_comboConstraintType, ConstraintTypeToString( constraint->type ), -1 );
-	
+
 	// load constrained bodies from the current idDeclAF_Constraint
 	s1 = SetSafeComboBoxSelection( &m_comboBody1List, constraint->body1.c_str(), -1 );
 	s2 = SetSafeComboBoxSelection( &m_comboBody2List, constraint->body2.c_str(), s1 );
-	
+
 	// load friction from the current idDeclAF_Constraint
 	m_friction = constraint->friction;
-	
+
 	// update displayed values
 	UpdateData( FALSE );
-	
+
 	InitConstraintTypeDlg();
-	
+
 	if( GetStyle() & WS_VISIBLE )
 	{
 		// highlight the current constraint ingame
@@ -372,26 +372,26 @@ void DialogAFConstraint::SaveConstraint( void )
 {
 	int s1, s2;
 	CString str;
-	
+
 	if( !file || !constraint )
 	{
 		return;
 	}
 	UpdateData( TRUE );
-	
+
 	// save constraint type to the current idDeclAF_Constraint
 	GetSafeComboBoxSelection( &m_comboConstraintType, str, -1 );
 	constraint->type = StringToConstraintType( str );
-	
+
 	// save constrained bodies to the current idDeclAF_Constraint
 	s1 = GetSafeComboBoxSelection( &m_comboBody1List, str, -1 );
 	constraint->body1 = str;
 	s2 = GetSafeComboBoxSelection( &m_comboBody2List, str, s1 );
 	constraint->body2 = str;
-	
+
 	// save friction to the current idDeclAF_Constraint
 	constraint->friction = m_friction;
-	
+
 	AFDialogSetFileModified();
 }
 
@@ -418,36 +418,36 @@ BOOL DialogAFConstraint::OnInitDialog()
 {
 
 	CDialog::OnInitDialog();
-	
+
 	// initialize the constraint types
 	m_comboConstraintType.ResetContent();
 	for( int i = 0; constraintTypes[i].name; i++ )
 	{
 		m_comboConstraintType.AddString( constraintTypes[i].name );
 	}
-	
+
 	fixedDlg = new DialogAFConstraintFixed( this );
 	fixedDlg->ShowWindow( SW_HIDE );
-	
+
 	ballAndSocketDlg = new DialogAFConstraintBallAndSocket( this );
 	ballAndSocketDlg->ShowWindow( SW_HIDE );
-	
+
 	universalDlg = new DialogAFConstraintUniversal( this );
 	universalDlg->ShowWindow( SW_HIDE );
-	
+
 	hingeDlg = new DialogAFConstraintHinge( this );
 	hingeDlg->ShowWindow( SW_HIDE );
-	
+
 	sliderDlg = new DialogAFConstraintSlider( this );
 	sliderDlg->ShowWindow( SW_HIDE );
-	
+
 	springDlg = new DialogAFConstraintSpring( this );
 	springDlg->ShowWindow( SW_HIDE );
-	
+
 	constraintDlg = NULL;
-	
+
 	InitNewRenameDeleteButtons();
-	
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -502,7 +502,7 @@ void DialogAFConstraint::OnShowWindow( BOOL bShow, UINT nStatus )
 void DialogAFConstraint::OnCbnSelchangeComboConstraints()
 {
 	CString str;
-	
+
 	GetSafeComboBoxSelection( &m_comboConstraintList, str, -1 );
 	LoadConstraint( str );
 }
@@ -511,7 +511,7 @@ void DialogAFConstraint::OnBnClickedButtonNewconstraint()
 {
 	DialogAFName nameDlg;
 	CString str;
-	
+
 	nameDlg.SetComboBox( &m_comboConstraintList );
 	if( nameDlg.DoModal() == IDOK )
 	{
@@ -531,12 +531,12 @@ void DialogAFConstraint::OnBnClickedButtonRenameconstraint()
 	int i;
 	CString name, newName;
 	DialogAFName nameDlg;
-	
+
 	if( !file || !constraint )
 	{
 		return;
 	}
-	
+
 	i = m_comboConstraintList.GetCurSel();
 	if( i != CB_ERR )
 	{
@@ -561,12 +561,12 @@ void DialogAFConstraint::OnBnClickedButtonDeleteconstraint()
 {
 	int i;
 	CString str;
-	
+
 	if( !file || !constraint )
 	{
 		return;
 	}
-	
+
 	i = m_comboConstraintList.GetCurSel();
 	if( i != CB_ERR )
 	{

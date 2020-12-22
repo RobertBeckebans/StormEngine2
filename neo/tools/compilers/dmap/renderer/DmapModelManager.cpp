@@ -38,7 +38,7 @@ class idDmapRenderModelManagerLocal : public idDmapRenderModelManager
 public:
 	idDmapRenderModelManagerLocal();
 	virtual					~idDmapRenderModelManagerLocal() {}
-	
+
 	virtual void			Init();
 	virtual void			Shutdown();
 	virtual idDmapRenderModel* 	AllocModel();
@@ -53,9 +53,9 @@ public:
 	virtual void			WritePrecacheCommands( idFile* file );
 	virtual void			BeginLevelLoad();
 	virtual void			EndLevelLoad();
-	
+
 	virtual	void			PrintMemInfo( MemInfo_t* mi );
-	
+
 private:
 	idList<idDmapRenderModel*>	models;
 	idHashIndex				hash;
@@ -64,9 +64,9 @@ private:
 	idDmapRenderModel* 			spriteModel;
 	idDmapRenderModel* 			trailModel;
 	bool					insideLevelLoad;		// don't actually load now
-	
+
 	idDmapRenderModel* 			GetModel( const char* modelName, bool createIfNotFound );
-	
+
 	static void				PrintModel_f( const idCmdArgs& args );
 	static void				ListModels_f( const idCmdArgs& args );
 	static void				ReloadModels_f( const idCmdArgs& args );
@@ -99,20 +99,20 @@ idDmapRenderModelManagerLocal::PrintModel_f
 void idDmapRenderModelManagerLocal::PrintModel_f( const idCmdArgs& args )
 {
 	idDmapRenderModel*	model;
-	
+
 	if( args.Argc() != 2 )
 	{
 		common->Printf( "usage: printModel <modelName>\n" );
 		return;
 	}
-	
+
 	model = dmapRenderModelManager->CheckModel( args.Argv( 1 ) );
 	if( !model )
 	{
 		common->Printf( "model \"%s\" not found\n", args.Argv( 1 ) );
 		return;
 	}
-	
+
 	model->Print();
 }
 
@@ -125,14 +125,14 @@ void idDmapRenderModelManagerLocal::ListModels_f( const idCmdArgs& args )
 {
 	int		totalMem = 0;
 	int		inUse = 0;
-	
+
 	common->Printf( " mem   srf verts tris\n" );
 	common->Printf( " ---   --- ----- ----\n" );
-	
+
 	for( int i = 0; i < Dmap_localModelManager.models.Num(); i++ )
 	{
 		idDmapRenderModel*	model = Dmap_localModelManager.models[i];
-		
+
 		if( !model->IsLoaded() )
 		{
 			continue;
@@ -141,10 +141,10 @@ void idDmapRenderModelManagerLocal::ListModels_f( const idCmdArgs& args )
 		totalMem += model->Memory();
 		inUse++;
 	}
-	
+
 	common->Printf( " ---   --- ----- ----\n" );
 	common->Printf( " mem   srf verts tris\n" );
-	
+
 	common->Printf( "%i loaded models\n", inUse );
 	common->Printf( "total memory: %4.1fM\n", ( float )totalMem / ( 1024 * 1024 ) );
 }
@@ -176,13 +176,13 @@ Precache a specific model
 void idDmapRenderModelManagerLocal::TouchModel_f( const idCmdArgs& args )
 {
 	const char*	model = args.Argv( 1 );
-	
+
 	if( !model[0] )
 	{
 		common->Printf( "usage: touchModel <modelName>\n" );
 		return;
 	}
-	
+
 	common->Printf( "touchModel %s\n", model );
 	common->UpdateScreen( false );
 	idDmapRenderModel* m = dmapRenderModelManager->CheckModel( model );
@@ -202,7 +202,7 @@ void idDmapRenderModelManagerLocal::WritePrecacheCommands( idFile* f )
 	for( int i = 0; i < models.Num(); i++ )
 	{
 		idDmapRenderModel*	model = models[i];
-		
+
 		if( !model )
 		{
 			continue;
@@ -211,7 +211,7 @@ void idDmapRenderModelManagerLocal::WritePrecacheCommands( idFile* f )
 		{
 			continue;
 		}
-		
+
 		char	str[1024];
 		sprintf( str, "touchModel %s\n", model->Name() );
 		common->Printf( "%s", str );
@@ -233,7 +233,7 @@ void idDmapRenderModelManagerLocal::Init()
 	cmdSystem->AddCommand("touchModel", TouchModel_f, CMD_FL_RENDERER, "touches a model", idCmdSystem::ArgCompletion_ModelName);
 	*/
 	insideLevelLoad = false;
-	
+
 	// create a default model
 	idDmapRenderModelStatic* model = new idDmapRenderModelStatic;
 	model->InitEmpty( "_DEFAULT" );
@@ -241,14 +241,14 @@ void idDmapRenderModelManagerLocal::Init()
 	model->SetLevelLoadReferenced( true );
 	defaultModel = model;
 	AddModel( model );
-	
+
 	// create the beam model
 	idDmapRenderModelStatic* beam = new idDmapRenderModelBeam;
 	beam->InitEmpty( "_BEAM" );
 	beam->SetLevelLoadReferenced( true );
 	beamModel = beam;
 	AddModel( beam );
-	
+
 	idDmapRenderModelStatic* sprite = new idDmapRenderModelSprite;
 	sprite->InitEmpty( "_SPRITE" );
 	sprite->SetLevelLoadReferenced( true );
@@ -276,21 +276,21 @@ idDmapRenderModel* idDmapRenderModelManagerLocal::GetModel( const char* modelNam
 {
 	idStr		canonical;
 	idStr		extension;
-	
+
 	if( !modelName || !modelName[0] )
 	{
 		return NULL;
 	}
-	
+
 	canonical = modelName;
 	canonical.ToLower();
-	
+
 	// see if it is already present
 	int key = hash.GenerateKey( modelName, false );
 	for( int i = hash.First( key ); i != -1; i = hash.Next( i ) )
 	{
 		idDmapRenderModel* model = models[i];
-		
+
 		if( canonical.Icmp( model->Name() ) == 0 )
 		{
 			if( !model->IsLoaded() )
@@ -309,15 +309,15 @@ idDmapRenderModel* idDmapRenderModelManagerLocal::GetModel( const char* modelNam
 			return model;
 		}
 	}
-	
+
 	// see if we can load it
-	
+
 	// determine which subclass of idDmapRenderModel to initialize
-	
+
 	idDmapRenderModel*	model;
-	
+
 	canonical.ExtractFileExtension( extension );
-	
+
 	if( ( extension.Icmp( "ase" ) == 0 ) || ( extension.Icmp( "lwo" ) == 0 ) || ( extension.Icmp( "flt" ) == 0 ) )
 	{
 		model = new idDmapRenderModelStatic;
@@ -350,36 +350,36 @@ idDmapRenderModel* idDmapRenderModelManagerLocal::GetModel( const char* modelNam
 	}
 	else
 	{
-	
+
 		if( extension.Length() )
 		{
 			common->Warning( "unknown model type '%s'", canonical.c_str() );
 		}
-		
+
 		if( !createIfNotFound )
 		{
 			return NULL;
 		}
-		
+
 		idDmapRenderModelStatic*	smodel = new idDmapRenderModelStatic;
 		smodel->InitEmpty( modelName );
 		smodel->MakeDefaultModel();
-		
+
 		model = smodel;
 	}
-	
+
 	model->SetLevelLoadReferenced( true );
-	
+
 	if( !createIfNotFound && model->IsDefaultModel() )
 	{
 		delete model;
 		model = NULL;
-		
+
 		return NULL;
 	}
-	
+
 	AddModel( model );
-	
+
 	return model;
 }
 
@@ -424,9 +424,9 @@ void idDmapRenderModelManagerLocal::FreeModel( idDmapRenderModel* model )
 		common->Error( "idDmapRenderModelManager::FreeModel: can't free the sprite model" );
 		return;
 	}
-	
+
 	R_CheckForEntityDefsUsingModelDmap( model );
-	
+
 	delete model;
 }
 
@@ -497,37 +497,37 @@ void idDmapRenderModelManagerLocal::ReloadModels( bool forceAll )
 	{
 		common->Printf( "Checking for changed model files...\n" );
 	}
-	
+
 	R_FreeDerivedData();
-	
+
 	// skip the default model at index 0
 	for( int i = 1; i < models.Num(); i++ )
 	{
 		idDmapRenderModel*	model = models[i];
-		
+
 		// we may want to allow world model reloading in the future, but we don't now
 		if( !model->IsReloadable() )
 		{
 			continue;
 		}
-		
+
 		if( !forceAll )
 		{
 			// check timestamp
 			ID_TIME_T current;
-			
+
 			fileSystem->ReadFile( model->Name(), NULL, &current );
 			if( current <= model->Timestamp() )
 			{
 				continue;
 			}
 		}
-		
+
 		common->DPrintf( "reloading %s.\n", model->Name() );
-		
+
 		model->LoadModel();
 	}
-	
+
 	// we must force the world to regenerate, because models may
 	// have changed size, making their references invalid
 	R_ReCreateWorldReferences();
@@ -555,20 +555,20 @@ idDmapRenderModelManagerLocal::BeginLevelLoad
 void idDmapRenderModelManagerLocal::BeginLevelLoad()
 {
 	insideLevelLoad = true;
-	
+
 	for( int i = 0; i < models.Num(); i++ )
 	{
 		idDmapRenderModel* model = models[i];
-		
+
 		if( com_purgeAll.GetBool() && model->IsReloadable() )
 		{
 			R_CheckForEntityDefsUsingModelDmap( model );
 			model->PurgeModel();
 		}
-		
+
 		model->SetLevelLoadReferenced( false );
 	}
-	
+
 	// purge unused triangle surface memory
 	R_PurgeTriSurfData( dmapFrameData );
 }
@@ -581,55 +581,55 @@ idDmapRenderModelManagerLocal::EndLevelLoad
 void idDmapRenderModelManagerLocal::EndLevelLoad()
 {
 	common->Printf( "----- idDmapRenderModelManagerLocal::EndLevelLoad -----\n" );
-	
+
 	int start = Sys_Milliseconds();
-	
+
 	insideLevelLoad = false;
 	int	purgeCount = 0;
 	int	keepCount = 0;
 	int	loadCount = 0;
-	
+
 	// purge any models not touched
 	for( int i = 0; i < models.Num(); i++ )
 	{
 		idDmapRenderModel* model = models[i];
-		
+
 		// foresthale 2014-05-28: Brian Harris suggested the editors should never purge assets, because of potential for crashes on improperly refcounted assets
 		if( !model->IsLevelLoadReferenced() && model->IsLoaded() && model->IsReloadable() && !( com_editors ) )
 		{
-		
+
 			//			common->Printf( "purging %s\n", model->Name() );
-			
+
 			purgeCount++;
-			
+
 			R_CheckForEntityDefsUsingModelDmap( model );
-			
+
 			model->PurgeModel();
-			
+
 		}
 		else
 		{
-		
+
 			//			common->Printf( "keeping %s\n", model->Name() );
-			
+
 			keepCount++;
 		}
 	}
-	
+
 	// purge unused triangle surface memory
 	R_PurgeTriSurfData( dmapFrameData );
-	
+
 	// load any new ones
 	for( int i = 0; i < models.Num(); i++ )
 	{
 		idDmapRenderModel* model = models[i];
-		
+
 		if( model->IsLevelLoadReferenced() && !model->IsLoaded() && model->IsReloadable() )
 		{
-		
+
 			loadCount++;
 			model->LoadModel();
-			
+
 			if( ( loadCount & 15 ) == 0 )
 			{
 				assert( 0 );
@@ -637,7 +637,7 @@ void idDmapRenderModelManagerLocal::EndLevelLoad()
 			}
 		}
 	}
-	
+
 	// _D3XP added this
 	int	end = Sys_Milliseconds();
 	common->Printf( "%5i models purged from previous level, ", purgeCount );
@@ -658,21 +658,21 @@ void idDmapRenderModelManagerLocal::PrintMemInfo( MemInfo_t* mi )
 	int i, j, totalMem = 0;
 	int* sortIndex;
 	idFile* f;
-	
+
 	f = fileSystem->OpenFileWrite( mi->filebase + "_models.txt" );
 	if( !f )
 	{
 		return;
 	}
-	
+
 	// sort first
 	sortIndex = new int[Dmap_localModelManager.models.Num()];
-	
+
 	for( i = 0; i < Dmap_localModelManager.models.Num(); i++ )
 	{
 		sortIndex[i] = i;
 	}
-	
+
 	for( i = 0; i < Dmap_localModelManager.models.Num() - 1; i++ )
 	{
 		for( j = i + 1; j < Dmap_localModelManager.models.Num(); j++ )
@@ -685,26 +685,26 @@ void idDmapRenderModelManagerLocal::PrintMemInfo( MemInfo_t* mi )
 			}
 		}
 	}
-	
+
 	// print next
 	for( int i = 0; i < Dmap_localModelManager.models.Num(); i++ )
 	{
 		idDmapRenderModel*	model = Dmap_localModelManager.models[sortIndex[i]];
 		int mem;
-		
+
 		if( !model->IsLoaded() )
 		{
 			continue;
 		}
-		
+
 		mem = model->Memory();
 		totalMem += mem;
 		f->Printf( "%s %s\n", idStr::FormatNumber( mem ).c_str(), model->Name() );
 	}
-	
+
 	delete sortIndex;
 	mi->modelAssetsTotal = totalMem;
-	
+
 	f->Printf( "\nTotal model bytes allocated: %s\n", idStr::FormatNumber( totalMem ).c_str() );
 	fileSystem->CloseFile( f );
 }

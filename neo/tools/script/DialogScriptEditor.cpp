@@ -37,9 +37,9 @@ If you have questions concerning this license or the applicable additional terms
 #include "DialogScriptEditor.h"
 
 #ifdef ID_DEBUG_MEMORY
-#undef new
-#undef DEBUG_NEW
-#define DEBUG_NEW new
+	#undef new
+	#undef DEBUG_NEW
+	#define DEBUG_NEW new
 #endif
 
 
@@ -131,7 +131,7 @@ DialogScriptEditor::UpdateStatusBar
 void DialogScriptEditor::UpdateStatusBar( void )
 {
 	int line, column, character;
-	
+
 	scriptEdit.GetCursorPos( line, column, character );
 	statusBar.SetWindowText( va( "Line: %d, Column: %d, Character: %d", line, column, character ) );
 }
@@ -148,19 +148,19 @@ void DialogScriptEditor::InitScriptEvents( void )
 	idToken token;
 	idStr whiteSpace;
 	scriptEventInfo_t info;
-	
+
 	if( !src.LoadFile( "script/doom_events.script" ) )
 	{
 		return;
 	}
-	
+
 	scriptEvents.Clear();
-	
+
 	while( src.ReadToken( &token ) )
 	{
 		if( token == "scriptEvent" )
 		{
-		
+
 			src.GetLastWhiteSpace( whiteSpace );
 			index = whiteSpace.Find( "//" );
 			if( index != -1 )
@@ -173,23 +173,23 @@ void DialogScriptEditor::InitScriptEvents( void )
 			{
 				info.help = "";
 			}
-			
+
 			src.ExpectTokenType( TT_NAME, 0, &token );
-			
+
 			info.parms = token;
-			
+
 			src.ExpectTokenType( TT_NAME, 0, &token );
-			
+
 			info.name = token;
-			
+
 			src.ExpectTokenString( "(" );
-			
+
 			info.parms += " " + info.name + "(";
 			while( src.ReadToken( &token ) && token != ";" )
 			{
 				info.parms.Append( " " + token );
 			}
-			
+
 			scriptEvents.Append( info );
 		}
 	}
@@ -258,12 +258,12 @@ void DialogScriptEditor::OpenFile( const char* fileName )
 	idStr scriptText, extension;
 	CRect rect;
 	void* buffer;
-	
+
 	scriptEdit.Init();
 	scriptEdit.AllowPathNames( false );
-	
+
 	idStr( fileName ).ExtractFileExtension( extension );
-	
+
 	if( extension.Icmp( "script" ) == 0 )
 	{
 		InitScriptEvents();
@@ -278,23 +278,23 @@ void DialogScriptEditor::OpenFile( const char* fileName )
 		scriptEdit.SetStringColor( SRE_COLOR_DARK_CYAN, SRE_COLOR_LIGHT_BROWN );
 		scriptEdit.LoadKeyWordsFromFile( "editors/gui.def" );
 	}
-	
+
 	if( fileSystem->ReadFile( fileName, &buffer ) == -1 )
 	{
 		return;
 	}
 	scriptText = ( char* ) buffer;
 	fileSystem->FreeFile( buffer );
-	
+
 	this->fileName = fileName;
-	
+
 	// clean up new-line crapola
 	scriptText.Replace( "\r", "" );
 	scriptText.Replace( "\n", "\r" );
 	scriptText.Replace( "\v", "\r" );
-	
+
 	scriptEdit.SetText( scriptText );
-	
+
 	for( const char* ptr = scriptText.c_str(); *ptr; ptr++ )
 	{
 		if( *ptr == '\r' )
@@ -315,9 +315,9 @@ void DialogScriptEditor::OpenFile( const char* fileName )
 			numCharsPerLine++;
 		}
 	}
-	
+
 	SetWindowText( va( "Script Editor (%s)", fileName ) );
-	
+
 	rect.left = initialRect.left;
 	rect.right = rect.left + maxCharsPerLine * FONT_WIDTH + 32;
 	rect.top = initialRect.top;
@@ -339,11 +339,11 @@ void DialogScriptEditor::OpenFile( const char* fileName )
 		rect.bottom = rect.top + 768;
 	}
 	MoveWindow( rect );
-	
+
 	okButton.EnableWindow( FALSE );
-	
+
 	UpdateStatusBar();
-	
+
 	scriptEdit.SetFocus();
 }
 
@@ -356,27 +356,27 @@ BOOL DialogScriptEditor::OnInitDialog()
 {
 
 	com_editors |= EDITOR_SCRIPT;
-	
+
 	CDialog::OnInitDialog();
-	
+
 	// load accelerator table
 	m_hAccel = ::LoadAccelerators( AfxGetResourceHandle(), MAKEINTRESOURCE( IDR_ACCELERATOR_SCRIPTEDITOR ) );
-	
+
 	// create status bar
 	statusBar.CreateEx( SBARS_SIZEGRIP, WS_CHILD | WS_VISIBLE | CBRS_BOTTOM, initialRect, this, AFX_IDW_STATUS_BAR );
-	
+
 	scriptEdit.LimitText( 1024 * 1024 );
-	
+
 	GetClientRect( initialRect );
-	
+
 	SetWindowText( "Script Editor" );
-	
+
 	EnableToolTips( TRUE );
-	
+
 	okButton.EnableWindow( FALSE );
-	
+
 	UpdateStatusBar();
-	
+
 	return FALSE; // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -415,13 +415,13 @@ void ScriptEditorInit( const idDict* spawnArgs )
 						"Set r_fullscreen to 0 and vid_restart.\n" );
 		return;
 	}
-	
+
 	if( g_ScriptDialog == NULL )
 	{
 		InitAfx();
 		g_ScriptDialog = new DialogScriptEditor();
 	}
-	
+
 	if( g_ScriptDialog->GetSafeHwnd() == NULL )
 	{
 		g_ScriptDialog->Create( IDD_DIALOG_SCRIPTEDITOR );
@@ -431,12 +431,12 @@ void ScriptEditorInit( const idDict* spawnArgs )
 				g_ScriptDialog->SetWindowPos( NULL, rct.left, rct.top, 0, 0, SWP_NOSIZE );
 		*/
 	}
-	
+
 	idKeyInput::ClearStates();
-	
+
 	g_ScriptDialog->ShowWindow( SW_SHOW );
 	g_ScriptDialog->SetFocus();
-	
+
 	if( spawnArgs )
 	{
 	}
@@ -454,7 +454,7 @@ void ScriptEditorRun( void )
 #else
 	MSG* msg = &m_msgCur;
 #endif
-	
+
 	while( ::PeekMessage( msg, NULL, NULL, NULL, PM_NOREMOVE ) )
 	{
 		// pump message
@@ -547,13 +547,13 @@ DialogScriptEditor::OnSize
 void DialogScriptEditor::OnSize( UINT nType, int cx, int cy )
 {
 	CRect clientRect, rect;
-	
+
 	LockWindowUpdate();
-	
+
 	CDialog::OnSize( nType, cx, cy );
-	
+
 	GetClientRect( clientRect );
-	
+
 	if( scriptEdit.GetSafeHwnd() )
 	{
 		rect.left = BORDER_SIZE;
@@ -562,7 +562,7 @@ void DialogScriptEditor::OnSize( UINT nType, int cx, int cy )
 		rect.bottom = clientRect.Height() - 56;
 		scriptEdit.MoveWindow( rect.left, rect.top, rect.Width(), rect.Height() );
 	}
-	
+
 	if( okButton.GetSafeHwnd() )
 	{
 		okButton.GetClientRect( rect );
@@ -574,7 +574,7 @@ void DialogScriptEditor::OnSize( UINT nType, int cx, int cy )
 		rect.bottom = clientRect.Height() - TOOLBAR_HEIGHT;
 		okButton.MoveWindow( rect.left, rect.top, rect.Width(), rect.Height() );
 	}
-	
+
 	if( cancelButton.GetSafeHwnd() )
 	{
 		cancelButton.GetClientRect( rect );
@@ -586,7 +586,7 @@ void DialogScriptEditor::OnSize( UINT nType, int cx, int cy )
 		rect.bottom = clientRect.Height() - TOOLBAR_HEIGHT;
 		cancelButton.MoveWindow( rect.left, rect.top, rect.Width(), rect.Height() );
 	}
-	
+
 	if( statusBar.GetSafeHwnd() )
 	{
 		rect.left = clientRect.Width() - 2;
@@ -595,7 +595,7 @@ void DialogScriptEditor::OnSize( UINT nType, int cx, int cy )
 		rect.bottom = clientRect.Height() - 2;
 		statusBar.MoveWindow( rect.left, rect.top, rect.Width(), rect.Height() );
 	}
-	
+
 	UnlockWindowUpdate();
 }
 
@@ -616,9 +616,9 @@ void DialogScriptEditor::OnSizing( UINT nSide, LPRECT lpRect )
 		7 = left - bottom
 		8 = right - bottom
 	*/
-	
+
 	CDialog::OnSizing( nSide, lpRect );
-	
+
 	if( ( nSide - 1 ) % 3 == 0 )
 	{
 		if( lpRect->right - lpRect->left < initialRect.Width() )
@@ -657,7 +657,7 @@ DialogScriptEditor::OnEditGoToLine
 void DialogScriptEditor::OnEditGoToLine()
 {
 	DialogGoToLine goToLineDlg;
-	
+
 	goToLineDlg.SetRange( firstLine, firstLine + scriptEdit.GetLineCount() - 1 );
 	if( goToLineDlg.DoModal() != IDOK )
 	{
@@ -679,7 +679,7 @@ void DialogScriptEditor::OnEditFind()
 	{
 		findStr = selText;
 	}
-	
+
 	// create find/replace dialog
 	if( !findDlg )
 	{
@@ -718,7 +718,7 @@ void DialogScriptEditor::OnEditReplace()
 	{
 		findStr = selText;
 	}
-	
+
 	// create find/replace dialog
 	if( !findDlg )
 	{
@@ -738,43 +738,43 @@ LRESULT DialogScriptEditor::OnFindDialogMessage( WPARAM wParam, LPARAM lParam )
 	{
 		return 0;
 	}
-	
+
 	if( findDlg->IsTerminating() )
 	{
 		findDlg = NULL;
 		return 0;
 	}
-	
+
 	if( findDlg->FindNext() )
 	{
 		findStr = findDlg->GetFindString();
 		matchCase = findDlg->MatchCase() != FALSE;
 		matchWholeWords = findDlg->MatchWholeWord() != FALSE;
 		searchForward = findDlg->SearchDown() != FALSE;
-		
+
 		OnEditFindNext();
 	}
-	
+
 	if( findDlg->ReplaceCurrent() )
 	{
 		long selStart, selEnd;
-		
+
 		replaceStr = findDlg->GetReplaceString();
-		
+
 		scriptEdit.GetSel( selStart, selEnd );
 		if( selEnd > selStart )
 		{
 			scriptEdit.ReplaceSel( replaceStr, TRUE );
 		}
 	}
-	
+
 	if( findDlg->ReplaceAll() )
 	{
 		replaceStr = findDlg->GetReplaceString();
 		findStr = findDlg->GetFindString();
 		matchCase = findDlg->MatchCase() != FALSE;
 		matchWholeWords = findDlg->MatchWholeWord() != FALSE;
-		
+
 		int numReplaces = scriptEdit.ReplaceAll( findStr, replaceStr, matchCase, matchWholeWords );
 		if( numReplaces == 0 )
 		{
@@ -785,7 +785,7 @@ LRESULT DialogScriptEditor::OnFindDialogMessage( WPARAM wParam, LPARAM lParam )
 			AfxMessageBox( va( "Replaced %d occurances.", numReplaces ), MB_OK | MB_ICONINFORMATION, 0 );
 		}
 	}
-	
+
 	return 0;
 }
 
@@ -807,12 +807,12 @@ DialogScriptEditor::OnEnInputEdit
 void DialogScriptEditor::OnEnInputEdit( NMHDR* pNMHDR, LRESULT* pResult )
 {
 	MSGFILTER* msgFilter = ( MSGFILTER* )pNMHDR;
-	
+
 	if( msgFilter->msg != 512 && msgFilter->msg != 33 )
 	{
 		UpdateStatusBar();
 	}
-	
+
 	*pResult = 0;
 }
 
@@ -824,22 +824,22 @@ DialogScriptEditor::OnBnClickedOk
 void DialogScriptEditor::OnBnClickedOk()
 {
 	idStr scriptText;
-	
+
 	common->Printf( "Writing \'%s\'...\n", fileName.c_str() );
-	
+
 	scriptEdit.GetText( scriptText );
-	
+
 	// clean up new-line crapola
 	scriptText.Replace( "\n", "" );
 	scriptText.Replace( "\r", "\r\n" );
 	scriptText.Replace( "\v", "\r\n" );
-	
+
 	if( fileSystem->WriteFile( fileName, scriptText, scriptText.Length(), "fs_devpath" ) == -1 )
 	{
 		MessageBox( va( "Couldn't save: %s", fileName.c_str() ), va( "Error saving: %s", fileName.c_str() ), MB_OK | MB_ICONERROR );
 		return;
 	}
-	
+
 	okButton.EnableWindow( FALSE );
 }
 

@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 #define AFX_FINDTEXTUREDLG_H__34B75D32_9F3A_11D1_B570_00AA00A410FC__INCLUDED_
 
 #if _MSC_VER >= 1000
-#pragma once
+	#pragma once
 #endif // _MSC_VER >= 1000
 // FindTextureDlg.h : header file
 //
@@ -49,7 +49,7 @@ public:
 	static void show();
 	static void updateTextures( const char* p );
 	CFindTextureDlg( CWnd* pParent = NULL ); // standard constructor
-	
+
 // Dialog Data
 	//{{AFX_DATA(CFindTextureDlg)
 	enum { IDD = IDD_DIALOG_FINDREPLACE };
@@ -59,8 +59,8 @@ public:
 	BOOL	m_bForce;
 	BOOL	m_bLive;
 	//}}AFX_DATA
-	
-	
+
+
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CFindTextureDlg)
@@ -69,7 +69,7 @@ public:
 protected:
 	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	//}}AFX_VIRTUAL
-	
+
 // Implementation
 protected:
 

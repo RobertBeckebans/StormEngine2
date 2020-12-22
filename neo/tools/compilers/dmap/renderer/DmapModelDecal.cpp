@@ -98,21 +98,21 @@ bool idDmapRenderModelDecal::CreateProjectionInfo( decalProjectionInfo_t& info, 
 		common->Printf( "idDmapRenderModelDecal::CreateProjectionInfo: winding must have %d points\n", NUM_DECAL_BOUNDING_PLANES - 2 );
 		return false;
 	}
-	
+
 	assert( material != NULL );
-	
+
 	info.projectionOrigin = projectionOrigin;
 	info.material = material;
 	info.parallel = parallel;
 	info.fadeDepth = fadeDepth;
 	info.startTime = startTime;
 	info.force = false;
-	
+
 	// get the winding plane and the depth of the projection volume
 	idPlane windingPlane;
 	winding.GetPlane( windingPlane );
 	float depth = windingPlane.Distance( projectionOrigin );
-	
+
 	// find the bounds for the projection
 	winding.GetBounds( info.projectionBounds );
 	if( parallel )
@@ -123,7 +123,7 @@ bool idDmapRenderModelDecal::CreateProjectionInfo( decalProjectionInfo_t& info, 
 	{
 		info.projectionBounds.AddPoint( projectionOrigin );
 	}
-	
+
 	// calculate the world space projection volume bounding planes, positive sides face outside the decal
 	if( parallel )
 	{
@@ -145,46 +145,46 @@ bool idDmapRenderModelDecal::CreateProjectionInfo( decalProjectionInfo_t& info, 
 	info.boundingPlanes[NUM_DECAL_BOUNDING_PLANES - 2] = windingPlane;
 	info.boundingPlanes[NUM_DECAL_BOUNDING_PLANES - 2][3] -= depth;
 	info.boundingPlanes[NUM_DECAL_BOUNDING_PLANES - 1] = -windingPlane;
-	
+
 	// fades will be from these plane
 	info.fadePlanes[0] = windingPlane;
 	info.fadePlanes[0][3] -= fadeDepth;
 	info.fadePlanes[1] = -windingPlane;
 	info.fadePlanes[1][3] += depth - fadeDepth;
-	
+
 	// calculate the texture vectors for the winding
 	float	len, texArea, inva;
 	idVec3	temp;
 	idVec5	d0, d1;
-	
+
 	const idVec5& a = winding[0];
 	const idVec5& b = winding[1];
 	const idVec5& c = winding[2];
-	
+
 	d0 = b.ToVec3() - a.ToVec3();
 	d0.s = b.s - a.s;
 	d0.t = b.t - a.t;
 	d1 = c.ToVec3() - a.ToVec3();
 	d1.s = c.s - a.s;
 	d1.t = c.t - a.t;
-	
+
 	texArea = ( d0[3] * d1[4] ) - ( d0[4] * d1[3] );
 	inva = 1.0f / texArea;
-	
+
 	temp[0] = ( d0[0] * d1[4] - d0[4] * d1[0] ) * inva;
 	temp[1] = ( d0[1] * d1[4] - d0[4] * d1[1] ) * inva;
 	temp[2] = ( d0[2] * d1[4] - d0[4] * d1[2] ) * inva;
 	len = temp.Normalize();
 	info.textureAxis[0].Normal() = temp * ( 1.0f / len );
 	info.textureAxis[0][3] = winding[0].s - ( winding[0].ToVec3() * info.textureAxis[0].Normal() );
-	
+
 	temp[0] = ( d0[3] * d1[0] - d0[0] * d1[3] ) * inva;
 	temp[1] = ( d0[3] * d1[1] - d0[1] * d1[3] ) * inva;
 	temp[2] = ( d0[3] * d1[2] - d0[2] * d1[3] ) * inva;
 	len = temp.Normalize();
 	info.textureAxis[1].Normal() = temp * ( 1.0f / len );
 	info.textureAxis[1][3] = winding[0].t - ( winding[0].ToVec3() * info.textureAxis[1].Normal() );
-	
+
 	return true;
 }
 
@@ -196,9 +196,9 @@ idDmapRenderModelDecal::CreateProjectionInfo
 void idDmapRenderModelDecal::GlobalProjectionInfoToLocal( decalProjectionInfo_t& localInfo, const decalProjectionInfo_t& info, const idVec3& origin, const idMat3& axis )
 {
 	float modelMatrix[16];
-	
+
 	R_AxisToModelMatrix( axis, origin, modelMatrix );
-	
+
 	for( int j = 0; j < NUM_DECAL_BOUNDING_PLANES; j++ )
 	{
 		R_GlobalPlaneToLocal( modelMatrix, info.boundingPlanes[j], localInfo.boundingPlanes[j] );
@@ -228,18 +228,18 @@ void idDmapRenderModelDecal::AddWinding( const idWinding& w, const idMaterial* d
 	int i;
 	float invFadeDepth, fade;
 	decalInfo_t	decalInfo;
-	
+
 	if( ( material == NULL || material == decalMaterial ) &&
 			tri.numVerts + w.GetNumPoints() < MAX_DECAL_VERTS &&
 			tri.numIndexes + ( w.GetNumPoints() - 2 ) * 3 < MAX_DECAL_INDEXES )
 	{
-	
+
 		material = decalMaterial;
-		
+
 		// add to this decal
 		decalInfo = material->GetDecalInfo();
 		invFadeDepth = -1.0f / fadeDepth;
-		
+
 		for( i = 0; i < w.GetNumPoints(); i++ )
 		{
 			fade = fadePlanes[0].Distance( w[i].ToVec3() ) * invFadeDepth;
@@ -287,7 +287,7 @@ void idDmapRenderModelDecal::AddWinding( const idWinding& w, const idMaterial* d
 		tri.numVerts += w.GetNumPoints();
 		return;
 	}
-	
+
 	// if we are at the end of the list, create a new decal
 	if( !nextDecal )
 	{
@@ -305,18 +305,18 @@ idDmapRenderModelDecal::AddDepthFadedWinding
 void idDmapRenderModelDecal::AddDepthFadedWinding( const idWinding& w, const idMaterial* decalMaterial, const idPlane fadePlanes[2], float fadeDepth, int startTime )
 {
 	idFixedWinding front, back;
-	
+
 	front = w;
 	if( front.Split( &back, fadePlanes[0], 0.1f ) == SIDE_CROSS )
 	{
 		AddWinding( back, decalMaterial, fadePlanes, fadeDepth, startTime );
 	}
-	
+
 	if( front.Split( &back, fadePlanes[1], 0.1f ) == SIDE_CROSS )
 	{
 		AddWinding( back, decalMaterial, fadePlanes, fadeDepth, startTime );
 	}
-	
+
 	AddWinding( front, decalMaterial, fadePlanes, fadeDepth, startTime );
 }
 
@@ -332,53 +332,53 @@ void idDmapRenderModelDecal::CreateDecal( const idDmapRenderModel* model, const 
 	for( int surfNum = 0; surfNum < model->NumSurfaces(); surfNum++ )
 	{
 		const dmapModelSurface_t* surf = model->Surface( surfNum );
-		
+
 		// if no geometry or no shader
 		if( !surf->geometry || !surf->shader )
 		{
 			continue;
 		}
-		
+
 		// decals and overlays use the same rules
 		if( !localInfo.force && !surf->shader->AllowOverlays() )
 		{
 			continue;
 		}
-		
+
 		srfDmapTriangles_t* stri = surf->geometry;
-		
+
 		// if the triangle bounds do not overlap with projection bounds
 		if( !localInfo.projectionBounds.IntersectsBounds( stri->bounds ) )
 		{
 			continue;
 		}
-		
+
 		// allocate memory for the cull bits
 		byte* cullBits = ( byte* )_alloca16( stri->numVerts * sizeof( cullBits[0] ) );
-		
+
 		// catagorize all points by the planes
 		dmapSIMDProcessor->DecalPointCull( cullBits, localInfo.boundingPlanes, stri->verts, stri->numVerts );
-		
+
 		// find triangles inside the projection volume
 		for( int triNum = 0, index = 0; index < stri->numIndexes; index += 3, triNum++ )
 		{
 			int v1 = stri->indexes[index + 0];
 			int v2 = stri->indexes[index + 1];
 			int v3 = stri->indexes[index + 2];
-			
+
 			// skip triangles completely off one side
 			if( cullBits[v1] & cullBits[v2] & cullBits[v3] )
 			{
 				continue;
 			}
-			
+
 			// skip back facing triangles
 			if( stri->facePlanes && stri->facePlanesCalculated &&
 					stri->facePlanes[triNum].Normal() * localInfo.boundingPlanes[NUM_DECAL_BOUNDING_PLANES - 2].Normal() < -0.1f )
 			{
 				continue;
 			}
-			
+
 			// create a winding with texture coordinates for the triangle
 			idFixedWinding fw;
 			fw.SetNumPoints( 3 );
@@ -397,19 +397,21 @@ void idDmapRenderModelDecal::CreateDecal( const idDmapRenderModel* model, const 
 				{
 					idVec3 dir;
 					float scale;
-					
+
 					fw[j] = stri->verts[stri->indexes[index + j]].xyz;
 					dir = fw[j].ToVec3() - localInfo.projectionOrigin;
 					if( !localInfo.boundingPlanes[NUM_DECAL_BOUNDING_PLANES - 1].RayIntersection( fw[j].ToVec3(), dir, scale ) )
+					{
 						scale = 0.0f;
+					}
 					dir = fw[j].ToVec3() + scale * dir;
 					fw[j].s = localInfo.textureAxis[0].Distance( dir );
 					fw[j].t = localInfo.textureAxis[1].Distance( dir );
 				}
 			}
-			
+
 			int orBits = cullBits[v1] | cullBits[v2] | cullBits[v3];
-			
+
 			// clip the exact surface triangle to the projection volume
 			for( int j = 0; j < NUM_DECAL_BOUNDING_PLANES; j++ )
 			{
@@ -421,12 +423,12 @@ void idDmapRenderModelDecal::CreateDecal( const idDmapRenderModel* model, const 
 					}
 				}
 			}
-			
+
 			if( fw.GetNumPoints() == 0 )
 			{
 				continue;
 			}
-			
+
 			AddDepthFadedWinding( fw, localInfo.material, localInfo.fadePlanes, localInfo.fadeDepth, localInfo.startTime );
 		}
 	}
@@ -443,15 +445,15 @@ idDmapRenderModelDecal* idDmapRenderModelDecal::RemoveFadedDecals( idDmapRenderM
 	int inUse[MAX_DECAL_VERTS];
 	decalInfo_t	decalInfo;
 	idDmapRenderModelDecal* nextDecal;
-	
+
 	if( decals == NULL )
 	{
 		return NULL;
 	}
-	
+
 	// recursively free any next decals
 	decals->nextDecal = RemoveFadedDecals( decals->nextDecal, time );
-	
+
 	// free the decals if no material set
 	if( decals->material == NULL )
 	{
@@ -459,10 +461,10 @@ idDmapRenderModelDecal* idDmapRenderModelDecal::RemoveFadedDecals( idDmapRenderM
 		Free( decals );
 		return nextDecal;
 	}
-	
+
 	decalInfo = decals->material->GetDecalInfo();
 	minTime = time - ( decalInfo.stayTime + decalInfo.fadeTime );
-	
+
 	newNumIndexes = 0;
 	for( i = 0; i < decals->tri.numIndexes; i += 3 )
 	{
@@ -480,7 +482,7 @@ idDmapRenderModelDecal* idDmapRenderModelDecal::RemoveFadedDecals( idDmapRenderM
 			newNumIndexes += 3;
 		}
 	}
-	
+
 	// free the decals if all trianges faded away
 	if( newNumIndexes == 0 )
 	{
@@ -488,15 +490,15 @@ idDmapRenderModelDecal* idDmapRenderModelDecal::RemoveFadedDecals( idDmapRenderM
 		Free( decals );
 		return nextDecal;
 	}
-	
+
 	decals->tri.numIndexes = newNumIndexes;
-	
+
 	memset( inUse, 0, sizeof( inUse ) );
 	for( i = 0; i < decals->tri.numIndexes; i++ )
 	{
 		inUse[decals->tri.indexes[i]] = 1;
 	}
-	
+
 	newNumVerts = 0;
 	for( i = 0; i < decals->tri.numVerts; i++ )
 	{
@@ -510,12 +512,12 @@ idDmapRenderModelDecal* idDmapRenderModelDecal::RemoveFadedDecals( idDmapRenderM
 		newNumVerts++;
 	}
 	decals->tri.numVerts = newNumVerts;
-	
+
 	for( i = 0; i < decals->tri.numIndexes; i++ )
 	{
 		decals->tri.indexes[i] = inUse[decals->tri.indexes[i]];
 	}
-	
+
 	return decals;
 }
 
@@ -529,38 +531,38 @@ void idDmapRenderModelDecal::AddDecalDrawSurf( dmapViewEntity_t* space )
 	int i, j, maxTime;
 	float f;
 	decalInfo_t	decalInfo;
-	
+
 	if( tri.numIndexes == 0 )
 	{
 		return;
 	}
-	
+
 	// fade down all the verts with time
 	decalInfo = material->GetDecalInfo();
 	maxTime = decalInfo.stayTime + decalInfo.fadeTime;
-	
+
 	// set vertex colors and remove faded triangles
 	for( i = 0; i < tri.numIndexes; i += 3 )
 	{
 		int	deltaTime = dmap_tr.viewDef->renderView.time - indexStartTime[i];
-		
+
 		if( deltaTime > maxTime )
 		{
 			continue;
 		}
-		
+
 		if( deltaTime <= decalInfo.stayTime )
 		{
 			continue;
 		}
-		
+
 		deltaTime -= decalInfo.stayTime;
 		f = ( float )deltaTime / decalInfo.fadeTime;
-		
+
 		for( j = 0; j < 3; j++ )
 		{
 			int	ind = tri.indexes[i + j];
-			
+
 			for( int k = 0; k < 4; k++ )
 			{
 				float fcolor = decalInfo.start[k] + ( decalInfo.end[k] - decalInfo.start[k] ) * f;
@@ -577,16 +579,16 @@ void idDmapRenderModelDecal::AddDecalDrawSurf( dmapViewEntity_t* space )
 			}
 		}
 	}
-	
+
 	// copy the tri and indexes to temp heap memory,
 	// because if we are running multi-threaded, we wouldn't
 	// be able to reorganize the index list
 	srfDmapTriangles_t* newTri = ( srfDmapTriangles_t* )R_FrameAlloc( sizeof( *newTri ) );
 	*newTri = tri;
-	
+
 	// copy the current vertexes to temp vertex cache
 	newTri->ambientCache = dmapVertexCache.AllocFrameTemp( tri.verts, tri.numVerts * sizeof( idDmapDrawVert ) );
-	
+
 	// create the drawsurf
 	R_AddDrawSurfDmap( newTri, space, &space->entityDef->parms, material, space->scissorRect );
 }

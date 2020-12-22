@@ -31,9 +31,9 @@ If you have questions concerning this license or the applicable additional terms
 #define __QE3_H__
 
 #ifdef ID_DEBUG_MEMORY
-#undef new
-#undef DEBUG_NEW
-#define DEBUG_NEW new
+	#undef new
+	#undef DEBUG_NEW
+	#define DEBUG_NEW new
 #endif
 
 // this define to use HTREEITEM and MFC stuff in the headers
@@ -128,81 +128,81 @@ typedef struct
 {
 	bool d_showgrid;
 	float d_gridsize;
-	
+
 	int	rotateAxis;			// 0, 1 or 2
 	int flatRotation;		// 0, 1 or 2, 0 == off, 1 == rotate about the rotation origin, 1 == rotate about the selection mid point
-	
+
 	int      d_num_entities;
-	
+
 	entity_t* d_project_entity;
-	
+
 	idVec3	d_new_brush_bottom, d_new_brush_top;
-	
+
 	HINSTANCE d_hInstance;
-	
+
 	idVec3    d_points[MAX_POINTS];
 	int       d_numpoints;
 	pedge_t   d_edges[MAX_EDGES];
 	int       d_numedges;
-	
+
 	int       d_num_move_points;
 	idVec3*    d_move_points[MAX_MOVE_POINTS];
-	
+
 	int			d_num_move_planes;
 	idPlane*		d_move_planes[MAX_MOVE_PLANES];
-	
+
 	qtexture_t*	d_qtextures;
-	
+
 	texturewin_t d_texturewin;
-	
+
 	int	         d_pointfile_display_list;
-	
+
 	LPMRUMENU    d_lpMruMenu;
-	
+
 	SavedInfo_t  d_savedinfo;
-	
+
 	int          d_workcount;
-	
+
 	// connect entities uses the last two brushes selected
 	int			 d_select_count;
 	brush_t*		d_select_order[MAX_MAP_ENTITIES];
 	idVec3       d_select_translate;    // for dragging w/o making new display lists
 	select_t     d_select_mode;
 	idPointListInterface* selectObject;	//
-	
+
 	int		     d_font_list;
-	
+
 	int          d_parsed_brushes;
-	
+
 	bool	show_blocks;
-	
+
 	// Timo
 	// tells if we are internally using brush primitive (texture coordinates and map format)
 	// this is a shortcut for IntForKey( g_qeglobals.d_project_entity, "brush_primit" )
 	// NOTE: must keep the two ones in sync
 	BOOL m_bBrushPrimitMode;
-	
+
 	// used while importing brush data from file or memory buffer
 	// tells if conversion between map format and internal preferences ( m_bBrushPrimitMode ) is needed
 	bool	bNeedConvert;
 	bool	bOldBrushes;
 	bool	bPrimitBrushes;
 	float	mapVersion;
-	
+
 	idVec3  d_vAreaTL;
 	idVec3  d_vAreaBR;
-	
+
 	// tells if we are using .INI files for prefs instead of registry
 	bool	use_ini;
 	// even in .INI mode we use the registry for all void* prefs
 	char		use_ini_registry[64];
-	
+
 	//Timo
 	// tells we have surface properties plugin
 	bool	bSurfacePropertiesPlugin;
 	// tells we are using a BSP frontend plugin
 	bool	bBSPFrontendPlugin;
-	
+
 	// the editor has its own soundWorld and renderWorld, completely distinct from the game
 	idRenderWorld*	rw;
 	idSoundWorld*	sw;
@@ -379,7 +379,7 @@ void BPMatMul( float A[2][3], float B[2][3], float C[2][3] );
 // apply a rotation (degrees)
 void BPMatRotate( float A[2][3], float theta );
 #ifdef _DEBUG
-void BPMatDump( float A[2][3] );
+	void BPMatDump( float A[2][3] );
 #endif
 
 

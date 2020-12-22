@@ -53,7 +53,7 @@ static INT_PTR CALLBACK GEOptionsDlg_GeneralProc( HWND hwnd, UINT msg, WPARAM wP
 									   gApp.GetOptions().GetSelectionColor()[2] * 255 ) );
 			CheckDlgButton( hwnd, IDC_GUIED_IGNOREDESKTOP, gApp.GetOptions().GetIgnoreDesktopSelect() ? BST_CHECKED : BST_UNCHECKED );
 			break;
-			
+
 		case WM_COMMAND:
 			switch( LOWORD( wParam ) )
 			{
@@ -75,11 +75,11 @@ static INT_PTR CALLBACK GEOptionsDlg_GeneralProc( HWND hwnd, UINT msg, WPARAM wP
 				}
 			}
 			break;
-			
+
 		case WM_DRAWITEM:
 			ColorButton_DrawItem( GetDlgItem( hwnd, wParam ), ( LPDRAWITEMSTRUCT )lParam );
 			return TRUE;
-			
+
 		case WM_NOTIFY:
 			switch( ( ( NMHDR FAR* ) lParam )->code )
 			{
@@ -91,7 +91,7 @@ static INT_PTR CALLBACK GEOptionsDlg_GeneralProc( HWND hwnd, UINT msg, WPARAM wP
 			}
 			break;
 	}
-	
+
 	return FALSE;
 }
 
@@ -114,18 +114,18 @@ static INT_PTR CALLBACK GEOptionsDlg_GridProc( HWND hwnd, UINT msg, WPARAM wPara
 			CheckDlgButton( hwnd, IDC_GUIED_GRIDVISIBLE, gApp.GetOptions().GetGridVisible() ? BST_CHECKED : BST_UNCHECKED );
 			CheckDlgButton( hwnd, IDC_GUIED_GRIDSNAP, gApp.GetOptions().GetGridSnap() ? BST_CHECKED : BST_UNCHECKED );
 			return TRUE;
-			
+
 		case WM_DRAWITEM:
 			ColorButton_DrawItem( GetDlgItem( hwnd, wParam ), ( LPDRAWITEMSTRUCT )lParam );
 			return TRUE;
-			
+
 		case WM_NOTIFY:
 			switch( ( ( NMHDR FAR* ) lParam )->code )
 			{
 				case PSN_APPLY:
 				{
 					char temp[32];
-					
+
 					// Copy the dialog control data back to the options
 					GetWindowText( GetDlgItem( hwnd, IDC_GUIED_SPACINGWIDTH ), temp, 32 );
 					gApp.GetOptions().SetGridWidth( atol( temp ) );
@@ -138,7 +138,7 @@ static INT_PTR CALLBACK GEOptionsDlg_GridProc( HWND hwnd, UINT msg, WPARAM wPara
 				}
 			}
 			break;
-			
+
 		case WM_COMMAND:
 			switch( LOWORD( wParam ) )
 			{
@@ -161,7 +161,7 @@ static INT_PTR CALLBACK GEOptionsDlg_GridProc( HWND hwnd, UINT msg, WPARAM wPara
 			}
 			return TRUE;
 	}
-	
+
 	return FALSE;
 }
 
@@ -176,7 +176,7 @@ bool GEOptionsDlg_DoModal( HWND parent )
 {
 	PROPSHEETHEADER propsh;
 	PROPSHEETPAGE	propsp[2];
-	
+
 	propsp[0].dwSize		= sizeof( PROPSHEETPAGE );
 	propsp[0].dwFlags		= PSP_USETITLE;
 	propsp[0].hInstance		= win32.hInstance;
@@ -184,7 +184,7 @@ bool GEOptionsDlg_DoModal( HWND parent )
 	propsp[0].pfnDlgProc	= GEOptionsDlg_GeneralProc;
 	propsp[0].pszTitle		= "General";
 	propsp[0].lParam		= 0;
-	
+
 	propsp[1].dwSize		= sizeof( PROPSHEETPAGE );
 	propsp[1].dwFlags		= PSP_USETITLE;
 	propsp[1].hInstance		= win32.hInstance;
@@ -192,7 +192,7 @@ bool GEOptionsDlg_DoModal( HWND parent )
 	propsp[1].pfnDlgProc	= GEOptionsDlg_GridProc;
 	propsp[1].pszTitle		= "Grid";
 	propsp[1].lParam		= 0;
-	
+
 	propsh.dwSize			= sizeof( PROPSHEETHEADER );
 	propsh.nStartPage		= gApp.GetOptions().GetLastOptionsPage( );
 	propsh.dwFlags			= PSH_PROPSHEETPAGE | PSH_NOAPPLYNOW | PSH_NOCONTEXTHELP;
@@ -200,12 +200,12 @@ bool GEOptionsDlg_DoModal( HWND parent )
 	propsh.pszCaption		= "Options";
 	propsh.nPages			= 2;
 	propsh.ppsp				= ( LPCPROPSHEETPAGE )&propsp;
-	
+
 	if( PropertySheet( &propsh ) )
 	{
 		gApp.GetOptions().Save( );
 		return true;
 	}
-	
+
 	return false;
 }

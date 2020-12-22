@@ -36,25 +36,25 @@ If you have questions concerning this license or the applicable additional terms
 class CEditViewDlg : public CDialog
 {
 	DECLARE_DYNAMIC( CEditViewDlg )
-	
+
 public:
 	enum {MATERIALS, GUIS};
 	CEditViewDlg( CWnd* pParent = NULL ); // standard constructor
 	virtual ~CEditViewDlg();
-	
+
 	void SetMode( int _mode )
 	{
 		mode = _mode;
 	}
-	
+
 	void SetMaterialInfo( const char* name, const char* file, int line );
 	void SetGuiInfo( const char* name );
 	void UpdateEditPreview();
-	
+
 	void OpenMedia( const char* name );
 // Dialog Data
 	enum { IDD = IDD_DIALOG_EDITVIEW };
-	
+
 protected:
 	CFindReplaceDialog* findDlg;
 	CMediaPreviewDlg mediaPreview;
@@ -65,11 +65,11 @@ protected:
 	idStr findStr;
 	int line;
 	CEdit editInfo;
-	
+
 	void ShowFindDlg();
-	
+
 	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
-	
+
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnSize( UINT nType, int cx, int cy );
@@ -81,5 +81,5 @@ public:
 	afx_msg void OnBnClickedButtonGoto();
 	virtual BOOL PreTranslateMessage( MSG* pMsg );
 	afx_msg LRESULT OnFindDialogMessage( WPARAM wParam, LPARAM lParam );
-	
+
 };

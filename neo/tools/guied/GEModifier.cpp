@@ -36,7 +36,7 @@ rvGEModifier::rvGEModifier( const char* name, idWindow* window )
 {
 	mWindow  = window;
 	mName    = name;
-	
+
 	if( mWindow )
 	{
 		mWrapper = rvGEWindowWrapper::GetWrapper( window );

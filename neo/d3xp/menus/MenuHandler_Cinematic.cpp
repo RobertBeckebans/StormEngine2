@@ -44,24 +44,24 @@ void idMenuHandler_Cinematic::Update()
 	{
 		return;
 	}
-	
+
 	if( nextScreen != activeScreen )
 	{
-	
+
 		if( activeScreen > Cinematic_AREA_INVALID && activeScreen < Cinematic_NUM_AREAS && menuScreens[ activeScreen ] != NULL )
 		{
 			menuScreens[ activeScreen ]->HideScreen( static_cast<mainMenuTransition_t>( transition ) );
 		}
-		
+
 		if( nextScreen > Cinematic_AREA_INVALID && nextScreen < Cinematic_NUM_AREAS && menuScreens[ nextScreen ] != NULL )
 		{
 			menuScreens[ nextScreen ]->ShowScreen( static_cast<mainMenuTransition_t>( transition ) );
 		}
-		
+
 		transition = MENU_TRANSITION_INVALID;
 		activeScreen = nextScreen;
 	}
-	
+
 	idMenuHandler::Update();
 }
 
@@ -74,13 +74,13 @@ void idMenuHandler_Cinematic::ActivateMenu( bool show )
 {
 
 	idMenuHandler::ActivateMenu( show );
-	
+
 	idPlayer* player = gameLocal.GetLocalPlayer();
 	if( player == NULL )
 	{
 		return;
 	}
-	
+
 	if( show )
 	{
 		activeScreen = Cinematic_AREA_INVALID;
@@ -91,7 +91,7 @@ void idMenuHandler_Cinematic::ActivateMenu( bool show )
 		activeScreen = Cinematic_AREA_INVALID;
 		nextScreen = Cinematic_AREA_INVALID;
 	}
-	
+
 }
 
 /*
@@ -102,7 +102,7 @@ idMenuHandler_Cinematic::Initialize
 void idMenuHandler_Cinematic::Initialize( const char* swfFile, idSoundWorld* sw )
 {
 	idMenuHandler::Initialize( swfFile, sw );
-	
+
 	//---------------------
 	// Initialize the menus
 	//---------------------
@@ -110,12 +110,12 @@ void idMenuHandler_Cinematic::Initialize( const char* swfFile, idSoundWorld* sw 
 	menuScreens[ (screenId) ] = new className();						\
 	menuScreens[ (screenId) ]->Initialize( menuHandler );				\
 	menuScreens[ (screenId) ]->AddRef();
-	
+
 	for( int i = 0; i < Cinematic_NUM_AREAS; ++i )
 	{
 		menuScreens[ i ] = NULL;
 	}
-	
+
 	BIND_Cinematic_SCREEN( Cinematic_AREA_PLAYING, idMenuScreen_Cinematic, this );
 }
 
@@ -131,9 +131,9 @@ idMenuScreen* idMenuHandler_Cinematic::GetMenuScreen( int index )
 	{
 		return NULL;
 	}
-	
+
 	return menuScreens[ index ];
-	
+
 }
 
 /*

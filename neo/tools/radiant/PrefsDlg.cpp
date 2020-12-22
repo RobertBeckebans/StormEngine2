@@ -35,11 +35,11 @@ If you have questions concerning this license or the applicable additional terms
 
 // foresthale 2014-05-29: let's not use the MFC DEBUG_NEW when we have our own...
 #ifdef ID_DEBUG_NEW_MFC
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+	#ifdef _DEBUG
+		#define new DEBUG_NEW
+		#undef THIS_FILE
+		static char THIS_FILE[] = __FILE__;
+	#endif
 #endif
 
 #define MOUSE_KEY				"radiant_MouseButtons"
@@ -225,18 +225,18 @@ BOOL CPrefsDlg::OnInitDialog()
 	m_wndSpin.SetRange( 1, 60 );
 	m_wndCamSpeed.SetRange( 10, 5000 );
 	m_wndCamSpeed.SetPos( m_nMoveSpeed );
-	
+
 	this->m_wndTexturequality.SetRange( 0, 3 );
 	this->m_wndTexturequality.SetPos( m_nTextureQuality );
-	
+
 	m_wndFontSpin.SetRange( 4, 24 );
 	m_wndUndoSpin.SetRange( 1, 64 );
-	
+
 	GetDlgItem( IDC_CHECK_HICOLOR )->EnableWindow( TRUE );
 	GetDlgItem( IDC_CHECK_NOCLAMP )->EnableWindow( TRUE );
-	
+
 	//GetDlgItem(IDC_CHECK_NOCLAMP)->EnableWindow(FALSE);
-	
+
 	return TRUE;	// return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -247,7 +247,7 @@ void CPrefsDlg::OnOK()
 	m_nAngleSpeed = ( float )m_nMoveSpeed * 0.50;
 	this->m_nTextureQuality = m_wndTexturequality.GetPos();
 	SavePrefs();
-	
+
 	if( g_pParentWnd )
 	{
 		g_pParentWnd->SetGridStatus();
@@ -353,9 +353,9 @@ void CPrefsDlg::LoadPrefs()
 	CString strPrefab = g_strAppPath;
 	AddSlash( strPrefab );
 	strPrefab += "Prefabs\\";
-	
+
 	m_nMouseButtons = 3;
-	
+
 	m_bTextureLock = GetCvarInt( TLOCK_KEY, TLOCK_DEF );
 	m_bRotateLock = GetCvarInt( RLOCK_KEY, TLOCK_DEF );
 	m_strLastProject = GetCvarString( LASTPROJ_KEY, "" );
@@ -412,7 +412,7 @@ void CPrefsDlg::LoadPrefs()
 	m_strMaps = GetCvarString( MAPS_KEY, "" );
 	m_strModels = GetCvarString( MODELS_KEY, "" );
 	m_bNoStipple = GetCvarInt( NEWMAPFORMAT_KEY, 1 );
-	
+
 	if( m_bRunBefore == FALSE )
 	{
 		SetGamePrefs();
@@ -425,9 +425,9 @@ void CPrefsDlg::SavePrefs()
 	{
 		UpdateData( TRUE );
 	}
-	
+
 	m_nMouseButtons = 3;
-	
+
 	SetCvarInt( TLOCK_KEY, m_bTextureLock );
 	SetCvarInt( RLOCK_KEY, m_bRotateLock );
 	SetCvarInt( LOADLAST_KEY, m_bLoadLast );

@@ -44,7 +44,7 @@ class idBinaryImage
 {
 public:
 	idBinaryImage( const char* name ) : imgName( name ) { }
-	
+
 	const char* 		GetName() const
 	{
 		return imgName.c_str();
@@ -53,19 +53,19 @@ public:
 	{
 		imgName = _name;
 	}
-	
+
 	void				Load2DFromMemory( int width, int height, const byte* pic_const, int numLevels, textureFormat_t& textureFormat, textureColor_t& colorFormat, bool gammaMips, bool toolUsage );
 	// motorsep 05-17-2015; added textureUsage_t usageParm to LoadCubeFromMemory
 	void				LoadCubeFromMemory( int width, const byte* pics[6], int numLevels, textureFormat_t& textureFormat, textureColor_t& colorFormat, bool gammaMips, bool toolUsage, textureUsage_t usageParm );
-	
+
 	ID_TIME_T			LoadFromGeneratedFile( ID_TIME_T sourceFileTime, bool toolUsage );
 	ID_TIME_T			WriteGeneratedFile( ID_TIME_T sourceFileTime, bool toolUsage );
-	
+
 	const bimageFile_t& 	GetFileHeader()
 	{
 		return fileData;
 	}
-	
+
 	int					NumImages()
 	{
 		return images.Num();
@@ -82,12 +82,12 @@ public:
 private:
 	idStr				imgName;			// game path, including extension (except for cube maps), may be an image program
 	bimageFile_t		fileData;
-	
+
 	class idBinaryImageData : public bimageImage_t
 	{
 	public:
 		byte* data;
-		
+
 		idBinaryImageData() : data( NULL ) { }
 		~idBinaryImageData()
 		{
@@ -99,7 +99,7 @@ private:
 			{
 				return *this;
 			}
-			
+
 			Alloc( other.dataSize );
 			memcpy( data, other.data, other.dataSize );
 			return *this;
@@ -120,9 +120,9 @@ private:
 			data = ( byte* )Mem_Alloc( size, TAG_CRAP );
 		}
 	};
-	
+
 	idList< idBinaryImageData, TAG_IDLIB_LIST_IMAGE > images;
-	
+
 private:
 	void				MakeGeneratedFileName( idStr& gfn, bool toolUsage );
 	bool				LoadFromGeneratedFile( idFile* f, ID_TIME_T sourceFileTime );

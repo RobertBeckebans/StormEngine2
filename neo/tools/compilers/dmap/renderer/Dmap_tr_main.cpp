@@ -50,19 +50,19 @@ bool R_RadiusCullLocalBox( const idBounds& bounds, const float modelMatrix[16], 
 	idVec3		worldOrigin;
 	float		worldRadius;
 	const idPlane*	frust;
-	
+
 	if( r_useCulling.GetInteger() == 0 )
 	{
 		return false;
 	}
-	
+
 	// transform the surface bounds into world space
 	idVec3	localOrigin = ( bounds[0] + bounds[1] ) * 0.5;
-	
+
 	R_LocalPointToGlobal( modelMatrix, localOrigin, worldOrigin );
-	
+
 	worldRadius = ( bounds[0] - localOrigin ).Length();	// FIXME: won't be correct for scaled objects
-	
+
 	for( i = 0; i < numPlanes; i++ )
 	{
 		frust = planes + i;
@@ -72,7 +72,7 @@ bool R_RadiusCullLocalBox( const idBounds& bounds, const float modelMatrix[16], 
 			return true;	// culled
 		}
 	}
-	
+
 	return false;		// no culled
 }
 
@@ -92,23 +92,23 @@ bool R_CornerCullLocalBox( const idBounds& bounds, const float modelMatrix[16], 
 	float		dists[8];
 	idVec3		v;
 	const idPlane* frust;
-	
+
 	// we can disable box culling for experimental timing purposes
 	if( r_useCulling.GetInteger() < 2 )
 	{
 		return false;
 	}
-	
+
 	// transform into world space
 	for( i = 0; i < 8; i++ )
 	{
 		v[0] = bounds[i & 1][0];
 		v[1] = bounds[( i >> 1 ) & 1][1];
 		v[2] = bounds[( i >> 2 ) & 1][2];
-		
+
 		R_LocalPointToGlobal( modelMatrix, v, transformed[i] );
 	}
-	
+
 	// check against frustum planes
 	for( i = 0; i < numPlanes; i++ )
 	{
@@ -128,9 +128,9 @@ bool R_CornerCullLocalBox( const idBounds& bounds, const float modelMatrix[16], 
 			return true;
 		}
 	}
-	
+
 	dmap_tr.pc.c_box_cull_in++;
-	
+
 	return false;		// not culled
 }
 
@@ -160,7 +160,7 @@ void myGlMultMatrix( const float a[16], const float b[16], float out[16] )
 {
 #if 0
 	int		i, j;
-	
+
 	for( i = 0; i < 4; i++ )
 	{
 		for( j = 0; j < 4; j++ )

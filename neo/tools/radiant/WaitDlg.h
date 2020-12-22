@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 #define AFX_WAITDLG_H__2B7A6C91_8D3F_4BEE_B564_33A0CFFA241B__INCLUDED_
 
 #if _MSC_VER > 1000
-#pragma once
+	#pragma once
 #endif // _MSC_VER > 1000
 // WaitDlg.h : header file
 //
@@ -48,21 +48,21 @@ public:
 	void SetText( const char* msg, bool append = false );
 	void AllowCancel( bool enable );
 	bool CancelPressed( void );
-	
+
 // Dialog Data
 	//{{AFX_DATA(CWaitDlg)
 	enum { IDD = IDD_DLG_WAIT };
 	CString	waitStr;
 	//}}AFX_DATA
-	
-	
+
+
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CWaitDlg)
 protected:
 	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	//}}AFX_VIRTUAL
-	
+
 // Implementation
 protected:
 
@@ -72,7 +72,7 @@ protected:
 	virtual void OnCancel();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
-	
+
 private:
 	idStr	text;
 	bool	cancelPressed;

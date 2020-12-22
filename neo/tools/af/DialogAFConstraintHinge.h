@@ -35,7 +35,7 @@ class DialogAFConstraintHinge : public CDialog
 {
 
 	DECLARE_DYNAMIC( DialogAFConstraintHinge )
-	
+
 public:
 	DialogAFConstraintHinge( CWnd* pParent = NULL ); // standard constructor
 	virtual				~DialogAFConstraintHinge();
@@ -44,9 +44,9 @@ public:
 	void				LoadConstraint( idDeclAF_Constraint* c );
 	void				SaveConstraint( void );
 	void				UpdateFile( void );
-	
+
 	enum { IDD = IDD_DIALOG_AF_CONSTRAINT_HINGE };
-	
+
 protected:
 	virtual void		DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	virtual INT_PTR		OnToolHitTest( CPoint point, TOOLINFO* pTI ) const;
@@ -76,13 +76,13 @@ protected:
 	afx_msg void		OnDeltaposSpinHingeLimitAngle2( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditHingeLimitAngle3();
 	afx_msg void		OnDeltaposSpinHingeLimitAngle3( NMHDR* pNMHDR, LRESULT* pResult );
-	
+
 	DECLARE_MESSAGE_MAP()
-	
+
 private:
 	idDeclAF* 			file;
 	idDeclAF_Constraint* constraint;
-	
+
 	//{{AFX_DATA(DialogAFConstraintHinge)
 	CComboBox			m_comboAnchorJoint;
 	float				m_anchor_x;
@@ -96,9 +96,9 @@ private:
 	float				m_limitAngle2;
 	float				m_limitAngle3;
 	//}}AFX_DATA
-	
+
 	static toolTip_t	toolTips[];
-	
+
 private:
 	void				InitJointLists( void );
 };

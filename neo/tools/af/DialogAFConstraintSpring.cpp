@@ -138,18 +138,18 @@ void DialogAFConstraintSpring::InitJointLists( void )
 {
 	m_comboAnchorJoint.ResetContent();
 	m_comboAnchor2Joint.ResetContent();
-	
+
 	if( !file )
 	{
 		return;
 	}
-	
+
 	const idRenderModel* model = gameEdit->ANIM_GetModelFromName( file->model );
 	if( !model )
 	{
 		return;
 	}
-	
+
 	int numJoints = model->NumJoints();
 	for( int i = 0; i < numJoints; i++ )
 	{
@@ -189,9 +189,9 @@ DialogAFConstraintSpring::LoadConstraint
 void DialogAFConstraintSpring::LoadConstraint( idDeclAF_Constraint* c )
 {
 	int i;
-	
+
 	constraint = c;
-	
+
 	// load first anchor from the current idDeclAF_Constraint
 	SetSafeComboBoxSelection( &m_comboAnchorJoint, constraint->anchor.joint1.c_str(), -1 );
 	m_anchor_x = constraint->anchor.ToVec3().x;
@@ -206,7 +206,7 @@ void DialogAFConstraintSpring::LoadConstraint( idDeclAF_Constraint* c )
 		i = IDC_RADIO_ANCHOR_COORDINATES;
 	}
 	CheckRadioButton( IDC_RADIO_ANCHOR_JOINT, IDC_RADIO_ANCHOR_COORDINATES, i );
-	
+
 	// load second anchor from the current idDeclAF_Constraint
 	SetSafeComboBoxSelection( &m_comboAnchor2Joint, constraint->anchor2.joint1.c_str(), -1 );
 	m_anchor2_x = constraint->anchor2.ToVec3().x;
@@ -221,13 +221,13 @@ void DialogAFConstraintSpring::LoadConstraint( idDeclAF_Constraint* c )
 		i = IDC_RADIO_ANCHOR2_COORDINATES;
 	}
 	CheckRadioButton( IDC_RADIO_ANCHOR2_JOINT, IDC_RADIO_ANCHOR2_COORDINATES, i );
-	
+
 	// spring settings
 	m_stretch = constraint->stretch;
 	m_compress = constraint->compress;
 	m_damping = constraint->damping;
 	m_restLength = constraint->restLength;
-	
+
 	// spring limits
 	if( constraint->minLength > 0.0f )
 	{
@@ -239,7 +239,7 @@ void DialogAFConstraintSpring::LoadConstraint( idDeclAF_Constraint* c )
 	}
 	CheckRadioButton( IDC_RADIO_SPRING_NO_MIN_LENGTH, IDC_RADIO_SPRING_MIN_LENGTH, i );
 	m_minLength = constraint->minLength;
-	
+
 	if( constraint->maxLength > 0.0f )
 	{
 		i = IDC_RADIO_SPRING_MAX_LENGTH;
@@ -250,7 +250,7 @@ void DialogAFConstraintSpring::LoadConstraint( idDeclAF_Constraint* c )
 	}
 	CheckRadioButton( IDC_RADIO_SPRING_NO_MAX_LENGTH, IDC_RADIO_SPRING_MAX_LENGTH, i );
 	m_maxLength = constraint->maxLength;
-	
+
 	// update displayed values
 	UpdateData( FALSE );
 }
@@ -263,37 +263,37 @@ DialogAFConstraintSpring::SaveConstraint
 void DialogAFConstraintSpring::SaveConstraint( void )
 {
 	CString str;
-	
+
 	if( !file || !constraint )
 	{
 		return;
 	}
 	UpdateData( TRUE );
-	
+
 	// save first anchor to the current idDeclAF_Constraint
 	GetSafeComboBoxSelection( &m_comboAnchorJoint, str, -1 );
 	constraint->anchor.joint1 = str;
 	constraint->anchor.ToVec3().x = m_anchor_x;
 	constraint->anchor.ToVec3().y = m_anchor_y;
 	constraint->anchor.ToVec3().z = m_anchor_z;
-	
+
 	// save second anchor to the current idDeclAF_Constraint
 	GetSafeComboBoxSelection( &m_comboAnchor2Joint, str, -1 );
 	constraint->anchor2.joint1 = str;
 	constraint->anchor2.ToVec3().x = m_anchor2_x;
 	constraint->anchor2.ToVec3().y = m_anchor2_y;
 	constraint->anchor2.ToVec3().z = m_anchor2_z;
-	
+
 	// spring settings
 	constraint->stretch = m_stretch;
 	constraint->compress = m_compress;
 	constraint->damping = m_damping;
 	constraint->restLength = m_restLength;
-	
+
 	// spring limits
 	constraint->minLength = m_minLength;
 	constraint->maxLength = m_maxLength;
-	
+
 	AFDialogSetFileModified();
 }
 

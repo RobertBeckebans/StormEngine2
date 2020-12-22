@@ -41,11 +41,11 @@ If you have questions concerning this license or the applicable additional terms
 
 // foresthale 2014-05-29: let's not use the MFC DEBUG_NEW when we have our own...
 #ifdef ID_DEBUG_NEW_MFC
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+	#ifdef _DEBUG
+		#define new DEBUG_NEW
+		#undef THIS_FILE
+		static char THIS_FILE[] = __FILE__;
+	#endif
 #endif
 
 CDlgCamera g_dlgCamera;
@@ -156,19 +156,19 @@ void CDlgCamera::OnBtnAddtarget()
 void CDlgCamera::OnBtnDelevent()
 {
 	// TODO: Add your control notification handler code here
-	
+
 }
 
 void CDlgCamera::OnBtnDeltarget()
 {
 	// TODO: Add your control notification handler code here
-	
+
 }
 
 void CDlgCamera::OnDblclkComboSplines()
 {
 	// TODO: Add your control notification handler code here
-	
+
 }
 
 void CDlgCamera::OnSelchangeComboSplines()
@@ -189,10 +189,10 @@ void CDlgCamera::OnSelchangeComboSplines()
 		g_splineList->startEdit( true );
 		g_qeglobals.selectObject = g_splineList->getPositionObj();
 	}
-	
+
 	// * 4.0 to set increments in quarter seconds
 	m_wndSegments.SetScrollRange( 0, g_splineList->getTotalTime() * 4.0 );
-	
+
 	Sys_UpdateWindows( W_ALL );
 }
 
@@ -205,7 +205,7 @@ void CDlgCamera::OnSelchangeListEvents()
 void CDlgCamera::OnDblclkListEvents()
 {
 	// TODO: Add your control notification handler code here
-	
+
 }
 
 void CDlgCamera::setupFromCamera()
@@ -225,7 +225,7 @@ void CDlgCamera::setupFromCamera()
 		m_wndSplines.SetCurSel( 0 );
 		m_fSeconds = g_splineList->getTotalTime();
 		m_wndSegments.SetScrollRange( 0, g_splineList->getTotalTime() * 4.0 );
-		
+
 		m_wndEvents.ResetContent();
 		for( i = 0; i < g_splineList->numEvents(); i++ )
 		{
@@ -338,7 +338,7 @@ void CDlgCamera::OnHScroll( UINT nSBCode, UINT nPos, CScrollBar* pScrollBar )
 		g_splineList->getCameraInfo( p, g_pParentWnd->GetCamera()->Camera().origin, dir, &fov );
 		g_pParentWnd->GetCamera()->Camera().angles[1] = atan2( dir[1], dir[0] ) * 180 / 3.14159;
 		g_pParentWnd->GetCamera()->Camera().angles[0] = asin( dir[2] ) * 180 / 3.14159;
-		
+
 	}
 	UpdateData( FALSE );
 	Sys_UpdateWindows( W_XY | W_CAMERA );
@@ -372,19 +372,19 @@ void CDlgCamera::OnFileSave()
 void CDlgCamera::OnTestcamera()
 {
 	// TODO: Add your control notification handler code here
-	
+
 }
 
 void CDlgCamera::OnBtnDeletepoints()
 {
 	// TODO: Add your control notification handler code here
-	
+
 }
 
 void CDlgCamera::OnBtnSelectall()
 {
 	// TODO: Add your control notification handler code here
-	
+
 }
 
 void CDlgCamera::OnRadioEditpoints()

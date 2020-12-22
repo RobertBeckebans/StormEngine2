@@ -50,14 +50,14 @@ This should not be done during normal game-play, if you can avoid it.
 void idFramebuffer::AllocFramebuffer()
 {
 	PurgeFramebuffer();
-	
+
 	// if we don't have a rendering context, just return after we
 	// have filled in the parms.
 	if( !R_IsInitialized() )
 	{
 		return;
 	}
-	
+
 }
 
 /*
@@ -85,37 +85,45 @@ void idFramebuffer::Bind()
 {
 	int n = 0;
 	static const GLenum drawbuffers[8] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT5, GL_COLOR_ATTACHMENT6, GL_COLOR_ATTACHMENT7 };
-	
+
 	for( n = 0; n < 8; n++ )
 		if( !colorAttachmentImage[n] )
+		{
 			break;
-			
+		}
+
 	if( fbo == 0 )
 	{
 		GL_CheckErrors();
-		
+
 		if( !globalFramebuffers->gotsysfbo )
 		{
 			globalFramebuffers->gotsysfbo = true;
 			qglGetIntegerv( GL_FRAMEBUFFER_BINDING, ( GLint* )&globalFramebuffers->sysfbo );
 		}
-		
+
 		// generate the fbo handle
 		qglGenFramebuffers( 1, ( GLuint* )&fbo );
 		assert( fbo != 0 );
-		
+
 		// bind the fbo handle so that we can configure it
 		qglBindFramebuffer( GL_FRAMEBUFFER, fbo );
-		
+
 		// attach things
 		if( depthAttachmentImage )
+		{
 			depthAttachmentImage->BindAttachmentOnFBO( GL_DEPTH_ATTACHMENT, attachmentImageLayer );
+		}
 		if( depthStencilAttachmentImage )
+		{
 			depthStencilAttachmentImage->BindAttachmentOnFBO( GL_DEPTH_STENCIL_ATTACHMENT, attachmentImageLayer );
+		}
 		for( int i = 0; i < 8; i++ )
 			if( colorAttachmentImage[i] )
+			{
 				colorAttachmentImage[i]->BindAttachmentOnFBO( GL_COLOR_ATTACHMENT0 + i, attachmentImageLayer );
-				
+			}
+
 		// configure the drawbuffers/readbuffer correctly so we can use it
 		if( n > 1 )
 		{
@@ -132,23 +140,23 @@ void idFramebuffer::Bind()
 			qglDrawBuffer( GL_NONE );
 			qglReadBuffer( GL_NONE );
 		}
-		
+
 		// check if the framebuffer looks okay to the driver
 		int status = qglCheckFramebufferStatus( GL_FRAMEBUFFER );
 		assert( status == GL_FRAMEBUFFER_COMPLETE );
-		
+
 		// see if we messed anything up
 		GL_CheckErrors();
 	}
 	else
 	{
 		qglBindFramebuffer( GL_FRAMEBUFFER, fbo );
-		
+
 		GLenum status = qglCheckFramebufferStatus( GL_FRAMEBUFFER );
-		
+
 		// check for errors
 		GL_CheckErrors();
-		
+
 		// configure the drawbuffers/readbuffer correctly so we can use it
 		if( n > 1 )
 		{
@@ -165,7 +173,7 @@ void idFramebuffer::Bind()
 			qglDrawBuffer( GL_NONE );
 			qglReadBuffer( GL_NONE );
 		}
-		
+
 		// check for errors
 		GL_CheckErrors();
 	}
@@ -224,13 +232,13 @@ idFramebuffer* idFramebufferManager::AllocFramebuffer( const char* name, int lay
 	{
 		common->Error( "idFramebufferManager::AllocFramebuffer: \"%s\" is too long\n", name );
 	}
-	
+
 	int hash = idStr( name ).FileNameHash();
-	
+
 	idFramebuffer* framebuffer = new( TAG_IMAGE ) idFramebuffer( name, layer );
-	
+
 	framebufferHash.Add( hash, framebuffers.Append( framebuffer ) );
-	
+
 	return framebuffer;
 }
 
@@ -248,9 +256,9 @@ idFramebuffer* idFramebufferManager::AllocStandaloneFramebuffer( const char* nam
 	{
 		common->Error( "idFramebufferManager::AllocFramebuffer: \"%s\" is too long\n", name );
 	}
-	
+
 	idFramebuffer* framebuffer = new( TAG_IMAGE ) idFramebuffer( name );
-	
+
 	return framebuffer;
 }
 
@@ -262,7 +270,7 @@ idFramebufferManager::GetFramebuffer
 idFramebuffer* idFramebufferManager::GetFramebuffer( const char* _name ) const
 {
 	idStr name = _name;
-	
+
 	//
 	// look in loaded framebuffers
 	//
@@ -275,7 +283,7 @@ idFramebuffer* idFramebufferManager::GetFramebuffer( const char* _name ) const
 			return framebuffer;
 		}
 	}
-	
+
 	return NULL;
 }
 
@@ -288,18 +296,18 @@ void idFramebufferManager::PurgeAllFramebuffers()
 {
 	int		i;
 	idFramebuffer*	framebuffer;
-	
+
 	for( i = 0; i < framebuffers.Num() ; i++ )
 	{
 		framebuffer = framebuffers[i];
 		framebuffer->PurgeFramebuffer();
 	}
-	
+
 	if( gotsysfbo )
 	{
 		// return to the system fbo
 		BindSystemFramebuffer();
-		
+
 		// we'll get the system fbo again on first Bind after reload
 		gotsysfbo = false;
 		sysfbo = 0;
@@ -330,15 +338,15 @@ void idFramebufferManager::BindSystemFramebuffer()
 	{
 		qglBindFramebuffer( GL_FRAMEBUFFER, sysfbo );
 	}
-	
+
 	GLenum status = qglCheckFramebufferStatus( GL_FRAMEBUFFER );
-	
+
 	// check for errors
 	GL_CheckErrors();
-	
+
 	qglDrawBuffer( GL_BACK );
 	qglReadBuffer( GL_BACK );
-	
+
 	// check for errors
 	GL_CheckErrors();
 }
@@ -352,11 +360,11 @@ void idFramebufferManager::Init()
 {
 	framebuffers.Resize( 16, 16 );
 	framebufferHash.ResizeIndex( 16 );
-	
+
 	viewFramebuffer = AllocFramebuffer( "_viewFramebuffer" );
 	viewFramebuffer->SetDepthStencilAttachment( globalImages->viewFramebufferDepthImage );
 	viewFramebuffer->SetColorAttachment( 0, globalImages->viewFramebufferRenderImage16 );
-	
+
 	// foresthale 2014-04-08: r_glow
 //	glowFramebuffer8[0] = AllocFramebuffer( "_glowFramebuffer0" );
 //	glowFramebuffer8[0]->SetColorAttachment( 0, globalImages->glowFramebufferImage[0] );
@@ -376,7 +384,7 @@ void idFramebufferManager::Init()
 	glowFramebuffer16[2]->SetColorAttachment( 0, globalImages->glowFramebufferImage16[2] );
 	glowFramebuffer16[3] = AllocFramebuffer( "_glowFramebufferHDR3" );
 	glowFramebuffer16[3]->SetColorAttachment( 0, globalImages->glowFramebufferImage16[3] );
-	
+
 	for( int i = 0; i < 5; i++ )
 	{
 		for( int j = 0; j < 6; j++ )

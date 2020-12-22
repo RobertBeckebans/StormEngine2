@@ -36,9 +36,9 @@ If you have questions concerning this license or the applicable additional terms
 #include "LightDlg.h"
 
 #ifdef ID_DEBUG_MEMORY
-#undef new
-#undef DEBUG_NEW
-#define DEBUG_NEW new
+	#undef new
+	#undef DEBUG_NEW
+	#define DEBUG_NEW new
 #endif
 
 
@@ -101,15 +101,15 @@ void CLightInfo::FromDict( const idDict* e )
 	lightStart.Zero();
 	lightEnd.Zero();
 	lightCenter.Zero();
-	
+
 	castShadows = !e->GetBool( "noshadows" );
 	castSpecular = !e->GetBool( "nospecular" );
 	castDiffuse = !e->GetBool( "nodiffuse" );
 	fallOff = e->GetFloat( "falloff" );
 	strTexture = e->GetString( "texture" );
-	
+
 	isParallel = e->GetBool( "parallel" );
-	
+
 	if( !e->GetVector( "_color", "", color ) )
 	{
 		color[0] = color[1] = color[2] = 1;
@@ -118,7 +118,7 @@ void CLightInfo::FromDict( const idDict* e )
 	color[0] *= 255;
 	color[1] *= 255;
 	color[2] *= 255;
-	
+
 	if( e->GetVec4( "fog", "", fogDensity ) )
 	{
 		fog = true;
@@ -127,7 +127,7 @@ void CLightInfo::FromDict( const idDict* e )
 	{
 		fog = false;
 	}
-	
+
 	if( e->GetVector( "light_right", "", lightRight ) )
 	{
 		// projected light
@@ -181,7 +181,7 @@ void CLightInfo::ToDictFromDifferences( idDict* e, const idDict* differences )
 	for( int i = 0 ; i < differences->GetNumKeyVals() ; i ++ )
 	{
 		const idKeyValue* kv = differences->GetKeyVal( i );
-		
+
 		if( kv->GetValue().Length() > 0 )
 		{
 			e->Set( kv->GetKey() , kv->GetValue() );
@@ -190,7 +190,7 @@ void CLightInfo::ToDictFromDifferences( idDict* e, const idDict* differences )
 		{
 			e->Delete( kv->GetKey() );
 		}
-		
+
 		common->Printf( "Applied difference: %s %s\n" , kv->GetKey().c_str() , kv->GetValue().c_str() );
 	}
 }
@@ -201,9 +201,9 @@ void CLightInfo::ToDictWriteAllInfo( idDict* e )
 	e->Set( "noshadows", ( !castShadows ) ? "1" : "0" );
 	e->Set( "nospecular", ( !castSpecular ) ? "1" : "0" );
 	e->Set( "nodiffuse", ( !castDiffuse ) ? "1" : "0" );
-	
+
 	e->SetFloat( "falloff", fallOff );
-	
+
 	if( strTexture.GetLength() > 0 )
 	{
 		e->Set( "texture", strTexture );
@@ -213,11 +213,11 @@ void CLightInfo::ToDictWriteAllInfo( idDict* e )
 		// foresthale 2014-05-21: make sure we always set all dict keys, or it becomes impossible to remove a key using the light editor
 		e->Set( "texture", "" );
 	}
-	
+
 	idVec3 temp = color;
 	temp /= 255;
 	e->SetVector( "_color", temp );
-	
+
 	if( !equalRadius )
 	{
 		e->Set( "light_radius", va( "%g %g %g", lightRadius[0], lightRadius[1], lightRadius[2] ) );
@@ -226,10 +226,10 @@ void CLightInfo::ToDictWriteAllInfo( idDict* e )
 	{
 		e->Set( "light_radius", va( "%g %g %g", lightRadius[0], lightRadius[0], lightRadius[0] ) );
 	}
-	
+
 	e->Set( "light_center", va( "%g %g %g", lightCenter[0], lightCenter[1], lightCenter[2] ) );
 	e->Set( "parallel", isParallel ? "1" : "0" );
-	
+
 	e->Set( "light_target", va( "%g %g %g", lightTarget[0], lightTarget[1], lightTarget[2] ) );
 	e->Set( "light_up", va( "%g %g %g", lightUp[0], lightUp[1], lightUp[2] ) );
 	e->Set( "light_right", va( "%g %g %g", lightRight[0], lightRight[1], lightRight[2] ) );
@@ -280,27 +280,27 @@ void CLightInfo::ToDict( idDict* e )
 		e->Set( "light_center", "" );
 		e->Set( "light", "" );
 	}
-	
+
 	e->Set( "noshadows", ( !castShadows ) ? "1" : "0" );
 	e->Set( "nospecular", ( !castSpecular ) ? "1" : "0" );
 	e->Set( "nodiffuse", ( !castDiffuse ) ? "1" : "0" );
-	
+
 	e->SetFloat( "falloff", fallOff );
-	
+
 	if( strTexture.GetLength() > 0 )
 	{
 		e->Set( "texture", strTexture );
 	}
-	
+
 	idVec3 temp = color;
 	temp /= 255;
 	e->SetVector( "_color", temp );
-	
+
 	if( fog )
 	{
 		e->Set( "fog", va( "%g %g %g %g", fogDensity[0] / 255.0, fogDensity[1] / 255.0, fogDensity[2] / 255.0, fogDensity[3] / 255.0 ) );
 	}
-	
+
 	if( pointLight )
 	{
 		if( !equalRadius )
@@ -311,12 +311,12 @@ void CLightInfo::ToDict( idDict* e )
 		{
 			e->Set( "light_radius", va( "%g %g %g", lightRadius[0], lightRadius[0], lightRadius[0] ) );
 		}
-		
+
 		if( hasCenter )
 		{
 			e->Set( "light_center", va( "%g %g %g", lightCenter[0], lightCenter[1], lightCenter[2] ) );
 		}
-		
+
 		if( isParallel )
 		{
 			e->Set( "parallel", "1" );
@@ -512,10 +512,10 @@ void CLightDlg::EnableControls()
 	GetDlgItem( IDC_EDIT_CENTERY )->EnableWindow( lightInfo.pointLight );
 	GetDlgItem( IDC_EDIT_CENTERZ )->EnableWindow( lightInfo.pointLight );
 	GetDlgItem( IDC_CHECK_CENTER )->EnableWindow( lightInfo.pointLight );
-	
+
 	reinterpret_cast<CButton*>( GetDlgItem( IDC_CHECK_PROJECTED ) )->SetCheck( !lightInfo.pointLight );
 	reinterpret_cast<CButton*>( GetDlgItem( IDC_CHECK_POINT ) )->SetCheck( lightInfo.pointLight );
-	
+
 	SetSpecifics();
 }
 
@@ -555,7 +555,7 @@ void CLightDlg::UpdateDialogFromLightInfo( void )
 	{
 		m_drawMaterial->setMedia( lightInfo.strTexture );
 	}
-	
+
 	m_bDiffuse = lightInfo.castDiffuse;
 	m_fEndX = lightInfo.lightEnd[0];
 	m_fEndY = lightInfo.lightEnd[1];
@@ -582,21 +582,21 @@ void CLightDlg::UpdateDialogFromLightInfo( void )
 	m_centerX = lightInfo.lightCenter[0];
 	m_centerY = lightInfo.lightCenter[1];
 	m_centerZ = lightInfo.lightCenter[2];
-	
+
 	//jhefty - added parallel light updating
 	m_bIsParallel = lightInfo.isParallel;
-	
+
 	UpdateData( FALSE );
 }
 
 void CLightDlg::UpdateLightInfoFromDialog( void )
 {
 	UpdateData( TRUE );
-	
+
 	lightInfo.pointLight = ( m_bPointLight != FALSE );
 	lightInfo.equalRadius = ( m_bEqualRadius != FALSE );
 	lightInfo.explicitStartEnd = ( m_bExplicitFalloff != FALSE );
-	
+
 	if( lightInfo.pointLight )
 	{
 		if( m_nFalloff == 0 )
@@ -612,24 +612,24 @@ void CLightDlg::UpdateLightInfoFromDialog( void )
 			m_fFallloff = 1.0;
 		}
 	}
-	
+
 	lightInfo.fallOff = m_fFallloff;
-	
+
 	//lightInfo.fog = m_bFog;
 	lightInfo.rotate = ( m_bRotate != FALSE );
 	lightInfo.castShadows = ( m_bShadows != FALSE );
 	lightInfo.castSpecular = ( m_bSpecular != FALSE );
-	
+
 	VectorCopy( color, lightInfo.color );
 	lightInfo.isParallel = ( m_bIsParallel == TRUE );
-	
+
 	//lightInfo.fogDensity[3] = m_fFogAlpha;
-	
+
 	//lightInfo.strobe = m_bStrobe;
 	//lightInfo.strobeSpeed = m_fStrobe;
 	//lightInfo.rotate = m_bRotate;
 	//lightInfo.rotateSpeed = m_fRotate;
-	
+
 	int sel = m_wndLights.GetCurSel();
 	CString str( "" );
 	if( sel >= 0 )
@@ -637,7 +637,7 @@ void CLightDlg::UpdateLightInfoFromDialog( void )
 		m_wndLights.GetLBText( sel, str );
 	}
 	lightInfo.strTexture = str;
-	
+
 	lightInfo.castDiffuse = ( m_bDiffuse != FALSE );
 	lightInfo.lightEnd[0] = m_fEndX;
 	lightInfo.lightEnd[1] = m_fEndY;
@@ -657,7 +657,7 @@ void CLightDlg::UpdateLightInfoFromDialog( void )
 	lightInfo.lightUp[0] = m_fUpX;
 	lightInfo.lightUp[1] = m_fUpY;
 	lightInfo.lightUp[2] = m_fUpZ;
-	
+
 	lightInfo.hasCenter = ( m_hasCenter != FALSE );
 	lightInfo.lightCenter[0] = m_centerX;
 	lightInfo.lightCenter[1] = m_centerY;
@@ -669,7 +669,7 @@ void CLightDlg::SaveLightInfo( const idDict* differences )
 
 	if( com_editorActive )
 	{
-	
+
 		// used from Radiant
 		for( brush_t* b = selected_brushes.next; b && b != &selected_brushes; b = b->next )
 		{
@@ -686,18 +686,18 @@ void CLightDlg::SaveLightInfo( const idDict* differences )
 				Brush_Build( b );
 			}
 		}
-		
+
 	}
 	else
 	{
-	
+
 		// used in-game
 		idList<idEntity*> list;
-		
+
 		list.SetNum( 128 );
 		int count = gameEdit->GetSelectedEntities( list.Ptr(), list.Num() );
 		list.SetNum( count );
-		
+
 		for( int i = 0; i < count; i++ )
 		{
 			if( differences )
@@ -720,9 +720,9 @@ void CLightDlg::SaveLightInfo( const idDict* differences )
 void CLightDlg::ColorButtons()
 {
 	CRect r;
-	
+
 	CClientDC dc( this );
-	
+
 	CButton* pBtn = ( CButton* )GetDlgItem( IDC_BTN_COLOR );
 	pBtn->GetClientRect( &r );
 	colorBitmap.DeleteObject();
@@ -759,18 +759,18 @@ void CLightDlg::LoadLightTextures()
 BOOL CLightDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
-	
+
 	com_editors |= EDITOR_LIGHT;
-	
+
 	UpdateDialog( true );
-	
+
 	LoadLightTextures();
-	
+
 	if( com_editorActive )
 	{
 		m_wndPreview.setDrawable( m_drawMaterial );
 	}
-	
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -779,14 +779,14 @@ void CLightDlg::OnDestroy()
 {
 
 	com_editors &= ~EDITOR_LIGHT;
-	
+
 	return CDialog::OnDestroy();
 }
 
 void CLightDlg::OnBtnTexture()
 {
 	// TODO: Add your control notification handler code here
-	
+
 }
 
 void CLightDlg::OnCheckEqualradius()
@@ -843,10 +843,10 @@ entity_t* SingleLightSelected()
 void CLightDlg::UpdateDialog( bool updateChecks )
 {
 	CString title;
-	
+
 	lightInfo.Defaults();
 	lightInfoOriginal.Defaults();
-	
+
 	if( com_editorActive )
 	{
 		// used from Radiant
@@ -869,7 +869,7 @@ void CLightDlg::UpdateDialog( bool updateChecks )
 					break;
 				}
 			}
-			
+
 			if( e )
 			{
 				lightInfo.FromDict( &e->epairs );
@@ -886,11 +886,11 @@ void CLightDlg::UpdateDialog( bool updateChecks )
 	{
 		// used in-game
 		idList<idEntity*> list;
-		
+
 		list.SetNum( 128 );
 		int count = gameEdit->GetSelectedEntities( list.Ptr(), list.Num() );
 		list.SetNum( count );
-		
+
 		if( count > 0 )
 		{
 			lightInfo.FromDict( gameEdit->EntityGetSpawnArgs( list[count - 1] ) );
@@ -901,12 +901,12 @@ void CLightDlg::UpdateDialog( bool updateChecks )
 			title = "Light Editor - (No entities selected)";
 		}
 	}
-	
+
 	SetWindowText( title );
-	
+
 	UpdateDialogFromLightInfo();
 	ColorButtons();
-	
+
 	if( updateChecks )
 	{
 		EnableControls();
@@ -921,13 +921,13 @@ void LightEditorInit( const idDict* spawnArgs )
 						"Set r_fullscreen to 0 and vid_restart.\n" );
 		return;
 	}
-	
+
 	if( g_LightDialog == NULL )
 	{
 		InitAfx();
 		g_LightDialog = new CLightDlg();
 	}
-	
+
 	if( g_LightDialog->GetSafeHwnd() == NULL )
 	{
 		g_LightDialog->Create( IDD_DIALOG_LIGHT );
@@ -938,13 +938,13 @@ void LightEditorInit( const idDict* spawnArgs )
 			g_LightDialog->SetWindowPos( NULL, rct.left, rct.top, 0, 0, SWP_NOSIZE );
 		}
 	}
-	
+
 	idKeyInput::ClearStates();
-	
+
 	g_LightDialog->ShowWindow( SW_SHOW );
 	g_LightDialog->SetFocus();
 	g_LightDialog->UpdateDialog( true );
-	
+
 	if( spawnArgs )
 	{
 		// FIXME: select light based on spawn args
@@ -958,7 +958,7 @@ void LightEditorRun( void )
 #else
 	MSG* msg = &m_msgCur;
 #endif
-	
+
 	while( ::PeekMessage( msg, NULL, NULL, NULL, PM_NOREMOVE ) )
 	{
 		// pump message
@@ -1030,7 +1030,7 @@ void CLightDlg::OnCancel()
 HBRUSH CLightDlg::OnCtlColor( CDC* pDC, CWnd* pWnd, UINT nCtlColor )
 {
 	HBRUSH hbr = CDialog::OnCtlColor( pDC, pWnd, nCtlColor );
-	
+
 	return hbr;
 }
 
@@ -1095,7 +1095,7 @@ void CLightDlg::OnCheckParallel()
 		lightInfo.isParallel = false;
 		lightInfo.hasCenter = false;
 	}
-	
+
 	UpdateDialogFromLightInfo();
 	SetSpecifics();
 }
@@ -1104,30 +1104,30 @@ void CLightDlg::OnCheckParallel()
 void CLightDlg::OnApplyDifferences()
 {
 	idDict differences, modified, original;
-	
+
 	UpdateLightInfoFromDialog();
-	
+
 	lightInfo.ToDict( &modified );
 	lightInfoOriginal.ToDictWriteAllInfo( &original );
-	
+
 	differences = modified;
-	
+
 	// jhefty - compile a set of modified values to apply
 	for( int i = 0; i < modified.GetNumKeyVals(); i ++ )
 	{
 		const idKeyValue* valModified = modified.GetKeyVal( i );
 		const idKeyValue* valOriginal = original.FindKey( valModified->GetKey() );
-		
+
 		//if it hasn't changed, remove it from the list of values to apply
 		if( !valOriginal || ( valModified->GetValue() == valOriginal->GetValue() ) )
 		{
 			differences.Delete( valModified->GetKey() );
 		}
 	}
-	
+
 	SaveLightInfo( &differences );
-	
+
 	lightInfoOriginal.FromDict( &modified );
-	
+
 	Sys_UpdateWindows( W_ALL );
 }

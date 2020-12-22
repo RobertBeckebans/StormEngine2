@@ -50,10 +50,10 @@ rvGEOptions::rvGEOptions()
 	mPropertiesVisible = true;
 	mItemPropertiesVisible = true;
 	mScriptsVisible = true;
-	
+
 	mWorkspaceColor.Set( 0.0f, 0.0f, 0.0f, 1.0f );
 	mSelectionColor.Set( 0.5f, 0.5f, 1.0f, 1.0f );
-	
+
 	memset( mCustomColors, 0, sizeof( mCustomColors ) );
 }
 
@@ -78,14 +78,14 @@ bool rvGEOptions::Save( void )
 {
 	// Write the last page we visited
 	mRegistry.SetLong( "lastOptionsPage", mLastOptionsPage );
-	
+
 	// Write the grid settings
 	mRegistry.SetVec4( "gridColor", idVec4( mGridColor[0], mGridColor[1], mGridColor[2], 1.0f ) );
 	mRegistry.SetLong( "gridWidth", mGridWidth );
 	mRegistry.SetLong( "gridHeight", mGridHeight );
 	mRegistry.SetBool( "gridSnap", mGridSnap );
 	mRegistry.SetBool( "gridVisible", mGridVisible );
-	
+
 	// Tool window states
 	mRegistry.SetBool( "navigatorVisible", mNavigatorVisible );
 	mRegistry.SetBool( "ItemPropertiesVisible", mItemPropertiesVisible );
@@ -93,18 +93,18 @@ bool rvGEOptions::Save( void )
 	mRegistry.SetBool( "transformerVisible", mTransformerVisible );
 	mRegistry.SetBool( "statusBarVisible", mStatusBarVisible );
 	mRegistry.SetBool( "scriptsVisible", mScriptsVisible );
-	
+
 	// General stuff
 	mRegistry.SetVec4( "selectionColor", mSelectionColor );
 	mRegistry.SetBool( "ignoreDesktopSelect", mIgnoreDesktopSelect );
-	
+
 	// Custom colors
 	int i;
 	for( i = 0; i < 16; i ++ )
 	{
 		mRegistry.SetLong( va( "customcol%d", i ), mCustomColors[i] );
 	}
-	
+
 	return mRegistry.Save( );
 }
 
@@ -121,35 +121,35 @@ bool rvGEOptions::Load( void )
 	{
 		return false;
 	}
-	
+
 	// Read the general stuff
 	mLastOptionsPage = mRegistry.GetLong( "lastOptionsPage" );
-	
+
 	// Read the grid settings
 	mGridColor = mRegistry.GetVec4( "gridColor" );
 	mGridWidth = mRegistry.GetLong( "gridWidth" );
 	mGridHeight = mRegistry.GetLong( "gridHeight" );
 	mGridSnap  = mRegistry.GetBool( "gridSnap" );
 	mGridVisible = mRegistry.GetBool( "gridVisible" );
-	
+
 	// Tool window states
 	mNavigatorVisible = mRegistry.GetBool( "navigatorVisible" );
 	mPropertiesVisible = mRegistry.GetBool( "PropertiesVisible" );
 	mItemPropertiesVisible = mRegistry.GetBool( "ItemPropertiesVisible" );
 	mTransformerVisible = mRegistry.GetBool( "transformerVisible" );
 	mStatusBarVisible = mRegistry.GetBool( "statusBarVisible" );
-	
+
 	// General stuff
 	mSelectionColor = mRegistry.GetVec4( "selectionColor" );
 	mIgnoreDesktopSelect = mRegistry.GetBool( "ignoreDesktopSelect" );
-	
+
 	// Custom colors
 	int i;
 	for( i = 0; i < 16; i ++ )
 	{
 		mCustomColors[i] = mRegistry.GetLong( va( "customcol%d", i ) );
 	}
-	
+
 	return true;
 }
 
@@ -169,7 +169,7 @@ void rvGEOptions::SnapRectToGrid( idRectangle& rect, bool snapLeft, bool snapTop
 		rect.x += offset;
 		rect.w -= offset;
 	}
-	
+
 	if( snapWidth )
 	{
 		float offset = ( int )( rect.x + rect.w + GetGridWidth() / 2 ) / GetGridWidth() * GetGridWidth();
@@ -177,7 +177,7 @@ void rvGEOptions::SnapRectToGrid( idRectangle& rect, bool snapLeft, bool snapTop
 		offset -= rect.w;
 		rect.w += offset;
 	}
-	
+
 	if( snapTop )
 	{
 		float offset = ( int )( rect.y + GetGridHeight() / 2 ) / GetGridHeight() * GetGridHeight();
@@ -185,7 +185,7 @@ void rvGEOptions::SnapRectToGrid( idRectangle& rect, bool snapLeft, bool snapTop
 		rect.y += offset;
 		rect.h -= offset;
 	}
-	
+
 	if( snapHeight )
 	{
 		float offset = ( int )( rect.y + rect.h + GetGridHeight() / 2 ) / GetGridHeight() * GetGridHeight();

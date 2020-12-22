@@ -198,7 +198,7 @@ void idSoundWorldLocal::PlaceListener( const idVec3& origin, const idMat3& axis,
 
 /*
 ========================
-idSoundWorldLocal::PlaceListener
+idSoundWorldLocal::WriteSoundShaderLoad
 ========================
 */
 void idSoundWorldLocal::WriteSoundShaderLoad( const idSoundShader* snd )
@@ -907,6 +907,7 @@ idSoundWorldLocal::ProcessDemoCommand
 */
 void idSoundWorldLocal::ProcessDemoCommand( idDemoFile* readDemo )
 {
+
 	if( !readDemo )
 	{
 		return;

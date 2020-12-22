@@ -130,7 +130,7 @@ idListNewElement<type>
 ================
 */
 template< class type >
-ID_INLINE type* idListNewElement( void )
+ID_INLINE type* idListNewElement()
 {
 	return new type;
 }

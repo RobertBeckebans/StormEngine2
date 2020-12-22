@@ -27,6 +27,7 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+
 #pragma hdrstop
 #include "precompiled.h"
 
@@ -152,6 +153,7 @@ bool idSoundShader::Parse( const char* text, const int textLength, bool allowBin
 	}
 
 	idLexer	src;
+
 	src.LoadMemory( text, textLength, GetFileName(), GetLineNum() );
 	src.SetFlags( DECL_LEXER_FLAGS );
 	src.SkipUntilString( "{" );

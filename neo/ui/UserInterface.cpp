@@ -27,6 +27,7 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+
 #pragma hdrstop
 #include "precompiled.h"
 
@@ -101,7 +102,7 @@ void idUserInterfaceManagerLocal::Touch( const char* name )
 {
 	idUserInterface* gui = Alloc();
 	gui->InitFromFile( name );
-	//delete gui;
+//	delete gui;
 }
 
 void idUserInterfaceManagerLocal::WritePrecacheCommands( idFile* f )

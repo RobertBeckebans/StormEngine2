@@ -1,3 +1,12 @@
+# EDIT: RB
+
+This repo contains some changes that allows to build and run the engine in 64 bit mode with VS 2017 on Windows 10.
+I use this repo for merging stuff back into RBDOOM-3-BFG.
+
+The readme below is outdated concerning the Build instructions.
+
+---
+
 # Storm Engine 2
 brought to you by Kot in Action Creative Artel
 

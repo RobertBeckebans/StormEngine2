@@ -3,7 +3,7 @@
 
 Doom 3 BFG Edition GPL Source Code
 Copyright (C) 1993-2012 id Software LLC, a ZeniMax Media company.
-Copyright (C) 2014-2016 Robert Beckebans
+Copyright (C) 2013 Daniel Gibson (changes for POSIX)
 Copyright (C) 2014-2016 Kot in Action Creative Artel
 
 This file is part of the Doom 3 BFG Edition GPL Source Code ("Doom 3 BFG Edition Source Code").
@@ -27,6 +27,7 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+
 
 /*
 ================================================================================================
@@ -64,7 +65,7 @@ Note that other POSIX systems may need some small changes, e.g. in Sys_InitNetwo
 	#include <errno.h>
 	#include <sys/select.h>
 	#include <net/if.h>
-	#if defined(MACOS_X) || defined(__FreeBSD__)
+	#if defined(__APPLE__) || defined(__FreeBSD__)
 		#include <ifaddrs.h>
 	#endif
 
@@ -954,7 +955,7 @@ void Sys_InitNetworking()
 	}
 	free( pAdapterInfo );
 
-#elif defined(MACOS_X) || defined(__FreeBSD__)
+#elif defined(__APPLE__) || defined(__FreeBSD__)
 	// haven't been able to clearly pinpoint which standards or RFCs define SIOCGIFCONF, SIOCGIFADDR, SIOCGIFNETMASK ioctls
 	// it seems fairly widespread, in Linux kernel ioctl, and in BSD .. so let's assume it's always available on our targets
 

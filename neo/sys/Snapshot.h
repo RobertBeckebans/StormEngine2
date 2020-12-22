@@ -3,8 +3,6 @@
 
 Doom 3 BFG Edition GPL Source Code
 Copyright (C) 1993-2012 id Software LLC, a ZeniMax Media company.
-Copyright (C) 2014-2016 Robert Beckebans
-Copyright (C) 2014-2016 Kot in Action Creative Artel
 
 This file is part of the Doom 3 BFG Edition GPL Source Code ("Doom 3 BFG Edition Source Code").
 
@@ -34,7 +32,7 @@ If you have questions concerning this license or the applicable additional terms
 
 extern idCVar net_verboseSnapshot;
 #define NET_VERBOSESNAPSHOT_PRINT	if ( net_verboseSnapshot.GetInteger() > 0 ) idLib::Printf
-#define NET_VERBOSESNAPSHOT_PRINT_LEVEL( X, Y )  if ( net_verboseSnapshot.GetInteger() >= ( X ) ) idLib::Printf( Y )
+#define NET_VERBOSESNAPSHOT_PRINT_LEVEL( X, Y )  if ( net_verboseSnapshot.GetInteger() >= ( X ) ) idLib::Printf( "%s", Y )
 
 /*
 A snapshot contains a list of objects and their states

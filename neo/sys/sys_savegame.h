@@ -43,6 +43,7 @@ If you have questions concerning this license or the applicable additional terms
 #define DEFINE_CLASS( x )					virtual const char * Name() const { return #x; }
 #define MAX_SAVEGAMES						16
 #define MAX_FILES_WITHIN_SAVEGAME			10
+
 #define MIN_SAVEGAME_SIZE_BYTES				( 4 * 1024 * 1024 )
 #define MAX_SAVEGAME_STRING_TABLE_SIZE		400 * 1024	// 400 kB max string table size
 
@@ -232,7 +233,7 @@ public:
 
 typedef idStaticList< idSaveGameDetails, MAX_SAVEGAMES > saveGameDetailsList_t;
 
-// Making a auto_ptr to handle lifetime issues better
+// Making a unique_ptr to handle lifetime issues better
 typedef idList< idFile_SaveGame*, TAG_SAVEGAMES > saveFileEntryList_t;
 
 /*

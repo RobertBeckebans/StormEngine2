@@ -1099,6 +1099,7 @@ add_definitions(-D__DOOM__
 				#-DBUILD_FREETYPE
 				#-DFT2_BUILD_LIBRARY
 				)
+				
 if(MONOLITH)
 	list(APPEND RBDOOM3_INCLUDES
 		${GAMED3XP_INCLUDES}
@@ -1129,10 +1130,6 @@ include_directories(
 			#libs/glew/include
 			#libs/freetype/include
 			libs/zlib)
-			
-#link_directories(
-#			${CMAKE_CURRENT_SOURCE_DIR}/libs/curl/lib
-#			${CMAKE_CURRENT_SOURCE_DIR}/libs/openal/lib)
 
 if(MSVC)
 	

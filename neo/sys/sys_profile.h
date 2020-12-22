@@ -3,8 +3,6 @@
 
 Doom 3 BFG Edition GPL Source Code
 Copyright (C) 1993-2012 id Software LLC, a ZeniMax Media company.
-Copyright (C) 2014-2016 Robert Beckebans
-Copyright (C) 2014-2016 Kot in Action Creative Artel
 
 This file is part of the Doom 3 BFG Edition GPL Source Code ("Doom 3 BFG Edition Source Code").
 
@@ -50,6 +48,9 @@ public:
 	idProfileMgr();
 	~idProfileMgr();
 
+	// Not copyable because we use unique_ptrs.
+	idProfileMgr& operator=( const idProfileMgr& ) = delete;
+
 	// Called the first time it's asked to load
 	void				Init( idLocalUser* user );
 
@@ -64,8 +65,8 @@ private:
 	void				OnSaveSettingsCompleted( idSaveLoadParms* parms );
 
 private:
-	std::auto_ptr< idSaveGameProcessorSaveProfile >	profileSaveProcessor;
-	std::auto_ptr< idSaveGameProcessorLoadProfile >	profileLoadProcessor;
+	std::unique_ptr< idSaveGameProcessorSaveProfile >	profileSaveProcessor;
+	std::unique_ptr< idSaveGameProcessorLoadProfile >	profileLoadProcessor;
 
 	idLocalUser* 						user;					// reference passed in
 	idPlayerProfile* 					profile;

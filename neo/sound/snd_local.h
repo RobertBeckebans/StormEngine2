@@ -3,7 +3,7 @@
 
 Doom 3 BFG Edition GPL Source Code
 Copyright (C) 1993-2012 id Software LLC, a ZeniMax Media company.
-Copyright (C) 2014-2016 Robert Beckebans
+Copyright (C) 2013-2016 Robert Beckebans
 Copyright (C) 2014-2016 Kot in Action Creative Artel
 
 This file is part of the Doom 3 BFG Edition GPL Source Code ("Doom 3 BFG Edition Source Code").
@@ -27,6 +27,7 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+
 #ifndef __SND_LOCAL_H__
 #define __SND_LOCAL_H__
 
@@ -131,9 +132,6 @@ ID_INLINE_EXTERN ALCenum CheckALCErrors_( ALCdevice* device, const char* filenam
 
 #define OPERATION_SET 1
 
-#ifdef _MSC_VER
-	#pragma warning( disable: 4005 )  /* macro redefinition */
-#endif
 // RB: not available on Windows 8 SDK
 #if defined(USE_WINRT) // (_WIN32_WINNT < 0x0602 /*_WIN32_WINNT_WIN8*/)
 #include <mmdeviceapi.h>
@@ -167,9 +165,6 @@ struct AudioDevice
 #endif
 // RB end
 
-#ifdef _MSC_VER
-	#pragma warning( enable: 4005 )  /* macro redefinition */
-#endif
 #include "XAudio2/XA2_SoundSample.h"
 #include "XAudio2/XA2_SoundVoice.h"
 #include "XAudio2/XA2_SoundHardware.h"

@@ -3,8 +3,6 @@
 
 Doom 3 BFG Edition GPL Source Code
 Copyright (C) 1993-2012 id Software LLC, a ZeniMax Media company.
-Copyright (C) 2014-2016 Robert Beckebans
-Copyright (C) 2014-2016 Kot in Action Creative Artel
 
 This file is part of the Doom 3 BFG Edition GPL Source Code ("Doom 3 BFG Edition Source Code").
 
@@ -48,6 +46,13 @@ public:
 	static const int MAX_GAMERTAG_CHARS = 16;	// max number of UTF-8 characters to show
 
 	idLocalUserWin() : inputDevice( 0 ) {}
+
+	idLocalUserWin& operator=( idLocalUserWin&& other )
+	{
+		gamertag = std::move( other.gamertag );
+		inputDevice = other.inputDevice;
+		return *this;
+	}
 
 	//==========================================================================================
 	// idLocalUser interface
